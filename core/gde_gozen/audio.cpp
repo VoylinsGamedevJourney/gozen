@@ -98,10 +98,11 @@ PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& strea
 	int64_t samples_to_discard = 0;
 
 	while (!(FFmpeg::get_frame(format_ctx, codec_ctx.get(), stream->index, av_frame.get(), av_packet.get()))) {
-		if (av_frame->nb_samples <= 0)
+		if (av_frame->nb_samples <= 0) {
 			break;
+		}
 
-		if (first_frame && start_time > 0) {
+		if (first_frame) {
 			first_frame = false;
 			int64_t frame_pts =
 				av_frame->best_effort_timestamp != AV_NOPTS_VALUE ? av_frame->best_effort_timestamp : av_frame->pts;
@@ -109,6 +110,21 @@ PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& strea
 				double frame_time = frame_pts * av_q2d(stream->time_base);
 				if (start_time > frame_time) {
 					samples_to_discard = (int64_t)((start_time - frame_time) * TARGET_SAMPLE_RATE);
+				} else if (frame_time > start_time) {
+					int64_t silence_samples = (int64_t)((frame_time - start_time) * TARGET_SAMPLE_RATE);
+					size_t silence_bytes = silence_samples * bytes_per_sample * 2;
+					if (max_bytes > 0 && current_size + silence_bytes > max_bytes) {
+						silence_bytes = max_bytes - current_size;
+					}
+
+					if (silence_bytes > 0) {
+						if (current_size + silence_bytes > audio_data.size()) {
+							size_t new_size = current_size + silence_bytes + (1024 * 1024 * 10);
+							audio_data.resize(new_size);
+						}
+						memset(&(audio_data.ptrw()[current_size]), 0, silence_bytes);
+						current_size += silence_bytes;
+					}
 				}
 			}
 		}
@@ -790,12 +806,33 @@ PackedByteArray Audio::get_audio_data_chunk(double start_time, double duration) 
 
 		if (first_frame) {
 			first_frame = false;
-			int64_t frame_pts =
-				av_frame->best_effort_timestamp != AV_NOPTS_VALUE ? av_frame->best_effort_timestamp : av_frame->pts;
+			int64_t frame_pts = av_frame->pts;
+			if (av_frame->best_effort_timestamp != AV_NOPTS_VALUE) {
+				frame_pts = av_frame->best_effort_timestamp;
+			}
+
 			if (frame_pts != AV_NOPTS_VALUE) {
 				double frame_time = frame_pts * av_q2d(stream_inst->time_base);
 				if (fetch_start_time > frame_time) {
 					samples_to_discard = (int64_t)((fetch_start_time - frame_time) * TARGET_SAMPLE_RATE);
+				} else if (frame_time > fetch_start_time) {
+					int64_t silence_samples = (int64_t)((frame_time - fetch_start_time) * TARGET_SAMPLE_RATE);
+					size_t total_silence_bytes = silence_samples * bytes_per_sample_inst * 2;
+
+					size_t bytes_needed = max_bytes - current_size;
+					size_t silence_to_write = Math::min((size_t)total_silence_bytes, bytes_needed);
+
+					if (silence_to_write > 0) {
+						memset(audio_data.ptrw() + current_size, 0, silence_to_write);
+						current_size += silence_to_write;
+					}
+
+					size_t remaining_silence = total_silence_bytes - silence_to_write;
+					if (remaining_silence > 0) {
+						size_t old_leftover_size = leftover_buffer_inst.size();
+						leftover_buffer_inst.resize(old_leftover_size + remaining_silence);
+						memset(leftover_buffer_inst.ptrw(), 0, remaining_silence);
+					}
 				}
 			}
 		}
@@ -844,7 +881,6 @@ PackedByteArray Audio::get_audio_data_chunk(double start_time, double duration) 
 
 		size_t byte_size = samples_to_copy * bytes_per_sample_inst * 2;
 		size_t bytes_needed = max_bytes - current_size;
-
 		if (byte_size <= bytes_needed) {
 			memcpy(audio_data.ptrw() + current_size, data_ptr, byte_size);
 			current_size += byte_size;
@@ -852,8 +888,10 @@ PackedByteArray Audio::get_audio_data_chunk(double start_time, double duration) 
 			memcpy(audio_data.ptrw() + current_size, data_ptr, bytes_needed);
 			current_size += bytes_needed;
 			size_t excess_bytes = byte_size - bytes_needed;
-			leftover_buffer_inst.resize(excess_bytes);
-			memcpy(leftover_buffer_inst.ptrw(), data_ptr + bytes_needed, excess_bytes);
+
+			size_t old_leftover_size = leftover_buffer_inst.size();
+			leftover_buffer_inst.resize(old_leftover_size + excess_bytes);
+			memcpy(leftover_buffer_inst.ptrw() + old_leftover_size, data_ptr + bytes_needed, excess_bytes);
 		}
 
 		av_frame_unref(av_frame.get());

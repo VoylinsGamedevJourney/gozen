@@ -206,7 +206,6 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 
 	int64_t target_ts =
 		av_rescale_q(p_position * AV_TIME_BASE, AV_TIME_BASE_Q, audio_stream_ffmpeg->av_stream->time_base);
-	target_ts += audio_stream_ffmpeg->start_time;
 
 	avcodec_flush_buffers(audio_stream_ffmpeg->av_codec_ctx.get());
 	if (int err = av_seek_frame(audio_stream_ffmpeg->av_format_ctx.get(), audio_stream_ffmpeg->av_stream->index,
@@ -231,7 +230,7 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 		int64_t frame_duration = av_rescale_q(av_frame->nb_samples, AVRational{1, av_frame->sample_rate},
 											  audio_stream_ffmpeg->av_stream->time_base);
 
-		if (frame_pts + frame_duration >= target_ts) {
+		if (frame_pts + frame_duration > target_ts) {
 			found_target = true;
 
 			av_decoded_frame->format = AV_SAMPLE_FMT_S16;
@@ -268,8 +267,29 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 			size_t byte_size = av_decoded_frame->nb_samples * audio_stream_ffmpeg->bytes_per_sample;
 			byte_size *= 2;
 
-			std::memcpy(buffer, av_decoded_frame->extended_data[0], byte_size);
-			buffer_fill = av_decoded_frame->nb_samples;
+			int64_t silence_samples = 0;
+			if (frame_pts > target_ts) {
+				silence_samples = av_rescale_q(frame_pts - target_ts, audio_stream_ffmpeg->av_stream->time_base,
+											   AVRational{1, static_cast<int>(mix_rate)});
+			}
+
+			if (silence_samples + av_decoded_frame->nb_samples > buffer_len) {
+				size_t new_len = silence_samples + av_decoded_frame->nb_samples + 44100 * 2;
+				sint16_stereo* new_buffer = new sint16_stereo[new_len];
+				delete[] buffer;
+				buffer = new_buffer;
+				buffer_len = new_len;
+			}
+
+			if (silence_samples > 0) {
+				memset(buffer, 0, silence_samples * sizeof(sint16_stereo));
+				buffer_fill = silence_samples;
+			} else {
+				buffer_fill = 0;
+			}
+
+			std::memcpy(buffer + buffer_fill, av_decoded_frame->extended_data[0], byte_size);
+			buffer_fill += av_decoded_frame->nb_samples;
 			mix_rate = av_frame->sample_rate;
 
 			if (frame_pts < target_ts) {
@@ -282,12 +302,8 @@ void AudioStreamFFmpegPlayback::_seek(double p_position) {
 				} else {
 					buffer_fill = 0;
 				}
-				mixed = static_cast<int64_t>(p_position * mix_rate);
-			} else {
-				mixed =
-					av_rescale_q(frame_pts - audio_stream_ffmpeg->start_time, audio_stream_ffmpeg->av_stream->time_base,
-								 AVRational{1, static_cast<int>(mix_rate)});
 			}
+			mixed = static_cast<int64_t>(p_position * mix_rate);
 		}
 
 		av_frame_unref(av_frame.get());
