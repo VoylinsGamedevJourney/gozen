@@ -47,6 +47,12 @@ First of all, you'll need to run the python script in the root of the project `b
 > [!NOTE]
 > You will need `git-svn` in order to compile! It's in the list of requirements but people tend to miss it.
 
+## PCK clips
+For the creation of PCK clips, use this repo: https://codeberg.org/gozen/module_template
+
+## Modules
+For the creation of UI/effects/transitions/theme modules, please refer to [the module README.md file](./src/modules/README.md).
+
 ## Contributing
 We welcome contributions to GoZen wether it's reporting bugs, suggesting features, submitting code, ... all help is appreciated.
 
