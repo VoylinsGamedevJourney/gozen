@@ -67,8 +67,8 @@ var status_indicator_id: int
 
 
 func _ready() -> void:
-	if Project.project_ready.connect(func() -> void: project_data = Project.data): print_stack()
-	if update_encoder_status.connect(_on_update_encoder_status): print_stack()
+	Project.project_ready.connect(func() -> void: project_data = Project.data)
+	update_encoder_status.connect(_on_update_encoder_status)
 
 
 #--- Render logic ---

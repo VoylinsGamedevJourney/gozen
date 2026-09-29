@@ -49,5 +49,5 @@ func deserialize(data: Dictionary) -> void:
 
 	if data.has("image_png"):
 		var image: Image = Image.new()
-		if image.load_png_from_buffer(data["image_png"] as PackedByteArray) != OK: print_stack()
+		image.load_png_from_buffer(data["image_png"] as PackedByteArray)
 		image_data = ImageTexture.create_from_image(image)

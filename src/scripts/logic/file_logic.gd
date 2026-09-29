@@ -46,10 +46,10 @@ func get_new_id(ids: Array = files.keys()) -> int: return Utils.get_unique_id(id
 
 
 func _ready() -> void:
-	if Project.get_window().files_dropped.connect(dropped): print_stack()
-	if Settings.on_video_cache_size_changed.connect(_update_video_cache_size): print_stack()
-	if Settings.on_video_smart_seek_threshold.connect(_update_video_smart_seek_threshold): print_stack()
-	if Project.resolution_changed.connect(_on_project_resolution_changed): print_stack()
+	Project.get_window().files_dropped.connect(dropped)
+	Settings.on_video_cache_size_changed.connect(_update_video_cache_size)
+	Settings.on_video_smart_seek_threshold.connect(_update_video_smart_seek_threshold)
+	Project.resolution_changed.connect(_on_project_resolution_changed)
 
 
 ## Load everything on startup and give user indication of the progress.
@@ -147,8 +147,9 @@ func delete(ids: Array[int]) -> void:
 			InputManager.undo_redo.add_undo_method(ClipLogic._restore_clip.bind(clip))
 
 	for file_id: int in ids:
-		InputManager.undo_redo.add_do_method(_delete.bind(files[file_id]))
-		InputManager.undo_redo.add_undo_method(_restore.bind(files[file_id]))
+		if has(file_id):
+			InputManager.undo_redo.add_do_method(_delete.bind(files[file_id]))
+			InputManager.undo_redo.add_undo_method(_restore.bind(files[file_id]))
 	InputManager.undo_redo.commit_action()
 
 
@@ -160,10 +161,10 @@ func _delete(file: FileData) -> void:
 	if video_pools.has(file.id):
 		for video: Video in video_pools[file.id]:
 			video.close()
-		if video_pools.erase(file.id): print_stack()
+		video_pools.erase(file.id)
 
-	if audio_pools.erase(file.id): print_stack()
-	if audio_wave.erase(file.id): print_stack()
+	audio_pools.erase(file.id)
+	audio_wave.erase(file.id)
 
 	Project.unsaved_changes = true
 	deleted.emit(file.id)
@@ -247,13 +248,13 @@ func apply_replace_audio(file: FileData, audio_file: FileData, offset: float) ->
 	dialog.get_ok_button().text = tr("Apply to All")
 	dialog.get_cancel_button().text = tr("Cancel")
 
-	if dialog.add_button(tr("Apply to File Only"), true, "file_only"): print_stack()
-	if dialog.confirmed.connect(func() -> void:
-		_commit_ato(file, active, audio_file.id, offset, true, affected_clips)): print_stack()
-	if dialog.custom_action.connect(func(action: String) -> void:
+	dialog.add_button(tr("Apply to File Only"), true, "file_only")
+	dialog.confirmed.connect(func() -> void:
+		_commit_ato(file, active, audio_file.id, offset, true, affected_clips))
+	dialog.custom_action.connect(func(action: String) -> void:
 		if action == "file_only":
 			_commit_ato(file, active, audio_file.id, offset, false,[])
-			dialog.hide()): print_stack()
+			dialog.hide())
 
 	dialog.popup_centered()
 
@@ -505,7 +506,7 @@ func _load_video(file: FileData) -> void:
 	for i: int in 2:
 		# Get 2 extra video instances which can help with tight cuts.
 		# We load the video into the pool, but don't use it here directly.
-		if !get_video_reader(file, i): print_stack()
+		get_video_reader(file, i)
 
 	file.audio_streams.assign(temp_video.get_streams(1))
 	if temp_video.get_audio() != null:

@@ -390,11 +390,12 @@ func _cleanup() -> void:
 
 	EditorCore.is_playing = false
 	for video_id: int in EditorCore.active_tasks:
-		if WorkerThreadPool.wait_for_task_completion(EditorCore.active_tasks[video_id] as int): print_stack()
+		WorkerThreadPool.wait_for_task_completion(EditorCore.active_tasks[video_id] as int)
 	EditorCore.active_tasks.clear()
 
 	for player: AudioPlayer in EditorCore.audio_players:
-		if player != null: player.stop()
+		if player != null:
+			player.stop()
 
 	EditorCore.loaded_clips.clear()
 	EditorCore.clips_to_update.clear()

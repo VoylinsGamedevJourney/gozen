@@ -191,10 +191,10 @@ func _ready() -> void:
 
 		if is_view_mode:
 			# TODO: Create a better view mode screen with playback controls.
-			if EditorCore.play_changed.connect(func(playing: bool) -> void:
+			EditorCore.play_changed.connect(func(playing: bool) -> void:
 					if not playing and EditorCore.frame_nr >= Project.data.timeline_end:
 						EditorCore.set_frame(0)
-						EditorCore.on_play_pressed()): print_stack()
+						EditorCore.on_play_pressed())
 			EditorCore.on_play_pressed()
 		elif is_render_mode:
 			await get_tree().process_frame
@@ -232,8 +232,8 @@ func _on_cli_render_status_check(status: int, is_quick_render: bool) -> void:
 		var dialogs: Array[Node] = get_tree().root.find_children("*", "AcceptDialog", true, false)
 		for dialog: AcceptDialog in dialogs:
 			if not dialog.canceled.is_connected(get_tree().quit):
-				if dialog.canceled.connect(get_tree().quit): print_stack()
-				if dialog.confirmed.connect(get_tree().quit): print_stack()
+				dialog.canceled.connect(get_tree().quit)
+				dialog.confirmed.connect(get_tree().quit)
 
 
 #--- Menu bar functions ---

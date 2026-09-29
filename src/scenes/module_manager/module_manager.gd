@@ -71,7 +71,7 @@ func _on_button_clicked(item: TreeItem, column: int, id: int, _index: int) -> vo
 
 func _on_install_pressed() -> void:
 	var dialog: FileDialog = PopupManager.create_file_dialog("Install Module", FileDialog.FILE_MODE_OPEN_FILE, ["*.pck, *.zip; Godot Resource Pack"])
-	if dialog.file_selected.connect(_on_file_selected): print_stack()
+	dialog.file_selected.connect(_on_file_selected)
 	add_child(dialog)
 	dialog.popup_centered()
 

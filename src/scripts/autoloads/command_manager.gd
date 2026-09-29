@@ -60,7 +60,7 @@ func _ready() -> void:
 	register(Command.new("Open marker popup", InputManager.open_marker_popup, "open_marker_popup"))
 	register(Command.new("About GoZen", PopupManager.open.bind(PopupManager.CREDITS), "help"))
 
-	if Settings.on_localization_updated.connect(_localize_commands): print_stack()
+	Settings.on_localization_updated.connect(_localize_commands)
 
 
 func _localize_commands() -> void:

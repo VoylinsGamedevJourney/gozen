@@ -273,9 +273,9 @@ func move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: b
 
 func _move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: bool) -> void:
 	if is_visual:
-		if clip.effects.video.insert(new_index, clip.effects.video.pop_at(effect_index)): print_stack()
+		clip.effects.video.insert(new_index, clip.effects.video.pop_at(effect_index))
 	else:
-		if clip.effects.audio.insert(new_index, clip.effects.audio.pop_at(effect_index)): print_stack()
+		clip.effects.audio.insert(new_index, clip.effects.audio.pop_at(effect_index))
 
 	effect_moved.emit(clip, effect_index, new_index, is_visual)
 	effects_updated.emit()

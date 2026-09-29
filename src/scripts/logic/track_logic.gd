@@ -32,8 +32,8 @@ func add_track(track: int) -> void:
 
 func _add_track(track: int) -> void:
 	if track < tracks.size():
-		if tracks.insert(track, TrackData.new()): print_stack()
-		if track_clips.insert(track, TrackClips.new()): print_stack()
+		tracks.insert(track, TrackData.new())
+		track_clips.insert(track, TrackClips.new())
 
 		for track_id: int in range(track + 1, tracks.size()):
 			for clip: ClipData in track_clips[track_id].clips:

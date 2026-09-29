@@ -70,7 +70,12 @@ func _input(event: InputEvent) -> void:
 			tree.deselect_all()
 			accept_event()
 		elif tree.get_selected() and event.is_action_pressed("delete_file", false, true):
-			_on_popup_option_pressed(PopupAction.DELETE)
+			var selected_item: TreeItem = tree.get_selected()
+			var metadata: Variant = selected_item.get_metadata(0)
+			if str(metadata).is_valid_int():
+				_on_popup_option_pressed(PopupAction.DELETE)
+			elif str(metadata) != "/":
+				_on_popup_option_pressed(PopupAction.FOLDER_DELETE)
 			accept_event()
 
 
@@ -157,6 +162,20 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 			popup.add_item(tr("Copy file path"), PopupAction.COPY_PATH)
 		popup.add_item(tr("Create folder"), PopupAction.FOLDER_CREATE)
 	else: # Folder.
+		var add_submenu: PopupMenu = PopupMenu.new()
+		add_submenu.name = "AddSubMenu"
+		var src_popup: PopupMenu = file_menu_button.get_popup()
+		for i: int in src_popup.item_count:
+			add_submenu.add_icon_item(src_popup.get_item_icon(i), src_popup.get_item_text(i), src_popup.get_item_id(i))
+			add_submenu.set_item_icon_max_width(i, 21)
+
+		add_submenu.id_pressed.connect(_file_menu_pressed)
+		popup.add_child(add_submenu)
+		popup.add_submenu_node_item(tr("Add files ..."), add_submenu)
+		if file_menu_button.icon:
+			popup.set_item_icon(popup.item_count - 1, file_menu_button.icon)
+		popup.add_separator()
+
 		var folder_path: String = str(metadata)
 		popup.add_item(tr("Create folder"), PopupAction.FOLDER_CREATE)
 
