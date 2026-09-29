@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://cphlysm1b4gri"]
+
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_cot5s"]
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="2_n6jyv"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="3_ejms3"]
+
+[sub_resource type="Resource" id="Resource_xwecl"]
+script = ExtResource("2_n6jyv")
+id = "color"
+nickname = "Color"
+tooltip = "Outline color."
+default_value = Color(0.48962224, 0.48962224, 0.48962218, 1)
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_cot5s"]
+script = ExtResource("2_n6jyv")
+id = "thickness"
+nickname = "Thickness"
+default_value = 10.0
+min_value = 0.0
+max_value = null
+step = 0.5
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_n6jyv"]
+script = ExtResource("2_n6jyv")
+id = "roundness"
+nickname = "Roundness"
+default_value = 1.0
+min_value = 0.0
+max_value = 1.0
+step = 0.05
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("3_ejms3")
+id = "outline"
+nickname = "Outline"
+params = Array[ExtResource("2_n6jyv")]([SubResource("Resource_xwecl"), SubResource("Resource_cot5s"), SubResource("Resource_n6jyv")])
+shader_path = "uid://dpiwlvbom01pi"
+metadata/_custom_type_script = "uid://jveevg12khsa"
