@@ -1,0 +1,45 @@
+name: GoZen build all platforms
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: GoZen version number
+        type: string
+        default: '0.15-beta'
+        required: true
+      godot_version:
+        description: The Godot version to use
+        type: string
+        default: '4.7.2-stable'
+        required: true
+
+permissions:
+  actions: write
+
+run-name: "Build GoZen All Platforms: v${{ inputs.version }} by @${{ github.actor }}"
+
+jobs:
+  build-linux:
+    name: Linux Build
+    uses: ./.github/workflows/build_linux.yml
+    with:
+      version: ${{ inputs.version }}
+      godot_version: ${{ inputs.godot_version }}
+    secrets: inherit
+
+  build-macos:
+    name: MacOS Build
+    uses: ./.github/workflows/build_macos.yml
+    with:
+      version: ${{ inputs.version }}
+      godot_version: ${{ inputs.godot_version }}
+    secrets: inherit
+
+  build-windows:
+    name: Windows Build
+    uses: ./.github/workflows/build_windows.yml
+    with:
+      version: ${{ inputs.version }}
+      godot_version: ${{ inputs.godot_version }}
+    secrets: inherit
