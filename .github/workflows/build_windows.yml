@@ -213,7 +213,7 @@ jobs:
 # End full build
 
 # Start demo build
-  export-gozen:
+  export-gozen-demo:
     name: Export Windows demo
     needs: build-gde
     runs-on: windows-latest

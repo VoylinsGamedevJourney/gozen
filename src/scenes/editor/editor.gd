@@ -89,6 +89,7 @@ func _ready() -> void:
 
 
 	var open_project_path: String = ""
+	var open_media_path: String = ""
 	var render_output_path: String = ""
 	var render_profile_name: String = ""
 
@@ -113,6 +114,8 @@ func _ready() -> void:
 
 		if clean_arg.ends_with(Project.EXTENSION):
 			open_project_path = arg
+		elif FileLogic.check(arg):
+			open_media_path = arg
 		elif clean_arg in ["--new", "--new_h", "--new-horizontal"]:
 			create_new_horizontal = true
 		elif clean_arg in ["--new_v", "--new-vertical"]:
@@ -159,6 +162,8 @@ func _ready() -> void:
 
 	if !open_project_path.is_empty():
 		await Project.open(open_project_path)
+	elif !open_media_path.is_empty():
+		_open_media_path(open_media_path)
 	elif create_new_horizontal:
 		var request: RequestProjectNew = RequestProjectNew.new()
 		request.resolution = Settings.get_quick_create_horizontal_res()
@@ -625,6 +630,43 @@ func switch_workspace_quick() -> void:
 				next_index = (i + 1) % workspace_buttons.size()
 				break
 		switch_workspace(next_index)
+
+
+func _open_media_path(path: String) -> void:
+	var request: RequestProjectNew = RequestProjectNew.new()
+	request.resolution = Settings.get_quick_create_horizontal_res()
+	request.framerate = Settings.get_quick_create_horizontal_fps()
+
+	var extension: String = path.get_extension().to_lower()
+	if extension in ProjectSettings.get_setting("extensions/video"):
+		var temp_video: Video = Video.new()
+		if temp_video.open(path) == OK:
+			var resolution: Vector2i = temp_video.get_resolution()
+			if resolution.x > 0 and resolution.y > 0:
+				request.resolution = resolution
+			var fps: float = temp_video.get_framerate()
+			if fps > 0:
+				request.framerate = fps
+			temp_video.close()
+	elif extension in ProjectSettings.get_setting("extensions/image"):
+		var image: Image = Image.load_from_file(path)
+		if image and not image.is_empty():
+			request.resolution = image.get_size()
+	# For audio we use the standard project resolution.
+
+	Project.new_project(request)
+	FileLogic.add([path])
+	for file: FileData in FileLogic.files.values():
+		# NOTE: We might have a functionality in the future to have default
+		# files for every new project. Not scope creep :p
+		if file.path == path:
+			var clip_request: RequestClipAdd = RequestClipAdd.new()
+			clip_request.file = file
+			clip_request.track = 0
+			clip_request.frame = 0
+			clip_request.type = file.type
+			ClipLogic.add([clip_request])
+			break
 
 
 func register_windows_file_icons() -> void:
