@@ -10,17 +10,13 @@ on:
         description: The Godot version to use
         type: string
         default: '4.7.2-stable'
-      demo:
-        description: Build the demo version
-        type: boolean
-        default: false
 
 env:
   APP_NAME: GoZen
   PATH_FFMPEG: core/ffmpeg/bin_macos
   PATH_EXPORT: bin/macos_arm64
 
-run-name: "Build GoZen MacOS Release: v${{ inputs.version }} (${{ inputs.demo && 'Demo' || 'Full' }}) by @${{ github.actor }}"
+run-name: "Build GoZen MacOS Release: v${{ inputs.version }} by @${{ github.actor }}"
 
 jobs:
 # Start FFMPEG build
@@ -97,7 +93,7 @@ jobs:
           retention-days: 1
 # End GDExtension
 
-# Start GoZen build
+# Start full build
   export-gozen:
     name: Export macos
     needs: build-gde
@@ -133,11 +129,56 @@ jobs:
 
           mkdir -p ../${{ env.PATH_EXPORT }}
           Godot --import project.godot --headless --quit || true
-          Godot --headless --export-release "macOS${{ inputs.demo && '_DEMO' || '' }}" ../${{ env.PATH_EXPORT }}/GoZen${{ inputs.demo && '_demo' || '' }}.dmg
+          Godot --headless --export-release "macOS" ../${{ env.PATH_EXPORT }}/GoZen${{ inputs.demo && '_demo' || '' }}.dmg
 
       - name: Upload raw MacOS export
         uses: actions/upload-artifact@v6
         with:
-          name: GoZen_MacOS${{ inputs.demo && '_demo' || '' }}
-          path: ${{ env.PATH_EXPORT }}/GoZen${{ inputs.demo && '_demo' || '' }}.dmg
-# End GoZen build
+          name: GoZen_MacOS
+          path: ${{ env.PATH_EXPORT }}/GoZen.dmg
+# End full build
+
+# Start demo build
+  export-gozen:
+    name: Export macos demo
+    needs: build-gde
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - uses: ./.github/actions/setup-godot
+        with:
+          godot-version: ${{ inputs.godot_version }}
+          os: macos
+
+      - name: Fetch GDE libs (debug)
+        uses: actions/download-artifact@v8
+        with:
+          name: macos_gde_template_debug_arm64
+          path: ${{ env.PATH_EXPORT }}
+          merge-multiple: true
+
+      - name: Fetch GDE libs (release)
+        uses: actions/download-artifact@v8
+        with:
+          name: macos_gde_template_release_arm64
+          path: ${{ env.PATH_EXPORT }}
+          merge-multiple: true
+
+      - name: Prepare & export
+        working-directory: ./src
+        run: |
+          sed -i '' 's|^config/version\s*=.*|config/version="${{ inputs.version }}"|' project.godot
+
+          mkdir -p ../${{ env.PATH_EXPORT }}
+          Godot --import project.godot --headless --quit || true
+          Godot --headless --export-release "macOS_DEMO" ../${{ env.PATH_EXPORT }}/GoZen${{ inputs.demo && '_demo' || '' }}.dmg
+
+      - name: Upload raw MacOS export
+        uses: actions/upload-artifact@v6
+        with:
+          name: GoZen_MacOS_demo
+          path: ${{ env.PATH_EXPORT }}/GoZen_demo.dmg
+# End demo build
