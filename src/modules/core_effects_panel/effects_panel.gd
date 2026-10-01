@@ -676,12 +676,17 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 	container.gui_input.connect(func(event: InputEvent) -> void:
 			if event is InputEventMouseButton:
 				var event_mouse: InputEventMouseButton = event
+				var container_mouse_pos: Vector2 = container.get_local_mouse_position()
 				if event_mouse.button_index == MOUSE_BUTTON_LEFT:
-					if event_mouse.pressed:
-						EffectsHandler.effect_selected.emit(effect)
-						container.folded = !container.folded
-					else:
-						container.folded = !container.folded)
+					if container_mouse_pos.y < 30: # Title bar.
+						if event_mouse.pressed:
+							EffectsHandler.effect_selected.emit(effect)
+							container.folded = !container.folded
+						else:
+							container.folded = !container.folded
+					else: # Inside of effect container.
+						if event_mouse.is_pressed():
+							EffectsHandler.effect_selected.emit(effect))
 
 	# Adding effect params.
 	var keyframes_found: bool = false

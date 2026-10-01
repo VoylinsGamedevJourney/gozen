@@ -100,7 +100,7 @@ func _input_mouse_motion(event: InputEventMouseMotion, control: Control) -> void
 		var current_angle: float = control_center.angle_to_point(event.position)
 		var angle_delta: float = rad_to_deg(angle_difference(drag_prev_angle, current_angle))
 		drag_prev_angle = current_angle
-		drag_accumulated_rot += angle_delta
+		drag_accumulated_rot -= angle_delta
 
 		var new_z: float = drag_accumulated_rot
 		if event.shift_pressed:
@@ -114,12 +114,12 @@ func _input_mouse_motion(event: InputEventMouseMotion, control: Control) -> void
 func draw(control: Control) -> void:
 	var frame: int = clampi(EditorCore.visual_frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
 
-	var x_param: EffectParam = _get_param("x_rotation")
-	var y_param: EffectParam = _get_param("y_rotation")
+	#var x_param: EffectParam = _get_param("x_rotation")
+	#var y_param: EffectParam = _get_param("y_rotation")
 	var z_param: EffectParam = _get_param("z_rotation")
 
-	var current_x: float = effect.get_value(x_param, frame) if x_param else 0.0
-	var current_y: float = effect.get_value(y_param, frame) if y_param else 0.0
+	#var current_x: float = effect.get_value(x_param, frame) if x_param else 0.0
+	#var current_y: float = effect.get_value(y_param, frame) if y_param else 0.0
 	var current_z: float = effect.get_value(z_param, frame) if z_param else 0.0
 
 	var center: Vector2 = Vector2(Project.get_resolution_center())

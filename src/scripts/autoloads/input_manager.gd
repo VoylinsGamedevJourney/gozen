@@ -118,14 +118,15 @@ func open_marker_popup() -> void:	  PopupManager.open(PopupManager.MARKER)
 
 
 func clipboard_paste() -> void:
-	if !Project.is_loaded: return
+	if !Project.is_loaded:
+		return
 
 	# Check for clip(s).
 	if !ClipLogic.copied_clips.is_empty() and WorkspaceManager.is_panel_mouse_focused("Timeline"):
 		ClipLogic.paste_copied_clips()
 		return
 
-	if WorkspaceManager.is_panel_mouse_focused("FilePanel"):
+	if WorkspaceManager.is_panel_mouse_focused("FilePanel") or WorkspaceManager.is_panel_mouse_focused("Timeline"):
 		await clipboard_try_paste_file()
 
 
