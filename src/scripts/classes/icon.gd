@@ -59,6 +59,7 @@ func _update_texture() -> void:
 
 	if !is_static and BASE_SVG_COLOR != target_color:
 		svg_text = svg_text.replace(BASE_SVG_COLOR.to_html(false), target_color.to_html(false))
+		svg_text = svg_text.replace(BASE_SVG_COLOR.to_html(false).to_upper(), target_color.to_html(false))
 
 	if temp_image.load_svg_from_string(svg_text) != OK:
 		printerr("Couldn't load svg from string!")
