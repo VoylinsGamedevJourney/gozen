@@ -304,7 +304,9 @@ func _on_popup_action_file_duplicate() -> void: ## Only for text.
 	var file: FileData = FileLogic.get_data(tree.get_selected().get_metadata(0) as int)
 	if file.type != Type.TEXT:
 		return printerr("FilePanel: Duplicating only supported for text files right now!")
-	FileLogic.duplicate_text(file)
+	var new_file: FileData = FileLogic.duplicate_text(file)
+	tree.deselect_all()
+	file_items[new_file.id].select(0)
 
 
 func _on_popup_action_file_create_proxy() -> void:

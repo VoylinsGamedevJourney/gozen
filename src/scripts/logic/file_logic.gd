@@ -286,7 +286,7 @@ func _apply_replace_audio(file: FileData, active: bool, audio_file_id: int, offs
 	ato_changed.emit(file)
 
 
-func duplicate_text(file: FileData) -> void:
+func duplicate_text(file: FileData) -> FileData:
 	var new_file: FileData = file.duplicate(true)
 	if new_file.temp_file:
 		new_file.temp_file = file.temp_file.duplicate(true)
@@ -295,11 +295,13 @@ func duplicate_text(file: FileData) -> void:
 			new_file.temp_file.text_effect.keyframes = file.temp_file.text_effect.keyframes.duplicate(true)
 
 	new_file.id = get_new_id()
+	new_file.nickname = file.nickname + " (copy)"
 
 	InputManager.undo_redo.create_action("Duplicate Text File")
 	InputManager.undo_redo.add_do_method(_restore.bind(new_file))
 	InputManager.undo_redo.add_undo_method(_delete.bind(new_file))
 	InputManager.undo_redo.commit_action()
+	return new_file
 
 
 #--- File dropping ---
