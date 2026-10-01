@@ -16,6 +16,7 @@ var thumbs_todo: Array[FileData] = []
 
 func _ready() -> void:
 	FileLogic.audio_wave_generated.connect(_on_audio_wave_generated)
+	FileLogic.reloaded.connect(_on_file_reloaded)
 
 	# Create the thumb directory if not existing.
 	if !DirAccess.dir_exists_absolute(thumb_folder):
@@ -45,7 +46,7 @@ func _process(_delta: float) -> void:
 func _save_data() -> void:
 	var file: FileAccess = FileAccess.open(thumb_folder.path_join(DATA_NAME), FileAccess.WRITE)
 	if !file.store_var(data) or file.get_error():
-		printerr("FilePanel: Error happened when storing empty thumb data!")
+		printerr("Thumbnailer: Error happened when storing empty thumb data!")
 
 
 func get_thumb(file: FileData) -> Texture2D:
@@ -122,7 +123,7 @@ func _gen_thumb(file: FileData, try: int = 0) -> void:
 	if file.type != Type.AUDIO:
 		image = scale_thumbnail(image)
 	if image.save_webp(thumb_folder.path_join(FILE_NAME % file.id)):
-		return printerr("FilePanel: Something went wrong saving thumb!")
+		return printerr("Thumbnailer: Something went wrong saving thumb!")
 
 	Threader.mutex.lock()
 	data[file.path] = file.id
@@ -164,3 +165,18 @@ func scale_thumbnail(image: Image) -> Image:
 		image.flip_x()
 		image.crop(107, 60)
 	return image
+
+
+func _on_file_reloaded(file: FileData) -> void:
+	Threader.mutex.lock()
+	if data.has(file.path):
+		var thumb_path: String = thumb_folder.path_join(FILE_NAME % data[file.path])
+		if FileAccess.file_exists(thumb_path):
+			DirAccess.remove_absolute(thumb_path)
+		if !data.erase(file.path):
+			printerr("Thumbnailer: Couldn't erase '%s' from data!" % file.path)
+		_save_data()
+	Threader.mutex.unlock()
+
+	if not thumbs_todo.has(file):
+		thumbs_todo.insert(0, file)

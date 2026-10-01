@@ -52,9 +52,22 @@ func _ready() -> void:
 	Project.resolution_changed.connect(_on_project_resolution_changed)
 
 
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_IN:
+		_check_external_modifications()
+
+
 ## Load everything on startup and give user indication of the progress.
 func _startup_loading() -> void:
 	for file: FileData in files.values():
+		if not file.path.begins_with("temp://") and FileAccess.file_exists(file.path):
+			var modified_time: int = FileAccess.get_modified_time(file.path)
+			if modified_time != file.modified_time:
+				file.modified_time = modified_time
+				var extension: String = file.path.get_extension().to_lower()
+				var is_audio: bool = extension in ProjectSettings.get_setting("extensions/audio")
+				if is_audio or extension in ProjectSettings.get_setting("extensions/video"):
+					file.duration = maxi(1, floori(Video.get_duration(file.path) * Project.data.framerate))
 		load_data(file)
 
 
@@ -867,10 +880,47 @@ func save_audio_to_wav(file: FileData, save_path: String) -> void:
 
 #--- Private functions ---
 
-func _check_if_modified(file: FileData) -> void:
-	if !file.path.begins_with("temp://") and !FileAccess.file_exists(file.path):
-		Print.info("FileLogic", "File %s at %s doesn't exist anymore!" % [file.id, file.path])
-		delete([file.id])
+func _check_external_modifications() -> void:
+	if not Project.is_loaded:
+		return
+
+	var modified_files: Array[FileData] = []
+	var missing_files: Array[int] = []
+
+	for file: FileData in files.values():
+		if file.path.begins_with("temp://"):
+			continue
+		elif not FileAccess.file_exists(file.path):
+			missing_files.append(file.id)
+			continue
+
+		var current_mod_time: int = FileAccess.get_modified_time(file.path)
+		if current_mod_time != file.modified_time:
+			var extension: String = file.path.get_extension().to_lower()
+			var is_audio: bool = extension in ProjectSettings.get_setting("extensions/audio")
+			if is_audio or extension in ProjectSettings.get_setting("extensions/video"):
+				file.duration = maxi(1, floori(Video.get_duration(file.path) * Project.data.framerate))
+			file.modified_time = current_mod_time
+			modified_files.append(file)
+
+	if not missing_files.is_empty():
+		Print.info("FileLogic", "Deleted %d missing file(s)!" % missing_files.size())
+		delete(missing_files)
+
+	if not modified_files.is_empty():
+		var file_names: PackedStringArray = []
+		for file: FileData in modified_files:
+			file_names.append(file.nickname)
+			load_data(file)
+			reloaded.emit(file)
+
+		var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Files Updated"))
+		dialog.dialog_text = tr("The following files were modified externally and have been reloaded:\n\n- ") + "\n- ".join(file_names)
+		add_child(dialog)
+		dialog.popup_centered()
+
+		ClipLogic.updated.emit()
+		EffectsHandler.effects_updated.emit()
 
 
 func _scale_image_to_fit(image: Image, target_size: Vector2i) -> void:

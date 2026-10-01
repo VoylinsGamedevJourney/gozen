@@ -58,7 +58,9 @@ func get_value(effect_param: EffectParam, frame_nr: int) -> Variant:
 
 
 func deep_copy() -> Effect:
-	var copy: Effect = self.duplicate(true)
+	var copy: Effect = self.duplicate(false)
+	copy.custom_ui = self.custom_ui.duplicate(false)
+	copy.matrix_map = self.matrix_map.duplicate(false)
 	copy.keyframes = duplicate_keyframes(self.keyframes)
 	copy._cache_dirty = true
 
@@ -66,6 +68,9 @@ func deep_copy() -> Effect:
 	for param: EffectParam in self.params:
 		new_params.append(param.duplicate(true))
 	copy.params = new_params
+
+	if copy.audio_effect:
+		copy.audio_effect = copy.audio_effect.duplicate(true)
 
 	return copy
 
