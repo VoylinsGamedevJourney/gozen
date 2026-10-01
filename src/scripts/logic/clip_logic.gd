@@ -305,7 +305,31 @@ func cut_selected_clips() -> void:
 func paste_copied_clips() -> void:
 	if copied_clips.is_empty(): return
 
-	var target_frame: int = EditorCore.frame_nr
+	var track_offset: int = 0
+	if Timeline.is_mouse_over:
+		track_offset = Timeline.mouse_track - copied_min_track
+
+	var base_frame: int = EditorCore.frame_nr
+	var valid_placement: bool = false
+	while not valid_placement:
+		valid_placement = true
+		var push_forward_to: int = base_frame
+		for copied_clip: ClipData in copied_clips:
+			var check_track: int = maxi(0, copied_clip.track + track_offset)
+			var check_start: int = base_frame + (copied_clip.start - copied_min_start)
+			var check_end: int = check_start + copied_clip.duration
+
+			if check_track < TrackLogic.tracks.size():
+				for other_clip: ClipData in TrackLogic.track_clips[check_track].clips:
+					if other_clip.start < check_end and other_clip.end > check_start:
+						valid_placement = false
+						var required_base: int = other_clip.end - (copied_clip.start - copied_min_start)
+						if required_base > push_forward_to:
+							push_forward_to = required_base
+
+		if not valid_placement:
+			base_frame = push_forward_to
+
 	var clips_to_paste: Array[ClipData] = []
 	var existing_keys: Array[int] = clips.keys()
 
@@ -338,7 +362,8 @@ func paste_copied_clips() -> void:
 		new_clip.effects.transition_right = copied_clip.effects.transition_right.deep_copy() if copied_clip.effects.transition_right else null
 
 		var relative_start: int = copied_clip.start - copied_min_start
-		new_clip.start = target_frame + relative_start
+		new_clip.start = base_frame + relative_start
+		new_clip.track = maxi(0, copied_clip.track + track_offset)
 		new_clip.id = get_new_id(existing_keys)
 		existing_keys.append(new_clip.id)
 		clips_to_paste.append(new_clip)
@@ -352,6 +377,13 @@ func insert_clips(clips_to_insert: Array[ClipData], action_name: String, files_t
 	for file: FileData in files_to_insert:
 		InputManager.undo_redo.add_do_method(FileLogic._restore.bind(file))
 		InputManager.undo_redo.add_undo_method(FileLogic._delete.bind(file))
+
+	var current_track_size: int = TrackLogic.tracks.size()
+	for clip: ClipData in clips_to_insert:
+		for i: int in range(current_track_size, clip.track + 1):
+			InputManager.undo_redo.add_do_method(TrackLogic._add_track.bind(i))
+			InputManager.undo_redo.add_undo_method(TrackLogic._remove_track.bind(i))
+		current_track_size = maxi(current_track_size, clip.track + 1)
 
 	for clip: ClipData in clips_to_insert:
 		InputManager.undo_redo.add_do_method(_restore_clip.bind(clip))
