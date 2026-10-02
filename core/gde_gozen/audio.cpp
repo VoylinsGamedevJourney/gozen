@@ -43,7 +43,10 @@ PackedByteArray Audio::_get_audio(AVFormatContext*& format_ctx, AVStream*& strea
 
 	if (start_time > 0) {
 		int64_t seek_target = av_rescale_q(start_time * AV_TIME_BASE, AV_TIME_BASE_Q, stream->time_base);
-		av_seek_frame(format_ctx, stream->index, seek_target, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
+		if (av_seek_frame(format_ctx, -1, (int64_t)(start_time * AV_TIME_BASE),
+						  AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY) < 0) {
+			av_seek_frame(format_ctx, stream->index, seek_target, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
+		}
 		avcodec_flush_buffers(codec_ctx.get());
 	}
 
@@ -277,7 +280,7 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 	// Discard all non-audio streams.
 	for (int i = 0; i < format_ctx->nb_streams; i++) {
 		AVCodecParameters* av_codec_params = format_ctx->streams[i]->codecpar;
-		if (!avcodec_find_decoder(av_codec_params->codec_id) || av_codec_params->codec_type != AVMEDIA_TYPE_AUDIO) {
+		if (!avcodec_find_decoder(av_codec_params->codec_id)) {
 			if (i != stream_index)
 				format_ctx->streams[i]->discard = AVDISCARD_ALL;
 		}
@@ -644,7 +647,7 @@ Error Audio::open(String file_path, int stream_index) {
 	// Getting rid of all non-audio streams.
 	for (int i = 0; i < format_ctx_inst->nb_streams; i++) {
 		AVCodecParameters* av_codec_params = format_ctx_inst->streams[i]->codecpar;
-		if (!avcodec_find_decoder(av_codec_params->codec_id) || av_codec_params->codec_type != AVMEDIA_TYPE_AUDIO) {
+		if (!avcodec_find_decoder(av_codec_params->codec_id)) {
 			if (i != stream_index)
 				format_ctx_inst->streams[i]->discard = AVDISCARD_ALL;
 		}
@@ -750,7 +753,11 @@ PackedByteArray Audio::get_audio_data_chunk(double start_time, double duration) 
 
 	if (needs_seek) {
 		int64_t seek_target = av_rescale_q(fetch_start_time * AV_TIME_BASE, AV_TIME_BASE_Q, stream_inst->time_base);
-		av_seek_frame(format_ctx_inst.get(), stream_inst->index, seek_target, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
+		if (av_seek_frame(format_ctx_inst.get(), -1, (int64_t)(fetch_start_time * AV_TIME_BASE),
+						  AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY) < 0) {
+			av_seek_frame(format_ctx_inst.get(), stream_inst->index, seek_target,
+						  AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
+		}
 		avcodec_flush_buffers(codec_ctx_inst.get());
 		leftover_buffer_inst.clear();
 		last_returned_time = fetch_start_time;
