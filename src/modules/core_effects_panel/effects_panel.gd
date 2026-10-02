@@ -444,6 +444,7 @@ func _create_transition_style_ui(parent: Control, is_left: bool, transition: Eff
 			EffectsHandler.set_transition(active_clip, is_left, default_style_id))
 
 	hbox.name = "StyleLeft" if is_left else "StyleRight"
+	hbox.set_meta("style", current_style_id)
 	hbox.add_child(title_hbox)
 	hbox.add_child(option_button)
 	parent.add_child(hbox)
@@ -1286,8 +1287,7 @@ func _update_ui_values() -> void:
 		var style_hbox: HBoxContainer = transition_vbox.get_node_or_null(
 				"StyleLeft" if is_left else "StyleRight") as HBoxContainer
 		if style_hbox:
-			var option_button: OptionButton = style_hbox.get_child(1) as OptionButton
-			var current_ui_id: String = EffectsHandler.transitions[option_button.get_item_text(option_button.selected)]
+			var current_ui_id: String = style_hbox.get_meta("style", "")
 			var transition: Effect = active_clip.effects.transition_left if is_left else active_clip.effects.transition_right
 			var real_id: String = transition.id if transition else "fade"
 			if current_ui_id != real_id:
