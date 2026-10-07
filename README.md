@@ -32,8 +32,11 @@ The top left displays your media pool, listing your files by typne and alphabeti
 
 On the bottom you have your timeline with on the right your audio meter to check if your audio is clipping or not.
 
-## Installation
-Due to GoZen still being in alpha, there is no available build yet through each distro's package manager. The best way to download the most recent version is through the [Itch.io page](https://voylin.itch.io/gozen);.
+## Installation / Download
+GoZen is available on following platforms:
+- [Itch.io](https://voylin.itch.io/gozen);
+- [Steam](https://store.steampowered.com/app/4070440/GoZen/);
+- [Aur](https://aur.archlinux.org/packages/gozen);
 
 ### Building from source
 Before you start building from source you'll need to ensure you have following dependencies installed on your system (names can vary depending on the distro you're using):
