@@ -146,24 +146,40 @@ func install_module(path: String) -> void:
 	var module_name: String = filename
 	var module_desc: String = "Custom module"
 
+	var existing_dirs: Array[String] = []
+	if DirAccess.dir_exists_absolute(PATH_MODULES_LOCAL):
+		existing_dirs.assign(DirAccess.get_directories_at(PATH_MODULES_LOCAL))
+
 	if ProjectSettings.load_resource_pack(target_path):
+		var expected_dir: String = filename.get_basename()
+		var dirs_to_check: Array[String] = []
 		for module_dir: String in DirAccess.get_directories_at(PATH_MODULES_LOCAL):
 			if module_dir.begins_with("."): continue
+			if module_dir not in existing_dirs or module_dir == expected_dir:
+				dirs_to_check.append(module_dir)
+
+		for module_dir: String in dirs_to_check:
 			var module_tres: String = PATH_MODULES_LOCAL.path_join(module_dir).path_join("module.tres")
 
-			var already_loaded: bool = false
-			for loaded_mod: GoZenModule in loaded_gozen_modules:
-				if loaded_mod.resource_path == module_tres:
-					already_loaded = true
+			var already_loaded_mod: GoZenModule = null
+			var already_loaded_idx: int = -1
+			for i: int in loaded_gozen_modules.size():
+				if loaded_gozen_modules[i].resource_path == module_tres:
+					already_loaded_mod = loaded_gozen_modules[i]
+					already_loaded_idx = i
 					break
 
 			@warning_ignore_start("unsafe_property_access")
-			if not already_loaded and ResourceLoader.exists(module_tres):
-				var module: Resource = load(module_tres)
+			if ResourceLoader.exists(module_tres):
+				var module: Resource = ResourceLoader.load(module_tres, "", ResourceLoader.CACHE_MODE_REPLACE)
 				if module is GoZenModule:
 					module_name = module.name
 					module_desc = module.description
-					loaded_gozen_modules.append(module)
+
+					if already_loaded_mod != null:
+						loaded_gozen_modules[already_loaded_idx] = module
+					else:
+						loaded_gozen_modules.append(module)
 
 					# Register elements so they appear immediately
 					for module_theme: GoZenModuleTheme in module.custom_themes:
@@ -253,7 +269,6 @@ func _delete_transition(module_transition: GoZenModuleTransition) -> void:
 	EffectsHandler.transitions.erase(transition.nickname)
 	EffectsHandler.transition_instances.erase(transition.id)
 	EffectsHandler.shader_cache.erase(transition.shader_path)
-
 
 
 func set_module_enabled(filename: String, enabled: bool) -> void:
