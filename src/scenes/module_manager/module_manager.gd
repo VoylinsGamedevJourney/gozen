@@ -48,7 +48,12 @@ func _populate_tree() -> void:
 		item.set_editable(0, true)
 		item.set_metadata(0, filename)
 		item.set_text(1, data.get("description", "") as String)
-		item.add_button(2, load(Library.ICON_DELETE) as Icon, 0, false, "Delete Module")
+		var delete_icon: Texture2D = load(Library.ICON_DELETE) as Texture2D
+		var delete_image: Image = delete_icon.get_image()
+		if delete_image and not delete_image.is_empty():
+			delete_image.resize(20, 20, Image.INTERPOLATE_BILINEAR)
+			delete_icon = ImageTexture.create_from_image(delete_image)
+		item.add_button(2, delete_icon, 0, false, "Delete Module")
 
 
 func _on_item_edited() -> void:
