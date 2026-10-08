@@ -352,7 +352,7 @@ func _on_close() -> void:
 
 
 func check_unsaved_and_perform(callback: Callable) -> void:
-	if !unsaved_changes:
+	if !unsaved_changes or (data.files.is_empty() and data.clips.is_empty()):
 		callback.call()
 		return
 
