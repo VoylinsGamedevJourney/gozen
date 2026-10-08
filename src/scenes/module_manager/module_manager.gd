@@ -30,6 +30,17 @@ func _populate_tree() -> void:
 	var root: TreeItem = tree.create_item()
 
 	for module: GoZenModule in ModuleManager.loaded_gozen_modules:
+		var is_user_module: bool = false
+		var module_dir: String = module.resource_path.get_base_dir().get_file()
+		var module_name_normalized: String = module.name.to_lower().replace(" ", "_")
+		for filename: String in ModuleManager.loaded_modules.keys():
+			var base_filename: String = filename.get_basename()
+			if module_dir == base_filename or module_name_normalized == base_filename:
+				is_user_module = true
+				break
+		if is_user_module:
+			continue
+
 		var item: TreeItem = tree.create_item(root)
 		item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 		item.set_checked(0, true)
