@@ -438,7 +438,7 @@ func _on_start_render_button_pressed(draft: bool = false) -> void:
 
 		dialog.confirmed.connect(func() -> void:
 				await RenderManager.start_render(export_path, profile, threads, start_frame, end_frame, draft))
-		dialog.canceled.connect(dialog.queue_free)
+		dialog.canceled.connect(func() -> void: dialog.call_deferred("queue_free"))
 		dialog.popup_centered()
 	else:
 		await RenderManager.start_render(export_path, profile, threads, start_frame, end_frame, draft)

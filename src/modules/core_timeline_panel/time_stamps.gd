@@ -41,15 +41,19 @@ func _ready() -> void:
 	MarkerLogic.updated.connect(update_stamps.unbind(1))
 	MarkerLogic.removed.connect(update_stamps.unbind(1))
 
-	Timeline.zoom_changed.connect(queue_redraw.unbind(1))
-	Timeline.scroll_changed.connect(queue_redraw.unbind(1))
+	Timeline.zoom_changed.connect(update_stamps.unbind(1))
+	Timeline.scroll_changed.connect(update_stamps.unbind(1))
+
+	get_viewport().size_changed.connect(update_stamps)
 
 	_setup_marker_style_box()
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:   _gui_input_mouse_button(event as InputEventMouseButton)
-	elif event is InputEventMouseMotion: _gui_input_mouse_motion(event as InputEventMouseMotion)
+	if event is InputEventMouseButton:
+		_gui_input_mouse_button(event as InputEventMouseButton)
+	elif event is InputEventMouseMotion:
+		_gui_input_mouse_motion(event as InputEventMouseMotion)
 
 
 func _gui_input_mouse_button(event: InputEventMouseButton) -> void:
@@ -252,4 +256,5 @@ func _update_hovered_marker() -> void:
 
 
 func update_stamps() -> void:
+	# Helper function as called `queue_redraw` from a connect fails sometimes.
 	queue_redraw()

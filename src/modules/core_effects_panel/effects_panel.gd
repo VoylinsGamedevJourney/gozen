@@ -1803,10 +1803,10 @@ func _prompt_save_preset(is_section: bool, is_visual: bool, effect: Effect) -> v
 				file.close()
 			else:
 				printerr(HEADER, "Could not save preset to '%s'!" % path)
-			dialog.queue_free()
+			dialog.call_deferred("queue_free")
 
 	dialog.confirmed.connect(confirm_lambda)
-	dialog.canceled.connect(dialog.queue_free)
+	dialog.canceled.connect(func() -> void: dialog.call_deferred("queue_free"))
 	line_edit.text_submitted.connect(func(_text: String) -> void: confirm_lambda.call())
 
 	add_child(dialog)

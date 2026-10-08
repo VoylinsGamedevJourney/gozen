@@ -76,6 +76,23 @@ video=PackedStringArray("mpeg", "mp4", "mkv", "mlt", "ogv", "webm", "vp9", "av1"
 image=PackedStringArray("jpg", "jpeg", "png", "svg", "webp")
 pck=PackedStringArray("pck")
 
+[file_customization]
+
+folder_colors={
+"res://modules/core_effects/": "green",
+"res://modules/core_effects_panel/": "green",
+"res://modules/core_file_panel/": "green",
+"res://modules/core_markers_panel/": "green",
+"res://modules/core_render_options_panel/": "green",
+"res://modules/core_timeline_panel/": "green",
+"res://modules/core_view_panel/": "green",
+"res://modules/extra_effects/": "blue",
+"res://modules/extra_theme_dark/": "blue",
+"res://modules/extra_theme_light/": "blue",
+"res://modules/godot_themes/": "orange",
+"res://translations/": "gray"
+}
+
 [gui]
 
 theme/default_font_multichannel_signed_distance_field=true
