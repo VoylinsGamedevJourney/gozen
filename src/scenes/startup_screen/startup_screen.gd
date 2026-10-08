@@ -372,7 +372,8 @@ func _on_advanced_options_check_button_toggled(toggled_on: bool) -> void:
 
 func _on_new_project_option_button_item_selected(index: int) -> void:
 	var id: int = project_presets_option_button.get_item_id(index)
-	if id < 0 or id >= loaded_preset_profiles.size(): return
+	if id < 0 or id >= loaded_preset_profiles.size():
+		return
 
 
 	var profile: ProjectProfile = loaded_preset_profiles[id]
@@ -428,8 +429,7 @@ func _on_save_profile_preset_button_pressed() -> void:
 					project_presets_option_button.selected = i
 					_on_new_project_option_button_item_selected(i)
 					break
-
-		dialog.queue_free()
+		dialog.call_deferred("queue_free")
 
 	dialog.confirmed.connect(confirm_lambda)
 	line_edit.text_submitted.connect(func(_text: String) -> void:

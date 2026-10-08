@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="GoZenModuleTheme" format=3 uid="uid://b7ljted8y18kn"]
+
+[ext_resource type="Script" uid="uid://bc60ffhh1gpmq" path="res://scripts/classes/modules/gozen_module_theme.gd" id="1_bt650"]
+[ext_resource type="Theme" uid="uid://c3toqlrsrab0s" path="res://modules/godot_themes/godot_classic.tres" id="2_w6sm3"]
+
+[resource]
+script = ExtResource("1_bt650")
+theme = ExtResource("2_w6sm3")
+metadata/_custom_type_script = "uid://bc60ffhh1gpmq"

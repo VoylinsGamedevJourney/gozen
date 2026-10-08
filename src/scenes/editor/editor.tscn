@@ -19,7 +19,7 @@ workspace_buttons_hbox = NodePath("VBox/MenuBarHBox/WorkspaceButtonsHBox")
 [node name="VBox" type="VBoxContainer" parent="." unique_id=1299273465]
 layout_mode = 2
 layout_direction = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 3
 
 [node name="MenuBarHBox" type="HBoxContainer" parent="VBox" unique_id=1860760368]
 layout_mode = 2

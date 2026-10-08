@@ -479,7 +479,7 @@ func _on_create_new_workspace_confirmed(dialog: ConfirmationDialog, line_edit: L
 	var workspace_name: String = line_edit.text.strip_edges().capitalize()
 	if not workspace_name.is_empty() and not WorkspaceManager.available_workspaces.has(workspace_name):
 		WorkspaceManager.create_workspace(workspace_name)
-	dialog.queue_free()
+	dialog.call_deferred("queue_free")
 
 
 #--- Workspace functions ---

@@ -78,7 +78,7 @@ func _open_project_settings(settings_panel: SettingsPanel) -> void:
 
 func close(popup: int) -> void:
 	if _open_popups.has(popup):
-		_open_popups[popup].queue_free()
+		_open_popups[popup].call_deferred("queue_free")
 		if !_open_popups.erase(popup):
 			printerr("PopupManager: Could not erase popup '%s' from open_popups!" % popup)
 	get_viewport().set_input_as_handled()
@@ -87,7 +87,7 @@ func close(popup: int) -> void:
 
 func close_all() -> void:
 	for popup: int in _open_popups:
-		_open_popups[popup].queue_free()
+		_open_popups[popup].call_deferred("queue_free")
 	_open_popups.clear()
 	_check_background()
 
@@ -100,7 +100,6 @@ func get_popup(popup: int) -> Control:
 
 func create_file_dialog(title: String, mode: FileDialog.FileMode, filters: Array[String] = []) -> FileDialog:
 	var dialog: FileDialog = FileDialog.new()
-	dialog.force_native = true
 	dialog.use_native_dialog = true
 	dialog.title = title
 	dialog.access = FileDialog.ACCESS_FILESYSTEM
@@ -108,26 +107,24 @@ func create_file_dialog(title: String, mode: FileDialog.FileMode, filters: Array
 	if !filters.is_empty():
 		dialog.filters = filters
 
-	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.queue_free())
+	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.call_deferred("queue_free"))
 	return dialog
 
 
 func create_accept_dialog(title: String) -> AcceptDialog:
 	var dialog: AcceptDialog = AcceptDialog.new()
-	dialog.force_native = true
 	dialog.title = title
 
-	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.queue_free())
+	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.call_deferred("queue_free"))
 	return dialog
 
 
 func create_confirmation_dialog(title: String, text: String) -> ConfirmationDialog:
 	var dialog: ConfirmationDialog = ConfirmationDialog.new()
-	dialog.force_native = true
 	dialog.title = title
 	dialog.dialog_text = text
 
-	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.queue_free())
+	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.call_deferred("queue_free"))
 	_control.add_child(dialog)
 	return dialog
 

@@ -45,21 +45,39 @@ func _apply_modules() -> void:
 			var dict: Dictionary = loaded_modules[filename]
 			if dict.get("enabled", false):
 				var path: String = get_modules_global_path().path_join(filename)
-				if !FileAccess.file_exists(path): continue
+				if !FileAccess.file_exists(path):
+					continue
 				elif !ProjectSettings.load_resource_pack(path):
 					printerr("ModuleManager: Couldn't load resource at '%s'!" % path)
 
-	if !DirAccess.dir_exists_absolute(PATH_MODULES_LOCAL): return
+	if !DirAccess.dir_exists_absolute(PATH_MODULES_LOCAL):
+		return
 
 	for module_dir: String in DirAccess.get_directories_at(PATH_MODULES_LOCAL):
-		if module_dir.begins_with("."): continue
-		elif OS.has_feature("demo") and module_dir.begins_with("extra_"): continue
+		if module_dir.begins_with("."):
+			continue
+		elif OS.has_feature("demo") and module_dir.begins_with("extra_"):
+			continue
 
 		var module_tres: String = PATH_MODULES_LOCAL.path_join(module_dir).path_join("module.tres")
 		if ResourceLoader.exists(module_tres):
-			var res: Resource = load(module_tres)
-			if res is GoZenModule:
-				loaded_gozen_modules.append(res)
+			var module_resource: Resource = load(module_tres)
+			if module_resource is GoZenModule:
+				loaded_gozen_modules.append(module_resource)
+
+	if not OS.has_feature("demo"):
+		var config_changed: bool = false
+		for filename: String in loaded_modules.keys():
+			var data: Dictionary = loaded_modules[filename]
+			if data.get("enabled", false) and data.get("name") == filename:
+				for module: GoZenModule in loaded_gozen_modules:
+					if module.resource_path.get_base_dir().get_file() == filename.get_basename() or module.name.to_lower().replace(" ", "_") == filename.get_basename():
+						data["name"] = module.name
+						data["description"] = module.description
+						config_changed = true
+						break
+		if config_changed:
+			_save_config()
 
 
 func register_panels() -> void:
@@ -75,34 +93,46 @@ func register_effects() -> void:
 	for module: GoZenModule in loaded_gozen_modules:
 		for module_effect: GoZenModuleEffect in module.custom_effects:
 			if module_effect and module_effect.effect:
-				var effect: Effect = module_effect.effect
-				if !effect.shader_path.is_empty(): # Visual.
-					if not EffectsHandler.visual_effect_instances.has(effect.id):
-						EffectsHandler.visual_effects[effect.nickname] = effect.id
-						EffectsHandler.visual_effect_instances[effect.id] = effect
-						EffectsHandler.shader_cache[effect.shader_path] = load(effect.shader_path)
-				elif effect.audio_effect:
-					if not EffectsHandler.audio_effect_instances.has(effect.id):
-						EffectsHandler.audio_effects[effect.nickname] = effect.id
-						EffectsHandler.audio_effect_instances[effect.id] = effect
+				_register_effect(module_effect)
 		for module_transition: GoZenModuleTransition in module.custom_transitions:
 			if module_transition and module_transition.transition:
-				var transition: Effect = module_transition.transition
-				if not EffectsHandler.transition_instances.has(transition.id):
-					EffectsHandler.transitions[transition.nickname] = transition.id
-					EffectsHandler.transition_instances[transition.id] = transition
-					EffectsHandler.shader_cache[transition.shader_path] = load(transition.shader_path)
+				_register_transition(module_transition)
+
+
+func _register_effect(module_effect: GoZenModuleEffect) -> void:
+	var effect: Effect = module_effect.effect
+	if !effect.shader_path.is_empty(): # Visual.
+		if not EffectsHandler.visual_effect_instances.has(effect.id):
+			EffectsHandler.visual_effects[effect.nickname] = effect.id
+			EffectsHandler.visual_effect_instances[effect.id] = effect
+			EffectsHandler.shader_cache[effect.shader_path] = load(effect.shader_path)
+	elif effect.audio_effect:
+		if not EffectsHandler.audio_effect_instances.has(effect.id):
+			EffectsHandler.audio_effects[effect.nickname] = effect.id
+			EffectsHandler.audio_effect_instances[effect.id] = effect
+
+
+func _register_transition(module_transition: GoZenModuleTransition) -> void:
+	var transition: Effect = module_transition.transition
+	if not EffectsHandler.transition_instances.has(transition.id):
+		EffectsHandler.transitions[transition.nickname] = transition.id
+		EffectsHandler.transition_instances[transition.id] = transition
+		EffectsHandler.shader_cache[transition.shader_path] = load(transition.shader_path)
 
 
 func register_themes() -> void:
 	for module: GoZenModule in loaded_gozen_modules:
 		for module_theme: GoZenModuleTheme in module.custom_themes:
 			if module_theme and module_theme.theme:
-				var theme: Theme = module_theme.theme
-				var theme_name: String = theme.resource_name
-				if theme_name.is_empty():
-					theme_name = module.name
-				Settings.custom_themes[theme_name] = theme.resource_path
+				_register_theme(module_theme)
+
+
+func _register_theme(module_theme: GoZenModuleTheme) -> void:
+	var theme: Theme = module_theme.theme
+	var theme_name: String = theme.resource_name
+	if theme_name.is_empty():
+		theme_name = theme.resource_path.get_file().get_basename().capitalize()
+	Settings.custom_themes[theme_name] = theme.resource_path
 
 
 func install_module(path: String) -> void:
@@ -113,10 +143,52 @@ func install_module(path: String) -> void:
 		printerr("Failed to copy module to: ", target_path)
 		return
 
+	var module_name: String = filename
+	var module_desc: String = "Custom module"
+
+	if ProjectSettings.load_resource_pack(target_path):
+		for module_dir: String in DirAccess.get_directories_at(PATH_MODULES_LOCAL):
+			if module_dir.begins_with("."): continue
+			var module_tres: String = PATH_MODULES_LOCAL.path_join(module_dir).path_join("module.tres")
+
+			var already_loaded: bool = false
+			for loaded_mod: GoZenModule in loaded_gozen_modules:
+				if loaded_mod.resource_path == module_tres:
+					already_loaded = true
+					break
+
+			@warning_ignore_start("unsafe_property_access")
+			if not already_loaded and ResourceLoader.exists(module_tres):
+				var module: Resource = load(module_tres)
+				if module is GoZenModule:
+					module_name = module.name
+					module_desc = module.description
+					loaded_gozen_modules.append(module)
+
+					# Register elements so they appear immediately
+					for module_theme: GoZenModuleTheme in module.custom_themes:
+						if module_theme and module_theme.theme:
+							_register_theme(module_theme)
+
+					for module_effect: GoZenModuleEffect in module.custom_effects:
+						if module_effect and module_effect.effect:
+							_register_effect(module_effect)
+
+					for module_transition: GoZenModuleTransition in module.custom_transitions:
+						if module_transition and module_transition.transition:
+							_register_transition(module_transition)
+
+					for module_panel: GoZenModulePanel in module.custom_panels:
+						if !module_panel or !module_panel.scene: continue
+						var panel: Node = module_panel.scene.instantiate()
+						if panel is Control:
+							WorkspaceManager.register_panel(panel.name, panel as Control)
+			@warning_ignore_restore("unsafe_property_access")
+
 	loaded_modules[filename] = {
-		"enabled": true,
-		"name": filename,
-		"description": "Custom module" }
+			"enabled": true,
+			"name": module_name,
+			"description": module_desc }
 	_save_config()
 
 

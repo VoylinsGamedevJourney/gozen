@@ -369,14 +369,14 @@ func check_unsaved_and_perform(callback: Callable) -> void:
 	popup.confirmed.connect(func() -> void:
 			save()
 			callback.call()
-			popup.queue_free())
+			popup.call_deferred("queue_free"))
 	dont_save_button.pressed.connect(func() -> void:
 			callback.call()
-			popup.queue_free())
+			popup.call_deferred("queue_free"))
 	cancel_button.pressed.connect(func() -> void:
 			if Settings.get_auto_save() and auto_save_timer != null:
 				auto_save_timer.paused = false
-			popup.queue_free())
+			popup.call_deferred("queue_free"))
 
 	get_tree().root.add_child(popup)
 	popup.popup_centered()
