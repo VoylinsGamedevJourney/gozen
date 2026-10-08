@@ -193,13 +193,67 @@ func install_module(path: String) -> void:
 
 
 func delete_module(filename: String) -> void:
-	if loaded_modules.has(filename):
-		var target_path: String = get_modules_global_path().path_join(filename)
-		loaded_modules.erase(filename)
+	if !loaded_modules.has(filename):
+		return
 
-		if FileAccess.file_exists(target_path) and DirAccess.remove_absolute(target_path) != OK:
-			printerr("ModuleManager: Can't remove dir '%s'!" % target_path)
-		_save_config()
+	var target_path: String = get_modules_global_path().path_join(filename)
+	loaded_modules.erase(filename)
+
+	if FileAccess.file_exists(target_path) and DirAccess.remove_absolute(target_path) != OK:
+		printerr("ModuleManager: Can't remove dir '%s'!" % target_path)
+	_save_config()
+
+	var base_filename: String = filename.get_basename()
+	for i: int in range(loaded_gozen_modules.size() - 1, -1, -1):
+		var module: GoZenModule = loaded_gozen_modules[i]
+		var module_dir: String = module.resource_path.get_base_dir().get_file()
+		var module_name_normalized: String = module.name.to_lower().replace(" ", "_")
+		if module_dir != base_filename and module_name_normalized != base_filename:
+			continue
+
+		for module_theme: GoZenModuleTheme in module.custom_themes:
+			_delete_custom_theme(module_theme)
+
+		for module_effect: GoZenModuleEffect in module.custom_effects:
+			if module_effect and module_effect.effect:
+				_delete_effect(module_effect)
+
+		for module_transition: GoZenModuleTransition in module.custom_transitions:
+			if module_transition and module_transition.transition:
+				_delete_transition(module_transition)
+
+		loaded_gozen_modules.remove_at(i)
+		break
+
+
+func _delete_custom_theme(module_theme: GoZenModuleTheme) -> void:
+	if module_theme and module_theme.theme:
+		var theme: Theme = module_theme.theme
+		var theme_name: String = theme.resource_name
+		if theme_name.is_empty():
+			theme_name = theme.resource_path.get_file().get_basename().capitalize()
+		Settings.custom_themes.erase(theme_name)
+		if Settings.data.theme == theme.resource_path:
+			Settings.set_theme_path(Library.THEME_DEFAULT)
+
+
+func _delete_effect(module_effect: GoZenModuleEffect) -> void:
+	var effect: Effect = module_effect.effect
+	if not effect.shader_path.is_empty():
+		EffectsHandler.visual_effects.erase(effect.nickname)
+		EffectsHandler.visual_effect_instances.erase(effect.id)
+		EffectsHandler.shader_cache.erase(effect.shader_path)
+	elif effect.audio_effect:
+		EffectsHandler.audio_effects.erase(effect.nickname)
+		EffectsHandler.audio_effect_instances.erase(effect.id)
+
+
+func _delete_transition(module_transition: GoZenModuleTransition) -> void:
+	var transition: Effect = module_transition.transition
+	EffectsHandler.transitions.erase(transition.nickname)
+	EffectsHandler.transition_instances.erase(transition.id)
+	EffectsHandler.shader_cache.erase(transition.shader_path)
+
 
 
 func set_module_enabled(filename: String, enabled: bool) -> void:
