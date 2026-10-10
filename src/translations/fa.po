@@ -89,6 +89,24 @@ msgid "Video codec"
 msgstr "کودک ویدیو"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid ""
+"Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
+"highest quality setting is 15.\n"
+"Default is set to 18 Used for adjusting bitrate which\n"
+"has an impact on quality and size. Value 0 gives the best,\n"
+"51 worst quality, 18 not really noticable."
+msgstr ""
+"برای تنظیم CRF (Constant Rate Factor) استفاده میشود، کمترین مقدار کیفیت 50، "
+"و بیشترین مقدار کیفیت 15 است. مقدار پیش فرض 18 تنظیم شده. این گزینه برای "
+"تنظیم نرخ بیت استفاده میشود و روی کیفیت و حجم فایل اثر دارد. مقدار 0 بهترین "
+"کیفیت، 51 بدترین کیفیت و 18 تقریبأ محسوس نیست."
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Quality"
+msgstr "کیفیت"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
 msgid ""
 "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
 "highest quality setting is 15. Default is set to 18 Used for adjusting "
@@ -99,10 +117,6 @@ msgstr ""
 "و بیشترین مقدار کیفیت 15 است. مقدار پیش فرض 18 تنظیم شده. این گزینه برای "
 "تنظیم نرخ بیت استفاده میشود و روی کیفیت و حجم فایل اثر دارد. مقدار 0 بهترین "
 "کیفیت، 51 بدترین کیفیت و 18 تقریبأ محسوس نیست."
-
-#: modules/core_render_options_panel/render_options_panel.tscn
-msgid "Quality"
-msgstr "کیفیت"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid ""
@@ -117,6 +131,15 @@ msgid "Speed"
 msgstr "سرعت"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
+#, fuzzy
+msgid "Advanced video settings"
+msgstr "تنظیمات رندر ویدیو"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
+msgid "Gop size"
+msgstr "اندازه Gop"
+
+#: modules/core_render_options_panel/render_options_panel.tscn
 msgid ""
 "Group Of Pictures. Higher value is better for compression compared to a "
 "lower value. But how higher the value is, the less precise it will get for "
@@ -129,8 +152,12 @@ msgstr ""
 "را برای ویرایش استفاده کنید، مقدار را پایین تنظیم کنید."
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-msgid "Gop size"
-msgstr "اندازه Gop"
+msgid ""
+"B-frames (Bi-directional predictive frames) improve compression and visual "
+"quality by referencing both past and future frames. Higher values reduce "
+"file size but increase encoding time and player decoding requirements. "
+"Values between 2 and 4 are generally recommended."
+msgstr ""
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "B frames"
@@ -165,48 +192,39 @@ msgid "Render region"
 msgstr "بخش رندر"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-msgid "Create a low quality draft version of your video."
-msgstr "یک نسخه پیش نویس با کیفیت پایین از ویدیو ایجاد کنید."
-
-#: modules/core_render_options_panel/render_options_panel.tscn
-msgid "Draft"
-msgstr "پیش نویس"
-
-#: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Start render"
 msgstr "شروع رندر"
 
-#: modules/core_render_options_panel/render_options_panel.gd:81
+#: modules/core_render_options_panel/render_options_panel.gd:91
 msgid "Custom render profiles"
 msgstr "نمایه های رندر سفارشی"
 
-#: modules/core_render_options_panel/render_options_panel.gd:178
-#: scenes/replace_audio_popup/replace_audio_popup.gd:113
-msgid "None"
-msgstr "هیچ کدام"
-
-#: modules/core_render_options_panel/render_options_panel.gd:180
+#: modules/core_render_options_panel/render_options_panel.gd:213
 msgid "Stereo"
 msgstr "استریو"
 
-#: modules/core_render_options_panel/render_options_panel.gd:181
+#: modules/core_render_options_panel/render_options_panel.gd:214
 msgid "Mono"
 msgstr "تک کاناله"
 
-#: modules/core_render_options_panel/render_options_panel.gd:278
+#: modules/core_render_options_panel/render_options_panel.gd:313
 msgid "Select export path"
 msgstr "انتخاب مسیر خروجی"
 
-#: modules/core_render_options_panel/render_options_panel.gd:388
+#: modules/core_render_options_panel/render_options_panel.gd:436
 msgid "Overwrite file?"
 msgstr "فایل بازنویسی شود؟"
 
-#: modules/core_render_options_panel/render_options_panel.gd:389
+#: modules/core_render_options_panel/render_options_panel.gd:437
 msgid ""
 "A file already exists at the chosen export path. Do you want to overwrite it?"
 msgstr ""
 "در مسیر خروجی انتخاب شده از قبل فایلی وجود دارد. آیا می خواهید آن را "
 "بازنویسی کنید؟"
+
+#: modules/core_render_options_panel/render_options_panel.gd:522
+msgid "Draft"
+msgstr "پیش نویس"
 
 #: modules/core_file_panel/file_panel.tscn
 msgid "Search files ..."
@@ -224,194 +242,205 @@ msgstr "افزودن متن"
 msgid "Add color"
 msgstr "افزودن رنگ"
 
-#: modules/core_file_panel/file_panel.gd:107
+#: modules/core_file_panel/file_panel.gd:113
+#: modules/core_file_panel/file_panel.gd:179
 msgid "Add files ..."
 msgstr "افزودن فایل ها ..."
 
-#: modules/core_file_panel/file_panel.gd:129
+#: modules/core_file_panel/file_panel.gd:136
 msgid "Rename"
 msgstr "تغییر نام"
 
-#: modules/core_file_panel/file_panel.gd:130
+#: modules/core_file_panel/file_panel.gd:137
 msgid "Reload"
 msgstr "بارگذاری مجدد"
 
-#: modules/core_file_panel/file_panel.gd:131 scenes/editor/editor.gd:508
+#: modules/core_file_panel/file_panel.gd:138 scenes/editor/editor.gd:534
 msgid "Delete"
 msgstr "حذف"
 
-#: modules/core_file_panel/file_panel.gd:135
+#: modules/core_file_panel/file_panel.gd:142
 msgid "Image options"
 msgstr "گزینه های تصویر"
 
-#: modules/core_file_panel/file_panel.gd:136
+#: modules/core_file_panel/file_panel.gd:143
 msgid "Save image as ..."
 msgstr "ذخیره تصویر به عنوان ..."
 
-#: modules/core_file_panel/file_panel.gd:138
-#: modules/core_timeline_panel/timeline_panel.gd:895
+#: modules/core_file_panel/file_panel.gd:145
+#: modules/core_timeline_panel/timeline_panel.gd:943
 msgid "Video options"
 msgstr "گزینه های ویدیو"
 
-#: modules/core_file_panel/file_panel.gd:142
+#: modules/core_file_panel/file_panel.gd:149
 msgid "Create proxy"
 msgstr "ساخت پروکسی"
 
-#: modules/core_file_panel/file_panel.gd:144
+#: modules/core_file_panel/file_panel.gd:151
 msgid "Re-create proxy"
 msgstr "بازسازی پروکسی"
 
-#: modules/core_file_panel/file_panel.gd:145
+#: modules/core_file_panel/file_panel.gd:152
 msgid "Remove proxy"
 msgstr "حذف پروکسی"
 
-#: modules/core_file_panel/file_panel.gd:147
+#: modules/core_file_panel/file_panel.gd:154
 msgid "Replace audio"
 msgstr "جایگزینی صدا"
 
-#: modules/core_file_panel/file_panel.gd:148
+#: modules/core_file_panel/file_panel.gd:155
 msgid "Extract audio to file ..."
 msgstr "استخراج صدا در قالب فایل ..."
 
-#: modules/core_file_panel/file_panel.gd:150
+#: modules/core_file_panel/file_panel.gd:157
 msgid "Text options"
 msgstr "گزینه های متن"
 
-#: modules/core_file_panel/file_panel.gd:151
+#: modules/core_file_panel/file_panel.gd:158
 msgid "Duplicate"
 msgstr "تکثیر"
 
-#: modules/core_file_panel/file_panel.gd:153
+#: modules/core_file_panel/file_panel.gd:160
+#, fuzzy
+msgid "Extra"
+msgstr "امکانات جانبی"
+
+#: modules/core_file_panel/file_panel.gd:161
+msgid "File Info"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:163
 msgid "Folder options"
 msgstr "گزینه های پوشه"
 
-#: modules/core_file_panel/file_panel.gd:155
+#: modules/core_file_panel/file_panel.gd:165
+#: scenes/startup_screen/startup_screen.gd:253
 msgid "Open in file manager"
 msgstr "باز کردن در مدیریت فایل"
 
-#: modules/core_file_panel/file_panel.gd:156
+#: modules/core_file_panel/file_panel.gd:166
 msgid "Copy file path"
 msgstr "کپی مسیر فایل"
 
-#: modules/core_file_panel/file_panel.gd:157
-#: modules/core_file_panel/file_panel.gd:160
-#: modules/core_file_panel/file_panel.gd:563
+#: modules/core_file_panel/file_panel.gd:167
+#: modules/core_file_panel/file_panel.gd:185
+#: modules/core_file_panel/file_panel.gd:597
 msgid "Create folder"
 msgstr "ایجاد پوشه"
 
-#: modules/core_file_panel/file_panel.gd:163
+#: modules/core_file_panel/file_panel.gd:188
 msgid "Rename folder"
 msgstr "تغییر نام پوشه"
 
-#: modules/core_file_panel/file_panel.gd:164
+#: modules/core_file_panel/file_panel.gd:189
 msgid "Delete folder"
 msgstr "حذف پوشه"
 
-#: modules/core_file_panel/file_panel.gd:203
+#: modules/core_file_panel/file_panel.gd:229
 #: scenes/rename_file/rename_file.tscn
 msgid "Rename file"
 msgstr "تغییر نام فایل"
 
-#: modules/core_file_panel/file_panel.gd:208
-#: modules/core_file_panel/file_panel.gd:568
+#: modules/core_file_panel/file_panel.gd:234
+#: modules/core_file_panel/file_panel.gd:602
 msgid "Folder name"
 msgstr "نام پوشه"
 
-#: modules/core_file_panel/file_panel.gd:261
+#: modules/core_file_panel/file_panel.gd:287
 msgid "Save image to file"
 msgstr "ذخیره تصویر در فایل"
 
-#: modules/core_file_panel/file_panel.gd:274
+#: modules/core_file_panel/file_panel.gd:300
 msgid "Save video audio to WAV"
 msgstr "ذخیره صدای ویدیو به صورت WAV"
 
-#: modules/core_file_panel/file_panel.gd:401
+#: modules/core_file_panel/file_panel.gd:435
 msgid "(Loading thumbnail...)"
 msgstr "(بارگذاری تامبنیل...)"
 
 #: modules/core_markers_panel/markers_panel.tscn
-#: scenes/settings_menu/settings_menu.gd:147
-#: scenes/settings_menu/settings_menu.gd:339
+#: scenes/settings_menu/settings_menu.gd:192
+#: scenes/settings_menu/settings_menu.gd:385
 msgid "Markers"
 msgstr "نشانگر ها"
 
-#: modules/core_timeline_panel/timeline_panel.gd:154
+#: modules/core_timeline_panel/timeline_panel.gd:164
 msgid "Duplication failed"
 msgstr "تکثیر ناموفق بود"
 
-#: modules/core_timeline_panel/timeline_panel.gd:155
+#: modules/core_timeline_panel/timeline_panel.gd:165
 msgid ""
 "Could not duplicate %d clip(s) because there was not enough empty space."
 msgstr "تکثیر کلیپ(های) %d به دلیل کمبود فضای خالی ناموفق بود."
 
-#: modules/core_timeline_panel/timeline_panel.gd:266
-#: modules/core_timeline_panel/timeline_panel.gd:271
+#: modules/core_timeline_panel/timeline_panel.gd:298
+#: modules/core_timeline_panel/timeline_panel.gd:303
 msgid "Track options"
 msgstr "گزینه های ترک"
 
-#: modules/core_timeline_panel/timeline_panel.gd:270
+#: modules/core_timeline_panel/timeline_panel.gd:302
 msgid "Remove empty space"
 msgstr "حذف فضای خالی"
 
-#: modules/core_timeline_panel/timeline_panel.gd:275
+#: modules/core_timeline_panel/timeline_panel.gd:307
 msgid "Add track"
 msgstr "افزودن ترک"
 
-#: modules/core_timeline_panel/timeline_panel.gd:277
+#: modules/core_timeline_panel/timeline_panel.gd:309
 msgid "Remove track"
 msgstr "حذف ترک"
 
-#: modules/core_timeline_panel/timeline_panel.gd:281
+#: modules/core_timeline_panel/timeline_panel.gd:313
 #, fuzzy
 msgid "Hide track"
 msgstr "افزودن ترک"
 
-#: modules/core_timeline_panel/timeline_panel.gd:284
+#: modules/core_timeline_panel/timeline_panel.gd:316
 #: modules/core_timeline_panel/track_controls.gd:85
 msgid "Mute track"
 msgstr "بی صدا کردن ترک"
 
-#: modules/core_timeline_panel/timeline_panel.gd:288
+#: modules/core_timeline_panel/timeline_panel.gd:320
 #, fuzzy
 msgid "Lock track"
 msgstr "حذف ترک"
 
-#: modules/core_timeline_panel/timeline_panel.gd:874
+#: modules/core_timeline_panel/timeline_panel.gd:922
 msgid "Delete clip"
 msgstr "حذف کلیپ"
 
-#: modules/core_timeline_panel/timeline_panel.gd:875
+#: modules/core_timeline_panel/timeline_panel.gd:923
 msgid "Split clip"
 msgstr "تقسیم کلیپ"
 
-#: modules/core_timeline_panel/timeline_panel.gd:879
+#: modules/core_timeline_panel/timeline_panel.gd:927
 #, fuzzy
 msgid "Hide clip"
 msgstr "تقسیم کلیپ"
 
-#: modules/core_timeline_panel/timeline_panel.gd:882
+#: modules/core_timeline_panel/timeline_panel.gd:930
 #, fuzzy
 msgid "Mute clip"
 msgstr "حذف کلیپ"
 
-#: modules/core_timeline_panel/timeline_panel.gd:886
-#: modules/core_timeline_panel/timeline_panel.gd:962
+#: modules/core_timeline_panel/timeline_panel.gd:934
+#: modules/core_timeline_panel/timeline_panel.gd:1010
 msgid "Change speed"
 msgstr "تغییر سرعت"
 
-#: modules/core_timeline_panel/timeline_panel.gd:888
+#: modules/core_timeline_panel/timeline_panel.gd:936
 msgid "Reset speed"
 msgstr "بازنشانی سرعت"
 
-#: modules/core_timeline_panel/timeline_panel.gd:898
+#: modules/core_timeline_panel/timeline_panel.gd:946
 msgid "Clip replace audio"
 msgstr "جایگزینی صدای کلیپ"
 
-#: modules/core_timeline_panel/timeline_panel.gd:900
+#: modules/core_timeline_panel/timeline_panel.gd:948
 msgid "Auto-cut silence"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:912
+#: modules/core_timeline_panel/timeline_panel.gd:960
 msgid "Select Audio Track"
 msgstr "انتخاب ترک صدا"
 
@@ -463,158 +492,159 @@ msgstr "ترانزیشن راست"
 msgid "Style"
 msgstr "حالت"
 
-#: modules/core_effects_panel/effects_panel.gd:527
+#: modules/core_effects_panel/effects_panel.gd:528
 msgid "Audio Track"
 msgstr "ترک صدا"
 
-#: modules/core_effects_panel/effects_panel.gd:616
+#: modules/core_effects_panel/effects_panel.gd:617
 #, fuzzy
 msgid "Presets & Options."
 msgstr "پیش تنظیم ها و گزینه ها"
 
-#: modules/core_effects_panel/effects_panel.gd:621
-#: modules/core_effects_panel/effects_panel.gd:641
+#: modules/core_effects_panel/effects_panel.gd:622
+#: modules/core_effects_panel/effects_panel.gd:642
 #, fuzzy
 msgid "Keyframe all parameters."
 msgstr "بازنشانی پارامتر"
 
-#: modules/core_effects_panel/effects_panel.gd:654
+#: modules/core_effects_panel/effects_panel.gd:655
 #, fuzzy
 msgid "Reset to default."
 msgstr "بازنشانی به پیش فرض"
 
-#: modules/core_effects_panel/effects_panel.gd:723
+#: modules/core_effects_panel/effects_panel.gd:729
 msgid "Previous keyframe."
 msgstr ""
 
-#: modules/core_effects_panel/effects_panel.gd:732
+#: modules/core_effects_panel/effects_panel.gd:738
 #, fuzzy
 msgid "Next keyframe."
 msgstr "فریم های کلیدی"
 
-#: modules/core_effects_panel/effects_panel.gd:954
-#: modules/core_effects_panel/effects_panel.gd:1685
+#: modules/core_effects_panel/effects_panel.gd:992
+#: modules/core_effects_panel/effects_panel.gd:1720
 msgid "Default"
 msgstr "پیش فرض"
 
-#: modules/core_effects_panel/effects_panel.gd:969
+#: modules/core_effects_panel/effects_panel.gd:1007
 msgid "Text ..."
 msgstr "متن ..."
 
-#: modules/core_effects_panel/effects_panel.gd:991
+#: modules/core_effects_panel/effects_panel.gd:1029
 msgid "Left"
 msgstr "چپ"
 
-#: modules/core_effects_panel/effects_panel.gd:992
-#: modules/core_effects_panel/effects_panel.gd:996
+#: modules/core_effects_panel/effects_panel.gd:1030
+#: modules/core_effects_panel/effects_panel.gd:1034
 msgid "Center"
 msgstr "وسط"
 
-#: modules/core_effects_panel/effects_panel.gd:993
+#: modules/core_effects_panel/effects_panel.gd:1031
 msgid "Right"
 msgstr "راست"
 
-#: modules/core_effects_panel/effects_panel.gd:995
+#: modules/core_effects_panel/effects_panel.gd:1033
 msgid "Top"
 msgstr "بالا"
 
-#: modules/core_effects_panel/effects_panel.gd:997
+#: modules/core_effects_panel/effects_panel.gd:1035
 msgid "Bottom"
 msgstr "پایین"
 
-#: modules/core_effects_panel/effects_panel.gd:999
+#: modules/core_effects_panel/effects_panel.gd:1037
 msgid "Mix (Normal)"
 msgstr "ترکیب (عادی)"
 
-#: modules/core_effects_panel/effects_panel.gd:1000
+#: modules/core_effects_panel/effects_panel.gd:1038
 msgid "Add"
 msgstr "افزودن"
 
-#: modules/core_effects_panel/effects_panel.gd:1001
+#: modules/core_effects_panel/effects_panel.gd:1039
 msgid "Subtract"
 msgstr "کم کردن"
 
-#: modules/core_effects_panel/effects_panel.gd:1002
+#: modules/core_effects_panel/effects_panel.gd:1040
 msgid "Multiply"
 msgstr "ضرب"
 
-#: modules/core_effects_panel/effects_panel.gd:1003
+#: modules/core_effects_panel/effects_panel.gd:1041
 msgid "Premultiplied Alpha"
 msgstr "آلفای پیش ضرب"
 
-#: modules/core_effects_panel/effects_panel.gd:1005
+#: modules/core_effects_panel/effects_panel.gd:1043
 msgid "Thin"
 msgstr "فوق نازک"
 
-#: modules/core_effects_panel/effects_panel.gd:1006
+#: modules/core_effects_panel/effects_panel.gd:1044
 msgid "Extra Light"
 msgstr "بسیار نازک"
 
-#: modules/core_effects_panel/effects_panel.gd:1007
+#: modules/core_effects_panel/effects_panel.gd:1045
 msgid "Light"
 msgstr "نازک"
 
-#: modules/core_effects_panel/effects_panel.gd:1008
+#: modules/core_effects_panel/effects_panel.gd:1046
 msgid "Regular"
 msgstr "معمولی"
 
-#: modules/core_effects_panel/effects_panel.gd:1009
+#: modules/core_effects_panel/effects_panel.gd:1047
 msgid "Medium"
 msgstr "متوسط"
 
-#: modules/core_effects_panel/effects_panel.gd:1010
+#: modules/core_effects_panel/effects_panel.gd:1048
 msgid "Semi Bold"
 msgstr "نیمه پررنگ"
 
-#: modules/core_effects_panel/effects_panel.gd:1011
+#: modules/core_effects_panel/effects_panel.gd:1049
 msgid "Bold"
 msgstr "پررنگ"
 
-#: modules/core_effects_panel/effects_panel.gd:1012
+#: modules/core_effects_panel/effects_panel.gd:1050
 msgid "Extra Bold"
 msgstr "بسیار پررنگ"
 
-#: modules/core_effects_panel/effects_panel.gd:1013
+#: modules/core_effects_panel/effects_panel.gd:1051
 msgid "Black"
 msgstr "فوق پررنگ"
 
-#: modules/core_effects_panel/effects_panel.gd:1174
+#: modules/core_effects_panel/effects_panel.gd:1212
 #, fuzzy
 msgid "Link X and Y."
 msgstr "پیوند X و Y"
 
-#: modules/core_effects_panel/effects_panel.gd:1478
+#: modules/core_effects_panel/effects_panel.gd:1515
 #, fuzzy
 msgid "Add effects."
 msgstr "افزودن افکت"
 
-#: modules/core_effects_panel/effects_panel.gd:1626
+#: modules/core_effects_panel/effects_panel.gd:1661
 msgid "Presets"
 msgstr "پیش تنظیم ها"
 
-#: modules/core_effects_panel/effects_panel.gd:1644
+#: modules/core_effects_panel/effects_panel.gd:1679
 msgid "Reset effect"
 msgstr "بازنشانی افکت"
 
-#: modules/core_effects_panel/effects_panel.gd:1656
+#: modules/core_effects_panel/effects_panel.gd:1691
 msgid "Delete effect"
 msgstr "حذف افکت"
 
-#: modules/core_effects_panel/effects_panel.gd:1669
+#: modules/core_effects_panel/effects_panel.gd:1704
 msgid "Save as preset..."
 msgstr "ذخیره به عنوان پیش تنظیم..."
 
-#: modules/core_effects_panel/effects_panel.gd:1738
-#: scenes/startup_screen/startup_screen.gd:403
+#: modules/core_effects_panel/effects_panel.gd:1773
+#: scenes/startup_screen/startup_screen.gd:505
 msgid "Save preset"
 msgstr "ذخیره پیش تنظیم"
 
-#: modules/core_effects_panel/effects_panel.gd:1739
-#: scenes/startup_screen/startup_screen.gd:405
+#: modules/core_effects_panel/effects_panel.gd:1774
+#: scenes/startup_screen/startup_screen.gd:507
 msgid "Preset name"
 msgstr "نام پیش تنظیم"
 
 #: modules/core_effects_panel/effects_panel.tscn
+#: scenes/file_info/file_info.gd:53
 #, fuzzy
 msgid "Text"
 msgstr "متن ..."
@@ -624,7 +654,7 @@ msgstr "متن ..."
 msgid "Module"
 msgstr "ماژول ها"
 
-#: modules/core_effects_panel/effects_panel.tscn
+#: modules/core_effects_panel/effects_panel.tscn scenes/welcome/welcome.tscn
 msgid "Transitions"
 msgstr "ترانزیشن ها"
 
@@ -636,135 +666,632 @@ msgstr "افکت های تصویری"
 msgid "Audio effects"
 msgstr "افکت های صوتی"
 
-#: scenes/editor/editor.gd:234 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:260 scenes/startup_screen/startup_screen.tscn
 #: scripts/autoloads/project.gd:52
 msgid "New project"
 msgstr "پروژه جدید"
 
-#: scenes/editor/editor.gd:236
+#: scenes/editor/editor.gd:262
 msgid "Save project"
 msgstr "ذخیره پروژه"
 
-#: scenes/editor/editor.gd:237 scripts/autoloads/project.gd:105
+#: scenes/editor/editor.gd:263 scripts/autoloads/project.gd:123
 msgid "Save project as ..."
 msgstr "ذخیره پروژه به عنوان ..."
 
-#: scenes/editor/editor.gd:239
+#: scenes/editor/editor.gd:265
 msgid "Archive project ..."
 msgstr "بایگانی پروژه ..."
 
-#: scenes/editor/editor.gd:241 scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:275 scripts/autoloads/project.gd:272
+#: scenes/editor/editor.gd:267 scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:376 scripts/autoloads/project.gd:290
 msgid "Open project"
 msgstr "باز کردن پروژه"
 
-#: scenes/editor/editor.gd:246 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:272 scenes/startup_screen/startup_screen.tscn
 msgid "Recent projects"
 msgstr "پروژه های اخیر"
 
-#: scenes/editor/editor.gd:250
+#: scenes/editor/editor.gd:276
 msgid "Splash screen"
 msgstr ""
 
-#: scenes/editor/editor.gd:252 scenes/settings_menu/settings_menu.gd:403
+#: scenes/editor/editor.gd:277
+msgid "Welcome screen"
+msgstr ""
+
+#: scenes/editor/editor.gd:279 scenes/settings_menu/settings_menu.gd:114
 msgid "Project settings"
 msgstr "تنظیمات پروژه"
 
-#: scenes/editor/editor.gd:253
+#: scenes/editor/editor.gd:280
 msgid "Quit"
 msgstr "خروج"
 
-#: scenes/editor/editor.gd:318
+#: scenes/editor/editor.gd:344
 msgid "Undo"
 msgstr "واگردانی"
 
-#: scenes/editor/editor.gd:319
+#: scenes/editor/editor.gd:345
 msgid "Redo"
 msgstr "بازانجام"
 
-#: scenes/editor/editor.gd:338
+#: scenes/editor/editor.gd:364
 msgid "Save workspace"
 msgstr "ذخیره فضای کاری"
 
-#: scenes/editor/editor.gd:339 scenes/editor/editor.gd:443
+#: scenes/editor/editor.gd:365 scenes/editor/editor.gd:469
 msgid "New workspace"
 msgstr "فضای کاری جدید"
 
-#: scenes/editor/editor.gd:341 scenes/editor/editor.gd:359
+#: scenes/editor/editor.gd:367 scenes/editor/editor.gd:385
 msgid "Show panel titles"
 msgstr "نمایش عنوان پنل ها"
 
-#: scenes/editor/editor.gd:342
+#: scenes/editor/editor.gd:368
 msgid "Panels"
 msgstr "پنل ها"
 
-#: scenes/editor/editor.gd:357
+#: scenes/editor/editor.gd:383
 msgid "Hide panel titles"
 msgstr "مخفی کردن عنوان پنل ها"
 
-#: scenes/editor/editor.gd:392 scenes/settings_menu/settings_menu.gd:140
-#: scenes/settings_menu/settings_menu.tscn
-#: scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:418 scenes/startup_screen/startup_screen.tscn
 msgid "Editor settings"
 msgstr "تنظیمات ویرایشگر"
 
-#: scenes/editor/editor.gd:395
+#: scenes/editor/editor.gd:421
 msgid "Module manager"
 msgstr "مدیریت ماژول ها"
 
-#: scenes/editor/editor.gd:397
+#: scenes/editor/editor.gd:423
 msgid "Command bar"
 msgstr "نوار دستورات"
 
-#: scenes/editor/editor.gd:418
+#: scenes/editor/editor.gd:444
 msgid "Report bug"
 msgstr "گزارش مشکل"
 
-#: scenes/editor/editor.gd:419 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:445 scenes/welcome/welcome.tscn
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
 msgstr "راهنمای کاربر"
 
-#: scenes/editor/editor.gd:420 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:446 scenes/startup_screen/startup_screen.tscn
 msgid "Tutorials"
 msgstr "آموزش ها"
 
-#: scenes/editor/editor.gd:421 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:447 scenes/welcome/welcome.tscn
+#: scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Discord"
 msgstr "Discord"
 
-#: scenes/editor/editor.gd:423 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:449 scenes/welcome/welcome.tscn
+#: scenes/about_gozen/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr "وب سایت"
 
-#: scenes/editor/editor.gd:424 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:450 scenes/welcome/welcome.tscn
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Support GoZen"
 msgstr "حمایت از GoZen"
 
-#: scenes/editor/editor.gd:425 scenes/about_gozen/about_gozen.tscn
+#: scenes/editor/editor.gd:451 scenes/about_gozen/about_gozen.tscn
 msgid "About GoZen"
 msgstr "درباره GoZen"
 
-#: scenes/editor/editor.gd:445
+#: scenes/editor/editor.gd:471
 msgid "Workspace name"
 msgstr "نام فضای کاری"
 
-#: scenes/editor/editor.gd:502
+#: scenes/editor/editor.gd:528
 msgid "Move Left"
 msgstr "حرکت به چپ"
 
-#: scenes/editor/editor.gd:505
+#: scenes/editor/editor.gd:531
 msgid "Move Right"
 msgstr "حرکت به راست"
 
-#: scenes/editor/editor.gd:554
+#: scenes/editor/editor.gd:580
 msgid "Delete Workspace"
 msgstr "حذف فضای کاری"
 
-#: scenes/editor/editor.gd:555
+#: scenes/editor/editor.gd:581
 msgid "Are you sure you want to delete the workspace '%s'?"
 msgstr "آیا از حذف فضای کاری '%s' مطمئنید؟"
+
+#: scenes/welcome/welcome.tscn
+msgid "Welcome"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Basics"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Editing"
+msgstr "تنظیمات ویرایشگر"
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Effects"
+msgstr "افزودن افکت"
+
+#: scenes/welcome/welcome.tscn scripts/autoloads/render_manager.gd:182
+#: scripts/autoloads/render_manager.gd:189
+msgid "Rendering"
+msgstr "در حال رندر"
+
+#: scenes/welcome/welcome.tscn
+msgid "Modules"
+msgstr "ماژول ها"
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Extra's"
+msgstr "امکانات جانبی"
+
+#: scenes/welcome/welcome.tscn scenes/module_manager/module_manager.tscn
+msgid "Close"
+msgstr "بستن"
+
+#: scenes/welcome/welcome.tscn
+msgid "WelcomeVBox"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Welcome to GoZen!"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Thank you for using GoZen and giving this video editor a try. GoZen is a "
+"minimalist, modern, open-source, customizable, and modular video editor for "
+"beginners and semi-professionals designed to make editing simple, fast, and "
+"stress-free."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"GoZen's not trying to compete with bigger video editors, our goal is to "
+"provide a strong basic video editor with everything you need and nothing you "
+"don't. Use the buttons on the left of the screen to navigate the "
+"introduction to using this video editor."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:212
+msgid "Language"
+msgstr "زبان"
+
+#: scenes/welcome/welcome.tscn
+msgid "Theme"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "YouTube tutorials"
+msgstr "آموزش ها"
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Source Code"
+msgstr "کد منبع"
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Support GoZen on Ko-fi!"
+msgstr "حمایت از GoZen"
+
+#: scenes/welcome/welcome.tscn
+msgid "BasicsVBox"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Adding files"
+msgstr "افزودن فایل ها"
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"You can add files by dragging them from your file manager into the editor. "
+"Right clicking the file panel in an empty space or folder will also give the "
+"option to add files. Besides that, on top of the file panel there's a button "
+"which you can press to add files."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "The timeline"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"The timeline in GoZen is quite different from other video editors, as in "
+"audio and visual clips can be put on the same tracks. This keeps the "
+"timeline more compact and gives your more freedom to place your clips "
+"wherever you want."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Some people do prefer to have their video's split into 2 clips, separating "
+"the visuals from the audio. This is possible by holding ctrl/shift when "
+"dragging in video files to the timeline."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Audio Clip Example"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Color Clip Example"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Image Clip Example"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "PCK Clip Example"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Text Clip Example"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Video Clip Example"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Default video dragging behaviour:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Moving through the timeline can be done with the scroll wheel, and scrolling "
+"between tracks can be done by holding SHIFT. Zooming in on the timeline can "
+"be done by holding CTRL and making the tracks bigger/smaller can be done "
+"with CTRL+SHIFT. "
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "EditingVBox"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Editing in GoZen"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"The editing process is quite straight forward due to the minimalistic UI and "
+"functionality. There are some shortcuts to be aware of to make your editing "
+"more comfortable and the default position of those  shortcuts make it "
+"possible to keep your left hand on your keyboard and right hand on your "
+"mouse. Ergonomics are important."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Timeline mode shortcuts"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"GoZen has 2 timeline modes. The default mode is for selecting/moving/... "
+"clips, the other mode cut clips where you clip. These modes can be toggled "
+"with shortcuts and is a fast way to edit your videos."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Select mode:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Cut mode:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Timeline shortcuts"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Everybody has their own editing style and shortcuts, feel free to adjust the "
+"shortcuts here. You can always change these later on in the settings menu."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Cut at playhead:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Delete:"
+msgstr "حذف"
+
+#: scenes/welcome/welcome.tscn
+msgid "Cut at cursor:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Ripple delete:"
+msgstr "حذف"
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Remove empty space on cursor position."
+msgstr "حذف فضای خالی"
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Remove empty space:"
+msgstr "حذف فضای خالی"
+
+#: scenes/welcome/welcome.tscn
+msgid "Open marker popup:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Duplicate clip:"
+msgstr "تکثیر"
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Add effects popup:"
+msgstr "افزودن افکت"
+
+#: scenes/welcome/welcome.tscn
+msgid "Trim to start:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Focus on playhead:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Trim to end:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Focus on timeline:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "EffectsVBox"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Effects and transitions inside of GoZen are very similar and their settings "
+"can both be accessed from the effects panel. Same is true for the settings "
+"of the text and color clips. Selecting a clip on the timeline will make that "
+"clip's effects visible in the effects panel and from there you can click the "
+"button to add effects, or use the shortcut CTRL+A to show the popup for "
+"adding effects."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Transitions can be created by hovering over the corners of clips, this will "
+"make the fading handles appear. Because clips can both contain visuals and "
+"audio, we have 2 sets of handles: Top ones are for audio and the bottom ones "
+"are for visual fades."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Keyframing can be done by pressing the diamond next to them, once a property "
+"has a keyframe it will automatically start recording changes which are made "
+"on time stamps where no keyframe has been made yet."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Text & Colors"
+msgstr "گزینه های متن"
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"We have video, pck, audio, and image files. Those are the files we can drag "
+"and drop into the editor. As for text and colors, those are also files but "
+"have to be created inside of the editor by pressing the file icon in the top "
+"right corner of the file panel."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "RenderingVBox"
+msgstr "در حال رندر"
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Rendering your videos"
+msgstr "تنظیمات رندر ویدیو"
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Probably the most important part besides being able to edit videos is "
+"rendering them. There are pre-made render profiles to choose from, but you "
+"can of course make your own as well."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Default render profile:"
+msgstr "نمایه های رندر سفارشی"
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Want to just render out a region? Use the region shortcuts to easily define "
+"which part of your project which you want to export."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Region in:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Region out:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Quick note for rendering with custom settings"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Rendering speeds can vary greatly depending on which render settings you "
+"choose. We give you access to the render settings to export the video the "
+"way you want, but if you aren't certain what these values do, it's best to "
+"stick with the default render profiles to avoid long rendering times and/or "
+"giant file sizes."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "ModulesVBox"
+msgstr "ماژول ها"
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Modularity in GoZen"
+msgstr "درباره GoZen"
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Modules can be used for extending the editor. Want extra panels which add "
+"functionality to the editor, or maybe you want some nice shiny effects, or "
+"there's a specific transition you want for your project? You can do that "
+"with modules."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"To add modules you can click \"Preferences\" in the menu bar and click on "
+"\"Module manager\"."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "Itch.io modules"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Steam workshop"
+msgstr "ذخیره فضای کاری"
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Custom PCK files"
+msgstr "نمایه های رندر سفارشی"
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Modules change the editor and add functionality to the editor, but there's "
+"another type of modules refered to as pck files. These are Godot scene's "
+"which can be used directly in the timeline for visuals. For the creation of "
+"these files a bit of development is needed inside of custom Godot project."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "PCK Module Project"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Workspaces"
+msgstr "نام فضای کاری"
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Workspaces in GoZen are the different tabs which can be accessed in the top "
+"right corner. The default ones are \"Edit\" and \"Render\". You can create "
+"more and through the \"View\" tab in the menu bar you can choose which "
+"panels should be visible in each tab and create new workspaces.\n"
+"\n"
+"To quickly switch between workspaces you can use CTRL+Enter, this will move "
+"you to the next workspace."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "ExtrasVBox"
+msgstr "امکانات جانبی"
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"Here are a few common settings you might want to adjust before you get "
+"started. You can always change these later in Preferences -> Editor Settings."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Auto save:"
+msgstr "ذخیره خودکار"
+
+#: scenes/welcome/welcome.tscn
+msgid "Empty space click action:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Default project settings"
+msgstr "تنظیمات پروژه"
+
+#: scenes/welcome/welcome.tscn
+msgid ""
+"GoZen has the option to quickly create new projects, those projects will use "
+"following settings. Quick creation of projects can be done by pressing "
+"outside of the start screen or by clicking the 2 icons next to the \"Create "
+"project\" button on the start screen."
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Resolution:"
+msgstr "وضوح"
+
+#: scenes/welcome/welcome.tscn
+msgid "x:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+msgid "y:"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Framerate:"
+msgstr "نرخ فریم"
+
+#: scenes/welcome/welcome.gd:54
+msgid "Full version only!"
+msgstr ""
+
+#: scenes/welcome/welcome.gd:154
+msgid "Keep Audio & Video linked"
+msgstr ""
+
+#: scenes/welcome/welcome.gd:156
+msgid "Always split Audio to a new track"
+msgstr ""
+
+#: scenes/welcome/welcome.gd:173 scenes/settings_menu/settings_menu.gd:805
+msgid "Press any key..."
+msgstr "هر کلیدی را فشار دهید..."
+
+#: scenes/welcome/welcome.gd:216
+msgid "Seek Playhead"
+msgstr ""
+
+#: scenes/welcome/welcome.gd:218
+msgid "Clear Selection"
+msgstr ""
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Add effect"
@@ -775,7 +1302,7 @@ msgid "Enter effect name ..."
 msgstr "نام افکت را وارد کنید ..."
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
-#: scenes/about_gozen/about_gozen.tscn
+#: scenes/about_gozen/about_gozen.tscn scenes/file_info/file_info.tscn
 #: scenes/progress_overlay/progress_overlay.tscn
 msgid "Close popup"
 msgstr "بستن پنجره"
@@ -787,14 +1314,18 @@ msgstr "افزودن فایل رنگ"
 #: scenes/color_popup/color_popup.tscn
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 #: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
-#: scenes/auto_cut_popup/auto_cut_popup.tscn scripts/autoloads/project.gd:351
-#: scripts/logic/file_logic.gd:247
+#: scenes/auto_cut_popup/auto_cut_popup.tscn scripts/autoloads/project.gd:379
+#: scripts/logic/file_logic.gd:262
 msgid "Cancel"
 msgstr "لغو"
 
 #: scenes/color_popup/color_popup.tscn
 msgid "Create new color file"
 msgstr "ایجاد فایل رنگ جدید"
+
+#: scenes/replace_audio_popup/replace_audio_popup.gd:113
+msgid "None"
+msgstr "هیچ کدام"
 
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 msgid "Replace Audio"
@@ -819,7 +1350,7 @@ msgid "Confirm"
 msgstr "تأیید"
 
 #: scenes/about_gozen/about_gozen.tscn
-#: scenes/startup_screen/startup_screen.gd:194
+#: scenes/startup_screen/startup_screen.gd:295
 msgid "Version"
 msgstr "نسخه"
 
@@ -848,95 +1379,215 @@ msgid "Module Manager"
 msgstr "مدیریت ماژول ها"
 
 #: scenes/module_manager/module_manager.tscn
-msgid "Close"
-msgstr "بستن"
-
-#: scenes/module_manager/module_manager.tscn
 msgid "Install Module"
 msgstr "نصب ماژول"
 
+#: scenes/file_info/file_info.tscn
+msgid "FILE_NAME"
+msgstr ""
+
+#: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
+msgid "Path"
+msgstr "مسیر"
+
+#: scenes/file_info/file_info.tscn scenes/marker_popup/marker_popup.tscn
+msgid "Type"
+msgstr "نوع"
+
+#: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:91
+#: scenes/file_info/file_info.gd:106 scenes/file_info/file_info.gd:123
+#: scenes/file_info/file_info.gd:133
+msgid "Unknown"
+msgstr ""
+
+#: scenes/file_info/file_info.tscn
+msgid "Size"
+msgstr ""
+
+#: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
+msgid "Resolution"
+msgstr "وضوح"
+
+#: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:126
+#: scenes/file_info/file_info.gd:127
+msgid "-"
+msgstr ""
+
+#: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
+msgid "Framerate"
+msgstr "نرخ فریم"
+
+#: scenes/file_info/file_info.tscn
+#, fuzzy
+msgid "Duration"
+msgstr "مدت زمان های پیش فرض ها"
+
+#: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:50
+#: scenes/settings_menu/settings_menu.gd:508
+msgid "Video"
+msgstr "ویدیو"
+
+#: scenes/file_info/file_info.tscn
+msgid "Codec"
+msgstr ""
+
+#: scenes/file_info/file_info.tscn
+msgid "N/A"
+msgstr ""
+
+#: scenes/file_info/file_info.tscn
+msgid "Color space"
+msgstr ""
+
+#: scenes/file_info/file_info.tscn
+msgid "Format"
+msgstr ""
+
+#: scenes/file_info/file_info.tscn
+msgid "Aspect ratio"
+msgstr ""
+
+#: scenes/file_info/file_info.tscn
+msgid "Bitrate"
+msgstr ""
+
+#: scenes/file_info/file_info.tscn
+#, fuzzy
+msgid "B-frames"
+msgstr "فریم های B"
+
+#: scenes/file_info/file_info.tscn
+msgid "Scanning"
+msgstr ""
+
+#: scenes/file_info/file_info.tscn
+msgid "Progressive"
+msgstr ""
+
+#: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:51
+#, fuzzy
+msgid "Audio"
+msgstr "کودک صدا"
+
+#: scenes/file_info/file_info.tscn
+msgid "Streams"
+msgstr ""
+
+#: scenes/file_info/file_info.tscn
+#, fuzzy
+msgid "Match project to file"
+msgstr "فایل پروژه GoZen"
+
+#: scenes/file_info/file_info.gd:52
+#, fuzzy
+msgid "Image"
+msgstr "تصویر از"
+
+#: scenes/file_info/file_info.gd:54
+msgid "Color"
+msgstr ""
+
+#: scenes/file_info/file_info.gd:55
+msgid "PCK"
+msgstr ""
+
+#: scenes/file_info/file_info.gd:61
+msgid "In memory"
+msgstr ""
+
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:205
+#: scripts/autoloads/project.gd:223
 msgid "Loading project"
 msgstr "درحال بارگذاری پروژه"
 
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:206
+#: scripts/autoloads/project.gd:224
 msgid "Initializing ..."
 msgstr "راه اندازی ..."
 
-#: scenes/settings_menu/settings_menu.gd:46
+#: scenes/settings_menu/settings_menu.gd:47
 #: scenes/settings_menu/settings_menu.tscn
 msgid "Search settings ..."
 msgstr "تنظیمات جستجو ..."
 
-#: scenes/settings_menu/settings_menu.gd:50
+#: scenes/settings_menu/settings_menu.gd:51
 #: scenes/settings_menu/settings_menu.tscn
 msgid "Close settings"
 msgstr "بستن تنظیمات"
 
-#: scenes/settings_menu/settings_menu.gd:145
+#: scenes/settings_menu/settings_menu.gd:112
+#, fuzzy
+msgid "Editor"
+msgstr "تم ویرایشگر"
+
+#: scenes/settings_menu/settings_menu.gd:118
+#, fuzzy
+msgid "Core modules"
+msgstr "ماژول ها"
+
+#: scenes/settings_menu/settings_menu.gd:121
+#, fuzzy
+msgid "User modules"
+msgstr "ماژول ها"
+
+#: scenes/settings_menu/settings_menu.gd:190
 msgid "Marker one"
 msgstr "نشانگر یک"
 
-#: scenes/settings_menu/settings_menu.gd:145
+#: scenes/settings_menu/settings_menu.gd:190
 msgid "Marker two"
 msgstr "نشانگر دو"
 
-#: scenes/settings_menu/settings_menu.gd:145
+#: scenes/settings_menu/settings_menu.gd:190
 msgid "Marker three"
 msgstr "نشانگر سه"
 
-#: scenes/settings_menu/settings_menu.gd:146
+#: scenes/settings_menu/settings_menu.gd:191
 msgid "Marker four"
 msgstr "نشانگر چهار"
 
-#: scenes/settings_menu/settings_menu.gd:146
+#: scenes/settings_menu/settings_menu.gd:191
 msgid "Marker five"
 msgstr "نشانگر پنج"
 
-#: scenes/settings_menu/settings_menu.gd:157
-#: scenes/settings_menu/settings_menu.gd:350
+#: scenes/settings_menu/settings_menu.gd:202
+#: scenes/settings_menu/settings_menu.gd:396
 msgid "Shortcuts"
 msgstr "میانبرها"
 
-#: scenes/settings_menu/settings_menu.gd:166
+#: scenes/settings_menu/settings_menu.gd:211
 msgid "Display"
 msgstr "نمایش"
 
-#: scenes/settings_menu/settings_menu.gd:167
-msgid "Language"
-msgstr "زبان"
-
-#: scenes/settings_menu/settings_menu.gd:174
+#: scenes/settings_menu/settings_menu.gd:219
 msgid "Display scale"
 msgstr "مقیاس نمایش"
 
-#: scenes/settings_menu/settings_menu.gd:185
+#: scenes/settings_menu/settings_menu.gd:230
 msgid "Editor theme"
 msgstr "تم ویرایشگر"
 
-#: scenes/settings_menu/settings_menu.gd:195
+#: scenes/settings_menu/settings_menu.gd:240
 msgid "Show menu bar"
 msgstr "نمایش نوار منو"
 
-#: scenes/settings_menu/settings_menu.gd:200
+#: scenes/settings_menu/settings_menu.gd:245
 msgid "Show safe areas on startup"
 msgstr "نمایش نواحی امن هنگام راه اندازی"
 
-#: scenes/settings_menu/settings_menu.gd:205
+#: scenes/settings_menu/settings_menu.gd:250
 msgid "Audio waveforms"
 msgstr "موج نگارهای صوت"
 
-#: scenes/settings_menu/settings_menu.gd:206
+#: scenes/settings_menu/settings_menu.gd:251
 msgid "Waveform style"
 msgstr "سبک موج نگار"
 
-#: scenes/settings_menu/settings_menu.gd:213
+#: scenes/settings_menu/settings_menu.gd:258
 msgid "Waveform amplifier"
 msgstr "تقویت کننده موج نگار"
 
-#: scenes/settings_menu/settings_menu.gd:220
+#: scenes/settings_menu/settings_menu.gd:265
 msgid ""
 "Sometimes the waveforms aren't very clear due to audio levels being too low, "
 "with this setting you can adjust their intensity"
@@ -944,36 +1595,23 @@ msgstr ""
 "گاهی موج نگار ها به دلیل پایین بودن سطح صدا واضح نیستند. با این گزینه "
 "میتوانید شدت آن ها را تغییر دهید"
 
-#: scenes/settings_menu/settings_menu.gd:221
+#: scenes/settings_menu/settings_menu.gd:266
 msgid "Dialogs"
 msgstr "پنجره های محاوره ای"
 
-#: scenes/settings_menu/settings_menu.gd:222
-msgid "Use native dialogs"
-msgstr "استفاده از پنجره های محاوره ای بومی"
-
-#: scenes/settings_menu/settings_menu.gd:227
-msgid ""
-"Native dialogs use your operating system's file browser and windows. "
-"Disabling this uses GoZen's built-in dialogs instead."
-msgstr ""
-"پنجره های محاوره ای بومی از جستوجوگر فایل و پنجزه های سیستم عامل شما استفاده "
-"می کنند، با غیر فعال کردن این گزینه، پنجره های محاوره ای داخلی GoZen استفاده "
-"می شوند."
-
-#: scenes/settings_menu/settings_menu.gd:228
+#: scenes/settings_menu/settings_menu.gd:267
 msgid "Panel tabs position"
 msgstr "موقعیت تب های پنل"
 
-#: scenes/settings_menu/settings_menu.gd:238
+#: scenes/settings_menu/settings_menu.gd:277
 msgid "Video Decoding"
 msgstr "دیکود ویدیو"
 
-#: scenes/settings_menu/settings_menu.gd:239
+#: scenes/settings_menu/settings_menu.gd:278
 msgid "Smart Seek Threshold"
 msgstr "آستانه جستجوی هوشمند"
 
-#: scenes/settings_menu/settings_menu.gd:246
+#: scenes/settings_menu/settings_menu.gd:285
 msgid ""
 "Defines how many frames the decoder will sequentially read ahead instead of "
 "performing a full seek operation. Higher values prevent lag during short "
@@ -983,11 +1621,11 @@ msgstr ""
 "عملیات جستوجوی کامل انجام دهد. مقدار های بالاتر باعث میشوند هنگام پرش های "
 "کوتاه مکث یا کندی ایجاد نشود، اما پردازنده (CPU) بیشتری مصرف میکنند."
 
-#: scenes/settings_menu/settings_menu.gd:247
+#: scenes/settings_menu/settings_menu.gd:286
 msgid "Video Cache Size"
 msgstr "حجم کش ویدیو"
 
-#: scenes/settings_menu/settings_menu.gd:254
+#: scenes/settings_menu/settings_menu.gd:293
 msgid ""
 "The maximum number of decoded frames to keep in RAM. Higher values enable "
 "smoother backward seeking and scrubbing but increase memory usage."
@@ -996,15 +1634,15 @@ msgstr ""
 "مقدار های بالاتر باعث میشوند جستوجوی عقب و جابجایی سریع نرم تر شود. اما مصرف "
 "حافظه بیشتر میشود."
 
-#: scenes/settings_menu/settings_menu.gd:259
+#: scenes/settings_menu/settings_menu.gd:298
 msgid "Use proxies"
 msgstr "استفاده از پروکسی ها"
 
-#: scenes/settings_menu/settings_menu.gd:264
+#: scenes/settings_menu/settings_menu.gd:303
 msgid "Proxies save path"
 msgstr "مسیر ذخیره پروکسی ها"
 
-#: scenes/settings_menu/settings_menu.gd:269
+#: scenes/settings_menu/settings_menu.gd:308
 msgid ""
 "Changing this setting should be done with a path which points to an already "
 "existing folder. All previously made proxy clips will need to be generated "
@@ -1014,113 +1652,115 @@ msgstr ""
 "تمام کلیپ های پروکسی ساخته شده قبلی باید دوباره تولید شوند و به صورت دستی از "
 "پوشه قبلی حذف گردند."
 
-#: scenes/settings_menu/settings_menu.gd:273
-#: scenes/settings_menu/settings_menu.gd:421
-#: scenes/settings_menu/settings_menu.gd:422
+#: scenes/settings_menu/settings_menu.gd:312
+#: scenes/settings_menu/settings_menu.gd:524
+#: scenes/settings_menu/settings_menu.gd:525
 msgid "Appearance"
 msgstr "ظاهر"
 
-#: scenes/settings_menu/settings_menu.gd:275
+#: scenes/settings_menu/settings_menu.gd:314
 msgid "Defaults"
 msgstr "پیش فرض ها"
 
-#: scenes/settings_menu/settings_menu.gd:276
+#: scenes/settings_menu/settings_menu.gd:315
+#, fuzzy
+msgid "Paths"
+msgstr "مسیر"
+
+#: scenes/settings_menu/settings_menu.gd:316
+#, fuzzy
+msgid "Default project path"
+msgstr "انتخاب مسیر ذخیره پروژه"
+
+#: scenes/settings_menu/settings_menu.gd:321
+msgid "The default directory where new projects are created."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:322
 msgid "Default durations"
 msgstr "مدت زمان های پیش فرض ها"
 
-#: scenes/settings_menu/settings_menu.gd:277
+#: scenes/settings_menu/settings_menu.gd:323
 msgid "Default image duration"
 msgstr "مدت زمان پیش فرض تصویر"
 
-#: scenes/settings_menu/settings_menu.gd:284
-#: scenes/settings_menu/settings_menu.gd:292
-#: scenes/settings_menu/settings_menu.gd:300
+#: scenes/settings_menu/settings_menu.gd:330
+#: scenes/settings_menu/settings_menu.gd:338
+#: scenes/settings_menu/settings_menu.gd:346
 msgid "Duration in frames per second."
 msgstr "مدت زمان بر حسب فریم بر ثانیه."
 
-#: scenes/settings_menu/settings_menu.gd:285
+#: scenes/settings_menu/settings_menu.gd:331
 msgid "Default color duration"
 msgstr "مدت زمان پیش فرض رنگ"
 
-#: scenes/settings_menu/settings_menu.gd:293
+#: scenes/settings_menu/settings_menu.gd:339
 msgid "Default text duration"
 msgstr "مدت زمان پیش فرض متن"
 
-#: scenes/settings_menu/settings_menu.gd:301
-#: scenes/settings_menu/settings_menu.gd:407
+#: scenes/settings_menu/settings_menu.gd:347
+#: scenes/settings_menu/settings_menu.gd:510
 msgid "Project resolution"
 msgstr "وضوح پروژه"
 
-#: scenes/settings_menu/settings_menu.gd:306
-#: scenes/settings_menu/settings_menu.gd:412
+#: scenes/settings_menu/settings_menu.gd:352
+#: scenes/settings_menu/settings_menu.gd:515
 msgid "Project frame-rate"
 msgstr "نرخ فریم پروژه"
 
-#: scenes/settings_menu/settings_menu.gd:312
+#: scenes/settings_menu/settings_menu.gd:358
 msgid "Quick create project options"
 msgstr "گزینه های ایجاد سریع پروژه"
 
-#: scenes/settings_menu/settings_menu.gd:313
+#: scenes/settings_menu/settings_menu.gd:359
 msgid "Horizontal resolution"
 msgstr "وضوح افقی"
 
-#: scenes/settings_menu/settings_menu.gd:318
+#: scenes/settings_menu/settings_menu.gd:364
 msgid "Horizontal framerate"
 msgstr "نرخ فریم افقی"
 
-#: scenes/settings_menu/settings_menu.gd:324
+#: scenes/settings_menu/settings_menu.gd:370
 msgid "Vertical resolution"
 msgstr "وضوح عمودی"
 
-#: scenes/settings_menu/settings_menu.gd:329
+#: scenes/settings_menu/settings_menu.gd:375
 msgid "Vertical framerate"
 msgstr "نرخ فریم عمودی"
 
-#: scenes/settings_menu/settings_menu.gd:337
+#: scenes/settings_menu/settings_menu.gd:383
 msgid "Performance"
 msgstr "عملکرد"
 
-#: scenes/settings_menu/settings_menu.gd:341
-#: scenes/settings_menu/settings_menu.gd:342
+#: scenes/settings_menu/settings_menu.gd:387
+#: scenes/settings_menu/settings_menu.gd:388
 msgid "Extras"
 msgstr "امکانات جانبی"
 
-#: scenes/settings_menu/settings_menu.gd:343
+#: scenes/settings_menu/settings_menu.gd:389
 msgid "Auto save"
 msgstr "ذخیره خودکار"
 
-#: scenes/settings_menu/settings_menu.gd:397
-msgid "Modules"
-msgstr "ماژول ها"
-
-#: scenes/settings_menu/settings_menu.gd:405
-msgid "Video"
-msgstr "ویدیو"
-
-#: scenes/settings_menu/settings_menu.gd:406
+#: scenes/settings_menu/settings_menu.gd:509
 msgid "Video settings"
 msgstr "تنظیمات ویدیو"
 
-#: scenes/settings_menu/settings_menu.gd:419
+#: scenes/settings_menu/settings_menu.gd:522
 msgid "Project framerate (fps)."
 msgstr "نرخ فریم پروژه (fps)."
 
-#: scenes/settings_menu/settings_menu.gd:423
+#: scenes/settings_menu/settings_menu.gd:526
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Background color"
 msgstr "رنگ پس زمینه"
 
-#: scenes/settings_menu/settings_menu.gd:428
+#: scenes/settings_menu/settings_menu.gd:531
 msgid "The background color when no clips are displayed."
 msgstr "رنگ پس زمینه هنگامی که کلیپی برای نمایش وجود ندارد."
 
-#: scenes/settings_menu/settings_menu.gd:455
+#: scenes/settings_menu/settings_menu.gd:558
 msgid "Reset to default"
 msgstr "بازنشانی به پیش فرض"
-
-#: scenes/settings_menu/settings_menu.gd:702
-msgid "Press any key..."
-msgstr "هر کلیدی را فشار دهید..."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "GoZen"
@@ -1133,6 +1773,26 @@ msgstr "نسخه: "
 #: scenes/startup_screen/startup_screen.tscn
 msgid "The creator of the startup picture you're seeing right now."
 msgstr "سازنده تصویر شروع برنامه که اکنون مشاهده می کنید."
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Latest"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Oldest"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Name (A...Z)"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Name (Z...A)"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Getting started"
+msgstr "شروع کردن"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Open a previously created project through your file explorer."
@@ -1161,10 +1821,6 @@ msgstr ""
 "ایجاد سریع پروژه ای عمودی با تنظیمات تعیین شده در منوی تنظیمات ویرایشگر."
 
 #: scenes/startup_screen/startup_screen.tscn
-msgid "Getting started"
-msgstr "شروع کردن"
-
-#: scenes/startup_screen/startup_screen.tscn
 msgid "External link to the GoZen website."
 msgstr "پیوند خارجی به وب سایت GoZen."
 
@@ -1185,24 +1841,12 @@ msgid "External link to the Ko-fi page."
 msgstr "پیوند خارجی به صفحه Ko-fi."
 
 #: scenes/startup_screen/startup_screen.tscn
-msgid "Path"
-msgstr "مسیر"
-
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Resolution"
-msgstr "وضوح"
-
-#: scenes/startup_screen/startup_screen.tscn
 msgid "The video width."
 msgstr "عرض ویدیو."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "The video height."
 msgstr "ارتفاع ویدیو."
-
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Framerate"
-msgstr "نرخ فریم"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "The video framerate (fps)."
@@ -1224,20 +1868,25 @@ msgstr "گزینه های پیشرفته ویدیو"
 msgid "Return"
 msgstr "بازگشت"
 
-#: scenes/startup_screen/startup_screen.gd:74
+#: scenes/startup_screen/startup_screen.gd:81
 msgid "Image by"
 msgstr "تصویر از"
 
-#: scenes/startup_screen/startup_screen.gd:221
+#: scenes/startup_screen/startup_screen.gd:254
+#, fuzzy
+msgid "Remove from list"
+msgstr "حذف پروکسی"
+
+#: scenes/startup_screen/startup_screen.gd:322
 msgid "User presets"
 msgstr "پیش تنظیم های کاربر"
 
-#: scenes/startup_screen/startup_screen.gd:277
-#: scenes/startup_screen/startup_screen.gd:355 scripts/autoloads/project.gd:107
+#: scenes/startup_screen/startup_screen.gd:378
+#: scenes/startup_screen/startup_screen.gd:456 scripts/autoloads/project.gd:125
 msgid "GoZen project file"
 msgstr "فایل پروژه GoZen"
 
-#: scenes/startup_screen/startup_screen.gd:353
+#: scenes/startup_screen/startup_screen.gd:454
 msgid "Select project save path"
 msgstr "انتخاب مسیر ذخیره پروژه"
 
@@ -1252,10 +1901,6 @@ msgstr "زمان (فریم)"
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Marker"
 msgstr "نشانگر"
-
-#: scenes/marker_popup/marker_popup.tscn
-msgid "Type"
-msgstr "نوع"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Delete the selected marker."
@@ -1302,103 +1947,98 @@ msgstr "راه اندازی پروژه جدید ..."
 msgid "Setting up playback ..."
 msgstr "درحال راه اندازی پخش ..."
 
-#: scripts/autoloads/project.gd:65 scripts/autoloads/project.gd:254
+#: scripts/autoloads/project.gd:65 scripts/autoloads/project.gd:272
 msgid "Finalizing ..."
 msgstr "نهایی سازی ..."
 
-#: scripts/autoloads/project.gd:117
+#: scripts/autoloads/project.gd:135
 msgid "Archive project as ..."
 msgstr "بایگانی پروژه به عنوان ..."
 
-#: scripts/autoloads/project.gd:119
+#: scripts/autoloads/project.gd:137
 msgid "ZIP Archive"
 msgstr "فایل ZIP"
 
-#: scripts/autoloads/project.gd:132
+#: scripts/autoloads/project.gd:150
 msgid "Archiving project"
 msgstr "درحال بایگانی پروژه"
 
-#: scripts/autoloads/project.gd:133
+#: scripts/autoloads/project.gd:151
 msgid "Preparing files ..."
 msgstr "آماده سازی فایل ها ..."
 
-#: scripts/autoloads/project.gd:220
+#: scripts/autoloads/project.gd:238
 msgid "Setting up timeline ..."
 msgstr "درحال راه اندازی تایم لاین ..."
 
-#: scripts/autoloads/project.gd:225
+#: scripts/autoloads/project.gd:243
 msgid "Loading project files ..."
 msgstr "درحال بارگذاری فایل های پروژه ..."
 
-#: scripts/autoloads/project.gd:273
+#: scripts/autoloads/project.gd:291
 msgid "GoZen project files"
 msgstr "فایل های پروژه GoZen"
 
-#: scripts/autoloads/project.gd:350
+#: scripts/autoloads/project.gd:378
 msgid "Don't save"
 msgstr "ذخیره نکردن"
 
-#: scripts/autoloads/project.gd:355
+#: scripts/autoloads/project.gd:383
 msgid "Unsaved changes"
 msgstr ""
 
-#: scripts/autoloads/project.gd:356
+#: scripts/autoloads/project.gd:384
 msgid ""
 "You have unsaved changes in your current project. Save before proceeding?"
 msgstr ""
 
-#: scripts/autoloads/project.gd:357
+#: scripts/autoloads/project.gd:385
 msgid "Save"
 msgstr "ذخیره"
 
-#: scripts/autoloads/render_manager.gd:168
-#: scripts/autoloads/render_manager.gd:175
-msgid "Rendering"
-msgstr "در حال رندر"
-
-#: scripts/autoloads/render_manager.gd:182
+#: scripts/autoloads/render_manager.gd:196
 msgid "Cancel rendering"
 msgstr "لغو رندر"
 
-#: scripts/autoloads/render_manager.gd:213
+#: scripts/autoloads/render_manager.gd:227
 msgid "Error opening file"
 msgstr "خطا در باز کردن فایل"
 
-#: scripts/autoloads/render_manager.gd:214
+#: scripts/autoloads/render_manager.gd:228
 msgid "Error whilst sending audio"
 msgstr "خطا هنگام ارسال صدا"
 
-#: scripts/autoloads/render_manager.gd:219
+#: scripts/autoloads/render_manager.gd:233
 msgid "Setting up ..."
 msgstr "درحال راه اندازی ..."
 
-#: scripts/autoloads/render_manager.gd:220
-#: scripts/autoloads/render_manager.gd:221
+#: scripts/autoloads/render_manager.gd:234
+#: scripts/autoloads/render_manager.gd:235
 msgid "Compiling audio ..."
 msgstr "درحال کامپایل صدا ..."
 
-#: scripts/autoloads/render_manager.gd:222
-#: scripts/autoloads/render_manager.gd:223
+#: scripts/autoloads/render_manager.gd:236
+#: scripts/autoloads/render_manager.gd:237
 msgid "Sending data ..."
 msgstr "درحال ارسال داده ها ..."
 
-#: scripts/autoloads/render_manager.gd:224
+#: scripts/autoloads/render_manager.gd:238
 msgid "Sending final frame ..."
 msgstr "درحال ارسال فریم نهایی ..."
 
-#: scripts/autoloads/render_manager.gd:243
+#: scripts/autoloads/render_manager.gd:257
 msgid "Rendering finished"
 msgstr "رندر پایان یافت"
 
-#: scripts/autoloads/render_manager.gd:257
+#: scripts/autoloads/render_manager.gd:271
 msgid "Error whilst rendering video"
 msgstr "خطا هنگام رندر ویدیو"
 
-#: scripts/logic/file_logic.gd:244
+#: scripts/logic/file_logic.gd:259
 msgid "Update existing clips?"
 msgstr "آیا کلیپ های موجود به روزرسانی شوند؟"
 
-#: scripts/logic/file_logic.gd:245
+#: scripts/logic/file_logic.gd:260
 msgid ""
 "This file is currently used by '%d' clip(s).\n"
 "Do you want to apply the audio replacement to all existing clips?"
@@ -1406,18 +2046,44 @@ msgstr ""
 "این فایل در حال حاضر توسط کلیپ(های) '%d' استفاده می شود.\n"
 "آیا میخواهید تغییرات جایگزینی صوت به همه کلیپ های موجود اعمال شود؟"
 
-#: scripts/logic/file_logic.gd:246
+#: scripts/logic/file_logic.gd:261
 msgid "Apply to All"
 msgstr "اعمال برای همه"
 
-#: scripts/logic/file_logic.gd:249
+#: scripts/logic/file_logic.gd:264
 msgid "Apply to File Only"
 msgstr "اعمال فقط برای این فایل"
 
-#: scripts/logic/file_logic.gd:344
+#: scripts/logic/file_logic.gd:361
 msgid "Files dropped"
 msgstr "فایل ها اضافه شدند"
 
-#: scripts/logic/file_logic.gd:359
+#: scripts/logic/file_logic.gd:376
 msgid "Files loading ..."
 msgstr "درحال بارگذاری فایل ها ..."
+
+#: scripts/logic/file_logic.gd:917
+#, fuzzy
+msgid "Files Updated"
+msgstr "فایل ها اضافه شدند"
+
+#: scripts/logic/file_logic.gd:918
+msgid ""
+"The following files were modified externally and have been reloaded:\n"
+"\n"
+"- "
+msgstr ""
+
+#~ msgid "Create a low quality draft version of your video."
+#~ msgstr "یک نسخه پیش نویس با کیفیت پایین از ویدیو ایجاد کنید."
+
+#~ msgid "Use native dialogs"
+#~ msgstr "استفاده از پنجره های محاوره ای بومی"
+
+#~ msgid ""
+#~ "Native dialogs use your operating system's file browser and windows. "
+#~ "Disabling this uses GoZen's built-in dialogs instead."
+#~ msgstr ""
+#~ "پنجره های محاوره ای بومی از جستوجوگر فایل و پنجزه های سیستم عامل شما "
+#~ "استفاده می کنند، با غیر فعال کردن این گزینه، پنجره های محاوره ای داخلی "
+#~ "GoZen استفاده می شوند."
