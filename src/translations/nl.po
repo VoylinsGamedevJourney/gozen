@@ -48,7 +48,7 @@ msgstr "Veilige gebieden tonen"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Render settings"
-msgstr "Render instellingen"
+msgstr "Renderinstellingen"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Render profile"
@@ -83,7 +83,6 @@ msgid "Video codec"
 msgstr "Videocodec"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid ""
 "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
 "highest quality setting is 15.\n"
@@ -94,7 +93,7 @@ msgstr ""
 "Past de CRF (Constant Rate Factor) aan. Laagste kwaliteit is 50, hoogste "
 "kwaliteit is 15. Standaard is 18. Wordt gebruikt om de bitrate aan te "
 "passen, wat invloed heeft op kwaliteit en grootte. Waarde 0 is het best, 51 "
-"het slechtst, 18 is nauwelijks merkbaar."
+"het slechtst, bij 18 is het verschil nauwelijks merkbaar."
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Quality"
@@ -110,7 +109,7 @@ msgstr ""
 "Past de CRF (Constant Rate Factor) aan. Laagste kwaliteit is 50, hoogste "
 "kwaliteit is 15. Standaard is 18. Wordt gebruikt om de bitrate aan te "
 "passen, wat invloed heeft op kwaliteit en grootte. Waarde 0 is het best, 51 "
-"het slechtst, 18 is nauwelijks merkbaar."
+"het slechtst, bij 18 is het verschil nauwelijks merkbaar."
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid ""
@@ -125,9 +124,8 @@ msgid "Speed"
 msgstr "Snelheid"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "Advanced video settings"
-msgstr "Video-renderinstellingen"
+msgstr "Geavanceerde video-instellingen"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Gop size"
@@ -151,6 +149,11 @@ msgid ""
 "file size but increase encoding time and player decoding requirements. "
 "Values between 2 and 4 are generally recommended."
 msgstr ""
+"B-frames (bidirectioneel voorspellende frames) verbeteren de compressie en "
+"de beeldkwaliteit door zowel naar voorgaande als naar toekomstige frames te "
+"verwijzen. Hogere waarden verkleinen de bestandsgrootte, maar verhogen de "
+"coderingstijd en de decoderingsvereisten voor de speler. Waarden tussen 2 en "
+"4 worden over het algemeen aanbevolen."
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "B frames"
@@ -178,7 +181,8 @@ msgstr "Threads"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "The amount of threads you want to use for exporting your video."
-msgstr "Het aantal threads dat je wilt gebruiken voor het exporteren."
+msgstr ""
+"Het aantal threads dat je wilt gebruiken voor het exporteren van je video."
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Render region"
@@ -186,7 +190,7 @@ msgstr "Renderregio"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Start render"
-msgstr "Start renderen"
+msgstr "Renderen starten"
 
 #: modules/core_render_options_panel/render_options_panel.gd:91
 msgid "Custom render profiles"
@@ -237,7 +241,7 @@ msgstr "Kleur toevoegen"
 #: modules/core_file_panel/file_panel.gd:113
 #: modules/core_file_panel/file_panel.gd:179
 msgid "Add files ..."
-msgstr "Bestanden toevoegen"
+msgstr "Bestanden toevoegen ..."
 
 #: modules/core_file_panel/file_panel.gd:136
 msgid "Rename"
@@ -253,7 +257,7 @@ msgstr "Verwijderen"
 
 #: modules/core_file_panel/file_panel.gd:142
 msgid "Image options"
-msgstr "Afbeeldingopties"
+msgstr "Afbeeldingsopties"
 
 #: modules/core_file_panel/file_panel.gd:143
 msgid "Save image as ..."
@@ -282,7 +286,7 @@ msgstr "Audio vervangen"
 
 #: modules/core_file_panel/file_panel.gd:155
 msgid "Extract audio to file ..."
-msgstr "Audio exporteren naar bestand ..."
+msgstr "Audio extraheren naar bestand ..."
 
 #: modules/core_file_panel/file_panel.gd:157
 msgid "Text options"
@@ -293,13 +297,12 @@ msgid "Duplicate"
 msgstr "Dupliceren"
 
 #: modules/core_file_panel/file_panel.gd:160
-#, fuzzy
 msgid "Extra"
 msgstr "Extra's"
 
 #: modules/core_file_panel/file_panel.gd:161
 msgid "File Info"
-msgstr ""
+msgstr "Bestandsinfo"
 
 #: modules/core_file_panel/file_panel.gd:163
 msgid "Folder options"
@@ -312,7 +315,7 @@ msgstr "Openen in bestandsbeheer"
 
 #: modules/core_file_panel/file_panel.gd:166
 msgid "Copy file path"
-msgstr "Pad kopiëren"
+msgstr "Bestandspad kopiëren"
 
 #: modules/core_file_panel/file_panel.gd:167
 #: modules/core_file_panel/file_panel.gd:185
@@ -340,7 +343,7 @@ msgstr "Mapnaam"
 
 #: modules/core_file_panel/file_panel.gd:287
 msgid "Save image to file"
-msgstr "Afbeelding opslaan naar bestand"
+msgstr "Afbeelding opslaan als bestand"
 
 #: modules/core_file_panel/file_panel.gd:300
 msgid "Save video audio to WAV"
@@ -368,7 +371,7 @@ msgstr "Kon %d clip(s) niet dupliceren omdat er niet genoeg lege ruimte was."
 #: modules/core_timeline_panel/timeline_panel.gd:298
 #: modules/core_timeline_panel/timeline_panel.gd:303
 msgid "Track options"
-msgstr "Track opties"
+msgstr "Trackopties"
 
 #: modules/core_timeline_panel/timeline_panel.gd:302
 msgid "Remove empty space"
@@ -437,12 +440,11 @@ msgid "Select mode: Used for selecting clips on the timeline."
 msgstr "Selectiemodus: wordt gebruikt om clips op de tijdlijn te selecteren."
 
 #: modules/core_timeline_panel/timeline.tscn
-#, fuzzy
 msgid ""
 "Cut mode: Lets you cut clips on the position of your mouse cursor by "
 "clicking."
 msgstr ""
-"Snijmodus: hiermee kun je clips knippen op de positie van je muiscursor door "
+"Knipmodus: hiermee kun je clips knippen op de positie van je muiscursor door "
 "te klikken."
 
 #: modules/core_timeline_panel/timeline.tscn
@@ -455,15 +457,15 @@ msgstr "Snappen van clips bij het verplaatsen in-/uitschakelen."
 
 #: modules/core_timeline_panel/track_controls.gd:66
 msgid "Toggle track visibility"
-msgstr "Trackzichtbaarheid schakelen"
+msgstr "Zichtbaarheid van track in-/uitschakelen"
 
 #: modules/core_effects_panel/effects_panel.gd:54
 msgid "Enable clip audio."
-msgstr "Clip audio inschakelen."
+msgstr "Audio van clip inschakelen."
 
 #: modules/core_effects_panel/effects_panel.gd:55
 msgid "Enable clip visuals."
-msgstr "Clipweergave inschakelen."
+msgstr "Beeld van clip inschakelen."
 
 #: modules/core_effects_panel/effects_panel.gd:61
 msgid "Reset"
@@ -471,11 +473,11 @@ msgstr "Resetten"
 
 #: modules/core_effects_panel/effects_panel.gd:346
 msgid "Left Transition"
-msgstr "Linker overgang"
+msgstr "Linkerovergang"
 
 #: modules/core_effects_panel/effects_panel.gd:365
 msgid "Right Transition"
-msgstr "Rechter overgang"
+msgstr "Rechterovergang"
 
 #: modules/core_effects_panel/effects_panel.gd:424
 msgid "Style"
@@ -500,11 +502,11 @@ msgstr "Terugzetten naar standaard."
 
 #: modules/core_effects_panel/effects_panel.gd:729
 msgid "Previous keyframe."
-msgstr "Vorig keyframe."
+msgstr "Vorige keyframe."
 
 #: modules/core_effects_panel/effects_panel.gd:738
 msgid "Next keyframe."
-msgstr "Volgend keyframe."
+msgstr "Volgende keyframe."
 
 #: modules/core_effects_panel/effects_panel.gd:992
 #: modules/core_effects_panel/effects_panel.gd:1720
@@ -542,7 +544,7 @@ msgstr "Mix (Normaal)"
 
 #: modules/core_effects_panel/effects_panel.gd:1038
 msgid "Add"
-msgstr "Toevoegen"
+msgstr "Optellen"
 
 #: modules/core_effects_panel/effects_panel.gd:1039
 msgid "Subtract"
@@ -645,7 +647,7 @@ msgstr "Visuele effecten"
 
 #: modules/core_effects_panel/effects_panel.tscn
 msgid "Audio effects"
-msgstr "Audio effecten"
+msgstr "Audio-effecten"
 
 #: scenes/editor/editor.gd:260 scenes/startup_screen/startup_screen.tscn
 #: scripts/autoloads/project.gd:52
@@ -679,7 +681,7 @@ msgstr "Opstartscherm"
 
 #: scenes/editor/editor.gd:277
 msgid "Welcome screen"
-msgstr ""
+msgstr "Welkomstscherm"
 
 #: scenes/editor/editor.gd:279 scenes/settings_menu/settings_menu.gd:114
 msgid "Project settings"
@@ -719,7 +721,7 @@ msgstr "Paneeltitels verbergen"
 
 #: scenes/editor/editor.gd:418 scenes/startup_screen/startup_screen.tscn
 msgid "Editor settings"
-msgstr "Editor-instellingen"
+msgstr "Editorinstellingen"
 
 #: scenes/editor/editor.gd:421
 msgid "Module manager"
@@ -785,21 +787,19 @@ msgstr "Weet je zeker dat je de werkruimte '%s' wilt verwijderen?"
 
 #: scenes/welcome/welcome.tscn
 msgid "Welcome"
-msgstr ""
+msgstr "Welkom"
 
 #: scenes/welcome/welcome.tscn
 msgid "Basics"
-msgstr ""
+msgstr "Basis"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Editing"
-msgstr "Editor-instellingen"
+msgstr "Bewerken"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Effects"
-msgstr "Effecten toevoegen."
+msgstr "Effecten"
 
 #: scenes/welcome/welcome.tscn scripts/autoloads/render_manager.gd:182
 #: scripts/autoloads/render_manager.gd:189
@@ -811,7 +811,6 @@ msgid "Modules"
 msgstr "Modules"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Extra's"
 msgstr "Extra's"
 
@@ -820,12 +819,8 @@ msgid "Close"
 msgstr "Sluiten"
 
 #: scenes/welcome/welcome.tscn
-msgid "WelcomeVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
 msgid "Welcome to GoZen!"
-msgstr ""
+msgstr "Welkom bij GoZen!"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -834,6 +829,10 @@ msgid ""
 "beginners and semi-professionals designed to make editing simple, fast, and "
 "stress-free."
 msgstr ""
+"Bedankt dat je GoZen gebruikt en deze videobewerker een kans geeft. GoZen is "
+"een minimalistische, moderne, open-source, aanpasbare en modulaire "
+"videobewerker voor beginners en semiprofessionals, ontworpen om bewerken "
+"eenvoudig, snel en stressvrij te maken."
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -842,6 +841,10 @@ msgid ""
 "don't. Use the buttons on the left of the screen to navigate the "
 "introduction to using this video editor."
 msgstr ""
+"GoZen probeert niet te concurreren met grotere videobewerkers. Ons doel is "
+"een sterke, basale videobewerker te bieden met alles wat je nodig hebt en "
+"niets wat je niet nodig hebt. Gebruik de knoppen aan de linkerkant van het "
+"scherm om door de introductie van deze videobewerker te navigeren."
 
 #: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:212
 msgid "Language"
@@ -849,29 +852,21 @@ msgstr "Taal"
 
 #: scenes/welcome/welcome.tscn
 msgid "Theme"
-msgstr ""
+msgstr "Thema"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "YouTube tutorials"
-msgstr "Tutorials"
+msgstr "YouTube-tutorials"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Source Code"
 msgstr "Broncode"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Support GoZen on Ko-fi!"
-msgstr "Steun GoZen"
+msgstr "Steun GoZen op Ko-fi!"
 
 #: scenes/welcome/welcome.tscn
-msgid "BasicsVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Adding files"
 msgstr "Bestanden toevoegen"
 
@@ -882,10 +877,15 @@ msgid ""
 "option to add files. Besides that, on top of the file panel there's a button "
 "which you can press to add files."
 msgstr ""
+"Je kunt bestanden toevoegen door ze vanuit je bestandsbeheer naar de editor "
+"te slepen. Als je met de rechtermuisknop op een lege ruimte of map in het "
+"bestandenpaneel klikt, krijg je ook de optie om bestanden toe te voegen. "
+"Daarnaast staat er bovenaan het bestandenpaneel een knop waarmee je "
+"bestanden kunt toevoegen."
 
 #: scenes/welcome/welcome.tscn
 msgid "The timeline"
-msgstr ""
+msgstr "De tijdlijn"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -894,6 +894,10 @@ msgid ""
 "timeline more compact and gives your more freedom to place your clips "
 "wherever you want."
 msgstr ""
+"De tijdlijn in GoZen is heel anders dan in andere videobewerkers: audio- en "
+"beeldclips kunnen op dezelfde tracks worden geplaatst. Dit houdt de tijdlijn "
+"compacter en geeft je meer vrijheid om je clips te plaatsen waar je maar "
+"wilt."
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -901,34 +905,37 @@ msgid ""
 "the visuals from the audio. This is possible by holding ctrl/shift when "
 "dragging in video files to the timeline."
 msgstr ""
+"Sommige mensen splitsen hun video's liever in 2 clips, waarbij het beeld van "
+"de audio wordt gescheiden. Dit kan door ctrl/shift ingedrukt te houden "
+"terwijl je videobestanden naar de tijdlijn sleept."
 
 #: scenes/welcome/welcome.tscn
 msgid "Audio Clip Example"
-msgstr ""
+msgstr "Voorbeeld van audioclip"
 
 #: scenes/welcome/welcome.tscn
 msgid "Color Clip Example"
-msgstr ""
+msgstr "Voorbeeld van kleurclip"
 
 #: scenes/welcome/welcome.tscn
 msgid "Image Clip Example"
-msgstr ""
+msgstr "Voorbeeld van afbeeldingsclip"
 
 #: scenes/welcome/welcome.tscn
 msgid "PCK Clip Example"
-msgstr ""
+msgstr "Voorbeeld van PCK-clip"
 
 #: scenes/welcome/welcome.tscn
 msgid "Text Clip Example"
-msgstr ""
+msgstr "Voorbeeld van tekstclip"
 
 #: scenes/welcome/welcome.tscn
 msgid "Video Clip Example"
-msgstr ""
+msgstr "Voorbeeld van videoclip"
 
 #: scenes/welcome/welcome.tscn
 msgid "Default video dragging behaviour:"
-msgstr ""
+msgstr "Standaardgedrag bij het slepen van video:"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -937,14 +944,13 @@ msgid ""
 "be done by holding CTRL and making the tracks bigger/smaller can be done "
 "with CTRL+SHIFT. "
 msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "EditingVBox"
-msgstr ""
+"Door de tijdlijn navigeer je met het scrollwiel en tussen tracks scroll je "
+"door SHIFT ingedrukt te houden. Inzoomen op de tijdlijn doe je door CTRL "
+"ingedrukt te houden, en de tracks groter/kleiner maken kan met CTRL+SHIFT. "
 
 #: scenes/welcome/welcome.tscn
 msgid "Editing in GoZen"
-msgstr ""
+msgstr "Bewerken in GoZen"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -954,10 +960,15 @@ msgid ""
 "possible to keep your left hand on your keyboard and right hand on your "
 "mouse. Ergonomics are important."
 msgstr ""
+"Het bewerkingsproces is vrij eenvoudig dankzij de minimalistische interface "
+"en functionaliteit. Er zijn enkele sneltoetsen om te kennen die het bewerken "
+"comfortabeler maken, en door de standaardpositie van die sneltoetsen kun je "
+"je linkerhand op het toetsenbord en je rechterhand op de muis houden. "
+"Ergonomie is belangrijk."
 
 #: scenes/welcome/welcome.tscn
 msgid "Timeline mode shortcuts"
-msgstr ""
+msgstr "Sneltoetsen voor tijdlijnmodi"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -965,86 +976,83 @@ msgid ""
 "clips, the other mode cut clips where you clip. These modes can be toggled "
 "with shortcuts and is a fast way to edit your videos."
 msgstr ""
+"GoZen heeft 2 tijdlijnmodi. De standaardmodus is bedoeld om clips te "
+"selecteren/verplaatsen/..., de andere modus knipt clips op de plek waar je "
+"klikt. Je kunt tussen deze modi wisselen met sneltoetsen, wat een snelle "
+"manier is om je video's te bewerken."
 
 #: scenes/welcome/welcome.tscn
 msgid "Select mode:"
-msgstr ""
+msgstr "Selectiemodus:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Cut mode:"
-msgstr ""
+msgstr "Knipmodus:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Timeline shortcuts"
-msgstr ""
+msgstr "Sneltoetsen voor de tijdlijn"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
 "Everybody has their own editing style and shortcuts, feel free to adjust the "
 "shortcuts here. You can always change these later on in the settings menu."
 msgstr ""
+"Iedereen heeft zijn eigen bewerkingsstijl en sneltoetsen, dus pas de "
+"sneltoetsen hier gerust aan. Je kunt ze later altijd nog wijzigen in het "
+"instellingenmenu."
 
 #: scenes/welcome/welcome.tscn
 msgid "Cut at playhead:"
-msgstr ""
+msgstr "Knippen bij afspeelkop:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Delete:"
-msgstr "Verwijderen"
+msgstr "Verwijderen:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Cut at cursor:"
-msgstr ""
+msgstr "Knippen bij cursor:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Ripple delete:"
-msgstr "Ripple verwijderen"
+msgstr "Ripple verwijderen:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Remove empty space on cursor position."
-msgstr "Lege ruimte verwijderen"
+msgstr "Lege ruimte verwijderen op cursorpositie."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Remove empty space:"
-msgstr "Lege ruimte verwijderen"
+msgstr "Lege ruimte verwijderen:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Open marker popup:"
-msgstr ""
+msgstr "Markeringsvenster openen:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Duplicate clip:"
-msgstr "Dupliceren"
+msgstr "Clip dupliceren:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Add effects popup:"
-msgstr "Effecten toevoegen."
+msgstr "Effectenvenster openen:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Trim to start:"
-msgstr ""
+msgstr "Trimmen naar begin:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Focus on playhead:"
-msgstr ""
+msgstr "Focus op afspeelkop:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Trim to end:"
-msgstr ""
+msgstr "Trimmen naar einde:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Focus on timeline:"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "EffectsVBox"
-msgstr ""
+msgstr "Focus op tijdlijn:"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1055,6 +1063,13 @@ msgid ""
 "button to add effects, or use the shortcut CTRL+A to show the popup for "
 "adding effects."
 msgstr ""
+"Effecten en overgangen in GoZen lijken sterk op elkaar en de instellingen "
+"van beide zijn toegankelijk via het effectenpaneel. Hetzelfde geldt voor de "
+"instellingen van tekst- en kleurclips. Wanneer je een clip op de tijdlijn "
+"selecteert, worden de effecten van die clip zichtbaar in het effectenpaneel. "
+"Van daaruit kun je op de knop klikken om effecten toe te voegen, of de "
+"sneltoets CTRL+A gebruiken om het venster voor het toevoegen van effecten te "
+"tonen."
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1063,6 +1078,10 @@ msgid ""
 "audio, we have 2 sets of handles: Top ones are for audio and the bottom ones "
 "are for visual fades."
 msgstr ""
+"Overgangen maak je door met de muis over de hoeken van clips te bewegen; "
+"hierdoor verschijnen de fade-handvatten. Omdat clips zowel beeld als audio "
+"kunnen bevatten, zijn er 2 sets handvatten: de bovenste zijn voor audio en "
+"de onderste voor visuele fades."
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1070,11 +1089,13 @@ msgid ""
 "has a keyframe it will automatically start recording changes which are made "
 "on time stamps where no keyframe has been made yet."
 msgstr ""
+"Keyframen doe je door op het ruitje ernaast te drukken. Zodra een eigenschap "
+"een keyframe heeft, worden wijzigingen die je aanbrengt op tijdstippen waar "
+"nog geen keyframe is, automatisch opgenomen."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Text & Colors"
-msgstr "Tekstopties"
+msgstr "Tekst en kleuren"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1083,16 +1104,14 @@ msgid ""
 "have to be created inside of the editor by pressing the file icon in the top "
 "right corner of the file panel."
 msgstr ""
+"We hebben video-, pck-, audio- en afbeeldingsbestanden. Dit zijn de "
+"bestanden die je in de editor kunt slepen en neerzetten. Tekst en kleuren "
+"zijn ook bestanden, maar die moeten in de editor worden aangemaakt door op "
+"het bestandspictogram rechtsboven in het bestandenpaneel te drukken."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
-msgid "RenderingVBox"
-msgstr "Renderen"
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Rendering your videos"
-msgstr "Video-renderinstellingen"
+msgstr "Je video's renderen"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1100,29 +1119,33 @@ msgid ""
 "rendering them. There are pre-made render profiles to choose from, but you "
 "can of course make your own as well."
 msgstr ""
+"Naast het kunnen bewerken van video's is renderen waarschijnlijk het "
+"belangrijkste onderdeel. Er zijn kant-en-klare renderprofielen om uit te "
+"kiezen, maar je kunt natuurlijk ook je eigen profielen maken."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Default render profile:"
-msgstr "Aangepaste renderprofielen"
+msgstr "Standaard renderprofiel:"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
 "Want to just render out a region? Use the region shortcuts to easily define "
 "which part of your project which you want to export."
 msgstr ""
+"Wil je alleen een bepaald gebied renderen? Gebruik de regiosneltoetsen om "
+"eenvoudig te bepalen welk deel van je project je wilt exporteren."
 
 #: scenes/welcome/welcome.tscn
 msgid "Region in:"
-msgstr ""
+msgstr "Begin regio:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Region out:"
-msgstr ""
+msgstr "Einde regio:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Quick note for rendering with custom settings"
-msgstr ""
+msgstr "Korte opmerking over renderen met aangepaste instellingen"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1132,16 +1155,15 @@ msgid ""
 "stick with the default render profiles to avoid long rendering times and/or "
 "giant file sizes."
 msgstr ""
+"De rendersnelheid kan sterk variëren, afhankelijk van de gekozen "
+"renderinstellingen. We geven je toegang tot de renderinstellingen zodat je "
+"de video op jouw manier kunt exporteren, maar als je niet zeker weet wat "
+"deze waarden doen, kun je het beste de standaardrenderprofielen gebruiken om "
+"lange rendertijden en/of enorme bestanden te voorkomen."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
-msgid "ModulesVBox"
-msgstr "Modules"
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Modularity in GoZen"
-msgstr "Over GoZen"
+msgstr "Modulariteit in GoZen"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1150,26 +1172,29 @@ msgid ""
 "there's a specific transition you want for your project? You can do that "
 "with modules."
 msgstr ""
+"Met modules kun je de editor uitbreiden. Wil je extra panelen die "
+"functionaliteit aan de editor toevoegen, of misschien mooie, glanzende "
+"effecten, of een specifieke overgang voor je project? Dat kan met modules."
 
 #: scenes/welcome/welcome.tscn
 msgid ""
 "To add modules you can click \"Preferences\" in the menu bar and click on "
 "\"Module manager\"."
 msgstr ""
+"Om modules toe te voegen klik je in de menubalk op \"Preferences\" en "
+"vervolgens op \"Modulebeheer\"."
 
 #: scenes/welcome/welcome.tscn
 msgid "Itch.io modules"
-msgstr ""
+msgstr "Itch.io-modules"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Steam workshop"
-msgstr "Werkruimte opslaan"
+msgstr "Steam Workshop"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Custom PCK files"
-msgstr "Aangepaste renderprofielen"
+msgstr "Aangepaste PCK-bestanden"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1178,15 +1203,19 @@ msgid ""
 "which can be used directly in the timeline for visuals. For the creation of "
 "these files a bit of development is needed inside of custom Godot project."
 msgstr ""
+"Modules veranderen de editor en voegen functionaliteit toe aan de editor, "
+"maar er is nog een ander type module, de zogeheten pck-bestanden. Dit zijn "
+"Godot-scènes die direct op de tijdlijn kunnen worden gebruikt voor beeld. "
+"Voor het maken van deze bestanden is wat ontwikkelwerk nodig in een eigen "
+"Godot-project."
 
 #: scenes/welcome/welcome.tscn
 msgid "PCK Module Project"
-msgstr ""
+msgstr "PCK-moduleproject"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Workspaces"
-msgstr "Naam van werkruimte"
+msgstr "Werkruimtes"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1198,31 +1227,34 @@ msgid ""
 "To quickly switch between workspaces you can use CTRL+Enter, this will move "
 "you to the next workspace."
 msgstr ""
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
-msgid "ExtrasVBox"
-msgstr "Extra's"
+"Werkruimtes in GoZen zijn de verschillende tabbladen die je rechtsboven "
+"vindt. De standaardtabbladen zijn \"Edit\" en \"Render\". Je kunt er meer "
+"maken en via het tabblad \"View\" in de menubalk kun je kiezen welke panelen "
+"in elk tabblad zichtbaar zijn en nieuwe werkruimtes maken.\n"
+"\n"
+"Om snel tussen werkruimtes te wisselen kun je CTRL+Enter gebruiken; hiermee "
+"ga je naar de volgende werkruimte."
 
 #: scenes/welcome/welcome.tscn
 msgid ""
 "Here are a few common settings you might want to adjust before you get "
 "started. You can always change these later in Preferences -> Editor Settings."
 msgstr ""
+"Hier zijn enkele veelgebruikte instellingen die je misschien wilt aanpassen "
+"voordat je begint. Je kunt deze later altijd wijzigen via Preferences -> "
+"Editorinstellingen."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Auto save:"
-msgstr "Automatisch opslaan"
+msgstr "Automatisch opslaan:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Empty space click action:"
-msgstr ""
+msgstr "Actie bij klikken op lege ruimte:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Default project settings"
-msgstr "Projectinstellingen"
+msgstr "Standaardprojectinstellingen"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1231,36 +1263,30 @@ msgid ""
 "outside of the start screen or by clicking the 2 icons next to the \"Create "
 "project\" button on the start screen."
 msgstr ""
+"GoZen kan snel nieuwe projecten aanmaken; die projecten gebruiken de "
+"volgende instellingen. Snel projecten aanmaken kan door buiten het "
+"startscherm te klikken of door op de 2 pictogrammen naast de knop \"Nieuw "
+"project aanmaken\" op het startscherm te klikken."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Resolution:"
-msgstr "Resolutie"
+msgstr "Resolutie:"
 
 #: scenes/welcome/welcome.tscn
-msgid "x:"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "y:"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Framerate:"
-msgstr "Framerate"
+msgstr "Framerate:"
 
 #: scenes/welcome/welcome.gd:54
 msgid "Full version only!"
-msgstr ""
+msgstr "Alleen in de volledige versie!"
 
 #: scenes/welcome/welcome.gd:154
 msgid "Keep Audio & Video linked"
-msgstr ""
+msgstr "Audio en video gekoppeld houden"
 
 #: scenes/welcome/welcome.gd:156
 msgid "Always split Audio to a new track"
-msgstr ""
+msgstr "Audio altijd naar een nieuwe track splitsen"
 
 #: scenes/welcome/welcome.gd:173 scenes/settings_menu/settings_menu.gd:805
 msgid "Press any key..."
@@ -1268,11 +1294,11 @@ msgstr "Druk op een toets..."
 
 #: scenes/welcome/welcome.gd:216
 msgid "Seek Playhead"
-msgstr ""
+msgstr "Afspeelkop verplaatsen"
 
 #: scenes/welcome/welcome.gd:218
 msgid "Clear Selection"
-msgstr ""
+msgstr "Selectie wissen"
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Add effect"
@@ -1315,7 +1341,7 @@ msgstr "Audio vervangen"
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
 msgid "Waveform modifier"
-msgstr "Golfvormmodifier"
+msgstr "Golfvorm-modifier"
 
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 msgid "Audio offset"
@@ -1363,10 +1389,6 @@ msgstr "Modulebeheer"
 msgid "Install Module"
 msgstr "Module installeren"
 
-#: scenes/file_info/file_info.tscn
-msgid "FILE_NAME"
-msgstr ""
-
 #: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Path"
 msgstr "Pad"
@@ -1375,33 +1397,21 @@ msgstr "Pad"
 msgid "Type"
 msgstr "Type"
 
-#: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:91
-#: scenes/file_info/file_info.gd:106 scenes/file_info/file_info.gd:123
-#: scenes/file_info/file_info.gd:133
-msgid "Unknown"
-msgstr ""
-
 #: scenes/file_info/file_info.tscn
 msgid "Size"
-msgstr ""
+msgstr "Grootte"
 
 #: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Resolution"
 msgstr "Resolutie"
-
-#: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:126
-#: scenes/file_info/file_info.gd:127
-msgid "-"
-msgstr ""
 
 #: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Framerate"
 msgstr "Framerate"
 
 #: scenes/file_info/file_info.tscn
-#, fuzzy
 msgid "Duration"
-msgstr "Standaardduren"
+msgstr "Duur"
 
 #: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:50
 #: scenes/settings_menu/settings_menu.gd:508
@@ -1410,71 +1420,64 @@ msgstr "Video"
 
 #: scenes/file_info/file_info.tscn
 msgid "Codec"
-msgstr ""
-
-#: scenes/file_info/file_info.tscn
-msgid "N/A"
-msgstr ""
+msgstr "Codec"
 
 #: scenes/file_info/file_info.tscn
 msgid "Color space"
-msgstr ""
+msgstr "Kleurruimte"
 
 #: scenes/file_info/file_info.tscn
 msgid "Format"
-msgstr ""
+msgstr "Formaat"
 
 #: scenes/file_info/file_info.tscn
 msgid "Aspect ratio"
-msgstr ""
+msgstr "Beeldverhouding"
 
 #: scenes/file_info/file_info.tscn
 msgid "Bitrate"
-msgstr ""
+msgstr "Bitrate"
 
 #: scenes/file_info/file_info.tscn
-#, fuzzy
 msgid "B-frames"
 msgstr "B-frames"
 
 #: scenes/file_info/file_info.tscn
 msgid "Scanning"
-msgstr ""
-
-#: scenes/file_info/file_info.tscn
-msgid "Progressive"
-msgstr ""
+msgstr "Scantype"
 
 #: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:51
-#, fuzzy
 msgid "Audio"
-msgstr "Audiocodec"
+msgstr "Audio"
 
 #: scenes/file_info/file_info.tscn
 msgid "Streams"
-msgstr ""
+msgstr "Streams"
 
 #: scenes/file_info/file_info.tscn
-#, fuzzy
 msgid "Match project to file"
-msgstr "GoZen projectbestand"
+msgstr "Project aanpassen aan bestand"
 
 #: scenes/file_info/file_info.gd:52
-#, fuzzy
 msgid "Image"
-msgstr "Afbeelding door"
+msgstr "Afbeelding"
 
 #: scenes/file_info/file_info.gd:54
 msgid "Color"
-msgstr ""
+msgstr "Kleur"
 
 #: scenes/file_info/file_info.gd:55
 msgid "PCK"
-msgstr ""
+msgstr "PCK"
 
 #: scenes/file_info/file_info.gd:61
 msgid "In memory"
-msgstr ""
+msgstr "In geheugen"
+
+#: scenes/file_info/file_info.gd:91 scenes/file_info/file_info.gd:106
+#: scenes/file_info/file_info.gd:123 scenes/file_info/file_info.gd:133
+msgid "Unknown"
+msgstr "Onbekend"
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:223
@@ -1497,19 +1500,16 @@ msgid "Close settings"
 msgstr "Instellingen sluiten"
 
 #: scenes/settings_menu/settings_menu.gd:112
-#, fuzzy
 msgid "Editor"
-msgstr "Editorthema"
+msgstr "Editor"
 
 #: scenes/settings_menu/settings_menu.gd:118
-#, fuzzy
 msgid "Core modules"
-msgstr "Modules"
+msgstr "Kernmodules"
 
 #: scenes/settings_menu/settings_menu.gd:121
-#, fuzzy
 msgid "User modules"
-msgstr "Modules"
+msgstr "Gebruikersmodules"
 
 #: scenes/settings_menu/settings_menu.gd:190
 msgid "Marker one"
@@ -1562,7 +1562,7 @@ msgstr "Audiogolfvormen"
 
 #: scenes/settings_menu/settings_menu.gd:251
 msgid "Waveform style"
-msgstr "Weergave van audiogolf"
+msgstr "Golfvormstijl"
 
 #: scenes/settings_menu/settings_menu.gd:258
 msgid "Waveform amplifier"
@@ -1573,12 +1573,12 @@ msgid ""
 "Sometimes the waveforms aren't very clear due to audio levels being too low, "
 "with this setting you can adjust their intensity"
 msgstr ""
-"Soms zijn golfvormen niet duidelijk door een laag audioniveau. Hiermee pas "
-"je de intensiteit aan"
+"Soms zijn golfvormen niet duidelijk door een laag audioniveau. Met deze "
+"instelling pas je de intensiteit aan"
 
 #: scenes/settings_menu/settings_menu.gd:266
 msgid "Dialogs"
-msgstr "Dialogen"
+msgstr "Dialoogvensters"
 
 #: scenes/settings_menu/settings_menu.gd:267
 msgid "Panel tabs position"
@@ -1598,9 +1598,9 @@ msgid ""
 "performing a full seek operation. Higher values prevent lag during short "
 "jumps but use more CPU."
 msgstr ""
-"Bepaalt hoeveel frames de decoder vooruit leest in plaats van een volledige "
-"zoekactie. Hogere waarden voorkomen vertraging bij korte sprongen maar "
-"gebruiken meer CPU."
+"Bepaalt hoeveel frames de decoder sequentieel vooruit leest in plaats van "
+"een volledige zoekactie uit te voeren. Hogere waarden voorkomen vertraging "
+"bij korte sprongen, maar gebruiken meer CPU."
 
 #: scenes/settings_menu/settings_menu.gd:286
 msgid "Video Cache Size"
@@ -1611,16 +1611,17 @@ msgid ""
 "The maximum number of decoded frames to keep in RAM. Higher values enable "
 "smoother backward seeking and scrubbing but increase memory usage."
 msgstr ""
-"Het maximum aantal gedecodeerde frames in RAM. Hogere waarden zorgen voor "
-"soepeler achteruit zoeken maar verhogen geheugengebruik."
+"Het maximale aantal gedecodeerde frames dat in het RAM wordt bewaard. Hogere "
+"waarden zorgen voor soepeler achteruit zoeken en scrubben, maar verhogen het "
+"geheugengebruik."
 
 #: scenes/settings_menu/settings_menu.gd:298
 msgid "Use proxies"
-msgstr "Gebruik proxies"
+msgstr "Proxies gebruiken"
 
 #: scenes/settings_menu/settings_menu.gd:303
 msgid "Proxies save path"
-msgstr "Opslagpad proxies"
+msgstr "Opslagpad voor proxies"
 
 #: scenes/settings_menu/settings_menu.gd:308
 msgid ""
@@ -1628,9 +1629,9 @@ msgid ""
 "existing folder. All previously made proxy clips will need to be generated "
 "again and deleted manually from the previous folder."
 msgstr ""
-"Verander deze instelling naar een bestaande map. Alle eerdere proxy-clips "
-"moeten opnieuw worden gegenereerd en handmatig uit de oude map worden "
-"verwijderd."
+"Voor deze instelling moet je een pad opgeven naar een bestaande map. Alle "
+"eerder gemaakte proxyclips moeten opnieuw worden gegenereerd en handmatig "
+"uit de vorige map worden verwijderd."
 
 #: scenes/settings_menu/settings_menu.gd:312
 #: scenes/settings_menu/settings_menu.gd:524
@@ -1640,21 +1641,19 @@ msgstr "Uiterlijk"
 
 #: scenes/settings_menu/settings_menu.gd:314
 msgid "Defaults"
-msgstr "Standaarden"
+msgstr "Standaardwaarden"
 
 #: scenes/settings_menu/settings_menu.gd:315
-#, fuzzy
 msgid "Paths"
-msgstr "Pad"
+msgstr "Paden"
 
 #: scenes/settings_menu/settings_menu.gd:316
-#, fuzzy
 msgid "Default project path"
-msgstr "Selecteer projectopslagpad"
+msgstr "Standaardpad voor projecten"
 
 #: scenes/settings_menu/settings_menu.gd:321
 msgid "The default directory where new projects are created."
-msgstr ""
+msgstr "De standaardmap waarin nieuwe projecten worden aangemaakt."
 
 #: scenes/settings_menu/settings_menu.gd:322
 msgid "Default durations"
@@ -1668,7 +1667,7 @@ msgstr "Standaardduur afbeeldingen"
 #: scenes/settings_menu/settings_menu.gd:338
 #: scenes/settings_menu/settings_menu.gd:346
 msgid "Duration in frames per second."
-msgstr "Duur in frames per seconde"
+msgstr "Duur in frames per seconde."
 
 #: scenes/settings_menu/settings_menu.gd:331
 msgid "Default color duration"
@@ -1676,7 +1675,7 @@ msgstr "Standaardduur kleuren"
 
 #: scenes/settings_menu/settings_menu.gd:339
 msgid "Default text duration"
-msgstr "Standaard tekstduur"
+msgstr "Standaardduur tekst"
 
 #: scenes/settings_menu/settings_menu.gd:347
 #: scenes/settings_menu/settings_menu.gd:510
@@ -1686,11 +1685,11 @@ msgstr "Projectresolutie"
 #: scenes/settings_menu/settings_menu.gd:352
 #: scenes/settings_menu/settings_menu.gd:515
 msgid "Project frame-rate"
-msgstr "Project-framerate"
+msgstr "Projectframerate"
 
 #: scenes/settings_menu/settings_menu.gd:358
 msgid "Quick create project options"
-msgstr "Snelle projectopties"
+msgstr "Opties voor snel aanmaken van projecten"
 
 #: scenes/settings_menu/settings_menu.gd:359
 msgid "Horizontal resolution"
@@ -1756,19 +1755,19 @@ msgstr "De maker van de opstartafbeelding die je momenteel ziet."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Latest"
-msgstr ""
+msgstr "Nieuwste"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Oldest"
-msgstr ""
+msgstr "Oudste"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Name (A...Z)"
-msgstr ""
+msgstr "Naam (A...Z)"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Name (Z...A)"
-msgstr ""
+msgstr "Naam (Z...A)"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Getting started"
@@ -1781,7 +1780,7 @@ msgstr "Open een eerder gemaakt project via je bestandsbeheerder."
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Go to the menu to set the settings of your new project."
 msgstr ""
-"Ga naar het menu om de instellingen van je nieuwe project in te stellen."
+"Ga naar het menu om de instellingen van je nieuwe project te configureren."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Create new project"
@@ -1856,9 +1855,8 @@ msgid "Image by"
 msgstr "Afbeelding door"
 
 #: scenes/startup_screen/startup_screen.gd:254
-#, fuzzy
 msgid "Remove from list"
-msgstr "Proxy verwijderen"
+msgstr "Uit lijst verwijderen"
 
 #: scenes/startup_screen/startup_screen.gd:322
 msgid "User presets"
@@ -1867,7 +1865,7 @@ msgstr "Gebruikersvoorinstellingen"
 #: scenes/startup_screen/startup_screen.gd:378
 #: scenes/startup_screen/startup_screen.gd:456 scripts/autoloads/project.gd:125
 msgid "GoZen project file"
-msgstr "GoZen projectbestand"
+msgstr "GoZen-projectbestand"
 
 #: scenes/startup_screen/startup_screen.gd:454
 msgid "Select project save path"
@@ -1955,7 +1953,7 @@ msgstr "Projectbestanden laden ..."
 
 #: scripts/autoloads/project.gd:291
 msgid "GoZen project files"
-msgstr "GoZen projectbestanden"
+msgstr "GoZen-projectbestanden"
 
 #: scripts/autoloads/project.gd:378
 msgid "Don't save"
@@ -1982,11 +1980,11 @@ msgstr "Renderen annuleren"
 
 #: scripts/autoloads/render_manager.gd:227
 msgid "Error opening file"
-msgstr "Fout bij openen bestand"
+msgstr "Fout bij het openen van het bestand"
 
 #: scripts/autoloads/render_manager.gd:228
 msgid "Error whilst sending audio"
-msgstr "Fout tijdens verzenden audio"
+msgstr "Fout tijdens het verzenden van audio"
 
 #: scripts/autoloads/render_manager.gd:233
 msgid "Setting up ..."
@@ -2043,27 +2041,9 @@ msgid "Files loading ..."
 msgstr "Bestanden laden ..."
 
 #: scripts/logic/file_logic.gd:917
-#, fuzzy
 msgid "Files Updated"
-msgstr "Bestanden neergezet"
+msgstr "Bestanden bijgewerkt"
 
 #: scripts/logic/file_logic.gd:918
-msgid ""
-"The following files were modified externally and have been reloaded:\n"
-"\n"
-"- "
-msgstr ""
-
-#~ msgid "Create a low quality draft version of your video."
-#~ msgstr "Maak een conceptversie van lage kwaliteit van je video."
-
-#~ msgid "Use native dialogs"
-#~ msgstr "Gebruik systeemeigen dialogen"
-
-#~ msgid ""
-#~ "Native dialogs use your operating system's file browser and windows. "
-#~ "Disabling this uses GoZen's built-in dialogs instead."
-#~ msgstr ""
-#~ "Systeemeigen dialogen gebruiken de bestandsbrowser en vensters van je "
-#~ "besturingssysteem. Als je dit uitschakelt, gebruikt GoZen de ingebouwde "
-#~ "dialogen."
+msgid "The following files were modified externally and have been reloaded:"
+msgstr "De volgende bestanden zijn extern gewijzigd en opnieuw geladen:"

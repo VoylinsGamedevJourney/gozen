@@ -839,10 +839,6 @@ msgid "Close"
 msgstr "بستن"
 
 #: scenes/welcome/welcome.tscn
-msgid "WelcomeVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
 msgid "Welcome to GoZen!"
 msgstr ""
 
@@ -884,10 +880,6 @@ msgstr "کد منبع"
 #, fuzzy
 msgid "Support GoZen on Ko-fi!"
 msgstr "حمایت از GoZen"
-
-#: scenes/welcome/welcome.tscn
-msgid "BasicsVBox"
-msgstr ""
 
 #: scenes/welcome/welcome.tscn
 #, fuzzy
@@ -958,12 +950,9 @@ msgid ""
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-msgid "EditingVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
+#, fuzzy
 msgid "Editing in GoZen"
-msgstr ""
+msgstr "درباره GoZen"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1062,10 +1051,6 @@ msgid "Focus on timeline:"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-msgid "EffectsVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
 msgid ""
 "Effects and transitions inside of GoZen are very similar and their settings "
 "can both be accessed from the effects panel. Same is true for the settings "
@@ -1102,11 +1087,6 @@ msgid ""
 "have to be created inside of the editor by pressing the file icon in the top "
 "right corner of the file panel."
 msgstr ""
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
-msgid "RenderingVBox"
-msgstr "در حال رندر"
 
 #: scenes/welcome/welcome.tscn
 #, fuzzy
@@ -1154,11 +1134,6 @@ msgstr ""
 
 #: scenes/welcome/welcome.tscn
 #, fuzzy
-msgid "ModulesVBox"
-msgstr "ماژول ها"
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Modularity in GoZen"
 msgstr "درباره GoZen"
 
@@ -1177,8 +1152,9 @@ msgid ""
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
+#, fuzzy
 msgid "Itch.io modules"
-msgstr ""
+msgstr "ماژول ها"
 
 #: scenes/welcome/welcome.tscn
 #, fuzzy
@@ -1219,11 +1195,6 @@ msgid ""
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
-msgid "ExtrasVBox"
-msgstr "امکانات جانبی"
-
-#: scenes/welcome/welcome.tscn
 msgid ""
 "Here are a few common settings you might want to adjust before you get "
 "started. You can always change these later in Preferences -> Editor Settings."
@@ -1255,14 +1226,6 @@ msgstr ""
 #, fuzzy
 msgid "Resolution:"
 msgstr "وضوح"
-
-#: scenes/welcome/welcome.tscn
-msgid "x:"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "y:"
-msgstr ""
 
 #: scenes/welcome/welcome.tscn
 #, fuzzy
@@ -1382,10 +1345,6 @@ msgstr "مدیریت ماژول ها"
 msgid "Install Module"
 msgstr "نصب ماژول"
 
-#: scenes/file_info/file_info.tscn
-msgid "FILE_NAME"
-msgstr ""
-
 #: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Path"
 msgstr "مسیر"
@@ -1394,12 +1353,6 @@ msgstr "مسیر"
 msgid "Type"
 msgstr "نوع"
 
-#: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:91
-#: scenes/file_info/file_info.gd:106 scenes/file_info/file_info.gd:123
-#: scenes/file_info/file_info.gd:133
-msgid "Unknown"
-msgstr ""
-
 #: scenes/file_info/file_info.tscn
 msgid "Size"
 msgstr ""
@@ -1407,11 +1360,6 @@ msgstr ""
 #: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Resolution"
 msgstr "وضوح"
-
-#: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:126
-#: scenes/file_info/file_info.gd:127
-msgid "-"
-msgstr ""
 
 #: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Framerate"
@@ -1429,10 +1377,6 @@ msgstr "ویدیو"
 
 #: scenes/file_info/file_info.tscn
 msgid "Codec"
-msgstr ""
-
-#: scenes/file_info/file_info.tscn
-msgid "N/A"
 msgstr ""
 
 #: scenes/file_info/file_info.tscn
@@ -1458,10 +1402,6 @@ msgstr "فریم های B"
 
 #: scenes/file_info/file_info.tscn
 msgid "Scanning"
-msgstr ""
-
-#: scenes/file_info/file_info.tscn
-msgid "Progressive"
 msgstr ""
 
 #: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:51
@@ -1493,6 +1433,11 @@ msgstr ""
 
 #: scenes/file_info/file_info.gd:61
 msgid "In memory"
+msgstr ""
+
+#: scenes/file_info/file_info.gd:91 scenes/file_info/file_info.gd:106
+#: scenes/file_info/file_info.gd:123 scenes/file_info/file_info.gd:133
+msgid "Unknown"
 msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
@@ -2068,22 +2013,5 @@ msgid "Files Updated"
 msgstr "فایل ها اضافه شدند"
 
 #: scripts/logic/file_logic.gd:918
-msgid ""
-"The following files were modified externally and have been reloaded:\n"
-"\n"
-"- "
+msgid "The following files were modified externally and have been reloaded:"
 msgstr ""
-
-#~ msgid "Create a low quality draft version of your video."
-#~ msgstr "یک نسخه پیش نویس با کیفیت پایین از ویدیو ایجاد کنید."
-
-#~ msgid "Use native dialogs"
-#~ msgstr "استفاده از پنجره های محاوره ای بومی"
-
-#~ msgid ""
-#~ "Native dialogs use your operating system's file browser and windows. "
-#~ "Disabling this uses GoZen's built-in dialogs instead."
-#~ msgstr ""
-#~ "پنجره های محاوره ای بومی از جستوجوگر فایل و پنجزه های سیستم عامل شما "
-#~ "استفاده می کنند، با غیر فعال کردن این گزینه، پنجره های محاوره ای داخلی "
-#~ "GoZen استفاده می شوند."

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://ckkr2wr40qup8" path="res://scenes/file_info/file_info.gd" id="1_oyty4"]
 
-[node name="FileInfo" type="PanelContainer" unique_id=890807878 node_paths=PackedStringArray("title_label", "match_project_button", "separator_top", "separator_bottom", "grid_general", "label_path", "label_type", "label_size", "label_resolution", "label_framerate", "label_duration", "grid_video", "label_video_codec", "label_color_space", "label_pixel_format", "label_aspect_ratio", "label_video_bitrate", "label_b_frames", "label_scanning", "grid_audio", "label_audio_codec", "label_audio_streams", "label_audio_bitrate", "label_audio_duration")]
+[node name="FileInfo" type="PanelContainer" unique_id=890807878 node_paths=PackedStringArray("title_label", "match_project_button", "separator_bottom", "grid_general", "label_path", "label_type", "label_size", "label_resolution", "label_framerate", "label_duration", "grid_video", "label_video_codec", "label_color_space", "label_pixel_format", "label_aspect_ratio", "label_video_bitrate", "label_b_frames", "label_scanning", "grid_audio", "label_audio_codec", "label_audio_streams", "label_audio_bitrate", "label_audio_duration")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -12,7 +12,6 @@ theme_type_variation = &"overlay_background"
 script = ExtResource("1_oyty4")
 title_label = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TitleLabel")
 match_project_button = NodePath("Panel/Margin/VBox/HBox/MatchProjectButton")
-separator_top = NodePath("")
 separator_bottom = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VSeparator")
 grid_general = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid")
 label_path = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid/Path")
@@ -60,6 +59,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=2004354628]
+auto_translate_mode = 2
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "FILE_NAME"
@@ -81,6 +81,7 @@ theme_type_variation = &"info_label"
 text = "Path"
 
 [node name="Path" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=581204733]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -91,6 +92,7 @@ theme_type_variation = &"info_label"
 text = "Type"
 
 [node name="Type" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=543150275]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Unknown"
@@ -102,6 +104,7 @@ theme_type_variation = &"info_label"
 text = "Size"
 
 [node name="Size" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=477022066]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -112,6 +115,7 @@ theme_type_variation = &"info_label"
 text = "Resolution"
 
 [node name="Resolution" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=568900979]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "-"
@@ -123,6 +127,7 @@ theme_type_variation = &"info_label"
 text = "Framerate"
 
 [node name="Framerate" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=1231505998]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "-"
@@ -134,6 +139,7 @@ theme_type_variation = &"info_label"
 text = "Duration"
 
 [node name="Duration" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=1361703017]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "-"
@@ -168,6 +174,7 @@ theme_type_variation = &"info_label"
 text = "Codec"
 
 [node name="VideoCodec" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=1174518616]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "N/A"
@@ -179,6 +186,7 @@ theme_type_variation = &"info_label"
 text = "Color space"
 
 [node name="ColorSpace" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=2142058370]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "N/A"
@@ -190,6 +198,7 @@ theme_type_variation = &"info_label"
 text = "Format"
 
 [node name="PixelFormat" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=1979867841]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "N/A"
@@ -201,6 +210,7 @@ theme_type_variation = &"info_label"
 text = "Aspect ratio"
 
 [node name="AspectRatio" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=1031924931]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "N/A"
@@ -212,6 +222,7 @@ theme_type_variation = &"info_label"
 text = "Bitrate"
 
 [node name="Bitrate" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=294392460]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "N/A"
@@ -223,6 +234,7 @@ theme_type_variation = &"info_label"
 text = "B-frames"
 
 [node name="BFrames" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=270963386]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "N/A"
@@ -234,6 +246,7 @@ theme_type_variation = &"info_label"
 text = "Scanning"
 
 [node name="Scanning" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=1475820771]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Progressive"
@@ -263,6 +276,7 @@ theme_type_variation = &"info_label"
 text = "Codec"
 
 [node name="AudioCodec" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=765998101]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "N/A"
@@ -274,6 +288,7 @@ theme_type_variation = &"info_label"
 text = "Streams"
 
 [node name="AudioStreams" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=1178288964]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -284,6 +299,7 @@ theme_type_variation = &"info_label"
 text = "Bitrate"
 
 [node name="AudioBitrate" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=1715603282]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "N/A"
@@ -295,6 +311,7 @@ theme_type_variation = &"info_label"
 text = "Duration"
 
 [node name="Duration" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=240592128]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 

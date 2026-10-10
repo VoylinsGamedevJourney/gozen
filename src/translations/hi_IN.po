@@ -822,10 +822,6 @@ msgid "Close"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-msgid "WelcomeVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
 msgid "Welcome to GoZen!"
 msgstr ""
 
@@ -864,10 +860,6 @@ msgstr ""
 
 #: scenes/welcome/welcome.tscn
 msgid "Support GoZen on Ko-fi!"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "BasicsVBox"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
@@ -939,12 +931,9 @@ msgid ""
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-msgid "EditingVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
+#, fuzzy
 msgid "Editing in GoZen"
-msgstr ""
+msgstr "एडिटर सेटिंग्स"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1037,10 +1026,6 @@ msgid "Focus on timeline:"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-msgid "EffectsVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
 msgid ""
 "Effects and transitions inside of GoZen are very similar and their settings "
 "can both be accessed from the effects panel. Same is true for the settings "
@@ -1076,11 +1061,6 @@ msgid ""
 "have to be created inside of the editor by pressing the file icon in the top "
 "right corner of the file panel."
 msgstr ""
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
-msgid "RenderingVBox"
-msgstr "रेंडरिंग "
 
 #: scenes/welcome/welcome.tscn
 #, fuzzy
@@ -1124,10 +1104,6 @@ msgid ""
 "way you want, but if you aren't certain what these values do, it's best to "
 "stick with the default render profiles to avoid long rendering times and/or "
 "giant file sizes."
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "ModulesVBox"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
@@ -1189,10 +1165,6 @@ msgid ""
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-msgid "ExtrasVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
 msgid ""
 "Here are a few common settings you might want to adjust before you get "
 "started. You can always change these later in Preferences -> Editor Settings."
@@ -1224,14 +1196,6 @@ msgstr ""
 #, fuzzy
 msgid "Resolution:"
 msgstr "रिज़ॉल्यूशन"
-
-#: scenes/welcome/welcome.tscn
-msgid "x:"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "y:"
-msgstr ""
 
 #: scenes/welcome/welcome.tscn
 #, fuzzy
@@ -1357,22 +1321,12 @@ msgstr ""
 msgid "Install Module"
 msgstr ""
 
-#: scenes/file_info/file_info.tscn
-msgid "FILE_NAME"
-msgstr ""
-
 #: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Path"
 msgstr ""
 
 #: scenes/file_info/file_info.tscn scenes/marker_popup/marker_popup.tscn
 msgid "Type"
-msgstr ""
-
-#: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:91
-#: scenes/file_info/file_info.gd:106 scenes/file_info/file_info.gd:123
-#: scenes/file_info/file_info.gd:133
-msgid "Unknown"
 msgstr ""
 
 #: scenes/file_info/file_info.tscn
@@ -1383,11 +1337,6 @@ msgstr ""
 #, fuzzy
 msgid "Resolution"
 msgstr "रिज़ॉल्यूशन"
-
-#: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:126
-#: scenes/file_info/file_info.gd:127
-msgid "-"
-msgstr ""
 
 #: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
 #, fuzzy
@@ -1406,10 +1355,6 @@ msgstr ""
 
 #: scenes/file_info/file_info.tscn
 msgid "Codec"
-msgstr ""
-
-#: scenes/file_info/file_info.tscn
-msgid "N/A"
 msgstr ""
 
 #: scenes/file_info/file_info.tscn
@@ -1434,10 +1379,6 @@ msgstr ""
 
 #: scenes/file_info/file_info.tscn
 msgid "Scanning"
-msgstr ""
-
-#: scenes/file_info/file_info.tscn
-msgid "Progressive"
 msgstr ""
 
 #: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:51
@@ -1466,6 +1407,11 @@ msgstr ""
 
 #: scenes/file_info/file_info.gd:61
 msgid "In memory"
+msgstr ""
+
+#: scenes/file_info/file_info.gd:91 scenes/file_info/file_info.gd:106
+#: scenes/file_info/file_info.gd:123 scenes/file_info/file_info.gd:133
+msgid "Unknown"
 msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
@@ -2045,8 +1991,5 @@ msgid "Files Updated"
 msgstr "फ़ाइलें डाली गईं"
 
 #: scripts/logic/file_logic.gd:918
-msgid ""
-"The following files were modified externally and have been reloaded:\n"
-"\n"
-"- "
+msgid "The following files were modified externally and have been reloaded:"
 msgstr ""

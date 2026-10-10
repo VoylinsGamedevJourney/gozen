@@ -915,7 +915,7 @@ func _check_external_modifications() -> void:
 			reloaded.emit(file)
 
 		var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Files Updated"))
-		dialog.dialog_text = tr("The following files were modified externally and have been reloaded:\n\n- ") + "\n- ".join(file_names)
+		dialog.dialog_text = tr("The following files were modified externally and have been reloaded:") + "\n" + "\n- ".join(file_names)
 		add_child(dialog)
 		dialog.popup_centered()
 

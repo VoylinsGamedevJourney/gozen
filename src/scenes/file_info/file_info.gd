@@ -123,8 +123,8 @@ func load_data(file_id: int) -> void:
 				label_audio_bitrate.text = "Unknown"
 	elif file.type == Type.IMAGE:
 		match_project_button.visible = true
-		label_duration.text = "-"
-		label_framerate.text = "-"
+		label_duration.text = "-" # NO_TRANSLATE
+		label_framerate.text = "-" # NO_TRANSLATE
 		var image: Image = Image.load_from_file(file.path)
 		if image:
 			resolution = image.get_size()

@@ -12,7 +12,7 @@ msgstr "マスクポイントをクリア"
 
 #: modules/core_view_panel/view_panel.tscn
 msgid "Go to previous chapter marker."
-msgstr "前の章マーカーへ移動します。"
+msgstr "前のチャプターマーカーへ移動します。"
 
 #: modules/core_view_panel/view_panel.tscn
 msgid "Start project playback."
@@ -24,7 +24,7 @@ msgstr "プロジェクトの再生を一時停止します。"
 
 #: modules/core_view_panel/view_panel.tscn
 msgid "Go to next chapter marker."
-msgstr "次の章マーカーへ移動します。"
+msgstr "次のチャプターマーカーへ移動します。"
 
 #: modules/core_view_panel/view_panel.gd:61
 msgid "Jump to frame"
@@ -83,7 +83,6 @@ msgid "Video codec"
 msgstr "ビデオコーデック"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid ""
 "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
 "highest quality setting is 15.\n"
@@ -125,9 +124,8 @@ msgid "Speed"
 msgstr "速度"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "Advanced video settings"
-msgstr "ビデオ書き出し設定"
+msgstr "ビデオ詳細設定"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Gop size"
@@ -140,7 +138,7 @@ msgid ""
 "seeking and scrubbing through the video playback. Put to a low value if you "
 "intend to use the rendered video for editing."
 msgstr ""
-"Group Of Pictures (GOP)。値が高いほど圧縮率は良くなりますが、値が高いほどビデ"
+"Group Of Pictures (GOP)。値を高くするほど圧縮率は良くなりますが、ビデ"
 "オ再生時のシークやスクラブの精度が低下します。書き出したビデオを編集に使用す"
 "る場合は、低い値に設定してください。"
 
@@ -151,6 +149,10 @@ msgid ""
 "file size but increase encoding time and player decoding requirements. "
 "Values between 2 and 4 are generally recommended."
 msgstr ""
+"Bフレーム（双方向予測フレーム）は、過去と未来の両方のフレームを参照すること"
+"で、圧縮率と画質を向上させます。値を大きくするとファイルサイズは小さくなりま"
+"すが、エンコード時間とプレーヤーのデコード負荷が増加します。一般的には 2〜4 "
+"の値が推奨されます。"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "B frames"
@@ -261,7 +263,7 @@ msgstr "名前を付けて画像を保存..."
 #: modules/core_file_panel/file_panel.gd:145
 #: modules/core_timeline_panel/timeline_panel.gd:943
 msgid "Video options"
-msgstr "動画オプション"
+msgstr "ビデオオプション"
 
 #: modules/core_file_panel/file_panel.gd:149
 msgid "Create proxy"
@@ -281,7 +283,7 @@ msgstr "音声を置き換え"
 
 #: modules/core_file_panel/file_panel.gd:155
 msgid "Extract audio to file ..."
-msgstr "ファイルへ音声を抽出..."
+msgstr "音声をファイルに抽出..."
 
 #: modules/core_file_panel/file_panel.gd:157
 msgid "Text options"
@@ -292,13 +294,12 @@ msgid "Duplicate"
 msgstr "複製"
 
 #: modules/core_file_panel/file_panel.gd:160
-#, fuzzy
 msgid "Extra"
 msgstr "その他"
 
 #: modules/core_file_panel/file_panel.gd:161
 msgid "File Info"
-msgstr ""
+msgstr "ファイル情報"
 
 #: modules/core_file_panel/file_panel.gd:163
 msgid "Folder options"
@@ -343,7 +344,7 @@ msgstr "画像をファイルに保存"
 
 #: modules/core_file_panel/file_panel.gd:300
 msgid "Save video audio to WAV"
-msgstr "動画音声をWAVとして保存"
+msgstr "ビデオの音声をWAVとして保存"
 
 #: modules/core_file_panel/file_panel.gd:435
 msgid "(Loading thumbnail...)"
@@ -436,7 +437,6 @@ msgid "Select mode: Used for selecting clips on the timeline."
 msgstr "選択モード：タイムライン上のクリップを選択するために使用します。"
 
 #: modules/core_timeline_panel/timeline.tscn
-#, fuzzy
 msgid ""
 "Cut mode: Lets you cut clips on the position of your mouse cursor by "
 "clicking."
@@ -560,7 +560,7 @@ msgstr "シン"
 
 #: modules/core_effects_panel/effects_panel.gd:1044
 msgid "Extra Light"
-msgstr "ウルトラライト"
+msgstr "エクストラライト"
 
 #: modules/core_effects_panel/effects_panel.gd:1045
 msgid "Light"
@@ -568,11 +568,11 @@ msgstr "ライト"
 
 #: modules/core_effects_panel/effects_panel.gd:1046
 msgid "Regular"
-msgstr "標準"
+msgstr "レギュラー"
 
 #: modules/core_effects_panel/effects_panel.gd:1047
 msgid "Medium"
-msgstr "中字"
+msgstr "ミディアム"
 
 #: modules/core_effects_panel/effects_panel.gd:1048
 msgid "Semi Bold"
@@ -639,11 +639,11 @@ msgstr "トランジション"
 
 #: modules/core_effects_panel/effects_panel.tscn
 msgid "Visual effects"
-msgstr "視覚効果"
+msgstr "ビジュアルエフェクト"
 
 #: modules/core_effects_panel/effects_panel.tscn
 msgid "Audio effects"
-msgstr "音声効果"
+msgstr "オーディオエフェクト"
 
 #: scenes/editor/editor.gd:260 scenes/startup_screen/startup_screen.tscn
 #: scripts/autoloads/project.gd:52
@@ -677,7 +677,7 @@ msgstr "スプラッシュ画面"
 
 #: scenes/editor/editor.gd:277
 msgid "Welcome screen"
-msgstr ""
+msgstr "ウェルカム画面"
 
 #: scenes/editor/editor.gd:279 scenes/settings_menu/settings_menu.gd:114
 msgid "Project settings"
@@ -783,33 +783,30 @@ msgstr "ワークスペース「%s」を削除してもよろしいですか？"
 
 #: scenes/welcome/welcome.tscn
 msgid "Welcome"
-msgstr ""
+msgstr "ようこそ"
 
 #: scenes/welcome/welcome.tscn
 msgid "Basics"
-msgstr ""
+msgstr "基本"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Editing"
-msgstr "エディター設定"
+msgstr "編集"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Effects"
-msgstr "エフェクトを追加。"
+msgstr "エフェクト"
 
 #: scenes/welcome/welcome.tscn scripts/autoloads/render_manager.gd:182
 #: scripts/autoloads/render_manager.gd:189
 msgid "Rendering"
-msgstr "書き出し中"
+msgstr "書き出し"
 
 #: scenes/welcome/welcome.tscn
 msgid "Modules"
 msgstr "モジュール"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Extra's"
 msgstr "その他"
 
@@ -818,12 +815,8 @@ msgid "Close"
 msgstr "閉じる"
 
 #: scenes/welcome/welcome.tscn
-msgid "WelcomeVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
 msgid "Welcome to GoZen!"
-msgstr ""
+msgstr "GoZenへようこそ！"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -832,6 +825,10 @@ msgid ""
 "beginners and semi-professionals designed to make editing simple, fast, and "
 "stress-free."
 msgstr ""
+"GoZenをご利用いただき、またこのビデオエディターをお試しいただき、ありがとうご"
+"ざいます。GoZenは、初心者からセミプロまでを対象とした、ミニマルでモダンなオー"
+"プンソースのビデオエディターです。カスタマイズ性とモジュール性に優れ、編集を"
+"シンプルかつ高速に、ストレスなく行えるように設計されています。"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -840,6 +837,10 @@ msgid ""
 "don't. Use the buttons on the left of the screen to navigate the "
 "introduction to using this video editor."
 msgstr ""
+"GoZenは、より大規模なビデオエディターと競争することを目指していません。私たち"
+"の目標は、必要なものはすべて揃い、不要なものは含まない、堅実な基本機能を備え"
+"たビデオエディターを提供することです。画面左側のボタンを使って、このビデオエ"
+"ディターの使い方の紹介を順に確認できます。"
 
 #: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:212
 msgid "Language"
@@ -847,31 +848,23 @@ msgstr "言語"
 
 #: scenes/welcome/welcome.tscn
 msgid "Theme"
-msgstr ""
+msgstr "テーマ"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "YouTube tutorials"
-msgstr "チュートリアル"
+msgstr "YouTubeチュートリアル"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Source Code"
 msgstr "ソースコード"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Support GoZen on Ko-fi!"
-msgstr "GoZenを支援"
+msgstr "Ko-fiでGoZenを支援！"
 
 #: scenes/welcome/welcome.tscn
-msgid "BasicsVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Adding files"
-msgstr "ファイルを追加"
+msgstr "ファイルの追加"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -880,10 +873,14 @@ msgid ""
 "option to add files. Besides that, on top of the file panel there's a button "
 "which you can press to add files."
 msgstr ""
+"ファイルマネージャーからエディターにドラッグ＆ドロップすることでファイルを追"
+"加できます。ファイルパネルの空白部分またはフォルダを右クリックしても、ファイ"
+"ルを追加するオプションが表示されます。また、ファイルパネルの上部にあるボタン"
+"を押してもファイルを追加できます。"
 
 #: scenes/welcome/welcome.tscn
 msgid "The timeline"
-msgstr ""
+msgstr "タイムライン"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -892,6 +889,9 @@ msgid ""
 "timeline more compact and gives your more freedom to place your clips "
 "wherever you want."
 msgstr ""
+"GoZenのタイムラインは他のビデオエディターとは大きく異なり、音声クリップと映像"
+"クリップを同じトラックに配置できます。これにより、タイムラインがよりコンパク"
+"トになり、クリップを好きな場所に自由に配置できます。"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -899,34 +899,37 @@ msgid ""
 "the visuals from the audio. This is possible by holding ctrl/shift when "
 "dragging in video files to the timeline."
 msgstr ""
+"ビデオを映像と音声の2つのクリップに分けたい方もいます。これは、ビデオファイル"
+"をタイムラインにドラッグするときに Ctrl/Shift を押しながら行うことで可能で"
+"す。"
 
 #: scenes/welcome/welcome.tscn
 msgid "Audio Clip Example"
-msgstr ""
+msgstr "音声クリップの例"
 
 #: scenes/welcome/welcome.tscn
 msgid "Color Clip Example"
-msgstr ""
+msgstr "カラークリップの例"
 
 #: scenes/welcome/welcome.tscn
 msgid "Image Clip Example"
-msgstr ""
+msgstr "画像クリップの例"
 
 #: scenes/welcome/welcome.tscn
 msgid "PCK Clip Example"
-msgstr ""
+msgstr "PCKクリップの例"
 
 #: scenes/welcome/welcome.tscn
 msgid "Text Clip Example"
-msgstr ""
+msgstr "テキストクリップの例"
 
 #: scenes/welcome/welcome.tscn
 msgid "Video Clip Example"
-msgstr ""
+msgstr "ビデオクリップの例"
 
 #: scenes/welcome/welcome.tscn
 msgid "Default video dragging behaviour:"
-msgstr ""
+msgstr "ビデオをドラッグしたときのデフォルトの動作："
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -935,14 +938,13 @@ msgid ""
 "be done by holding CTRL and making the tracks bigger/smaller can be done "
 "with CTRL+SHIFT. "
 msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "EditingVBox"
-msgstr ""
+"タイムラインの移動にはスクロールホイールを使用し、トラック間のスクロールは "
+"SHIFT を押しながら行います。タイムラインのズームインは CTRL を押しながら行"
+"い、トラックの拡大・縮小は CTRL+SHIFT で行えます。 "
 
 #: scenes/welcome/welcome.tscn
 msgid "Editing in GoZen"
-msgstr ""
+msgstr "GoZenでの編集"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -952,10 +954,14 @@ msgid ""
 "possible to keep your left hand on your keyboard and right hand on your "
 "mouse. Ergonomics are important."
 msgstr ""
+"ミニマルなUIと機能のおかげで、編集作業はとても分かりやすくなっています。編集"
+"をより快適にするためのショートカットがいくつかあり、そのデフォルトの配置は、"
+"左手をキーボード、右手をマウスに置いたまま操作できるようになっています。人間"
+"工学は重要です。"
 
 #: scenes/welcome/welcome.tscn
 msgid "Timeline mode shortcuts"
-msgstr ""
+msgstr "タイムラインモードのショートカット"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -963,86 +969,82 @@ msgid ""
 "clips, the other mode cut clips where you clip. These modes can be toggled "
 "with shortcuts and is a fast way to edit your videos."
 msgstr ""
+"GoZenにはタイムラインモードが2つあります。デフォルトモードはクリップの選択・"
+"移動などを行うためのもので、もう1つのモードはクリックした位置でクリップをカッ"
+"トします。これらのモードはショートカットで切り替えることができ、ビデオを素早"
+"く編集する方法です。"
 
 #: scenes/welcome/welcome.tscn
 msgid "Select mode:"
-msgstr ""
+msgstr "選択モード："
 
 #: scenes/welcome/welcome.tscn
 msgid "Cut mode:"
-msgstr ""
+msgstr "カットモード："
 
 #: scenes/welcome/welcome.tscn
 msgid "Timeline shortcuts"
-msgstr ""
+msgstr "タイムラインのショートカット"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
 "Everybody has their own editing style and shortcuts, feel free to adjust the "
 "shortcuts here. You can always change these later on in the settings menu."
 msgstr ""
+"編集スタイルやショートカットは人それぞれです。ここでショートカットを自由に調"
+"整してください。設定メニューからいつでも変更できます。"
 
 #: scenes/welcome/welcome.tscn
 msgid "Cut at playhead:"
-msgstr ""
+msgstr "再生ヘッドでカット："
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Delete:"
-msgstr "削除"
+msgstr "削除："
 
 #: scenes/welcome/welcome.tscn
 msgid "Cut at cursor:"
-msgstr ""
+msgstr "カーソル位置でカット："
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Ripple delete:"
-msgstr "リップル削除"
+msgstr "リップル削除："
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Remove empty space on cursor position."
-msgstr "空白を削除"
+msgstr "カーソル位置の空白を削除します。"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Remove empty space:"
-msgstr "空白を削除"
+msgstr "空白を削除："
 
 #: scenes/welcome/welcome.tscn
 msgid "Open marker popup:"
-msgstr ""
+msgstr "マーカーのポップアップを開く："
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Duplicate clip:"
-msgstr "複製"
+msgstr "クリップを複製："
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Add effects popup:"
-msgstr "エフェクトを追加。"
+msgstr "エフェクト追加ポップアップ："
 
 #: scenes/welcome/welcome.tscn
 msgid "Trim to start:"
-msgstr ""
+msgstr "先頭をトリミング："
 
 #: scenes/welcome/welcome.tscn
 msgid "Focus on playhead:"
-msgstr ""
+msgstr "再生ヘッドにフォーカス："
 
 #: scenes/welcome/welcome.tscn
 msgid "Trim to end:"
-msgstr ""
+msgstr "末尾をトリミング："
 
 #: scenes/welcome/welcome.tscn
 msgid "Focus on timeline:"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "EffectsVBox"
-msgstr ""
+msgstr "タイムラインにフォーカス："
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1053,6 +1055,11 @@ msgid ""
 "button to add effects, or use the shortcut CTRL+A to show the popup for "
 "adding effects."
 msgstr ""
+"GoZenのエフェクトとトランジションは非常によく似ており、どちらの設定もエフェク"
+"トパネルからアクセスできます。テキストクリップやカラークリップの設定も同様で"
+"す。タイムライン上でクリップを選択すると、そのクリップのエフェクトがエフェク"
+"トパネルに表示され、そこからボタンをクリックしてエフェクトを追加したり、"
+"ショートカット CTRL+A でエフェクト追加ポップアップを表示したりできます。"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1061,6 +1068,9 @@ msgid ""
 "audio, we have 2 sets of handles: Top ones are for audio and the bottom ones "
 "are for visual fades."
 msgstr ""
+"トランジションは、クリップの角にマウスを合わせるとフェードハンドルが表示され"
+"るので、それを使って作成できます。クリップには映像と音声の両方が含まれるた"
+"め、ハンドルは2組あります。上側が音声用、下側が映像のフェード用です。"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1068,11 +1078,13 @@ msgid ""
 "has a keyframe it will automatically start recording changes which are made "
 "on time stamps where no keyframe has been made yet."
 msgstr ""
+"キーフレームは、横にあるひし形を押して設定できます。プロパティにキーフレーム"
+"が一度設定されると、まだキーフレームのないタイムスタンプで行った変更が自動的"
+"に記録されるようになります。"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Text & Colors"
-msgstr "テキストオプション"
+msgstr "テキストとカラー"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1081,16 +1093,13 @@ msgid ""
 "have to be created inside of the editor by pressing the file icon in the top "
 "right corner of the file panel."
 msgstr ""
+"ビデオ、PCK、オーディオ、画像のファイルがあり、これらはエディターにドラッグ＆"
+"ドロップできます。テキストとカラーもファイルとして扱いますが、ファイルパネル"
+"の右上にあるファイルアイコンを押して、エディター内で作成する必要があります。"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
-msgid "RenderingVBox"
-msgstr "書き出し中"
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Rendering your videos"
-msgstr "ビデオ書き出し設定"
+msgstr "ビデオの書き出し"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1098,29 +1107,33 @@ msgid ""
 "rendering them. There are pre-made render profiles to choose from, but you "
 "can of course make your own as well."
 msgstr ""
+"ビデオを編集できることと並んで、おそらく最も重要なのが書き出しです。あらかじ"
+"め用意された書き出しプロファイルから選べますが、もちろん独自のプロファイルを"
+"作成することもできます。"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Default render profile:"
-msgstr "カスタム書き出しプロファイル"
+msgstr "デフォルトの書き出しプロファイル："
 
 #: scenes/welcome/welcome.tscn
 msgid ""
 "Want to just render out a region? Use the region shortcuts to easily define "
 "which part of your project which you want to export."
 msgstr ""
+"一部の範囲だけを書き出したいですか？範囲ショートカットを使うと、プロジェクト"
+"のどの部分を書き出すかを簡単に指定できます。"
 
 #: scenes/welcome/welcome.tscn
 msgid "Region in:"
-msgstr ""
+msgstr "範囲の開始："
 
 #: scenes/welcome/welcome.tscn
 msgid "Region out:"
-msgstr ""
+msgstr "範囲の終了："
 
 #: scenes/welcome/welcome.tscn
 msgid "Quick note for rendering with custom settings"
-msgstr ""
+msgstr "カスタム設定で書き出す際のご注意"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1130,16 +1143,15 @@ msgid ""
 "stick with the default render profiles to avoid long rendering times and/or "
 "giant file sizes."
 msgstr ""
+"書き出し速度は、選択する書き出し設定によって大きく変わります。GoZenでは好みの"
+"方法でビデオを書き出せるよう書き出し設定にアクセスできますが、各値の意味が分"
+"からない場合は、書き出し時間が長くなったりファイルサイズが非常に大きくなった"
+"りするのを避けるため、デフォルトの書き出しプロファイルを使用することをおすす"
+"めします。"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
-msgid "ModulesVBox"
-msgstr "モジュール"
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Modularity in GoZen"
-msgstr "GoZenについて"
+msgstr "GoZenのモジュール性"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1148,26 +1160,29 @@ msgid ""
 "there's a specific transition you want for your project? You can do that "
 "with modules."
 msgstr ""
+"モジュールはエディターを拡張するために使用できます。エディターに機能を追加す"
+"るパネルや、見栄えの良いエフェクト、プロジェクトに必要な特定のトランジション"
+"が欲しいですか？それらはモジュールで実現できます。"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
 "To add modules you can click \"Preferences\" in the menu bar and click on "
 "\"Module manager\"."
 msgstr ""
+"モジュールを追加するには、メニューバーの「Preferences」をクリックし、「モ"
+"ジュールマネージャー」をクリックします。"
 
 #: scenes/welcome/welcome.tscn
 msgid "Itch.io modules"
-msgstr ""
+msgstr "Itch.ioのモジュール"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Steam workshop"
-msgstr "ワークスペースを保存"
+msgstr "Steamワークショップ"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Custom PCK files"
-msgstr "カスタム書き出しプロファイル"
+msgstr "カスタムPCKファイル"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1176,15 +1191,18 @@ msgid ""
 "which can be used directly in the timeline for visuals. For the creation of "
 "these files a bit of development is needed inside of custom Godot project."
 msgstr ""
+"モジュールはエディターを変更して機能を追加しますが、pckファイルと呼ばれる別の"
+"種類のモジュールもあります。これらはタイムライン上で映像として直接使用できる"
+"Godotシーンです。これらのファイルを作成するには、カスタムGodotプロジェクト内"
+"で多少の開発が必要です。"
 
 #: scenes/welcome/welcome.tscn
 msgid "PCK Module Project"
-msgstr ""
+msgstr "PCKモジュールプロジェクト"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Workspaces"
-msgstr "ワークスペース名"
+msgstr "ワークスペース"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1196,31 +1214,32 @@ msgid ""
 "To quickly switch between workspaces you can use CTRL+Enter, this will move "
 "you to the next workspace."
 msgstr ""
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
-msgid "ExtrasVBox"
-msgstr "その他"
+"GoZenのワークスペースは、右上からアクセスできるさまざまなタブです。デフォルト"
+"では「Edit」と「Render」があります。メニューバーの「View」タブから、各タブに"
+"表示するパネルを選択したり、新しいワークスペースを作成したりできます。\n"
+"\n"
+"ワークスペースをすばやく切り替えるには CTRL+Enter を使用します。次のワークス"
+"ペースに移動します。"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
 "Here are a few common settings you might want to adjust before you get "
 "started. You can always change these later in Preferences -> Editor Settings."
 msgstr ""
+"ここでは、始める前に調整しておくとよい一般的な設定をいくつか紹介します。これ"
+"らは後からいつでも Preferences -> エディター設定 で変更できます。"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Auto save:"
-msgstr "自動保存"
+msgstr "自動保存："
 
 #: scenes/welcome/welcome.tscn
 msgid "Empty space click action:"
-msgstr ""
+msgstr "空白をクリックしたときの動作："
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Default project settings"
-msgstr "プロジェクト設定"
+msgstr "デフォルトのプロジェクト設定"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1229,36 +1248,30 @@ msgid ""
 "outside of the start screen or by clicking the 2 icons next to the \"Create "
 "project\" button on the start screen."
 msgstr ""
+"GoZenでは、新しいプロジェクトをすばやく作成できます。そのプロジェクトには以下"
+"の設定が使用されます。プロジェクトのクイック作成は、スタート画面の外側をク"
+"リックするか、スタート画面の「新規プロジェクト作成」ボタンの横にある2つのアイ"
+"コンをクリックすることで行えます。"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Resolution:"
-msgstr "解像度"
+msgstr "解像度："
 
 #: scenes/welcome/welcome.tscn
-msgid "x:"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "y:"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Framerate:"
-msgstr "フレームレート"
+msgstr "フレームレート："
 
 #: scenes/welcome/welcome.gd:54
 msgid "Full version only!"
-msgstr ""
+msgstr "フル版のみ！"
 
 #: scenes/welcome/welcome.gd:154
 msgid "Keep Audio & Video linked"
-msgstr ""
+msgstr "音声と映像をリンクしたままにする"
 
 #: scenes/welcome/welcome.gd:156
 msgid "Always split Audio to a new track"
-msgstr ""
+msgstr "音声を常に新しいトラックに分ける"
 
 #: scenes/welcome/welcome.gd:173 scenes/settings_menu/settings_menu.gd:805
 msgid "Press any key..."
@@ -1266,11 +1279,11 @@ msgstr "キーを押してください..."
 
 #: scenes/welcome/welcome.gd:216
 msgid "Seek Playhead"
-msgstr ""
+msgstr "再生ヘッドを移動"
 
 #: scenes/welcome/welcome.gd:218
 msgid "Clear Selection"
-msgstr ""
+msgstr "選択を解除"
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Add effect"
@@ -1361,10 +1374,6 @@ msgstr "モジュールマネージャー"
 msgid "Install Module"
 msgstr "モジュールをインストール"
 
-#: scenes/file_info/file_info.tscn
-msgid "FILE_NAME"
-msgstr ""
-
 #: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Path"
 msgstr "パス"
@@ -1373,33 +1382,21 @@ msgstr "パス"
 msgid "Type"
 msgstr "タイプ"
 
-#: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:91
-#: scenes/file_info/file_info.gd:106 scenes/file_info/file_info.gd:123
-#: scenes/file_info/file_info.gd:133
-msgid "Unknown"
-msgstr ""
-
 #: scenes/file_info/file_info.tscn
 msgid "Size"
-msgstr ""
+msgstr "サイズ"
 
 #: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Resolution"
 msgstr "解像度"
-
-#: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:126
-#: scenes/file_info/file_info.gd:127
-msgid "-"
-msgstr ""
 
 #: scenes/file_info/file_info.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Framerate"
 msgstr "フレームレート"
 
 #: scenes/file_info/file_info.tscn
-#, fuzzy
 msgid "Duration"
-msgstr "デフォルトの長さ"
+msgstr "長さ"
 
 #: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:50
 #: scenes/settings_menu/settings_menu.gd:508
@@ -1408,71 +1405,64 @@ msgstr "ビデオ"
 
 #: scenes/file_info/file_info.tscn
 msgid "Codec"
-msgstr ""
-
-#: scenes/file_info/file_info.tscn
-msgid "N/A"
-msgstr ""
+msgstr "コーデック"
 
 #: scenes/file_info/file_info.tscn
 msgid "Color space"
-msgstr ""
+msgstr "色空間"
 
 #: scenes/file_info/file_info.tscn
 msgid "Format"
-msgstr ""
+msgstr "フォーマット"
 
 #: scenes/file_info/file_info.tscn
 msgid "Aspect ratio"
-msgstr ""
+msgstr "アスペクト比"
 
 #: scenes/file_info/file_info.tscn
 msgid "Bitrate"
-msgstr ""
+msgstr "ビットレート"
 
 #: scenes/file_info/file_info.tscn
-#, fuzzy
 msgid "B-frames"
 msgstr "Bフレーム"
 
 #: scenes/file_info/file_info.tscn
 msgid "Scanning"
-msgstr ""
-
-#: scenes/file_info/file_info.tscn
-msgid "Progressive"
-msgstr ""
+msgstr "スキャン方式"
 
 #: scenes/file_info/file_info.tscn scenes/file_info/file_info.gd:51
-#, fuzzy
 msgid "Audio"
-msgstr "オーディオコーデック"
+msgstr "オーディオ"
 
 #: scenes/file_info/file_info.tscn
 msgid "Streams"
-msgstr ""
+msgstr "ストリーム"
 
 #: scenes/file_info/file_info.tscn
-#, fuzzy
 msgid "Match project to file"
-msgstr "GoZen プロジェクトファイル"
+msgstr "プロジェクトをファイルに合わせる"
 
 #: scenes/file_info/file_info.gd:52
-#, fuzzy
 msgid "Image"
-msgstr "画像："
+msgstr "画像"
 
 #: scenes/file_info/file_info.gd:54
 msgid "Color"
-msgstr ""
+msgstr "カラー"
 
 #: scenes/file_info/file_info.gd:55
 msgid "PCK"
-msgstr ""
+msgstr "PCK"
 
 #: scenes/file_info/file_info.gd:61
 msgid "In memory"
-msgstr ""
+msgstr "メモリ内"
+
+#: scenes/file_info/file_info.gd:91 scenes/file_info/file_info.gd:106
+#: scenes/file_info/file_info.gd:123 scenes/file_info/file_info.gd:133
+msgid "Unknown"
+msgstr "不明"
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:223
@@ -1495,19 +1485,16 @@ msgid "Close settings"
 msgstr "設定を閉じる"
 
 #: scenes/settings_menu/settings_menu.gd:112
-#, fuzzy
 msgid "Editor"
-msgstr "エディターテーマ"
+msgstr "エディター"
 
 #: scenes/settings_menu/settings_menu.gd:118
-#, fuzzy
 msgid "Core modules"
-msgstr "モジュール"
+msgstr "コアモジュール"
 
 #: scenes/settings_menu/settings_menu.gd:121
-#, fuzzy
 msgid "User modules"
-msgstr "モジュール"
+msgstr "ユーザーモジュール"
 
 #: scenes/settings_menu/settings_menu.gd:190
 msgid "Marker one"
@@ -1641,18 +1628,16 @@ msgid "Defaults"
 msgstr "デフォルト"
 
 #: scenes/settings_menu/settings_menu.gd:315
-#, fuzzy
 msgid "Paths"
 msgstr "パス"
 
 #: scenes/settings_menu/settings_menu.gd:316
-#, fuzzy
 msgid "Default project path"
-msgstr "プロジェクト保存パスを選択"
+msgstr "デフォルトのプロジェクトパス"
 
 #: scenes/settings_menu/settings_menu.gd:321
 msgid "The default directory where new projects are created."
-msgstr ""
+msgstr "新しいプロジェクトが作成されるデフォルトのディレクトリ。"
 
 #: scenes/settings_menu/settings_menu.gd:322
 msgid "Default durations"
@@ -1754,19 +1739,19 @@ msgstr "現在表示されている起動画面の画像の作者です。"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Latest"
-msgstr ""
+msgstr "最新"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Oldest"
-msgstr ""
+msgstr "最古"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Name (A...Z)"
-msgstr ""
+msgstr "名前 (A...Z)"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Name (Z...A)"
-msgstr ""
+msgstr "名前 (Z...A)"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Getting started"
@@ -1850,12 +1835,11 @@ msgstr "戻る"
 
 #: scenes/startup_screen/startup_screen.gd:81
 msgid "Image by"
-msgstr "画像："
+msgstr "画像提供："
 
 #: scenes/startup_screen/startup_screen.gd:254
-#, fuzzy
 msgid "Remove from list"
-msgstr "プロキシを削除"
+msgstr "リストから削除"
 
 #: scenes/startup_screen/startup_screen.gd:322
 msgid "User presets"
@@ -2038,26 +2022,9 @@ msgid "Files loading ..."
 msgstr "ファイルを読み込み中..."
 
 #: scripts/logic/file_logic.gd:917
-#, fuzzy
 msgid "Files Updated"
-msgstr "ファイルがドロップされました"
+msgstr "ファイルが更新されました"
 
 #: scripts/logic/file_logic.gd:918
-msgid ""
-"The following files were modified externally and have been reloaded:\n"
-"\n"
-"- "
-msgstr ""
-
-#~ msgid "Create a low quality draft version of your video."
-#~ msgstr "ビデオの低品質ドラフトバージョンを作成します。"
-
-#~ msgid "Use native dialogs"
-#~ msgstr "ネイティブダイアログを使用"
-
-#~ msgid ""
-#~ "Native dialogs use your operating system's file browser and windows. "
-#~ "Disabling this uses GoZen's built-in dialogs instead."
-#~ msgstr ""
-#~ "ネイティブダイアログでは、オペレーティングシステムのファイルブラウザーと"
-#~ "ウィンドウを使用します。無効にすると、GoZen内蔵のダイアログを使用します。"
+msgid "The following files were modified externally and have been reloaded:"
+msgstr "次のファイルが外部で変更されたため、再読み込みされました："
