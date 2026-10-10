@@ -4,7 +4,6 @@ extends Control
 enum Mode { EDITOR_SETTINGS, PROJECT_SETTINGS }
 
 
-@export var panel_label: Label
 @export var side_bar_vbox: VBoxContainer
 @export var search_line_edit: LineEdit
 @export var settings_vbox: VBoxContainer
@@ -109,7 +108,19 @@ func set_mode(mode: Mode) -> void:
 			menu_options = get_project_settings_menu_options()
 			_editor_settings = false
 
+	if _editor_settings:
+		_add_side_bar_header(tr("Editor"))
+	else:
+		_add_side_bar_header(tr("Project settings"))
+
 	for section_name: String in menu_options:
+		if section_name == "core_modules_header":
+			_add_side_bar_header(tr("Core modules"))
+			continue
+		elif section_name == "user_modules_header":
+			_add_side_bar_header(tr("User modules"))
+			continue
+
 		var section_grid: Node = _create_section(section_name)
 		for node: Node in menu_options[section_name]:
 			if !node.get_parent():
@@ -118,24 +129,13 @@ func set_mode(mode: Mode) -> void:
 
 func _show_section(section_name: String) -> void:
 	for section: String in sections.keys():
-		if section_name == "mod":
-			sections[section].visible = section in module_sections
-		else:
-			sections[section].visible = section == section_name
+		sections[section].visible = section == section_name
 	_on_search_line_edit_text_changed(search_line_edit.text)
 
 
 func _add_side_bar_option(section_name: String) -> void:
-	if section_name == "mod":
-		var separator: HSeparator = HSeparator.new()
-		separator.custom_minimum_size.y = 10
-		side_bar_vbox.add_child(separator)
-
 	var button: Button = Button.new()
-	if section_name == "mod":
-		button.text = tr("All module settings")
-	else:
-		button.text = section_name
+	button.text = section_name
 
 	button.set_meta("section_name", section_name)
 	button.toggle_mode = true
@@ -152,10 +152,20 @@ func _add_side_bar_option(section_name: String) -> void:
 	button.pressed.connect(_show_section.bind(section_name))
 	side_bar_vbox.add_child(button)
 
-	if section_name == "mod":
-		var separator: HSeparator = HSeparator.new()
-		separator.custom_minimum_size.y = 4
-		side_bar_vbox.add_child(separator)
+
+func _add_side_bar_header(title: String) -> void:
+	if side_bar_vbox.get_child_count() > 0:
+		var spacer: Control = Control.new()
+		spacer.custom_minimum_size.y = 7
+		side_bar_vbox.add_child(spacer)
+
+	var label: Label = Label.new()
+	label.text = title
+	label.theme_type_variation = "title_label"
+	side_bar_vbox.add_child(label)
+
+	var separator: HSeparator = HSeparator.new()
+	side_bar_vbox.add_child(separator)
 
 
 func _create_section(section_name: String) -> GridContainer:
@@ -173,7 +183,6 @@ func _create_section(section_name: String) -> GridContainer:
 
 func get_settings_menu_options() -> Dictionary: ## { String: Array }
 	var default_settings: SettingsData = SettingsData.new()
-	panel_label.text = tr("Editor settings")
 
 	# Creating the marker nodes.
 	var marker_nodes: Array = []
@@ -387,17 +396,34 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 		tr("Shortcuts"): shortcut_nodes,
 	}
 
-	var has_modules: bool = false
-	var individual_modules: Dictionary = {}
+	var has_core_modules: bool = false
+	var has_user_modules: bool = false
+	var core_modules: Dictionary = {}
+	var user_modules: Dictionary = {}
 
 	for module: GoZenModule in ModuleManager.loaded_gozen_modules:
 		if module.settings.is_empty():
 			continue
 
-		has_modules = true
-
 		var folder_name: String = module.resource_path.get_base_dir().get_file()
 		var display_name: String = module.name if module.name != "" else folder_name
+
+		var is_user_module: bool = false
+		var module_name_normalized: String = module.name.to_lower().replace(" ", "_")
+		for filename: String in ModuleManager.loaded_modules.keys():
+			var base_filename: String = filename.get_basename()
+			if folder_name == base_filename or module_name_normalized == base_filename:
+				is_user_module = true
+				break
+
+		if not is_user_module:
+			if display_name.begins_with("Core "):
+				display_name = display_name.trim_prefix("Core ")
+			elif display_name.ends_with(" Core"):
+				display_name = display_name.trim_suffix(" Core")
+			else:
+				display_name = display_name.replace("Core", "").strip_edges()
+
 		var current_module_nodes: Array = []
 		current_module_nodes.append(create_header(display_name))
 		current_module_nodes.append(Control.new()) # Spacer.
@@ -457,19 +483,27 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 
 			current_module_nodes.append(control_node)
 
-		individual_modules[display_name] = current_module_nodes
+		if is_user_module:
+			user_modules[display_name] = current_module_nodes
+			has_user_modules = true
+		else:
+			core_modules[display_name] = current_module_nodes
+			has_core_modules = true
 		module_sections.append(display_name)
 
-	if has_modules:
-		options["mod"] = []
-		for mod_name: String in individual_modules:
-			options[mod_name] = individual_modules[mod_name]
+	if has_core_modules:
+		options["core_modules_header"] = []
+		for mod_name: String in core_modules:
+			options[mod_name] = core_modules[mod_name]
 
+	if has_user_modules:
+		options["user_modules_header"] = []
+		for mod_name: String in user_modules:
+			options[mod_name] = user_modules[mod_name]
 	return options
 
 
 func get_project_settings_menu_options() -> Dictionary[String, Array]:
-	panel_label.text = tr("Project settings")
 	return {
 		tr("Video"): [
 			create_header(tr("Video settings")), Control.new(),
