@@ -187,6 +187,21 @@ class Video : public Resource {
 	inline float get_sar() const { return sar; }
 	inline float get_framerate() const { return framerate; }
 
+	inline String get_video_codec() const {
+		return av_stream && av_stream->codecpar ? avcodec_get_name(av_stream->codecpar->codec_id) : "N/A";
+	}
+
+	inline int64_t get_video_bitrate() const {
+		if (av_stream && av_stream->codecpar && av_stream->codecpar->bit_rate > 0) {
+			return av_stream->codecpar->bit_rate;
+		} else if (av_format_ctx && av_format_ctx->bit_rate > 0) {
+			return av_format_ctx->bit_rate;
+		}
+		return 0;
+	}
+
+	inline int get_b_frames() const { return av_codec_ctx ? av_codec_ctx->has_b_frames : 0; }
+
 	inline String get_pixel_format() const { return pixel_format; }
 	inline String get_color_profile() { return av_color_primaries_name(color_profile); }
 

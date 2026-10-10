@@ -14,7 +14,8 @@ enum {
 	ADD_EFFECTS,
 	REPLACE_AUDIO,
 	WELCOME,
-	AUTO_CUT }
+	AUTO_CUT,
+	FILE_INFO }
 
 
 var _open_popups: Dictionary [int, Control] = {}
@@ -31,7 +32,8 @@ var _popup_uids: Dictionary [int, String] = {
 	ADD_EFFECTS: "uid://dqsbn4yb7nd0",
 	REPLACE_AUDIO: "uid://c3c08cihs1see",
 	WELCOME: "uid://bdxuv18wukbj5",
-	AUTO_CUT: "uid://td87gbksxsi3" }
+	AUTO_CUT: "uid://td87gbksxsi3",
+	FILE_INFO: "uid://w1n0m33ll8vp" }
 
 var control: Control = Control.new()
 

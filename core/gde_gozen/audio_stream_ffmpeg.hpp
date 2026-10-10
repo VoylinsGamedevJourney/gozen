@@ -55,6 +55,19 @@ class AudioStreamFFmpeg : public AudioStream {
 	double _get_length() const override { return length; }
 	bool _is_monophonic() const override { return !stereo; }
 
+	inline String get_audio_codec() const {
+		return av_stream && av_stream->codecpar ? avcodec_get_name(av_stream->codecpar->codec_id) : "N/A";
+	}
+
+	inline int64_t get_audio_bitrate() const {
+		if (av_stream && av_stream->codecpar && av_stream->codecpar->bit_rate > 0) {
+			return av_stream->codecpar->bit_rate;
+		} else if (av_format_ctx && av_format_ctx->bit_rate > 0) {
+			return av_format_ctx->bit_rate;
+		}
+		return 0;
+	}
+
 	Ref<AudioStreamPlayback> _instantiate_playback() const override;
 
   protected:

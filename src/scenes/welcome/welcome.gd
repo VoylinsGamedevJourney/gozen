@@ -48,7 +48,7 @@ var listening_line_edit: LineEdit = null
 func _ready() -> void:
 	tab_container.current_tab = 0
 
-	if not OS.has_feature("demo"):
+	if OS.has_feature("demo"):
 		for button: Button in full_only_buttons:
 			button.disabled = true
 			button.tooltip_text = tr("Full version only!")

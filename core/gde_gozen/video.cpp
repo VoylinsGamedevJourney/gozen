@@ -1000,6 +1000,10 @@ void Video::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_sar"), &Video::get_sar);
 	ClassDB::bind_method(D_METHOD("get_framerate"), &Video::get_framerate);
 
+	ClassDB::bind_method(D_METHOD("get_video_codec"), &Video::get_video_codec);
+	ClassDB::bind_method(D_METHOD("get_video_bitrate"), &Video::get_video_bitrate);
+	ClassDB::bind_method(D_METHOD("get_b_frames"), &Video::get_b_frames);
+
 	ClassDB::bind_method(D_METHOD("get_pixel_format"), &Video::get_pixel_format);
 	ClassDB::bind_method(D_METHOD("get_color_profile"), &Video::get_color_profile);
 

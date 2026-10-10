@@ -17,6 +17,7 @@ enum PopupAction {
 	REPLACE_AUDIO_DISABLE,
 	OPEN_IN_FILE_MANAGER,
 	COPY_PATH,
+	FILE_INFO,
 
 	# Folder actions
 	FOLDER_CREATE,
@@ -156,11 +157,15 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 			popup.add_separator(tr("Text options"))
 			popup.add_item(tr("Duplicate"), PopupAction.DUPLICATE)
 
+		popup.add_separator("Extra")
+		popup.add_item(tr("File Info"), PopupAction.FILE_INFO)
+
 		popup.add_separator(tr("Folder options"))
 		if not file.path.begins_with("temp://"):
 			popup.add_item(tr("Open in file manager"), PopupAction.OPEN_IN_FILE_MANAGER)
 			popup.add_item(tr("Copy file path"), PopupAction.COPY_PATH)
 		popup.add_item(tr("Create folder"), PopupAction.FOLDER_CREATE)
+
 	else: # Folder.
 		var add_submenu: PopupMenu = PopupMenu.new()
 		add_submenu.name = "AddSubMenu"
@@ -202,6 +207,7 @@ func _on_popup_option_pressed(option_id: int) -> void:
 		PopupAction.REPLACE_AUDIO: _on_popup_action_replace_audio()
 		PopupAction.RECREATE_PROXY: _on_popup_action_file_recreate_proxy()
 		PopupAction.OPEN_IN_FILE_MANAGER: _on_popup_action_open_in_file_manager()
+		PopupAction.FILE_INFO: _on_popup_action_file_info()
 
 		PopupAction.FOLDER_CREATE: _on_popup_action_folder_create()
 		PopupAction.FOLDER_RENAME: _on_popup_action_folder_rename()
@@ -340,6 +346,12 @@ func _on_popup_action_open_in_file_manager() -> void:
 func _on_popup_action_copy_path() -> void:
 	var file: FileData = FileLogic.get_data(tree.get_selected().get_metadata(0) as int)
 	DisplayServer.clipboard_set(ProjectSettings.globalize_path(file.path))
+
+
+func _on_popup_action_file_info() -> void:
+	var file: FileData = FileLogic.get_data(tree.get_selected().get_metadata(0) as int)
+	var popup: Control = PopupManager.get_popup(PopupManager.FILE_INFO)
+	popup.call("load_data", file.id)
 
 
 func _get_list_drag_data(_pos: Vector2) -> Draggable:

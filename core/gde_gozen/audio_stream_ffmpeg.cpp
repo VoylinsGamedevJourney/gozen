@@ -415,4 +415,7 @@ bool AudioStreamFFmpegPlayback::fill_buffer() {
 void AudioStreamFFmpeg::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("open", "path", "stream_index"), &AudioStreamFFmpeg::open, DEFVAL(-1));
 	ClassDB::bind_method(D_METHOD("__instantiate_playback"), &AudioStreamFFmpeg::_instantiate_playback);
+
+	ClassDB::bind_method(D_METHOD("get_audio_codec"), &AudioStreamFFmpeg::get_audio_codec);
+	ClassDB::bind_method(D_METHOD("get_audio_bitrate"), &AudioStreamFFmpeg::get_audio_bitrate);
 }

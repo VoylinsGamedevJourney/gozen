@@ -1,0 +1,323 @@
+[gd_scene format=3 uid="uid://w1n0m33ll8vp"]
+
+[ext_resource type="Script" uid="uid://ckkr2wr40qup8" path="res://scenes/file_info/file_info.gd" id="1_oyty4"]
+
+[node name="FileInfo" type="PanelContainer" unique_id=890807878 node_paths=PackedStringArray("title_label", "match_project_button", "separator_top", "separator_bottom", "grid_general", "label_path", "label_type", "label_size", "label_resolution", "label_framerate", "label_duration", "grid_video", "label_video_codec", "label_color_space", "label_pixel_format", "label_aspect_ratio", "label_video_bitrate", "label_b_frames", "label_scanning", "grid_audio", "label_audio_codec", "label_audio_streams", "label_audio_bitrate", "label_audio_duration")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_oyty4")
+title_label = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TitleLabel")
+match_project_button = NodePath("Panel/Margin/VBox/HBox/MatchProjectButton")
+separator_top = NodePath("")
+separator_bottom = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VSeparator")
+grid_general = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid")
+label_path = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid/Path")
+label_type = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid/Type")
+label_size = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid/Size")
+label_resolution = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid/Resolution")
+label_framerate = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid/Framerate")
+label_duration = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid/Duration")
+grid_video = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid")
+label_video_codec = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid/VideoCodec")
+label_color_space = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid/ColorSpace")
+label_pixel_format = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid/PixelFormat")
+label_aspect_ratio = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid/AspectRatio")
+label_video_bitrate = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid/Bitrate")
+label_b_frames = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid/BFrames")
+label_scanning = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid/Scanning")
+grid_audio = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid")
+label_audio_codec = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid/AudioCodec")
+label_audio_streams = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid/AudioStreams")
+label_audio_bitrate = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid/AudioBitrate")
+label_audio_duration = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid/Duration")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1266970552]
+custom_minimum_size = Vector2(700, 350)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=212659776]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin" unique_id=1028420814]
+layout_mode = 2
+
+[node name="AboutPanel" type="PanelContainer" parent="Panel/Margin/VBox" unique_id=395823643]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/AboutPanel" unique_id=161842517]
+layout_mode = 2
+
+[node name="AboutVBox" type="VBoxContainer" parent="Panel/Margin/VBox/AboutPanel/Margin" unique_id=1452054961]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=2004354628]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "FILE_NAME"
+
+[node name="TopHBox" type="HBoxContainer" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=1918859860]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="GeneralInfoGrid" type="GridContainer" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox" unique_id=1428329145]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 20
+columns = 2
+
+[node name="PathLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=1760238582]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Path"
+
+[node name="Path" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=581204733]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TypeLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=497222670]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Type"
+
+[node name="Type" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=543150275]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Unknown"
+
+[node name="SizeLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=1026959051]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Size"
+
+[node name="Size" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=477022066]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ResolutionLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=1983218816]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Resolution"
+
+[node name="Resolution" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=568900979]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+
+[node name="FramerateLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=1449919807]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Framerate"
+
+[node name="Framerate" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=1231505998]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+
+[node name="DurationLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=959740288]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Duration"
+
+[node name="Duration" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/TopHBox/GeneralInfoGrid" unique_id=1361703017]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "-"
+
+[node name="Spacer" type="Control" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=797299881]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="BottomHBox" type="HBoxContainer" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=55249910]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="VideoGrid" type="GridContainer" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox" unique_id=453643623]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 20
+columns = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=1744993529]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"title_label"
+text = "Video"
+
+[node name="HSeparator" type="HSeparator" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=1292559472]
+layout_mode = 2
+
+[node name="VideoCodecLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=1885736918]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Codec"
+
+[node name="VideoCodec" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=1174518616]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "N/A"
+
+[node name="ColorSpaceLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=342821586]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Color space"
+
+[node name="ColorSpace" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=2142058370]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "N/A"
+
+[node name="PixelFormatLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=592969731]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Format"
+
+[node name="PixelFormat" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=1979867841]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "N/A"
+
+[node name="AspectRatioLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=933616985]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Aspect ratio"
+
+[node name="AspectRatio" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=1031924931]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "N/A"
+
+[node name="BitrateLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=898798272]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Bitrate"
+
+[node name="Bitrate" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=294392460]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "N/A"
+
+[node name="BFramesLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=305444312]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "B-frames"
+
+[node name="BFrames" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=270963386]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "N/A"
+
+[node name="ScanningLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=552554689]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Scanning"
+
+[node name="Scanning" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/VideoGrid" unique_id=1475820771]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Progressive"
+
+[node name="VSeparator" type="VSeparator" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox" unique_id=1608429084]
+layout_mode = 2
+
+[node name="AudioGrid" type="GridContainer" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox" unique_id=1355411831]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 20
+columns = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=504366339]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"title_label"
+text = "Audio"
+
+[node name="HSeparator" type="HSeparator" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=377239769]
+layout_mode = 2
+
+[node name="AudioCodecLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=709087800]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Codec"
+
+[node name="AudioCodec" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=765998101]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "N/A"
+
+[node name="AudioStreamsLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=1731308390]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Streams"
+
+[node name="AudioStreams" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=1178288964]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AudioBitrateLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=646648537]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Bitrate"
+
+[node name="AudioBitrate" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=1715603282]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "N/A"
+
+[node name="DurationLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=1056779880]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"info_label"
+text = "Duration"
+
+[node name="Duration" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/BottomHBox/AudioGrid" unique_id=240592128]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Spacer2" type="Control" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=1451498896]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox" unique_id=1272766922]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="MatchProjectButton" type="Button" parent="Panel/Margin/VBox/HBox" unique_id=258051628]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 0
+mouse_default_cursor_shape = 2
+text = "Match project to file"
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/VBox/HBox" unique_id=1783019013]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+text = "Close popup"
+
+[connection signal="pressed" from="Panel/Margin/VBox/HBox/CloseButton" to="." method="_on_close_button_pressed"]
