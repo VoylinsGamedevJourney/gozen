@@ -5,8 +5,6 @@ title: "[Feature]: "
 labels: feature
 ---
 
-- [ ] I searched for existing feature requests before opening this one.
-
 ## Problem or limitation
 Describe the problem or limitation you are experiencing while using GoZen.
 
