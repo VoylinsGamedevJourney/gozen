@@ -180,12 +180,14 @@ layout_mode = 2
 text = "Close"
 
 [node name="TabContainer" type="TabContainer" parent="Margin/Control/PanelContainer/Margin/HBox" unique_id=824041727]
+auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 current_tab = 6
 tabs_visible = false
 
 [node name="WelcomeVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=143545459]
+auto_translate_mode = 1
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 30
@@ -332,6 +334,7 @@ icon = ExtResource("8_w7j6j")
 expand_icon = true
 
 [node name="BasicsVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=2071702579]
+auto_translate_mode = 1
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
@@ -572,6 +575,7 @@ text = "Moving through the timeline can be done with the scroll wheel, and scrol
 autowrap_mode = 3
 
 [node name="EditingVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=753737045]
+auto_translate_mode = 1
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
@@ -815,6 +819,7 @@ custom_minimum_size = Vector2(170, 0)
 layout_mode = 2
 
 [node name="EffectsVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=1636972387]
+auto_translate_mode = 1
 visible = false
 layout_mode = 2
 metadata/_tab_index = 3
@@ -924,6 +929,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="RenderingVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=507614949]
+auto_translate_mode = 1
 visible = false
 layout_mode = 2
 metadata/_tab_index = 4
@@ -1077,6 +1083,7 @@ text = "Rendering speeds can vary greatly depending on which render settings you
 autowrap_mode = 3
 
 [node name="ModulesVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=689432311]
+auto_translate_mode = 1
 visible = false
 layout_mode = 2
 metadata/_tab_index = 5
@@ -1202,6 +1209,7 @@ To quickly switch between workspaces you can use CTRL+Enter, this will move you 
 autowrap_mode = 3
 
 [node name="ExtrasVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=364889030]
+auto_translate_mode = 1
 layout_mode = 2
 metadata/_tab_index = 6
 

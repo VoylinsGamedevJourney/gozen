@@ -822,10 +822,6 @@ msgid "Close"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-msgid "WelcomeVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
 msgid "Welcome to GoZen!"
 msgstr ""
 
@@ -864,10 +860,6 @@ msgstr ""
 
 #: scenes/welcome/welcome.tscn
 msgid "Support GoZen on Ko-fi!"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "BasicsVBox"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
@@ -939,12 +931,9 @@ msgid ""
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-msgid "EditingVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
+#, fuzzy
 msgid "Editing in GoZen"
-msgstr ""
+msgstr "एडिटर सेटिंग्स"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1037,10 +1026,6 @@ msgid "Focus on timeline:"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-msgid "EffectsVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
 msgid ""
 "Effects and transitions inside of GoZen are very similar and their settings "
 "can both be accessed from the effects panel. Same is true for the settings "
@@ -1076,11 +1061,6 @@ msgid ""
 "have to be created inside of the editor by pressing the file icon in the top "
 "right corner of the file panel."
 msgstr ""
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
-msgid "RenderingVBox"
-msgstr "रेंडरिंग "
 
 #: scenes/welcome/welcome.tscn
 #, fuzzy
@@ -1124,10 +1104,6 @@ msgid ""
 "way you want, but if you aren't certain what these values do, it's best to "
 "stick with the default render profiles to avoid long rendering times and/or "
 "giant file sizes."
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "ModulesVBox"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
@@ -1186,10 +1162,6 @@ msgid ""
 "\n"
 "To quickly switch between workspaces you can use CTRL+Enter, this will move "
 "you to the next workspace."
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "ExtrasVBox"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
@@ -2050,3 +2022,7 @@ msgid ""
 "\n"
 "- "
 msgstr ""
+
+#, fuzzy
+#~ msgid "RenderingVBox"
+#~ msgstr "रेंडरिंग "

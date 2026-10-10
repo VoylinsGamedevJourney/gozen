@@ -938,10 +938,6 @@ msgid "Close"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-msgid "WelcomeVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
 msgid "Welcome to GoZen!"
 msgstr ""
 
@@ -972,10 +968,6 @@ msgstr ""
 
 #: scenes/welcome/welcome.tscn
 msgid "Support GoZen on Ko-fi!"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "BasicsVBox"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
@@ -1028,10 +1020,6 @@ msgstr ""
 
 #: scenes/welcome/welcome.tscn
 msgid "Moving through the timeline can be done with the scroll wheel, and scrolling between tracks can be done by holding SHIFT. Zooming in on the timeline can be done by holding CTRL and making the tracks bigger/smaller can be done with CTRL+SHIFT. "
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "EditingVBox"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
@@ -1119,10 +1107,6 @@ msgid "Focus on timeline:"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-msgid "EffectsVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
 msgid "Effects and transitions inside of GoZen are very similar and their settings can both be accessed from the effects panel. Same is true for the settings of the text and color clips. Selecting a clip on the timeline will make that clip's effects visible in the effects panel and from there you can click the button to add effects, or use the shortcut CTRL+A to show the popup for adding effects."
 msgstr ""
 
@@ -1140,10 +1124,6 @@ msgstr ""
 
 #: scenes/welcome/welcome.tscn
 msgid "We have video, pck, audio, and image files. Those are the files we can drag and drop into the editor. As for text and colors, those are also files but have to be created inside of the editor by pressing the file icon in the top right corner of the file panel."
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "RenderingVBox"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
@@ -1176,10 +1156,6 @@ msgstr ""
 
 #: scenes/welcome/welcome.tscn
 msgid "Rendering speeds can vary greatly depending on which render settings you choose. We give you access to the render settings to export the video the way you want, but if you aren't certain what these values do, it's best to stick with the default render profiles to avoid long rendering times and/or giant file sizes."
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "ModulesVBox"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
@@ -1223,10 +1199,6 @@ msgid ""
 "Workspaces in GoZen are the different tabs which can be accessed in the top right corner. The default ones are \"Edit\" and \"Render\". You can create more and through the \"View\" tab in the menu bar you can choose which panels should be visible in each tab and create new workspaces.\n"
 "\n"
 "To quickly switch between workspaces you can use CTRL+Enter, this will move you to the next workspace."
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
-msgid "ExtrasVBox"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn

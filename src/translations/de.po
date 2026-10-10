@@ -841,10 +841,6 @@ msgid "Close"
 msgstr "Popup schließen"
 
 #: scenes/welcome/welcome.tscn
-msgid "WelcomeVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
 msgid "Welcome to GoZen!"
 msgstr ""
 
@@ -885,10 +881,6 @@ msgstr ""
 #, fuzzy
 msgid "Support GoZen on Ko-fi!"
 msgstr "GoZen unterstützen"
-
-#: scenes/welcome/welcome.tscn
-msgid "BasicsVBox"
-msgstr ""
 
 #: scenes/welcome/welcome.tscn
 #, fuzzy
@@ -959,12 +951,9 @@ msgid ""
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-msgid "EditingVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
+#, fuzzy
 msgid "Editing in GoZen"
-msgstr ""
+msgstr "Über GoZen"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1063,10 +1052,6 @@ msgid "Focus on timeline:"
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-msgid "EffectsVBox"
-msgstr ""
-
-#: scenes/welcome/welcome.tscn
 msgid ""
 "Effects and transitions inside of GoZen are very similar and their settings "
 "can both be accessed from the effects panel. Same is true for the settings "
@@ -1103,11 +1088,6 @@ msgid ""
 "have to be created inside of the editor by pressing the file icon in the top "
 "right corner of the file panel."
 msgstr ""
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
-msgid "RenderingVBox"
-msgstr "Rendern"
 
 #: scenes/welcome/welcome.tscn
 #, fuzzy
@@ -1152,11 +1132,6 @@ msgid ""
 "stick with the default render profiles to avoid long rendering times and/or "
 "giant file sizes."
 msgstr ""
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
-msgid "ModulesVBox"
-msgstr "Modul-Manager"
 
 #: scenes/welcome/welcome.tscn
 #, fuzzy
@@ -1217,11 +1192,6 @@ msgid ""
 "To quickly switch between workspaces you can use CTRL+Enter, this will move "
 "you to the next workspace."
 msgstr ""
-
-#: scenes/welcome/welcome.tscn
-#, fuzzy
-msgid "ExtrasVBox"
-msgstr "Extras"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -2074,3 +2044,15 @@ msgid ""
 "\n"
 "- "
 msgstr ""
+
+#, fuzzy
+#~ msgid "RenderingVBox"
+#~ msgstr "Rendern"
+
+#, fuzzy
+#~ msgid "ModulesVBox"
+#~ msgstr "Modul-Manager"
+
+#, fuzzy
+#~ msgid "ExtrasVBox"
+#~ msgstr "Extras"
