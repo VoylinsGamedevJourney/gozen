@@ -7,10 +7,12 @@ extends PanelContainer
 
 const DEFAULT_PROFILES_PATH: String = "res://profiles/project/"
 
+
 @export var panel: PanelContainer
 @export var version_label: RichTextLabel
 @export var tab_container: TabContainer
-@export var recent_projects_vbox: VBoxContainer
+@export var recent_projects_flow: HFlowContainer
+@export var sort_option_button: OptionButton
 @export var create_new_project_button: Button
 
 @export_category("New project menu")
@@ -46,9 +48,13 @@ var startup_images_data: Array[PackedStringArray] = [ ## [ Image UID, unsplash i
 var loaded_preset_profiles: Array[ProjectProfile] = [] ## New project profiles.
 var default_profiles_count: int = 0
 
+var _recent_projects_data: Array[RecentProjectData] = []
+
 
 
 func _ready() -> void:
+	sort_option_button.item_selected.connect(_build_recent_projects_ui.unbind(1))
+
 	resolution_x_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1))
 	resolution_y_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1))
 	framerate_spinbox.value_changed.connect(_on_new_project_setting_changed.unbind(1))
@@ -69,7 +75,9 @@ func _ready() -> void:
 		weights.append(i)
 	var image_index: int = randi() % weights.size()
 	var image_data: PackedStringArray = startup_images_data[weights[image_index]]
-	var image_author: String = ResourceUID.uid_to_path(image_data[0]).get_basename().get_file().replace("_", " ").capitalize()
+	var image_author: String = ResourceUID.uid_to_path(image_data[0]).get_basename().get_file()
+	image_author = Format.clean_file_name(image_author)
+
 	startup_image_credit_label.text = tr("Image by")
 	startup_image_credit_label.text += " [url=https://unsplash.com/photos/%s][u]%s[/u][/url]" % [image_data[1], image_author] # NO_TRANSLATE
 	startup_image.texture = load(image_data[0])
@@ -104,11 +112,14 @@ func get_user_profiles_path() -> String:
 
 
 func _set_recent_projects() -> void:
-	if !FileAccess.file_exists(Project.RECENT_PROJECTS_FILE): return
+	_recent_projects_data.clear()
+	if !FileAccess.file_exists(Project.RECENT_PROJECTS_FILE):
+		return
 
 	var file: FileAccess = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.READ)
 	var path: String = file.get_line().strip_edges()
 	var new_paths: PackedStringArray = []
+	var original_index: int = 0
 
 	while !file.eof_reached():
 		if path.contains(Project.EXTENSION) and !new_paths.has(path):
@@ -120,30 +131,10 @@ func _set_recent_projects() -> void:
 				path = file.get_line().strip_edges()
 				continue
 
-			var hbox: HBoxContainer = HBoxContainer.new()
-			var project_button: Button = Button.new()
-			var delete_button: TextureButton = TextureButton.new()
-
-			project_button.text = path.get_file().trim_suffix(Project.EXTENSION)
-			project_button.tooltip_text = path
-			project_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			project_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
-			project_button.pressed.connect(open_project.bind(path))
-
-			delete_button.texture_normal = load(Library.ICON_DELETE)
-			delete_button.ignore_texture_size = true
-			delete_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-			delete_button.custom_minimum_size = Vector2i(18,0)
-			delete_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
-			delete_button.pressed.connect(_on_delete_recent_project.bind(hbox, path))
-
-			hbox.add_child(delete_button)
-			hbox.add_child(project_button)
-
-			recent_projects_vbox.add_child(hbox)
-
+			var title: String = path.get_file().trim_suffix(Project.EXTENSION)
+			var modified_time: int = FileAccess.get_modified_time(path)
+			_recent_projects_data.append(RecentProjectData.new(path, title, modified_time, original_index))
+			original_index += 1
 			new_paths.append(path)
 		path = file.get_line().strip_edges()
 	file.close()
@@ -154,19 +145,133 @@ func _set_recent_projects() -> void:
 				printerr("StartupScreen: Error storing line for recent_projects!\n", get_stack())
 		file.close()
 
+	_build_recent_projects_ui()
+
+func _build_recent_projects_ui() -> void:
+	for child: Node in recent_projects_flow.get_children():
+		recent_projects_flow.remove_child(child)
+		child.queue_free()
+
+	var sorted_data: Array[RecentProjectData] = _recent_projects_data.duplicate()
+	var sort_index: int = sort_option_button.selected
+
+	match sort_index:
+		# Latest
+		0: sorted_data.sort_custom(func(a: RecentProjectData, b: RecentProjectData) -> bool:
+					return a.original_index < b.original_index)
+		# Oldest
+		1: sorted_data.sort_custom(func(a: RecentProjectData, b: RecentProjectData) -> bool:
+					return a.original_index > b.original_index)
+		# Name A-Z
+		2: sorted_data.sort_custom(func(a: RecentProjectData, b: RecentProjectData) -> bool:
+					return a.title.naturalnocasecmp_to(b.title) < 0)
+		# Name Z-A
+		3: sorted_data.sort_custom(func(a: RecentProjectData, b: RecentProjectData) -> bool:
+					return a.title.naturalnocasecmp_to(b.title) > 0)
+
+	for data: RecentProjectData in sorted_data:
+		var project_button: Button = Button.new()
+		project_button.custom_minimum_size = Vector2(250, 80)
+		project_button.custom_maximum_size = Vector2(330, 80) # Y value doesn't do anything.
+		project_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		project_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		project_button.pressed.connect(open_project.bind(data.path))
+		project_button.gui_input.connect(_on_recent_project_gui_input.bind(project_button, data.path))
+
+		var margin: MarginContainer = MarginContainer.new()
+		margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		margin.add_theme_constant_override("margin_left", 3)
+		margin.add_theme_constant_override("margin_top", 3)
+		margin.add_theme_constant_override("margin_right", 3)
+		margin.add_theme_constant_override("margin_bottom", 3)
+		margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		project_button.add_child(margin)
+
+		var hbox: HBoxContainer = HBoxContainer.new()
+		hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		margin.add_child(hbox)
+
+		var thumb: TextureRect = TextureRect.new()
+		thumb.custom_minimum_size = Vector2(100, 0)
+		thumb.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		thumb.texture = Thumbnailer.get_project_thumb(data.path)
+		thumb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		hbox.add_child(thumb)
+
+		var vbox: VBoxContainer = VBoxContainer.new()
+		vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		hbox.add_child(vbox)
+
+		var title_label: Label = Label.new()
+		title_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		# title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		title_label.clip_text = true
+		title_label.mouse_filter = Control.MOUSE_FILTER_PASS
+		title_label.text = Format.clean_file_name(data.title)
+		vbox.add_child(title_label)
+
+		var path_label: Label = Label.new()
+		path_label.modulate = Color(1, 1, 1, 0.498)
+		path_label.clip_text = true
+		path_label.mouse_filter = Control.MOUSE_FILTER_PASS
+		path_label.text = Format.path_remove_middle(data.path, 34)
+		path_label.add_theme_font_size_override("font_size", 12)
+		vbox.add_child(path_label)
+
+		var date_label: Label = Label.new()
+		var mod_date_str: String = "Unknown"
+		date_label.modulate = Color(1, 1, 1, 0.498)
+		date_label.mouse_filter = Control.MOUSE_FILTER_PASS
+		if data.modified_time > 0:
+			var mod_time_dict: Dictionary = Time.get_datetime_dict_from_unix_time(data.modified_time)
+			mod_date_str = "%04d-%02d-%02d %02d:%02d:%02d" % [mod_time_dict.year, mod_time_dict.month, mod_time_dict.day, mod_time_dict.hour, mod_time_dict.minute, mod_time_dict.second]
+		date_label.text = mod_date_str
+		date_label.add_theme_font_size_override("font_size", 12)
+		vbox.add_child(date_label)
+
+		var tooltip: String = "%s\n%s\nModified: %s" % [data.title, data.path, mod_date_str]
+		project_button.tooltip_text = tooltip
+
+		recent_projects_flow.add_child(project_button)
+
 	# Set the focus on the first project so it can be opened with enter.
-	if recent_projects_vbox.get_child_count() > 0:
-		var first_hbox: HBoxContainer = recent_projects_vbox.get_child(0)
-		var first_btn: Button = first_hbox.get_child(1) # Since delete_button is child 0
-		first_btn.grab_focus.call_deferred()
+	if recent_projects_flow.get_child_count() > 0:
+		var first_button: Button = recent_projects_flow.get_child(0) as Button
+		first_button.grab_focus.call_deferred()
 	else:
 		create_new_project_button.grab_focus.call_deferred()
 
 
-func _on_delete_recent_project(hbox: HBoxContainer, path: String) -> void:
+func _on_recent_project_gui_input(event: InputEvent, button: Button, path: String) -> void:
+	if event is InputEventMouseButton:
+		var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+		if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_RIGHT:
+			var popup: PopupMenu = PopupManager.create_menu()
+			popup.add_icon_item(load(Library.ICON_FOLDER) as Texture2D, tr("Open in file manager"), 0)
+			popup.add_icon_item(load(Library.ICON_DELETE) as Texture2D, tr("Remove from list"), 1)
+			popup.id_pressed.connect(_on_recent_project_popup_id_pressed.bind(button, path))
+			PopupManager.show_menu(popup)
+
+
+func _on_recent_project_popup_id_pressed(id: int, button: Button, path: String) -> void:
+	if id == 0:
+		OS.shell_show_in_file_manager(ProjectSettings.globalize_path(path.get_base_dir()))
+	elif id == 1:
+		_on_delete_recent_project(button, path)
+
+
+func _on_delete_recent_project(button: Button, path: String) -> void:
+	# Remove it from our local array so it doesn't return when resorting.
+	for i: int in range(_recent_projects_data.size() - 1, -1, -1):
+		if _recent_projects_data[i].path == path:
+			_recent_projects_data.remove_at(i)
+			break
+
 	var paths: Array[String] = []
 	var file: FileAccess
-	var _err: int
 
 	if FileAccess.file_exists(Project.RECENT_PROJECTS_FILE):
 		file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.READ)
@@ -179,11 +284,11 @@ func _on_delete_recent_project(hbox: HBoxContainer, path: String) -> void:
 	file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
 	if file:
 		for project_path: String in paths:
-			_err = file.store_line(project_path)
+			file.store_line(project_path)
 		file.close()
 	else:
 		printerr("StartupScreen: Error storing String for recent_projects!\n", get_stack())
-	hbox.queue_free()
+	button.queue_free()
 
 
 func _set_version_label() -> void:
@@ -217,7 +322,7 @@ func _set_new_project_defaults() -> void:
 	project_presets_option_button.add_separator(tr("User presets"))
 
 	if not DirAccess.dir_exists_absolute(get_user_profiles_path()):
-		var _err: int = DirAccess.make_dir_recursive_absolute(get_user_profiles_path())
+		DirAccess.make_dir_recursive_absolute(get_user_profiles_path())
 	else:
 		var user_profile_files: PackedStringArray = DirAccess.get_files_at(get_user_profiles_path())
 		for profile_path: String in user_profile_files:
@@ -418,7 +523,7 @@ func _on_save_profile_preset_button_pressed() -> void:
 			var _dir_err: int = DirAccess.make_dir_recursive_absolute(get_user_profiles_path())
 
 		var save_path: String = get_user_profiles_path().path_join(preset_name.validate_filename() + ".tres")
-		var _err: int = ResourceSaver.save(profile, save_path)
+		ResourceSaver.save(profile, save_path)
 
 		_set_new_project_defaults()
 
@@ -452,7 +557,7 @@ func _on_delete_profile_preset_button_pressed() -> void:
 	var profile: ProjectProfile = loaded_preset_profiles[id]
 	var path: String = get_user_profiles_path().path_join(profile.profile_name.validate_filename() + ".tres")
 	if FileAccess.file_exists(path):
-		var _err: int = DirAccess.remove_absolute(path)
+		DirAccess.remove_absolute(path)
 
 	_set_new_project_defaults()
 
@@ -465,3 +570,18 @@ func _on_new_project_setting_changed() -> void:
 
 	delete_profile_preset_button.disabled = true
 	delete_profile_preset_button.modulate = get_theme_color("icon_disabled", "StartupScreen")
+
+
+
+class RecentProjectData:
+	var path: String
+	var title: String
+	var modified_time: int
+	var original_index: int
+
+
+	func _init(_path: String, _title: String, _modified_time: int, _original_index: int) -> void:
+		path = _path
+		title = _title
+		modified_time = _modified_time
+		original_index = _original_index

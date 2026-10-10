@@ -18,7 +18,9 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gatud"]
 shader = ExtResource("1_5viva")
 
-[node name="StartupPanel" type="PanelContainer" unique_id=234120789 node_paths=PackedStringArray("panel", "version_label", "tab_container", "recent_projects_vbox", "create_new_project_button", "project_presets_option_button", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker", "track_amount_spinbox", "save_profile_preset_button", "delete_profile_preset_button", "startup_image", "startup_image_credit_label")]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_klhbv"]
+
+[node name="StartupPanel" type="PanelContainer" unique_id=234120789 node_paths=PackedStringArray("panel", "version_label", "tab_container", "recent_projects_flow", "sort_option_button", "create_new_project_button", "project_presets_option_button", "project_path_line_edit", "resolution_x_spinbox", "resolution_y_spinbox", "framerate_spinbox", "warning_label", "advanced_options_button", "advanced_options", "background_color_picker", "track_amount_spinbox", "save_profile_preset_button", "delete_profile_preset_button", "startup_image", "startup_image_credit_label")]
 material = SubResource("ShaderMaterial_gatud")
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,45 +29,61 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_sgta6")
-panel = NodePath("Panel")
-version_label = NodePath("Panel/VBox/StartupImage/OverlayHBox/VersionLabel")
-tab_container = NodePath("Panel/VBox/StartupTabContainer")
-recent_projects_vbox = NodePath("Panel/VBox/StartupTabContainer/MainMenu/VBox/RecentProjectsScroll/RecentProjectsVBox")
-create_new_project_button = NodePath("Panel/VBox/StartupTabContainer/MainMenu/VBox/HBoxContainer/CreateProjectButton")
-project_presets_option_button = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/NewProjectOptionButton")
-project_path_line_edit = NodePath("Panel/VBox/StartupTabContainer/NewProject/PathHBox/PathLineEdit")
-resolution_x_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox/ResolutionXSpinBox")
-resolution_y_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox/ResolutionYSpinBox")
-framerate_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/FramerateSpinBox")
-warning_label = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectWarningLabel")
-advanced_options_button = NodePath("Panel/VBox/StartupTabContainer/NewProject/AdvancedOptionsCheckButton")
-advanced_options = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid")
-background_color_picker = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid/BackgroundColorPickerButton")
-track_amount_spinbox = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid/TrackAmountSpinBox")
-save_profile_preset_button = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/SaveProfilePresetButton")
-delete_profile_preset_button = NodePath("Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/DeleteProfilePresetButton")
-startup_image = NodePath("Panel/VBox/StartupImage")
-startup_image_credit_label = NodePath("Panel/VBox/StartupImage/OverlayHBox/ImageAuthor")
+panel = NodePath("Margin/Control/Panel")
+version_label = NodePath("Margin/Control/Panel/VBox/StartupImage/OverlayHBox/VersionLabel")
+tab_container = NodePath("Margin/Control/Panel/VBox/StartupTabContainer")
+recent_projects_flow = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/VBox/RecentProjectsScroll/RecentProjectsFlow")
+sort_option_button = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/VBox/HBox/SortOptionButton")
+create_new_project_button = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/HBoxContainer/CreateProjectButton")
+project_presets_option_button = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/NewProjectOptionButton")
+project_path_line_edit = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/NewProject/PathHBox/PathLineEdit")
+resolution_x_spinbox = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox/ResolutionXSpinBox")
+resolution_y_spinbox = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox/ResolutionYSpinBox")
+framerate_spinbox = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/FramerateSpinBox")
+warning_label = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectWarningLabel")
+advanced_options_button = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/NewProject/AdvancedOptionsCheckButton")
+advanced_options = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid")
+background_color_picker = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid/BackgroundColorPickerButton")
+track_amount_spinbox = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid/TrackAmountSpinBox")
+save_profile_preset_button = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/SaveProfilePresetButton")
+delete_profile_preset_button = NodePath("Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/DeleteProfilePresetButton")
+startup_image = NodePath("Margin/Control/Panel/VBox/StartupImage")
+startup_image_credit_label = NodePath("Margin/Control/Panel/VBox/StartupImage/OverlayHBox/ImageAuthor")
 metadata/_edit_lock_ = true
 
-[node name="Panel" type="PanelContainer" parent="." unique_id=828646470]
+[node name="Margin" type="MarginContainer" parent="." unique_id=158980131]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="Control" type="Panel" parent="Margin" unique_id=951177680]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_klhbv")
+
+[node name="Panel" type="PanelContainer" parent="Margin/Control" unique_id=828646470]
 clip_children = 2
 custom_minimum_size = Vector2(600, 550)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
+custom_maximum_size = Vector2(1000, 800)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="VBox" type="VBoxContainer" parent="Panel" unique_id=1093959549]
+[node name="VBox" type="VBoxContainer" parent="Margin/Control/Panel" unique_id=1093959549]
 layout_mode = 2
 
-[node name="StartupImage" type="TextureRect" parent="Panel/VBox" unique_id=1608850633]
+[node name="StartupImage" type="TextureRect" parent="Margin/Control/Panel/VBox" unique_id=1608850633]
 custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
 texture = ExtResource("2_5viva")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="GoZenLogoButton" type="TextureButton" parent="Panel/VBox/StartupImage" unique_id=1103450531]
+[node name="GoZenLogoButton" type="TextureButton" parent="Margin/Control/Panel/VBox/StartupImage" unique_id=1103450531]
 layout_mode = 1
 offset_left = 7.0
 offset_top = 7.0
@@ -77,7 +95,7 @@ texture_normal = ExtResource("3_gatud")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="EditorSettingsButton" type="TextureButton" parent="Panel/VBox/StartupImage" unique_id=601334609]
+[node name="EditorSettingsButton" type="TextureButton" parent="Margin/Control/Panel/VBox/StartupImage" unique_id=601334609]
 modulate = Color(1, 1, 1, 0.8862745)
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 1
@@ -95,7 +113,7 @@ texture_normal = ExtResource("5_gatud")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="OverlayHBox" type="HBoxContainer" parent="Panel/VBox/StartupImage" unique_id=1217488676]
+[node name="OverlayHBox" type="HBoxContainer" parent="Margin/Control/Panel/VBox/StartupImage" unique_id=1217488676]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -108,7 +126,7 @@ offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="VersionLabel" type="RichTextLabel" parent="Panel/VBox/StartupImage/OverlayHBox" unique_id=2065983825]
+[node name="VersionLabel" type="RichTextLabel" parent="Margin/Control/Panel/VBox/StartupImage/OverlayHBox" unique_id=2065983825]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/normal_font_size = 9
@@ -116,7 +134,7 @@ text = "Version: "
 scroll_active = false
 vertical_alignment = 2
 
-[node name="ImageAuthor" type="RichTextLabel" parent="Panel/VBox/StartupImage/OverlayHBox" unique_id=785121729]
+[node name="ImageAuthor" type="RichTextLabel" parent="Margin/Control/Panel/VBox/StartupImage/OverlayHBox" unique_id=785121729]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The creator of the startup picture you're seeing right now."
@@ -126,43 +144,75 @@ scroll_active = false
 horizontal_alignment = 2
 vertical_alignment = 2
 
-[node name="StartupTabContainer" type="TabContainer" parent="Panel/VBox" unique_id=611256809]
+[node name="StartupTabContainer" type="TabContainer" parent="Margin/Control/Panel/VBox" unique_id=611256809]
 layout_mode = 2
 size_flags_vertical = 3
 current_tab = 0
 tabs_visible = false
 
-[node name="MainMenu" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer" unique_id=703377150]
+[node name="MainMenu" type="HBoxContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer" unique_id=703377150]
 auto_translate_mode = 2
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="VBox" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer/MainMenu" unique_id=1700495365]
+[node name="VBox" type="VBoxContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu" unique_id=1700495365]
 auto_translate_mode = 1
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="RecentProjectsLabel" type="Label" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=818078258]
+[node name="HBox" type="HBoxContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=2021912630]
 layout_mode = 2
+
+[node name="RecentProjectsLabel" type="Label" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/VBox/HBox" unique_id=818078258]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Recent projects"
 
-[node name="HSeparatorTop" type="HSeparator" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=582073779]
+[node name="SortOptionButton" type="OptionButton" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/VBox/HBox" unique_id=324445615]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+expand_icon = true
+selected = 0
+item_count = 4
+popup/item_0/text = "Latest"
+popup/item_0/id = 0
+popup/item_1/text = "Oldest"
+popup/item_1/id = 1
+popup/item_2/text = "Name (A...Z)"
+popup/item_2/id = 2
+popup/item_3/text = "Name (Z...A)"
+popup/item_3/id = 3
+
+[node name="HSeparatorTop" type="HSeparator" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=582073779]
 layout_mode = 2
 
-[node name="RecentProjectsScroll" type="ScrollContainer" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=538586385]
+[node name="RecentProjectsScroll" type="ScrollContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=538586385]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RecentProjectsVBox" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox/RecentProjectsScroll" unique_id=1777375395]
+[node name="RecentProjectsFlow" type="HFlowContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/VBox/RecentProjectsScroll" unique_id=875145026]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/h_separation = 7
+theme_override_constants/v_separation = 7
 
-[node name="HSeparatorBottom" type="HSeparator" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=1547795728]
+[node name="MenuVBox" type="VBoxContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu" unique_id=1512113919]
+auto_translate_mode = 1
+custom_maximum_size = Vector2(300, -1)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GettingStartedLabel" type="Label" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=1358017114]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Getting started"
+
+[node name="HSeparator" type="HSeparator" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=980833315]
 layout_mode = 2
 
-[node name="OpenProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=1497786979]
+[node name="OpenProjectButton" type="Button" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=1497786979]
 layout_mode = 2
 tooltip_text = "Open a previously created project through your file explorer."
 mouse_default_cursor_shape = 2
@@ -172,10 +222,10 @@ flat = true
 alignment = 0
 expand_icon = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox" unique_id=1841822096]
+[node name="HBoxContainer" type="HBoxContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=1841822096]
 layout_mode = 2
 
-[node name="CreateProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox/HBoxContainer" unique_id=77458439]
+[node name="CreateProjectButton" type="Button" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/HBoxContainer" unique_id=77458439]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Go to the menu to set the settings of your new project."
@@ -186,7 +236,7 @@ flat = true
 alignment = 0
 expand_icon = true
 
-[node name="QuickHorizontalProjectButton" type="TextureButton" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox/HBoxContainer" unique_id=881633996]
+[node name="QuickHorizontalProjectButton" type="TextureButton" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/HBoxContainer" unique_id=881633996]
 custom_minimum_size = Vector2(24, 0)
 layout_mode = 2
 tooltip_text = "Quick option to create a horizontal project with settings defined in the editor settings menu."
@@ -194,7 +244,7 @@ texture_normal = ExtResource("8_pcyft")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="QuickVerticalProjectButton" type="TextureButton" parent="Panel/VBox/StartupTabContainer/MainMenu/VBox/HBoxContainer" unique_id=556283720]
+[node name="QuickVerticalProjectButton" type="TextureButton" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/HBoxContainer" unique_id=556283720]
 custom_minimum_size = Vector2(24, 0)
 layout_mode = 2
 tooltip_text = "Quick option to create a vertical project with settings defined in the editor settings menu."
@@ -202,20 +252,11 @@ texture_normal = ExtResource("9_j711k")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="MenuVBox" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer/MainMenu" unique_id=1512113919]
-auto_translate_mode = 1
+[node name="Spacer" type="Control" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=254480835]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="GettingStartedLabel" type="Label" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=1358017114]
-layout_mode = 2
-theme_type_variation = &"title_label"
-text = "Getting started"
-
-[node name="HSeparator" type="HSeparator" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=980833315]
-layout_mode = 2
-
-[node name="SiteButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=1139916015]
+[node name="SiteButton" type="Button" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=1139916015]
 layout_mode = 2
 tooltip_text = "External link to the GoZen website."
 mouse_default_cursor_shape = 2
@@ -225,7 +266,7 @@ flat = true
 alignment = 0
 expand_icon = true
 
-[node name="ManualButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=521412357]
+[node name="ManualButton" type="Button" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=521412357]
 layout_mode = 2
 tooltip_text = "External link to the GoZen manual."
 mouse_default_cursor_shape = 2
@@ -235,7 +276,7 @@ flat = true
 alignment = 0
 expand_icon = true
 
-[node name="TutorialsButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=543175180]
+[node name="TutorialsButton" type="Button" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=543175180]
 layout_mode = 2
 tooltip_text = "External link to GoZen tutorials."
 mouse_default_cursor_shape = 2
@@ -245,7 +286,7 @@ flat = true
 alignment = 0
 expand_icon = true
 
-[node name="DiscordServerButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=1856029567]
+[node name="DiscordServerButton" type="Button" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=1856029567]
 layout_mode = 2
 tooltip_text = "External link to the Discord server."
 mouse_default_cursor_shape = 2
@@ -255,11 +296,10 @@ flat = true
 alignment = 0
 expand_icon = true
 
-[node name="Spacer" type="Control" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=254480835]
+[node name="HSeparatorBottom2" type="HSeparator" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=1393735349]
 layout_mode = 2
-size_flags_vertical = 3
 
-[node name="SupportProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=755679904]
+[node name="SupportProjectButton" type="Button" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=755679904]
 layout_mode = 2
 tooltip_text = "External link to the Ko-fi page."
 mouse_default_cursor_shape = 2
@@ -269,23 +309,23 @@ flat = true
 alignment = 0
 expand_icon = true
 
-[node name="NewProject" type="VBoxContainer" parent="Panel/VBox/StartupTabContainer" unique_id=1384044314]
+[node name="NewProject" type="VBoxContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer" unique_id=1384044314]
 auto_translate_mode = 2
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="NewProjectTopHBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=1952408598]
+[node name="NewProjectTopHBox" type="HBoxContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject" unique_id=1952408598]
 auto_translate_mode = 1
 layout_mode = 2
 
-[node name="NewProjectLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=1420926093]
+[node name="NewProjectLabel" type="Label" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=1420926093]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "New project"
 
-[node name="SaveProfilePresetButton" type="TextureButton" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=978774459]
+[node name="SaveProfilePresetButton" type="TextureButton" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=978774459]
 custom_minimum_size = Vector2(24, 0)
 layout_mode = 2
 mouse_default_cursor_shape = 2
@@ -293,11 +333,11 @@ texture_normal = ExtResource("14_80ee3")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="NewProjectOptionButton" type="OptionButton" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=615592546]
+[node name="NewProjectOptionButton" type="OptionButton" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=615592546]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
-[node name="DeleteProfilePresetButton" type="TextureButton" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=1105959447]
+[node name="DeleteProfilePresetButton" type="TextureButton" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox" unique_id=1105959447]
 custom_minimum_size = Vector2(24, 0)
 layout_mode = 2
 mouse_default_cursor_shape = 2
@@ -305,23 +345,23 @@ texture_normal = ExtResource("15_pcyft")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="HSeparator1" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=2114054458]
+[node name="HSeparator1" type="HSeparator" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject" unique_id=2114054458]
 auto_translate_mode = 1
 layout_mode = 2
 
-[node name="PathHBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=868305927]
+[node name="PathHBox" type="HBoxContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject" unique_id=868305927]
 auto_translate_mode = 1
 layout_mode = 2
 
-[node name="PathLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/PathHBox" unique_id=450583512]
+[node name="PathLabel" type="Label" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/PathHBox" unique_id=450583512]
 layout_mode = 2
 text = "Path"
 
-[node name="PathLineEdit" type="LineEdit" parent="Panel/VBox/StartupTabContainer/NewProject/PathHBox" unique_id=1706647658]
+[node name="PathLineEdit" type="LineEdit" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/PathHBox" unique_id=1706647658]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ProjectPathButton" type="TextureButton" parent="Panel/VBox/StartupTabContainer/NewProject/PathHBox" unique_id=488240714]
+[node name="ProjectPathButton" type="TextureButton" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/PathHBox" unique_id=488240714]
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 mouse_default_cursor_shape = 2
@@ -329,27 +369,27 @@ texture_normal = ExtResource("16_pcyft")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="NewProjectGrid" type="GridContainer" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=88688003]
+[node name="NewProjectGrid" type="GridContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject" unique_id=88688003]
 auto_translate_mode = 1
 layout_mode = 2
 size_flags_vertical = 3
 columns = 2
 
-[node name="ResolutionLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid" unique_id=1324648957]
+[node name="ResolutionLabel" type="Label" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid" unique_id=1324648957]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Resolution"
 
-[node name="ResolutionHBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid" unique_id=1480364691]
+[node name="ResolutionHBox" type="HBoxContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid" unique_id=1480364691]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="XLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox" unique_id=846695322]
+[node name="XLabel" type="Label" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox" unique_id=846695322]
 auto_translate_mode = 2
 layout_mode = 2
 text = "X:"
 
-[node name="ResolutionXSpinBox" type="SpinBox" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox" unique_id=1630200423]
+[node name="ResolutionXSpinBox" type="SpinBox" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox" unique_id=1630200423]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The video width."
@@ -359,12 +399,12 @@ max_value = 100000.0
 value = 1920.0
 allow_greater = true
 
-[node name="YLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox" unique_id=399971040]
+[node name="YLabel" type="Label" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox" unique_id=399971040]
 auto_translate_mode = 2
 layout_mode = 2
 text = "Y:"
 
-[node name="ResolutionYSpinBox" type="SpinBox" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox" unique_id=252400750]
+[node name="ResolutionYSpinBox" type="SpinBox" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid/ResolutionHBox" unique_id=252400750]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The video height."
@@ -374,12 +414,12 @@ max_value = 100000.0
 value = 1080.0
 allow_greater = true
 
-[node name="FramerateLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid" unique_id=1709459377]
+[node name="FramerateLabel" type="Label" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid" unique_id=1709459377]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Framerate"
 
-[node name="FramerateSpinBox" type="SpinBox" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid" unique_id=1059865156]
+[node name="FramerateSpinBox" type="SpinBox" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectGrid" unique_id=1059865156]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The video framerate (fps)."
@@ -389,89 +429,89 @@ max_value = 1000.0
 value = 30.0
 allow_greater = true
 
-[node name="NewProjectAdvancedGrid" type="GridContainer" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=1412518369]
+[node name="NewProjectAdvancedGrid" type="GridContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject" unique_id=1412518369]
 auto_translate_mode = 1
 layout_mode = 2
 size_flags_vertical = 3
 columns = 2
 
-[node name="HSeparator" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=774957028]
+[node name="HSeparator" type="HSeparator" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=774957028]
 layout_mode = 2
 
-[node name="Control" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=727477064]
+[node name="Control" type="HSeparator" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=727477064]
 layout_mode = 2
 
-[node name="BackgroundColorLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=1593266549]
+[node name="BackgroundColorLabel" type="Label" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=1593266549]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Background color"
 
-[node name="BackgroundColorPickerButton" type="ColorPickerButton" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=60239702]
+[node name="BackgroundColorPickerButton" type="ColorPickerButton" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=60239702]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TrackAmountLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=473212060]
+[node name="TrackAmountLabel" type="Label" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=473212060]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Track amount"
 
-[node name="TrackAmountSpinBox" type="SpinBox" parent="Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=1054672593]
+[node name="TrackAmountSpinBox" type="SpinBox" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectAdvancedGrid" unique_id=1054672593]
 layout_mode = 2
 tooltip_text = "Amount of tracks in the timeline."
 min_value = 1.0
 max_value = 12.0
 value = 1.0
 
-[node name="AdvancedOptionsCheckButton" type="CheckButton" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=643237763]
+[node name="AdvancedOptionsCheckButton" type="CheckButton" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject" unique_id=643237763]
 auto_translate_mode = 1
 layout_mode = 2
 size_flags_horizontal = 8
 text = "Advanced options"
 
-[node name="HSeparator2" type="HSeparator" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=1374780922]
+[node name="HSeparator2" type="HSeparator" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject" unique_id=1374780922]
 auto_translate_mode = 1
 layout_mode = 2
 
-[node name="NewProjectWarningLabel" type="Label" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=1283484863]
+[node name="NewProjectWarningLabel" type="Label" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject" unique_id=1283484863]
 auto_translate_mode = 1
 visible = false
 layout_mode = 2
 theme_type_variation = &"warning_label"
 
-[node name="HBox" type="HBoxContainer" parent="Panel/VBox/StartupTabContainer/NewProject" unique_id=1298801334]
+[node name="HBox" type="HBoxContainer" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject" unique_id=1298801334]
 auto_translate_mode = 1
 layout_mode = 2
 
-[node name="CancelCreateProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/NewProject/HBox" unique_id=832611219]
+[node name="CancelCreateProjectButton" type="Button" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/HBox" unique_id=832611219]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 text = "Return"
 
-[node name="CreateNewProjectButton" type="Button" parent="Panel/VBox/StartupTabContainer/NewProject/HBox" unique_id=1479349029]
+[node name="CreateNewProjectButton" type="Button" parent="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/HBox" unique_id=1479349029]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 text = "Create new project"
 
-[connection signal="pressed" from="Panel/VBox/StartupImage/GoZenLogoButton" to="." method="_on_gozen_logo_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupImage/EditorSettingsButton" to="." method="_on_editor_settings_button_pressed"]
-[connection signal="meta_clicked" from="Panel/VBox/StartupImage/OverlayHBox/ImageAuthor" to="." method="_on_image_author_meta_clicked"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/VBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/VBox/HBoxContainer/CreateProjectButton" to="." method="_on_create_project_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/VBox/HBoxContainer/QuickHorizontalProjectButton" to="." method="_on_create_quick_h_project_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/VBox/HBoxContainer/QuickVerticalProjectButton" to="." method="_on_create_quick_v_project_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/SiteButton" to="." method="_on_site_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/ManualButton" to="." method="_on_manual_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/TutorialsButton" to="." method="_on_tutorials_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/DiscordServerButton" to="." method="_on_discord_server_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/SupportProjectButton" to="." method="_on_support_project_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/SaveProfilePresetButton" to="." method="_on_save_profile_preset_button_pressed"]
-[connection signal="item_selected" from="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/NewProjectOptionButton" to="." method="_on_new_project_option_button_item_selected"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/DeleteProfilePresetButton" to="." method="_on_delete_profile_preset_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/PathHBox/ProjectPathButton" to="." method="_on_project_path_button_pressed"]
-[connection signal="toggled" from="Panel/VBox/StartupTabContainer/NewProject/AdvancedOptionsCheckButton" to="." method="_on_advanced_options_check_button_toggled"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/HBox/CancelCreateProjectButton" to="." method="_on_cancel_create_project_button_pressed"]
-[connection signal="pressed" from="Panel/VBox/StartupTabContainer/NewProject/HBox/CreateNewProjectButton" to="." method="_on_create_new_project_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupImage/GoZenLogoButton" to="." method="_on_gozen_logo_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupImage/EditorSettingsButton" to="." method="_on_editor_settings_button_pressed"]
+[connection signal="meta_clicked" from="Margin/Control/Panel/VBox/StartupImage/OverlayHBox/ImageAuthor" to="." method="_on_image_author_meta_clicked"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/OpenProjectButton" to="." method="_on_open_project_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/HBoxContainer/CreateProjectButton" to="." method="_on_create_project_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/HBoxContainer/QuickHorizontalProjectButton" to="." method="_on_create_quick_h_project_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/HBoxContainer/QuickVerticalProjectButton" to="." method="_on_create_quick_v_project_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/SiteButton" to="." method="_on_site_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/ManualButton" to="." method="_on_manual_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/TutorialsButton" to="." method="_on_tutorials_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/DiscordServerButton" to="." method="_on_discord_server_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/SupportProjectButton" to="." method="_on_support_project_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/SaveProfilePresetButton" to="." method="_on_save_profile_preset_button_pressed"]
+[connection signal="item_selected" from="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/NewProjectOptionButton" to="." method="_on_new_project_option_button_item_selected"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/NewProjectTopHBox/DeleteProfilePresetButton" to="." method="_on_delete_profile_preset_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/PathHBox/ProjectPathButton" to="." method="_on_project_path_button_pressed"]
+[connection signal="toggled" from="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/AdvancedOptionsCheckButton" to="." method="_on_advanced_options_check_button_toggled"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/HBox/CancelCreateProjectButton" to="." method="_on_cancel_create_project_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/NewProject/HBox/CreateNewProjectButton" to="." method="_on_create_new_project_button_pressed"]

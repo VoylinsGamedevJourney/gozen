@@ -15,7 +15,6 @@ signal on_theme_updated
 signal on_module_setting_changed(module_folder: String, setting_id: String, value: Variant)
 
 
-var is_first_time: bool = false
 var data: SettingsData = SettingsData.new()
 
 var fonts: Dictionary[String, SystemFont] = {}
@@ -25,12 +24,8 @@ var custom_themes: Dictionary = {} ## { Name: Path }
 
 
 func _ready() -> void:
-	for arg: String in OS.get_cmdline_args():
-		if arg.to_lower() == "reset_settings":
-			save()
-
 	if !FileAccess.file_exists(get_settings_path()):
-		is_first_time = true
+		data.is_first_time = true
 		data.language = get_system_locale()
 		data.display_scale = get_display_scale()
 	else:
@@ -124,6 +119,14 @@ func get_system_locale() -> String:
 		if loaded_locale.begins_with(OS.get_locale_language()):
 			return loaded_locale
 	return "en" # Return English as a default.
+
+
+func set_is_first_time(value: bool) -> void:
+	data.is_first_time = value
+
+
+func get_is_first_time() -> bool:
+	return data.is_first_time
 
 
 #--- Appearance set/get ---

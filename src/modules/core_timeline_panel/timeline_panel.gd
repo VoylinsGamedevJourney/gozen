@@ -561,7 +561,10 @@ func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 	Timeline.draggable = data
 	if Timeline.draggable.is_file:
 		Timeline.current_state = Timeline.State.DROPPING
+		var default_split: bool = Settings.get_module_setting("core_timeline_panel", "video_drag_default_split", false)
 		var split_audio: bool = Input.is_key_pressed(KEY_SHIFT)
+		if default_split:
+			split_audio = not split_audio
 		var split_extra_audio: bool = Input.is_key_pressed(KEY_CTRL) and not split_audio
 		result = Timeline.can_drop_new_clips(get_track_from_mouse(), get_frame_from_mouse(), SAFE_ZONE, split_audio, split_extra_audio)
 	else:
@@ -593,7 +596,10 @@ func _drop_data(_p: Vector2, data: Variant) -> void:
 	elif Timeline.draggable.is_file: # Creating new clips (ids are file ids!)
 		var requests: Array[RequestClipAdd] = []
 		var total_duration: int = 0
+		var default_split: bool = Settings.get_module_setting("core_timeline_panel", "video_drag_default_split", false)
 		var split_audio: bool = Input.is_key_pressed(KEY_SHIFT)
+		if default_split:
+			split_audio = not split_audio
 		var split_extra_audio: bool = Input.is_key_pressed(KEY_CTRL) and not split_audio
 		var existing_group_ids: Array[int] = ClipLogic._get_all_group_ids()
 
@@ -1229,8 +1235,11 @@ func _on_files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2) -
 		drag_data.mouse_offset = 0
 
 		Timeline.draggable = drag_data
-		Timeline.draggable = drag_data
+		var default_split: bool = Settings.get_module_setting("core_timeline_panel", "video_drag_default_split", false)
 		var split_audio: bool = Input.is_key_pressed(KEY_SHIFT)
+		if default_split:
+			split_audio = not split_audio
+
 		var split_extra_audio: bool = Input.is_key_pressed(KEY_CTRL) and not split_audio
 		if Timeline.can_drop_new_clips(track_idx, frame_nr, SAFE_ZONE, split_audio, split_extra_audio):
 			var requests: Array[RequestClipAdd] = []

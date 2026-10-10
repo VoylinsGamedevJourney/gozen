@@ -460,7 +460,7 @@ func _on_render_settings_changed() -> void:
 func _on_save_custom_profile_button_pressed() -> void:
 	var packed_scene: PackedScene = load("uid://cxfdfmbkkwt51")
 	var dialog: ConfirmationDialog = packed_scene.instantiate()
-	var _err: int = dialog.call("_connect_save_profile", _save_custom_profile)
+	dialog.call("_connect_save_profile", _save_custom_profile)
 	add_child(dialog)
 	dialog.popup_centered()
 
@@ -492,9 +492,9 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 	# Fix filename to not cause issues.
 	var save_name: String = profile_name.to_lower().validate_filename()
 	var save_path: String = get_user_profiles_path().path_join(save_name + ".tres")
-	var _err: int = ResourceSaver.save(new_profile, save_path)
-	if _err != OK:
-		return printerr("RenderScreen: Failed to save custom profile to '%s' - %s" % [save_path, _err])
+	var err: int = ResourceSaver.save(new_profile, save_path)
+	if err != OK:
+		return printerr("RenderScreen: Failed to save custom profile to '%s' - %s" % [save_path, err])
 	add_profile(new_profile, save_path)
 
 	var id: int = option_button_render_profiles.item_count - 1

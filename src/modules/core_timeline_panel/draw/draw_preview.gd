@@ -66,9 +66,13 @@ func _handle_draggable() -> void:
 	draggable = Timeline.draggable
 
 	if draggable.is_file:
-		if Input.is_key_pressed(KEY_SHIFT):  split_audio = SPLIT_AUDIO.SHIFT
-		elif Input.is_key_pressed(KEY_CTRL): split_audio = SPLIT_AUDIO.CTRL
-		else: split_audio = SPLIT_AUDIO.NONE
+		var default_split: bool = Settings.get_module_setting("core_timeline_panel", "video_drag_default_split", false)
+		if Input.is_key_pressed(KEY_SHIFT):
+			split_audio = SPLIT_AUDIO.NONE if default_split else SPLIT_AUDIO.SHIFT
+		elif Input.is_key_pressed(KEY_CTRL):
+			split_audio = SPLIT_AUDIO.CTRL
+		else:
+			split_audio = SPLIT_AUDIO.SHIFT if default_split else SPLIT_AUDIO.NONE
 
 		offset_frames = 0
 		for file_id: int in draggable.ids:

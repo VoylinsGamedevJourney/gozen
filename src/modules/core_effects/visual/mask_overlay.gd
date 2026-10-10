@@ -7,8 +7,6 @@ var drag_index: int = -1
 var hovered_index: int = -1
 var drag_start_val: PackedVector2Array
 
-var _err: int = 0 ## Useless stuff to get rid of return warnings.
-
 
 
 func initialize(clip_data: ClipData, effect_visual: Effect) -> void:
@@ -70,31 +68,31 @@ func input(event: InputEvent, control: Control) -> void:
 						for keyframe: int in new_keyframes:
 							var pts: PackedVector2Array = (new_keyframes[keyframe] as PackedVector2Array).duplicate()
 							safe_insert_index = mini(insert_idx, pts.size())
-							_err = pts.insert(safe_insert_index, normalized_pos)
+							pts.insert(safe_insert_index, normalized_pos)
 							new_keyframes[keyframe] = pts
 						if new_keyframes.is_empty():
 							var pts: PackedVector2Array = points.duplicate()
 							safe_insert_index = mini(insert_idx, pts.size())
-							_err = pts.insert(safe_insert_index, normalized_pos)
+							pts.insert(safe_insert_index, normalized_pos)
 							new_keyframes[0] = pts
 					else:
 						for keyframe: int in new_keyframes:
 							var pts: PackedVector2Array = (new_keyframes[keyframe] as PackedVector2Array).duplicate()
 							safe_insert_index = mini(insert_idx, pts.size())
 							if pts.size() < 3:
-								_err = pts.insert(safe_insert_index, normalized_pos)
+								pts.insert(safe_insert_index, normalized_pos)
 							else:
 								var prev_idx: int = safe_insert_index - 1
 								if prev_idx < 0:
 									prev_idx = pts.size() - 1
 								var next_idx: int = safe_insert_index % pts.size()
 								var mid: Vector2 = (pts[prev_idx] + pts[next_idx]) / 2.0
-								_err = pts.insert(safe_insert_index, mid)
+								pts.insert(safe_insert_index, mid)
 							new_keyframes[keyframe] = pts
 
 						var keyframe_points: PackedVector2Array = points.duplicate()
 						safe_insert_index = mini(insert_idx, keyframe_points.size())
-						_err = keyframe_points.insert(safe_insert_index, normalized_pos)
+						keyframe_points.insert(safe_insert_index, normalized_pos)
 						new_keyframes[frame] = keyframe_points
 
 					InputManager.undo_redo.create_action("Add Mask Point")
@@ -148,7 +146,7 @@ func draw(control: Control) -> void:
 	if points.size() > 0:
 		var screen_pts: PackedVector2Array = PackedVector2Array()
 		for pt: Vector2 in points:
-			_err = screen_pts.append(_project_to_control(pt * Vector2(Project.data.resolution), control))
+			screen_pts.append(_project_to_control(pt * Vector2(Project.data.resolution), control))
 
 		# Draw the lines connecting the points
 		for i: int in screen_pts.size():

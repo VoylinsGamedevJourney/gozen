@@ -7,7 +7,8 @@ const FILE_NAME: String = "%s.webp"
 const DATA_NAME: String = "data"
 
 
-var thumb_folder: String = OS.get_cache_dir().path_join("gozen").path_join("thumbs")
+var folder_files: String = OS.get_cache_dir().path_join("gozen").path_join("thumbs")
+var folder_projects: String = OS.get_cache_dir().path_join("gozen").path_join("project_thumbs")
 
 var data: Dictionary[String, int] = {}  ## { thumb_path : file_id }
 var thumbs_todo: Array[FileData] = []
@@ -19,15 +20,19 @@ func _ready() -> void:
 	FileLogic.reloaded.connect(_on_file_reloaded)
 
 	# Create the thumb directory if not existing.
-	if !DirAccess.dir_exists_absolute(thumb_folder):
-		var base_cache_dir: String = thumb_folder.get_base_dir()
+	if !DirAccess.dir_exists_absolute(folder_files):
+		var base_cache_dir: String = folder_files.get_base_dir()
 		if DirAccess.make_dir_absolute(base_cache_dir):
 			printerr("FilePanel: Couldn't create folder at %s!" % base_cache_dir)
-		if DirAccess.make_dir_absolute(thumb_folder):
-			printerr("FilePanel: Couldn't create folder at %s!" % thumb_folder)
+		if DirAccess.make_dir_absolute(folder_files):
+			printerr("FilePanel: Couldn't create folder at %s!" % folder_files)
+
+	if !DirAccess.dir_exists_absolute(folder_projects):
+		if DirAccess.make_dir_recursive_absolute(folder_projects):
+			printerr("Thumbnailer: Couldn't create folder at %s!" % folder_projects)
 
 	# Create the thumb data file if not existing.
-	var data_path: String = thumb_folder.path_join(DATA_NAME)
+	var data_path: String = folder_files.path_join(DATA_NAME)
 	if FileAccess.file_exists(data_path):
 		var file: FileAccess = FileAccess.open(data_path, FileAccess.READ)
 		data = file.get_var()
@@ -44,9 +49,25 @@ func _process(_delta: float) -> void:
 
 
 func _save_data() -> void:
-	var file: FileAccess = FileAccess.open(thumb_folder.path_join(DATA_NAME), FileAccess.WRITE)
+	var file: FileAccess = FileAccess.open(folder_files.path_join(DATA_NAME), FileAccess.WRITE)
 	if !file.store_var(data) or file.get_error():
 		printerr("Thumbnailer: Error happened when storing empty thumb data!")
+
+
+func save_project_thumb(project_path: String, image: Image) -> void:
+	if image and !image.is_empty():
+		var scaled: Image = scale_thumbnail(image.duplicate() as Image)
+		var save_path: String = folder_projects.path_join(project_path.md5_text() + ".webp")
+		scaled.save_webp(save_path)
+
+
+func get_project_thumb(project_path: String) -> Texture2D:
+	var path: String = folder_projects.path_join(project_path.md5_text() + ".webp")
+	if FileAccess.file_exists(path):
+		var image: Image = Image.load_from_file(ProjectSettings.globalize_path(path))
+		if image and not image.is_empty():
+			return ImageTexture.create_from_image(image)
+	return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO)
 
 
 func get_thumb(file: FileData) -> Texture2D:
@@ -66,7 +87,7 @@ func get_thumb(file: FileData) -> Texture2D:
 	# Check if thumb has been made and actually exists.
 	# If file didn't exist, deleting entry to create new.
 	Threader.mutex.lock()
-	if data.has(file.path) and !FileAccess.file_exists(thumb_folder.path_join(FILE_NAME % data[file.path])):
+	if data.has(file.path) and !FileAccess.file_exists(folder_files.path_join(FILE_NAME % data[file.path])):
 		if !data.erase(file.path):
 			printerr("Thumbnailer: Couldn't erase '%s' from data!" % file.path)
 		_save_data()
@@ -85,7 +106,7 @@ func get_thumb(file: FileData) -> Texture2D:
 			_: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # Video.
 
 	# Return the saved thumbnail.
-	var raw_path: String = thumb_folder.path_join(FILE_NAME % thumb_id)
+	var raw_path: String = folder_files.path_join(FILE_NAME % thumb_id)
 	image = Image.load_from_file(ProjectSettings.globalize_path(raw_path))
 	if not image or image.is_empty():
 		return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO)
@@ -122,7 +143,7 @@ func _gen_thumb(file: FileData, try: int = 0) -> void:
 	# Resizing the image with correct aspect ratio for non-audio thumbs.
 	if file.type != Type.AUDIO:
 		image = scale_thumbnail(image)
-	if image.save_webp(thumb_folder.path_join(FILE_NAME % file.id)):
+	if image.save_webp(folder_files.path_join(FILE_NAME % file.id)):
 		return printerr("Thumbnailer: Something went wrong saving thumb!")
 
 	Threader.mutex.lock()
@@ -170,7 +191,7 @@ func scale_thumbnail(image: Image) -> Image:
 func _on_file_reloaded(file: FileData) -> void:
 	Threader.mutex.lock()
 	if data.has(file.path):
-		var thumb_path: String = thumb_folder.path_join(FILE_NAME % data[file.path])
+		var thumb_path: String = folder_files.path_join(FILE_NAME % data[file.path])
 		if FileAccess.file_exists(thumb_path):
 			DirAccess.remove_absolute(thumb_path)
 		if !data.erase(file.path):

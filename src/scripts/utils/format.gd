@@ -1,6 +1,11 @@
 class_name Format
 
 
+## Removes underscores and capitalizes names.
+static func clean_file_name(file_name: String) -> String:
+	return file_name.to_lower().replace("_", " ").capitalize()
+
+
 static func file_nickname(file_name: String, size: int) -> String:
 	var new_name: String = ""
 	while file_name.length() > size:

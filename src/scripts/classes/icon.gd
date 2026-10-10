@@ -64,8 +64,10 @@ func _update_texture() -> void:
 	if temp_image.load_svg_from_string(svg_text) != OK:
 		printerr("Couldn't load svg from string!")
 
-	if get_width() == 0: set_image(temp_image)
-	else: update(temp_image)
+	if get_width() == 0:
+		set_image(temp_image)
+	else:
+		update(temp_image)
 	emit_changed()
 
 

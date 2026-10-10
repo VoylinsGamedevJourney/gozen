@@ -1,9 +1,1330 @@
 [gd_scene format=3 uid="uid://bdxuv18wukbj5"]
 
-[node name="Welcome" type="Control" unique_id=1623748820]
-layout_mode = 3
+[ext_resource type="Script" uid="uid://re4fsjjudiwc" path="res://scenes/welcome/welcome.gd" id="1_1s38k"]
+[ext_resource type="Texture2D" uid="uid://cdwjkb2q2c6it" path="res://assets/welcome_header.webp" id="1_3p20f"]
+[ext_resource type="Texture2D" uid="uid://cwv5gaisvmwv7" path="res://icon.svg" id="3_kfldb"]
+[ext_resource type="Texture2D" uid="uid://cgetxovfmpffg" path="res://assets/icons/guide.tres" id="4_shhtm"]
+[ext_resource type="Texture2D" uid="uid://cy0wf25emij1j" path="res://assets/profiles/youtube.tres" id="5_e3rrl"]
+[ext_resource type="Texture2D" uid="uid://brk03ymljvaym" path="res://assets/icons/link.tres" id="6_prgn0"]
+[ext_resource type="Texture2D" uid="uid://c01qwrnswdp6m" path="res://assets/icons/terminal.tres" id="7_vp31h"]
+[ext_resource type="Texture2D" uid="uid://kll463gy1ppm" path="res://assets/icons/support.tres" id="8_w7j6j"]
+[ext_resource type="Texture2D" uid="uid://17gcpvhkgkjl" path="res://assets/icons/open.tres" id="10_2fqae"]
+[ext_resource type="Texture2D" uid="uid://bnvorhj215l2c" path="res://assets/icons/files/text_file.tres" id="10_8fxic"]
+[ext_resource type="Texture2D" uid="uid://jn48bgcs5jf8" path="res://assets/icons/files/audio_file.tres" id="11_20rhv"]
+[ext_resource type="Texture2D" uid="uid://beivsbobyq7bq" path="res://assets/icons/video_effects.tres" id="11_squ3r"]
+[ext_resource type="Texture2D" uid="uid://b5qoasswrl8pv" path="res://assets/icons/files/color_file.tres" id="12_na4r8"]
+[ext_resource type="Texture2D" uid="uid://3k54p4ljge7v" path="res://assets/icons/files/image_file.tres" id="13_5cfbf"]
+[ext_resource type="Texture2D" uid="uid://bbbs474i3jn8p" path="res://assets/icons/files/video_file.tres" id="14_m5hjr"]
+[ext_resource type="StyleBox" uid="uid://b4hr3qnksucav" path="res://theming/timeline_box_audio_normal.tres" id="16_na4r8"]
+[ext_resource type="StyleBox" uid="uid://df0jxk11tracv" path="res://theming/timeline_box_color_normal.tres" id="17_tiqc3"]
+[ext_resource type="StyleBox" uid="uid://dlxa6tecfxvwa" path="res://theming/timeline_box_image_normal.tres" id="18_7mdm2"]
+[ext_resource type="StyleBox" uid="uid://d4imyv73ke52c" path="res://theming/timeline_box_pck_normal.tres" id="19_y7s35"]
+[ext_resource type="StyleBox" uid="uid://c8iincian78e3" path="res://theming/timeline_box_text_normal.tres" id="20_mihfh"]
+[ext_resource type="StyleBox" uid="uid://dvjs7m2ktd528" path="res://theming/timeline_box_video_normal.tres" id="21_vnt2v"]
+[ext_resource type="Texture2D" uid="uid://dc4wlfsk1n7wy" path="res://assets/icons/about.tres" id="22_a1n7k"]
+[ext_resource type="Texture2D" uid="uid://vrkhavabr26v" path="res://assets/icons/mode_cut.tres" id="22_y7s35"]
+[ext_resource type="Texture2D" uid="uid://4gqadlt84ddy" path="res://assets/icons/keyboard.tres" id="23_mihfh"]
+[ext_resource type="Texture2D" uid="uid://dnpfng1x7mg40" path="res://assets/icons/special.tres" id="24_bwe4h"]
+[ext_resource type="Texture2D" uid="uid://ku6b500vhgre" path="res://assets/icons/copy.tres" id="24_kxhqg"]
+[ext_resource type="Texture2D" uid="uid://dv8hc4nyek87r" path="res://assets/icons/brick.tres" id="24_mihfh"]
+[ext_resource type="Texture2D" uid="uid://nw3kmh6k8ub2" path="res://assets/icons/reset_speed.tres" id="24_y3kag"]
+[ext_resource type="Texture2D" uid="uid://d2hc6v7aectob" path="res://assets/icons/transition.tres" id="25_85pg6"]
+[ext_resource type="Texture2D" uid="uid://04q7h7aeq1el" path="res://assets/icons/files/thumb_pck.tres" id="25_vnt2v"]
+[ext_resource type="Texture2D" uid="uid://dsf2wu3sxy7m3" path="res://assets/icons/files/thumb_text.tres" id="26_2fqae"]
+[ext_resource type="Texture2D" uid="uid://dvxeg217tn27c" path="res://assets/effects_preview.webp" id="26_kxmut"]
+[ext_resource type="Texture2D" uid="uid://d3g2w2mw8aqv4" path="res://assets/profiles/av1.tres" id="30_g1h5h"]
+[ext_resource type="Texture2D" uid="uid://d2tu4gw0wxcmd" path="res://assets/profiles/vp8.tres" id="31_kckg8"]
+[ext_resource type="Texture2D" uid="uid://4xgiht5esyd5" path="res://assets/profiles/vp9.tres" id="32_hdf7e"]
+[ext_resource type="Texture2D" uid="uid://cuxqydjchpf8p" path="res://assets/profiles/youtube_hq.tres" id="33_hq0ow"]
+[ext_resource type="Texture2D" uid="uid://baq21vg514u8g" path="res://assets/icons/speed.tres" id="34_kckg8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_klhbv"]
+
+[node name="Welcome" type="PanelContainer" unique_id=248286192 node_paths=PackedStringArray("full_only_buttons", "tab_container", "option_button_language", "option_button_theme", "option_button_video_drag", "grid_modes", "grid_shortcuts", "button_flow_website", "button_flow_manual", "button_flow_tutorials", "button_flow_discord", "button_flow_source_code", "button_flow_support_kofi", "button_itch_modules", "button_steam_workshop", "button_gozen_module_repo", "option_button_default_profile", "region_in_line_edit", "region_out_line_edit", "spinbox_resolution_x", "spinbox_resolution_y", "spinbox_framerate", "check_button_auto_save", "option_button_empty_space")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_1s38k")
+full_only_buttons = [NodePath("Margin/Control/PanelContainer/Margin/HBox/Sidebar/ModulesButton")]
+tab_container = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer")
+option_button_language = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox/LanguageOptionButton")
+option_button_theme = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox/ThemeOptionButton")
+option_button_video_drag = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineSettingsHBox/VideoDraggingBehaviourOptionButton")
+grid_modes = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ModesHBox/ModeGrid")
+grid_shortcuts = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid")
+button_flow_website = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow/WebsiteButton")
+button_flow_manual = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow/ManualButton")
+button_flow_tutorials = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow/YTtutorialsButton")
+button_flow_discord = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow/DiscordButton")
+button_flow_source_code = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow/SourceCodeButton")
+button_flow_support_kofi = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow/SupportKofiButton")
+button_itch_modules = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2/VBoxContainer/ItchModulesButton")
+button_steam_workshop = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2/VBoxContainer/SteamWorkshopButton")
+button_gozen_module_repo = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer/PCKModuleRepoButton")
+option_button_default_profile = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/GridContainer/DefaultRenderProfileOptionButton")
+region_in_line_edit = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/GridContainer2/RegionInLineEdit")
+region_out_line_edit = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/GridContainer2/RegionOutLineEdit")
+spinbox_resolution_x = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/DefaultsGridContainer/DefaultProjectResolutionHBox/XSpinBox")
+spinbox_resolution_y = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/DefaultsGridContainer/DefaultProjectResolutionHBox/YSpinBox")
+spinbox_framerate = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/DefaultsGridContainer/FPSSpinBox")
+check_button_auto_save = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/ExtraGridContainer/CheckButton")
+option_button_empty_space = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/ExtraGridContainer/EmptySpaceOptionButton")
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=1015140807]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="Control" type="Panel" parent="Margin" unique_id=815486277]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_klhbv")
+
+[node name="PanelContainer" type="PanelContainer" parent="Margin/Control" unique_id=567141636]
+clip_children = 2
+custom_minimum_size = Vector2(900, 600)
+custom_maximum_size = Vector2(1000, 600)
+propagate_maximum_size = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 410.0
+offset_top = 190.0
+offset_right = -410.0
+offset_bottom = -190.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Margin/Control/PanelContainer" unique_id=522383578]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin" unique_id=342223980]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Sidebar" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox" unique_id=867261410]
+layout_mode = 2
+theme_override_constants/separation = 7
+
+[node name="Logo" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/Sidebar" unique_id=1913095206]
+custom_minimum_size = Vector2(170, 80)
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(-4, -5)
+offset_transform_scale = Vector2(1.05, 1.05)
+texture = ExtResource("1_3p20f")
+expand_mode = 5
+stretch_mode = 6
+
+[node name="WelcomeButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/Sidebar" unique_id=1830788630]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(10, 0)
+text = "Welcome"
+alignment = 0
+
+[node name="BasicsButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/Sidebar" unique_id=1935056521]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(10, 0)
+text = "Basics"
+alignment = 0
+
+[node name="EdittingButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/Sidebar" unique_id=1850771776]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(10, 0)
+text = "Editing"
+alignment = 0
+
+[node name="EffectsButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/Sidebar" unique_id=906632707]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(10, 0)
+text = "Effects"
+alignment = 0
+
+[node name="RenderingButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/Sidebar" unique_id=230256170]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(10, 0)
+text = "Rendering"
+alignment = 0
+
+[node name="ModulesButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/Sidebar" unique_id=1457931827]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(10, 0)
+text = "Modules"
+alignment = 0
+
+[node name="ExtrasButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/Sidebar" unique_id=1812631446]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(10, 0)
+text = "Extra's"
+alignment = 0
+
+[node name="Spacer" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/Sidebar" unique_id=1973584282]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CloseButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/Sidebar" unique_id=969728247]
+layout_mode = 2
+text = "Close"
+
+[node name="TabContainer" type="TabContainer" parent="Margin/Control/PanelContainer/Margin/HBox" unique_id=824041727]
+layout_mode = 2
+size_flags_horizontal = 3
+current_tab = 6
+tabs_visible = false
+
+[node name="WelcomeVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=143545459]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 30
+metadata/_tab_index = 0
+
+[node name="TopVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox" unique_id=1940201687]
+layout_mode = 2
+
+[node name="WelcomeTitleHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/TopVBox" unique_id=2121782884]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/TopVBox/WelcomeTitleHBox" unique_id=601853438]
+layout_mode = 2
+texture = ExtResource("14_m5hjr")
+expand_mode = 3
+
+[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/TopVBox/WelcomeTitleHBox" unique_id=152635163]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Welcome to GoZen!"
+
+[node name="HSeparator" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/TopVBox" unique_id=1661634524]
+layout_mode = 2
+
+[node name="InfoHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/TopVBox" unique_id=1256655163]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/TopVBox/InfoHBox" unique_id=1723103084]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="InfoTopLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/TopVBox/InfoHBox/VBox" unique_id=844237319]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Thank you for using GoZen and giving this video editor a try. GoZen is a minimalist, modern, open-source, customizable, and modular video editor for beginners and semi-professionals designed to make editing simple, fast, and stress-free."
+autowrap_mode = 3
+
+[node name="InfoBottomLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/TopVBox/InfoHBox/VBox" unique_id=1863383267]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "GoZen's not trying to compete with bigger video editors, our goal is to provide a strong basic video editor with everything you need and nothing you don't. Use the buttons on the left of the screen to navigate the introduction to using this video editor."
+autowrap_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/TopVBox/InfoHBox" unique_id=2056267998]
+custom_minimum_size = Vector2(100, 200)
+custom_maximum_size = Vector2(300, -1)
+layout_mode = 2
+size_flags_horizontal = 3
+texture = ExtResource("3_kfldb")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="MiddleHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox" unique_id=1605243299]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="LanguageLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox" unique_id=1103464244]
+layout_mode = 2
+text = "Language"
+
+[node name="LanguageOptionButton" type="OptionButton" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox" unique_id=672800389]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox" unique_id=1879044670]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ThemeLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox" unique_id=1121414701]
+layout_mode = 2
+text = "Theme"
+
+[node name="ThemeOptionButton" type="OptionButton" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox" unique_id=537647571]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="BottomVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox" unique_id=1109742423]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="ButtonsHFlow" type="HFlowContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox" unique_id=1587485008]
+custom_minimum_size = Vector2(500, 130)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 17
+alignment = 1
+
+[node name="WebsiteButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow" unique_id=428810428]
+custom_minimum_size = Vector2(112, 40)
+layout_mode = 2
+size_flags_vertical = 4
+text = "Website"
+icon = ExtResource("3_kfldb")
+expand_icon = true
+
+[node name="ManualButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow" unique_id=317184388]
+custom_minimum_size = Vector2(103, 40)
+layout_mode = 2
+size_flags_vertical = 4
+text = "Manual"
+icon = ExtResource("4_shhtm")
+expand_icon = true
+
+[node name="YTtutorialsButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow" unique_id=1144005268]
+custom_minimum_size = Vector2(178, 40)
+layout_mode = 2
+size_flags_vertical = 4
+text = "YouTube tutorials"
+icon = ExtResource("5_e3rrl")
+expand_icon = true
+
+[node name="DiscordButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow" unique_id=18237734]
+custom_minimum_size = Vector2(103, 40)
+layout_mode = 2
+size_flags_vertical = 4
+text = "Discord"
+icon = ExtResource("6_prgn0")
+expand_icon = true
+
+[node name="SourceCodeButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow" unique_id=1399314910]
+custom_minimum_size = Vector2(133, 40)
+layout_mode = 2
+size_flags_vertical = 4
+text = "Source Code"
+icon = ExtResource("7_vp31h")
+expand_icon = true
+
+[node name="SupportKofiButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow" unique_id=1201746772]
+custom_minimum_size = Vector2(153, 40)
+layout_mode = 2
+size_flags_vertical = 4
+tooltip_text = "Support GoZen on Ko-fi!"
+text = "Support GoZen"
+icon = ExtResource("8_w7j6j")
+expand_icon = true
+
+[node name="BasicsVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=2071702579]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="AddingFilesHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox" unique_id=26694188]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/AddingFilesHBox" unique_id=1134438174]
+layout_mode = 2
+texture = ExtResource("10_2fqae")
+expand_mode = 3
+
+[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/AddingFilesHBox" unique_id=2037204952]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Adding files"
+
+[node name="HSeparator" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox" unique_id=1813769632]
+layout_mode = 2
+
+[node name="AddFilesHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox" unique_id=1698060240]
+propagate_maximum_size = false
+layout_mode = 2
+
+[node name="RichTextLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/AddFilesHBox" unique_id=14343875]
+custom_minimum_size = Vector2(441, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+text = "You can add files by dragging them from your file manager into the editor. Right clicking the file panel in an empty space or folder will also give the option to add files. Besides that, on top of the file panel there's a button which you can press to add files."
+autowrap_mode = 3
+
+[node name="Spacer2" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/AddFilesHBox" unique_id=2012800381]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HFlowContainer" type="HFlowContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/AddFilesHBox" unique_id=2124802431]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/h_separation = 25
+theme_override_constants/v_separation = -11
+alignment = 1
+last_wrap_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/AddFilesHBox/HFlowContainer" unique_id=1345119697]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("10_8fxic")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect2" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/AddFilesHBox/HFlowContainer" unique_id=533311291]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("11_20rhv")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect3" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/AddFilesHBox/HFlowContainer" unique_id=507309559]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("12_na4r8")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect4" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/AddFilesHBox/HFlowContainer" unique_id=721919058]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("13_5cfbf")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect5" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/AddFilesHBox/HFlowContainer" unique_id=765009735]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("14_m5hjr")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Spacer3" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/AddFilesHBox" unique_id=1752103383]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="Spacer1" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox" unique_id=37687573]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="TimelineHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox" unique_id=1255438229]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineHBox" unique_id=794136080]
+layout_mode = 2
+texture = ExtResource("11_squ3r")
+expand_mode = 3
+
+[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineHBox" unique_id=600544000]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "The timeline"
+
+[node name="HSeparator2" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox" unique_id=1238091690]
+layout_mode = 2
+
+[node name="TimelineDataHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox" unique_id=613473764]
+layout_mode = 2
+
+[node name="InfoVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox" unique_id=300086037]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="TopLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/InfoVBox" unique_id=311616207]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "The timeline in GoZen is quite different from other video editors, as in audio and visual clips can be put on the same tracks. This keeps the timeline more compact and gives your more freedom to place your clips wherever you want."
+autowrap_mode = 3
+
+[node name="BottomLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/InfoVBox" unique_id=1205659589]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Some people do prefer to have their video's split into 2 clips, separating the visuals from the audio. This is possible by holding ctrl/shift when dragging in video files to the timeline."
+autowrap_mode = 3
+
+[node name="Spacer1" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox" unique_id=1850579927]
+custom_minimum_size = Vector2(10, 20)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox" unique_id=2013084744]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+
+[node name="Audio" type="PanelContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer" unique_id=1421079796]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(10, 0)
+theme_override_styles/panel = ExtResource("16_na4r8")
+
+[node name="Label" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer/Audio" unique_id=879250830]
+layout_mode = 2
+text = "Audio Clip Example"
+horizontal_alignment = 1
+
+[node name="Color" type="PanelContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer" unique_id=1085775781]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("17_tiqc3")
+
+[node name="Label2" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer/Color" unique_id=540615224]
+layout_mode = 2
+text = "Color Clip Example"
+horizontal_alignment = 1
+
+[node name="Image" type="PanelContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer" unique_id=875373445]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(-10, 0)
+theme_override_styles/panel = ExtResource("18_7mdm2")
+
+[node name="Label3" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer/Image" unique_id=219313486]
+layout_mode = 2
+text = "Image Clip Example"
+horizontal_alignment = 1
+
+[node name="PCK" type="PanelContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer" unique_id=1747808641]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(10, 0)
+theme_override_styles/panel = ExtResource("19_y7s35")
+
+[node name="Label4" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer/PCK" unique_id=1862661187]
+layout_mode = 2
+text = "PCK Clip Example"
+horizontal_alignment = 1
+
+[node name="Text" type="PanelContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer" unique_id=1382489400]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("20_mihfh")
+
+[node name="Label5" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer/Text" unique_id=372668512]
+layout_mode = 2
+text = "Text Clip Example"
+horizontal_alignment = 1
+
+[node name="Video" type="PanelContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer" unique_id=1401298583]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(10, 0)
+theme_override_styles/panel = ExtResource("21_vnt2v")
+
+[node name="Label6" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer/Video" unique_id=25799882]
+layout_mode = 2
+text = "Video Clip Example"
+horizontal_alignment = 1
+
+[node name="Spacer2" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox" unique_id=1597733700]
+custom_minimum_size = Vector2(10, 20)
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox" unique_id=2032032352]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="TimelineSettingsHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox" unique_id=505684475]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Label" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineSettingsHBox" unique_id=1388314614]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Default video dragging behaviour:"
+autowrap_mode = 3
+
+[node name="VideoDraggingBehaviourOptionButton" type="OptionButton" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineSettingsHBox" unique_id=476524330]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Spacer2" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox" unique_id=2076602784]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox" unique_id=1309940192]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Moving through the timeline can be done with the scroll wheel, and scrolling between tracks can be done by holding SHIFT. Zooming in on the timeline can be done by holding CTRL and making the tracks bigger/smaller can be done with CTRL+SHIFT. "
+autowrap_mode = 3
+
+[node name="EditingVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=753737045]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="EditingTitleHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox" unique_id=391731784]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/EditingTitleHBox" unique_id=425649285]
+layout_mode = 2
+texture = ExtResource("22_a1n7k")
+expand_mode = 3
+
+[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/EditingTitleHBox" unique_id=1922535087]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Editing in GoZen"
+
+[node name="HSeparator" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox" unique_id=15175655]
+layout_mode = 2
+
+[node name="InfoLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox" unique_id=907073124]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "The editing process is quite straight forward due to the minimalistic UI and functionality. There are some shortcuts to be aware of to make your editing more comfortable and the default position of those  shortcuts make it possible to keep your left hand on your keyboard and right hand on your mouse. Ergonomics are important."
+autowrap_mode = 3
+
+[node name="Spacer1" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox" unique_id=313857595]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="TimelineModesHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox" unique_id=425317814]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/TimelineModesHBox" unique_id=1958424096]
+layout_mode = 2
+texture = ExtResource("22_y7s35")
+expand_mode = 3
+
+[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/TimelineModesHBox" unique_id=1239914474]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Timeline mode shortcuts"
+
+[node name="HSeparator2" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox" unique_id=197987980]
+layout_mode = 2
+
+[node name="ModesHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox" unique_id=1124739491]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ModeInfoLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ModesHBox" unique_id=2140867908]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "GoZen has 2 timeline modes. The default mode is for selecting/moving/... clips, the other mode cut clips where you clip. These modes can be toggled with shortcuts and is a fast way to edit your videos."
+autowrap_mode = 3
+
+[node name="VSeparator" type="VSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ModesHBox" unique_id=1225831807]
+layout_mode = 2
+
+[node name="ModeGrid" type="GridContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ModesHBox" unique_id=1260449104]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/h_separation = 20
+columns = 2
+
+[node name="SelectModeLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ModesHBox/ModeGrid" unique_id=896410375]
+layout_mode = 2
+text = "Select mode:"
+
+[node name="LineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ModesHBox/ModeGrid" unique_id=991003245]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="CutModeLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ModesHBox/ModeGrid" unique_id=1783390560]
+layout_mode = 2
+text = "Cut mode:"
+
+[node name="CutModeLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ModesHBox/ModeGrid" unique_id=1777739384]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="Spacer2" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox" unique_id=599659314]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="TimelineShortcutsHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox" unique_id=1958318286]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/TimelineShortcutsHBox" unique_id=1408463004]
+layout_mode = 2
+texture = ExtResource("23_mihfh")
+expand_mode = 3
+
+[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/TimelineShortcutsHBox" unique_id=1158716655]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Timeline shortcuts"
+
+[node name="HSeparator3" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox" unique_id=1632416930]
+layout_mode = 2
+
+[node name="ShortcutsInfoLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox" unique_id=1813743308]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Everybody has their own editing style and shortcuts, feel free to adjust the shortcuts here. You can always change these later on in the settings menu."
+autowrap_mode = 3
+
+[node name="Spacer3" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox" unique_id=1145827757]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="ShortcutsGrid" type="GridContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox" unique_id=79529529]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/h_separation = 20
+columns = 5
+
+[node name="CutPlayheadLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=1079670859]
+layout_mode = 2
+text = "Cut at playhead:"
+
+[node name="CutPlayheadLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=1198434453]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="Spacer1" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=413935725]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DeleteLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=1679553931]
+layout_mode = 2
+text = "Delete:"
+
+[node name="DeleteLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=757150648]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="CutCursorLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=143983922]
+layout_mode = 2
+text = "Cut at cursor:"
+
+[node name="CutCursorLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=599839764]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="Spacer2" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=1709284051]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RippleDeleteLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=527047020]
+layout_mode = 2
+text = "Ripple delete:"
+
+[node name="RippleDeleteLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=1952338422]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="RemoveEmptySpaceLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=455561285]
+layout_mode = 2
+tooltip_text = "Remove empty space on cursor position."
+mouse_filter = 1
+text = "Remove empty space:"
+
+[node name="RemoveEmptySpaceLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=1814398555]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+tooltip_text = "Remove empty space on cursor position."
+
+[node name="Spacer3" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=1516989745]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OpenMarkerPopupLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=451617740]
+layout_mode = 2
+text = "Open marker popup:"
+
+[node name="OpenMarkerPopupLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=801224705]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="DuplicatgeLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=555037389]
+layout_mode = 2
+text = "Duplicate clip:"
+
+[node name="DuplicateLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=687322962]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="Spacer4" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=2127033800]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OpenEffectsPopupLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=1986180633]
+layout_mode = 2
+text = "Add effects popup:"
+
+[node name="OpenEffectsPopupLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=1554059662]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="TrimToStartLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=1777640969]
+layout_mode = 2
+text = "Trim to start:"
+
+[node name="TrimToStartLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=1635117468]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="Spacer5" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=612739445]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FocusOnPlayheadLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=1202642198]
+layout_mode = 2
+text = "Focus on playhead:"
+
+[node name="FocusOnPlayheadLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=913074412]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="TrimToEndLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=917611844]
+layout_mode = 2
+text = "Trim to end:"
+
+[node name="TrimToEndLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=484490957]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="Spacer6" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=2101163413]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FocusOnTimelineLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=1056572435]
+layout_mode = 2
+text = "Focus on timeline:"
+
+[node name="FocusOnTimelineLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid" unique_id=804101207]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+
+[node name="EffectsVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=1636972387]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="EffectsTitleHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=723166549]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox/EffectsTitleHBox" unique_id=1481918532]
+layout_mode = 2
+texture = ExtResource("24_bwe4h")
+expand_mode = 3
+
+[node name="EffectsTitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox/EffectsTitleHBox" unique_id=1377725944]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Effects"
+
+[node name="HSeparator" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=154477409]
+layout_mode = 2
+
+[node name="EffectsInfoHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=422514221]
+layout_mode = 2
+
+[node name="EffectsLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox/EffectsInfoHBox" unique_id=925542818]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Effects and transitions inside of GoZen are very similar and their settings can both be accessed from the effects panel. Same is true for the settings of the text and color clips. Selecting a clip on the timeline will make that clip's effects visible in the effects panel and from there you can click the button to add effects, or use the shortcut CTRL+A to show the popup for adding effects."
+autowrap_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox/EffectsInfoHBox" unique_id=761649062]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
+texture = ExtResource("26_kxmut")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Spacer" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=769520298]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=148967992]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox/HBoxContainer2" unique_id=1839440093]
+layout_mode = 2
+texture = ExtResource("25_85pg6")
+expand_mode = 3
+
+[node name="TransitionsTitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox/HBoxContainer2" unique_id=1804389113]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Transitions"
+
+[node name="HSeparator3" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=997396321]
+layout_mode = 2
+
+[node name="TransitionsTopLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=260015574]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Transitions can be created by hovering over the corners of clips, this will make the fading handles appear. Because clips can both contain visuals and audio, we have 2 sets of handles: Top ones are for audio and the bottom ones are for visual fades."
+autowrap_mode = 3
+
+[node name="Spacer2" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=922437050]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+
+[node name="TransitionsBottomLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=1537749922]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Keyframing can be done by pressing the diamond next to them, once a property has a keyframe it will automatically start recording changes which are made on time stamps where no keyframe has been made yet."
+autowrap_mode = 3
+
+[node name="Spacer3" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=336710349]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="TextColorsHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=1857327494]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox/TextColorsHBox" unique_id=58793216]
+layout_mode = 2
+texture = ExtResource("26_2fqae")
+expand_mode = 3
+
+[node name="TextColorTitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox/TextColorsHBox" unique_id=1936806214]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Text & Colors"
+
+[node name="HSeparator2" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=1679440853]
+layout_mode = 2
+
+[node name="TextColorInfoHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=275693989]
+layout_mode = 2
+
+[node name="TextColorLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=753205693]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "We have video, pck, audio, and image files. Those are the files we can drag and drop into the editor. As for text and colors, those are also files but have to be created inside of the editor by pressing the file icon in the top right corner of the file panel."
+autowrap_mode = 3
+
+[node name="HFlowContainer" type="HFlowContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox" unique_id=794470298]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsVBox/HFlowContainer" unique_id=660930439]
+layout_mode = 2
+
+[node name="RenderingVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=507614949]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 4
+
+[node name="TitleHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox" unique_id=60914341]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/TitleHBox" unique_id=1712260700]
+layout_mode = 2
+texture = ExtResource("24_y3kag")
+expand_mode = 3
+
+[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/TitleHBox" unique_id=1162892922]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Rendering your videos"
+
+[node name="HSeparator" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox" unique_id=1284722961]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox" unique_id=418621325]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/HBoxContainer" unique_id=2114870286]
+custom_minimum_size = Vector2(530, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Probably the most important part besides being able to edit videos is rendering them. There are pre-made render profiles to choose from, but you can of course make your own as well."
+autowrap_mode = 3
+
+[node name="HFlowContainer2" type="HFlowContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/HBoxContainer" unique_id=831838053]
+custom_minimum_size = Vector2(200, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/h_separation = 25
+theme_override_constants/v_separation = -11
+alignment = 1
+last_wrap_alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/HBoxContainer/HFlowContainer2" unique_id=1045174667]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("5_e3rrl")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect2" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/HBoxContainer/HFlowContainer2" unique_id=1250739899]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("30_g1h5h")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect3" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/HBoxContainer/HFlowContainer2" unique_id=1504529854]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("31_kckg8")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect4" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/HBoxContainer/HFlowContainer2" unique_id=112370618]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("32_hdf7e")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextureRect5" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/HBoxContainer/HFlowContainer2" unique_id=1420098741]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("33_hq0ow")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GridContainer" type="GridContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox" unique_id=781776767]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+columns = 2
+
+[node name="RegionInLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/GridContainer" unique_id=2089975732]
+layout_mode = 2
+text = "Default render profile:"
+
+[node name="DefaultRenderProfileOptionButton" type="OptionButton" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/GridContainer" unique_id=335169942]
+custom_minimum_size = Vector2(200, 25)
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox" unique_id=900098570]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="RegionLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox" unique_id=1953887102]
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Want to just render out a region? Use the region shortcuts to easily define which part of your project which you want to export."
+autowrap_mode = 3
+
+[node name="Spacer2" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox" unique_id=438803902]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+
+[node name="GridContainer2" type="GridContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox" unique_id=1150637948]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+columns = 2
+
+[node name="RegionInLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/GridContainer2" unique_id=387257118]
+layout_mode = 2
+text = "Region in:"
+
+[node name="RegionInLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/GridContainer2" unique_id=1259533938]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="RegionOutLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/GridContainer2" unique_id=1027306010]
+layout_mode = 2
+text = "Region out:"
+
+[node name="RegionOutLineEdit" type="LineEdit" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/GridContainer2" unique_id=1718163298]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="Spacer3" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox" unique_id=2139713646]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="TitleHBox2" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox" unique_id=660060940]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/TitleHBox2" unique_id=2043179403]
+layout_mode = 2
+texture = ExtResource("34_kckg8")
+expand_mode = 3
+
+[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/TitleHBox2" unique_id=601399098]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Quick note for rendering with custom settings"
+
+[node name="HSeparator2" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox" unique_id=2009486958]
+layout_mode = 2
+
+[node name="ExtraInfoLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox" unique_id=549718823]
+custom_minimum_size = Vector2(450, 0)
+custom_maximum_size = Vector2(600, -1)
+layout_mode = 2
+size_flags_vertical = 2
+text = "Rendering speeds can vary greatly depending on which render settings you choose. We give you access to the render settings to export the video the way you want, but if you aren't certain what these values do, it's best to stick with the default render profiles to avoid long rendering times and/or giant file sizes."
+autowrap_mode = 3
+
+[node name="ModulesVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=689432311]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 5
+
+[node name="ModuleInfoHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=391138889]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/ModuleInfoHBox" unique_id=167301343]
+layout_mode = 2
+texture = ExtResource("24_mihfh")
+expand_mode = 3
+metadata/_edit_lock_ = true
+
+[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/ModuleInfoHBox" unique_id=119274406]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Modularity in GoZen"
+
+[node name="HSeparator" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=1439492550]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=1304502064]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2" unique_id=1150456950]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="TopLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2/VBoxContainer2" unique_id=1670468297]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Modules can be used for extending the editor. Want extra panels which add functionality to the editor, or maybe you want some nice shiny effects, or there's a specific transition you want for your project? You can do that with modules."
+autowrap_mode = 3
+
+[node name="BottomLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2/VBoxContainer2" unique_id=1979055778]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "To add modules you can click \"Preferences\" in the menu bar and click on \"Module manager\"."
+autowrap_mode = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2" unique_id=297894090]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="ItchModulesButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2/VBoxContainer" unique_id=698852648]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Itch.io modules"
+
+[node name="SteamWorkshopButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2/VBoxContainer" unique_id=1661300628]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+text = "Steam workshop"
+
+[node name="Spacer" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=303033976]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="PCKTitleHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=1955122199]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/PCKTitleHBox" unique_id=222386272]
+layout_mode = 2
+texture = ExtResource("25_vnt2v")
+expand_mode = 3
+
+[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/PCKTitleHBox" unique_id=1521712422]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Custom PCK files"
+
+[node name="HSeparator2" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=1644803294]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=1142666219]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer" unique_id=422422672]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Modules change the editor and add functionality to the editor, but there's another type of modules refered to as pck files. These are Godot scene's which can be used directly in the timeline for visuals. For the creation of these files a bit of development is needed inside of custom Godot project."
+autowrap_mode = 3
+
+[node name="PCKModuleRepoButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer" unique_id=1088044426]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+size_flags_vertical = 4
+text = "PCK Module Project"
+
+[node name="Spacer2" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=369501588]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="WorkspacesHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=1455430704]
+layout_mode = 2
+
+[node name="TextureRect2" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/WorkspacesHBox" unique_id=246351699]
+layout_mode = 2
+texture = ExtResource("24_kxhqg")
+expand_mode = 3
+
+[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/WorkspacesHBox" unique_id=949770514]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Workspaces"
+
+[node name="HSeparator3" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=2101950571]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=1699677396]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+text = "Workspaces in GoZen are the different tabs which can be accessed in the top right corner. The default ones are \"Edit\" and \"Render\". You can create more and through the \"View\" tab in the menu bar you can choose which panels should be visible in each tab and create new workspaces.
+
+To quickly switch between workspaces you can use CTRL+Enter, this will move you to the next workspace."
+autowrap_mode = 3
+
+[node name="ExtrasVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=364889030]
+layout_mode = 2
+metadata/_tab_index = 6
+
+[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox" unique_id=114046512]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Extra's"
+
+[node name="HSeparator" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox" unique_id=1475001746]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox" unique_id=167469371]
+custom_minimum_size = Vector2(200, 0)
+custom_maximum_size = Vector2(600, -1)
+layout_mode = 2
+text = "Here are a few common settings you might want to adjust before you get started. You can always change these later in Preferences -> Editor Settings."
+autowrap_mode = 3
+
+[node name="Spacer" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox" unique_id=636101625]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+
+[node name="ExtraGridContainer" type="GridContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox" unique_id=1105742062]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+columns = 2
+
+[node name="AutoSaveLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/ExtraGridContainer" unique_id=1160393125]
+layout_mode = 2
+text = "Auto save:"
+
+[node name="CheckButton" type="CheckButton" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/ExtraGridContainer" unique_id=403939418]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="EmptySpaceLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/ExtraGridContainer" unique_id=1749389521]
+layout_mode = 2
+text = "Empty space click action:"
+
+[node name="EmptySpaceOptionButton" type="OptionButton" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/ExtraGridContainer" unique_id=1992847740]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+
+[node name="Spacer2" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox" unique_id=61645101]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="TitleLabel2" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox" unique_id=285003657]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Default project settings"
+
+[node name="HSeparator3" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox" unique_id=1836123309]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox" unique_id=1519827904]
+custom_minimum_size = Vector2(200, 0)
+custom_maximum_size = Vector2(600, -1)
+layout_mode = 2
+text = "GoZen has the option to quickly create new projects, those projects will use following settings. Quick creation of projects can be done by pressing outside of the start screen or by clicking the 2 icons next to the \"Create project\" button on the start screen."
+autowrap_mode = 3
+
+[node name="Spacer3" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox" unique_id=1402303277]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+
+[node name="DefaultsGridContainer" type="GridContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox" unique_id=127934904]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+columns = 2
+
+[node name="DefaultProjectResolutionLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/DefaultsGridContainer" unique_id=1861384862]
+layout_mode = 2
+text = "Resolution:"
+
+[node name="DefaultProjectResolutionHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/DefaultsGridContainer" unique_id=1428863793]
+layout_mode = 2
+
+[node name="XLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/DefaultsGridContainer/DefaultProjectResolutionHBox" unique_id=152731997]
+layout_mode = 2
+tooltip_auto_translate_mode = 2
+text = "x:"
+
+[node name="XSpinBox" type="SpinBox" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/DefaultsGridContainer/DefaultProjectResolutionHBox" unique_id=1133413080]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 2.0
+max_value = 100000.0
+value = 1920.0
+alignment = 2
+
+[node name="YLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/DefaultsGridContainer/DefaultProjectResolutionHBox" unique_id=30084113]
+layout_mode = 2
+tooltip_auto_translate_mode = 2
+text = "y:"
+
+[node name="YSpinBox" type="SpinBox" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/DefaultsGridContainer/DefaultProjectResolutionHBox" unique_id=1597709554]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 2.0
+max_value = 100000.0
+value = 1080.0
+alignment = 2
+
+[node name="DefaultProjectFPSLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/DefaultsGridContainer" unique_id=1534937462]
+layout_mode = 2
+text = "Framerate:"
+
+[node name="FPSSpinBox" type="SpinBox" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox/DefaultsGridContainer" unique_id=1923524504]
+custom_maximum_size = Vector2(100, -1)
+layout_mode = 2
+min_value = 1.0
+max_value = 10000.0
+value = 30.0
+alignment = 2
+
+[connection signal="pressed" from="Margin/Control/PanelContainer/Margin/HBox/Sidebar/WelcomeButton" to="." method="_on_show_tab" binds= [0]]
+[connection signal="pressed" from="Margin/Control/PanelContainer/Margin/HBox/Sidebar/BasicsButton" to="." method="_on_show_tab" binds= [1]]
+[connection signal="pressed" from="Margin/Control/PanelContainer/Margin/HBox/Sidebar/EdittingButton" to="." method="_on_show_tab" binds= [2]]
+[connection signal="pressed" from="Margin/Control/PanelContainer/Margin/HBox/Sidebar/EffectsButton" to="." method="_on_show_tab" binds= [3]]
+[connection signal="pressed" from="Margin/Control/PanelContainer/Margin/HBox/Sidebar/RenderingButton" to="." method="_on_show_tab" binds= [4]]
+[connection signal="pressed" from="Margin/Control/PanelContainer/Margin/HBox/Sidebar/ModulesButton" to="." method="_on_show_tab" binds= [5]]
+[connection signal="pressed" from="Margin/Control/PanelContainer/Margin/HBox/Sidebar/ExtrasButton" to="." method="_on_show_tab" binds= [6]]
+[connection signal="pressed" from="Margin/Control/PanelContainer/Margin/HBox/Sidebar/CloseButton" to="." method="_on_close_button_pressed"]

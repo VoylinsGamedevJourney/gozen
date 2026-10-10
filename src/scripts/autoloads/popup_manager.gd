@@ -33,8 +33,7 @@ var _popup_uids: Dictionary [int, String] = {
 	WELCOME: "uid://bdxuv18wukbj5",
 	AUTO_CUT: "uid://td87gbksxsi3" }
 
-var _control: Control = Control.new()
-var _background: PanelContainer = (load("uid://xu8ndgud6cox") as PackedScene).instantiate()
+var control: Control = Control.new()
 
 
 
@@ -42,11 +41,16 @@ func _ready() -> void:
 	get_window().size_changed.connect(_on_size_changed)
 
 	await get_tree().root.ready
-	get_tree().root.add_child(_control)
-	_control.add_child(_background)
-	_control.visible = false
-	_control.top_level = true
-	_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	get_tree().root.add_child(control)
+
+	var background: PanelContainer = PanelContainer.new()
+	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	background.theme_type_variation = "overlay_background"
+
+	control.add_child(background)
+	control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	control.visible = false
+	control.top_level = true
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -64,8 +68,8 @@ func open(popup: int) -> void:
 		SETTINGS: _open_editor_settings(_open_popups[popup] as SettingsPanel)
 		PROJECT_SETTINGS: _open_project_settings(_open_popups[popup] as SettingsPanel)
 
-	_control.add_child(_open_popups[popup])
-	_control.visible = true
+	control.add_child(_open_popups[popup])
+	control.visible = true
 
 
 func _open_editor_settings(settings_panel: SettingsPanel) -> void:
@@ -125,7 +129,7 @@ func create_confirmation_dialog(title: String, text: String) -> ConfirmationDial
 	dialog.dialog_text = text
 
 	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.call_deferred("queue_free"))
-	_control.add_child(dialog)
+	control.add_child(dialog)
 	return dialog
 
 
@@ -149,8 +153,8 @@ func show_menu(popup: PopupMenu) -> void:
 #--- Helper functions ---
 
 func _on_size_changed() -> void:
-	_control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 
 func _check_background() -> void:
-	_control.visible = !_open_popups.is_empty()
+	control.visible = !_open_popups.is_empty()

@@ -5,6 +5,7 @@ static var instance: EditorUI
 
 
 const SCENE_STARTUP: String = "uid://bqlcn30hs8qp5"
+const SCENE_WELCOME: String = "uid://bdxuv18wukbj5"
 
 
 @export var menu_bar: MenuBar
@@ -152,7 +153,7 @@ func _ready() -> void:
 		i += 1
 
 	if is_clean_cache:
-		_delete_dir_contents(Thumbnailer.thumb_folder)
+		_delete_dir_contents(Thumbnailer.folder_files)
 		_delete_dir_contents(FileLogic.wave_folder)
 		_delete_dir_contents(Settings.get_proxies_path())
 
@@ -176,6 +177,8 @@ func _ready() -> void:
 		Project.new_project(request)
 	else:
 		add_child((load(SCENE_STARTUP) as PackedScene).instantiate())
+		if Settings.get_is_first_time():
+			add_child((load(SCENE_WELCOME) as PackedScene).instantiate())
 
 	if is_view_mode and is_render_mode:
 		menu_bar.visible = false
@@ -215,22 +218,20 @@ func _ready() -> void:
 
 
 func _delete_dir_contents(path: String) -> void:
-	if not DirAccess.dir_exists_absolute(path): return
-	var dir: DirAccess = DirAccess.open(path)
-	if !dir: return
+	if not DirAccess.dir_exists_absolute(path):
+		return
 
-	var _err: int = dir.list_dir_begin()
+	var dir: DirAccess = DirAccess.open(path)
 	var file_name: String = dir.get_next()
 	while file_name != "":
-		if file_name in [".", ".."]: continue
-
-		var full_path: String = path.path_join(file_name)
-		if dir.current_is_dir():
-			_delete_dir_contents(full_path)
-			_err = dir.remove(file_name)
-		else:
-			_err = dir.remove(file_name)
-		file_name = dir.get_next()
+		if file_name not in [".", ".."]:
+			var full_path: String = path.path_join(file_name)
+			if dir.current_is_dir():
+				_delete_dir_contents(full_path)
+				dir.remove(file_name)
+			else:
+				dir.remove(file_name)
+			file_name = dir.get_next()
 
 
 func _on_cli_render_status_check(status: int, is_quick_render: bool) -> void:
@@ -273,6 +274,7 @@ func _create_project_popup_menu() -> void:
 
 	menu.add_separator()
 	menu.add_icon_item(load(Library.ICON_GOZEN) as Icon, "Splash screen", 6)
+	menu.add_icon_item(load(Library.ICON_GOZEN) as Icon, "Welcome screen", 9)
 	menu.add_separator()
 	menu.add_icon_item(load(Library.ICON_PROJECT_SETTINGS) as Icon, "Project settings", 7)
 	menu.add_icon_item(load(Library.ICON_CLOSE) as Icon, "Quit", 8)
@@ -324,9 +326,8 @@ func _on_project_popup_menu_id_pressed(id: int) -> void:
 		# -------------
 		4: Project.open_project()
 		# 5 is Recent projects
-		6:
-			if not get_tree().root.has_node("StartupPanel"):
-				get_tree().root.add_child((load(SCENE_STARTUP) as PackedScene).instantiate())
+		6: get_tree().root.add_child((load(SCENE_STARTUP) as PackedScene).instantiate())
+		9: get_tree().root.add_child((load(SCENE_WELCOME) as PackedScene).instantiate())
 		# -------------
 		7: Project.open_settings_menu()
 		8: get_tree().quit()

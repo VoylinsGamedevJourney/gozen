@@ -191,9 +191,9 @@ func add_effect(clips: Array[ClipData], effect: Effect, is_visual: bool) -> void
 
 func _add_effect(clip: ClipData, index: int, effect: Effect, is_visual: bool) -> void:
 	if is_visual:
-		var _err: int = clip.effects.video.insert(index, effect as Effect)
+		clip.effects.video.insert(index, effect as Effect)
 	else:
-		var _err: int = clip.effects.audio.insert(index, effect as Effect)
+		clip.effects.audio.insert(index, effect as Effect)
 
 	effect_added.emit(clip, index, is_visual)
 	effects_updated.emit()

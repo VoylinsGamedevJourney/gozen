@@ -83,6 +83,24 @@ func save(auto_saved: bool = false) -> void:
 		return
 
 	data.playhead = EditorCore.frame_nr
+
+	# Capture project thumbnail.
+	# We check if image is not fully black, else we skip.
+	var thumb: Image = EditorCore.viewport.get_texture().get_image()
+	if thumb and not thumb.is_empty():
+		var is_black: bool = true
+		var sample_img: Image = thumb.duplicate()
+		sample_img.resize(16, 16, Image.INTERPOLATE_NEAREST)
+		for y: int in 16:
+			for x: int in 16:
+				if sample_img.get_pixel(x, y).get_luminance() > 0.05:
+					is_black = false
+					break
+			if not is_black:
+				break
+		if not is_black:
+			Thumbnailer.save_project_thumb(get_project_path(), thumb)
+
 	var was_unsaved: bool = unsaved_changes
 	unsaved_changes = false
 	if DataManager.save_data(get_project_path(), data):

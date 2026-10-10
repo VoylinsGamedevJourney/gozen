@@ -7,7 +7,9 @@ const VERSION: int = 1
 
 enum AudioWaveformStyle { CENTER, BOTTOM_TO_TOP, TOP_TO_BOTTOM }
 
+
 var version: int = VERSION
+var is_first_time: bool = true
 
 
 # Appearance
@@ -63,5 +65,6 @@ var tab_vsplit_offsets: PackedInt32Array = [0]
 
 
 func check_version() -> void:
-	if version == VERSION: return
-	## Add versioning stuff here in case a new version changes some data drastically.
+	if version == VERSION:
+		return
+	# Add versioning stuff here in case a new version changes some data drastically.

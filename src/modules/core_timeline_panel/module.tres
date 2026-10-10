@@ -72,11 +72,23 @@ options = {
 }
 metadata/_custom_type_script = "uid://dhlfblonhwake"
 
+[sub_resource type="Resource" id="Resource_y3kag"]
+script = ExtResource("7_62oee")
+id = "video_drag_default_split"
+name = "Default video drag behavior"
+description = "When dragging in a video, should audio and visuals be combined, or split."
+default_value = false
+options = {
+"Always split audio to new track": true,
+"Keep audio & video linked": false
+}
+metadata/_custom_type_script = "uid://dhlfblonhwake"
+
 [resource]
 script = ExtResource("6_tayen")
 name = "Core Timeline Panel"
 description = "The default timeline panel for GoZen."
 author = "Voylin"
-settings = Array[ExtResource("7_62oee")]([SubResource("Resource_uy8hc"), SubResource("Resource_rs666"), SubResource("Resource_powtx"), SubResource("Resource_ppwg1"), SubResource("Resource_empty_click"), SubResource("Resource_del_empty")])
+settings = Array[ExtResource("7_62oee")]([SubResource("Resource_uy8hc"), SubResource("Resource_rs666"), SubResource("Resource_powtx"), SubResource("Resource_ppwg1"), SubResource("Resource_empty_click"), SubResource("Resource_del_empty"), SubResource("Resource_y3kag")])
 custom_panels = Array[ExtResource("2_ppwg1")]([SubResource("Resource_timeline_panel")])
 metadata/_custom_type_script = "uid://bupjtpen4yap5"

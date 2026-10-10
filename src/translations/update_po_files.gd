@@ -11,7 +11,7 @@ func _run() -> void:
 	var base_dir: String = ProjectSettings.globalize_path(PATH)
 	var pot_path: String = base_dir.path_join(POT)
 	var dir: DirAccess = DirAccess.open(base_dir)
-	var _err: int = dir.list_dir_begin()
+	dir.list_dir_begin()
 
 	var file_name: String = dir.get_next()
 	while file_name != "":

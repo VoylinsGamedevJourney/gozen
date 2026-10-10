@@ -55,8 +55,8 @@ func _collect_files(current_path: String, files: Array[String]) -> void:
 	if dir == null:
 		printerr("Couldn't open '%s'!\n\tError code: %s" % [current_path, DirAccess.get_open_error()])
 		return
+	dir.list_dir_begin()
 
-	var _err: int = dir.list_dir_begin()
 	var entry: String = dir.get_next()
 	while entry != "":
 		if entry not in [".", ".."]:

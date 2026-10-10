@@ -26,7 +26,7 @@ static func simple_interpolate(a: Variant, b: Variant, weight: float) -> Variant
 			for i: int in size:
 				var pt_a: Vector2 = arr_a[i] if i < arr_a.size() else (arr_b[i] if arr_a.is_empty() else arr_a[-1])
 				var pt_b: Vector2 = arr_b[i] if i < arr_b.size() else (arr_a[i] if arr_b.is_empty() else arr_b[-1])
-				var _err: int = result.append(pt_a.lerp(pt_b, weight))
+				result.append(pt_a.lerp(pt_b, weight))
 			return result
 		_: return a # Fallback.
 
