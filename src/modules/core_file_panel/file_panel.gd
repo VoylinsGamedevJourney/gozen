@@ -6,6 +6,7 @@ enum PopupAction {
 	RENAME,
 	DELETE,
 	RELOAD,
+	RELINK,
 	SAVE_TEMP_AS,
 	EXTRACT_AUDIO,
 	DUPLICATE,
@@ -134,6 +135,8 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 	if str(metadata).is_valid_int(): # File.
 		var file: FileData = FileLogic.get_data(metadata as int)
 		popup.add_item(tr("Rename"), PopupAction.RENAME)
+		if not file.path.begins_with("temp://"):
+			popup.add_item(tr("Relink file ..."), PopupAction.RELINK)
 		popup.add_item(tr("Reload"), PopupAction.RELOAD)
 		popup.add_item(tr("Delete"), PopupAction.DELETE)
 
@@ -196,8 +199,9 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 func _on_popup_option_pressed(option_id: int) -> void:
 	match option_id:
 		PopupAction.RENAME: _on_popup_action_file_rename()
-		PopupAction.RELOAD: _on_popup_action_file_reload()
 		PopupAction.DELETE: _on_popup_action_file_delete()
+		PopupAction.RELOAD: _on_popup_action_file_reload()
+		PopupAction.RELINK: _on_popup_action_file_relink()
 		PopupAction.COPY_PATH: _on_popup_action_copy_path()
 		PopupAction.DUPLICATE: _on_popup_action_file_duplicate()
 		PopupAction.SAVE_TEMP_AS: _on_popup_action_file_save_temp_as()
@@ -270,12 +274,23 @@ func _on_popup_action_file_rename() -> void:
 	add_child(rename_dialog)
 
 
+func _on_popup_action_file_delete() -> void:
+	FileLogic.delete([tree.get_selected().get_metadata(0) as int])
+
+
 func _on_popup_action_file_reload() -> void:
 	FileLogic.load_data(FileLogic.get_data(tree.get_selected().get_metadata(0) as int))
 
 
-func _on_popup_action_file_delete() -> void:
-	FileLogic.delete([tree.get_selected().get_metadata(0) as int])
+func _on_popup_action_file_relink() -> void:
+	var file: FileData = FileLogic.get_data(tree.get_selected().get_metadata(0) as int)
+	var dialog: FileDialog = PopupManager.create_file_dialog(
+			tr("Relink file ..."), FileDialog.FILE_MODE_OPEN_FILE)
+	dialog.current_dir = file.path.get_base_dir()
+	dialog.file_selected.connect(func(path: String) -> void:
+			FileLogic.relink_file(file, path))
+	add_child(dialog)
+	dialog.popup_centered()
 
 
 func _on_popup_action_file_save_temp_as() -> void:
