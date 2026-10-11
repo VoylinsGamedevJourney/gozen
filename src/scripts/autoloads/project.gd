@@ -330,7 +330,6 @@ func _update_recent_projects(new_path: String) -> void:
 
 	var paths: Array[String] = []
 	var file: FileAccess
-
 	if FileAccess.file_exists(RECENT_PROJECTS_FILE):
 		file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.READ)
 		while not file.eof_reached():
@@ -338,16 +337,12 @@ func _update_recent_projects(new_path: String) -> void:
 			if not line.is_empty() and line != new_path and not paths.has(line):
 				paths.append(line)
 		file.close()
-
 	paths.insert(0, new_path)
 
 	file = FileAccess.open(RECENT_PROJECTS_FILE, FileAccess.WRITE)
-	if file:
-		for project_path: String in paths:
-			file.store_line(project_path)
-		file.close()
-	else:
-		printerr("Project: Error storing String for recent_projects!")
+	for project_path: String in paths:
+		file.store_line(project_path)
+	file.close()
 
 
 func _open_project(file_path: String) -> void:

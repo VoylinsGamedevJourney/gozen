@@ -139,13 +139,12 @@ func _set_recent_projects() -> void:
 		path = file.get_line().strip_edges()
 	file.close()
 	file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
-	if file:
-		for new_path: String in new_paths:
-			if !file.store_line(new_path) or file.get_error():
-				printerr("StartupScreen: Error storing line for recent_projects!\n", get_stack())
-		file.close()
-
+	for new_path: String in new_paths:
+		if !file.store_line(new_path) or file.get_error():
+			printerr("StartupScreen: Error storing line for recent_projects!\n", get_stack())
+	file.close()
 	_build_recent_projects_ui()
+
 
 func _build_recent_projects_ui() -> void:
 	for child: Node in recent_projects_flow.get_children():
@@ -285,13 +284,10 @@ func _on_delete_recent_project(button: Button, path: String) -> void:
 				paths.append(line)
 		file.close()
 
-	file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
-	if file:
+		file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
 		for project_path: String in paths:
 			file.store_line(project_path)
 		file.close()
-	else:
-		printerr("StartupScreen: Error storing String for recent_projects!\n", get_stack())
 	button.queue_free()
 
 
@@ -574,6 +570,82 @@ func _on_new_project_setting_changed() -> void:
 
 	delete_profile_preset_button.disabled = true
 	delete_profile_preset_button.modulate = get_theme_color("icon_disabled", "StartupScreen")
+
+
+func _on_scan_projects_button_pressed() -> void:
+	var dialog: FileDialog = PopupManager.create_file_dialog(
+			tr("Select folder to scan"),
+			FileDialog.FILE_MODE_OPEN_DIR)
+	var default_dir: String = Settings.get_default_project_path()
+	var current_base: String = Project.get_project_base_folder()
+	if not current_base.is_empty():
+		dialog.current_dir = current_base
+	elif not default_dir.is_empty():
+		dialog.current_dir = default_dir
+	else:
+		dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
+
+	dialog.dir_selected.connect(_scan_folder_for_projects)
+	add_child(dialog)
+	dialog.popup_centered()
+
+
+func _scan_folder_for_projects(folder_path: String) -> void:
+	var projects_found: Array[String] = []
+	var dirs_to_scan: Array[String] = [folder_path]
+
+	while dirs_to_scan.size() > 0:
+		var current_dir: String = dirs_to_scan.pop_back()
+		var dir: DirAccess = DirAccess.open(current_dir)
+		if dir:
+			dir.list_dir_begin()
+			var file_name: String = dir.get_next()
+			while file_name != "":
+				if file_name not in [".", ".."]:
+					var full_path: String = current_dir.path_join(file_name)
+					if dir.current_is_dir():
+						dirs_to_scan.append(full_path)
+					elif file_name.ends_with(Project.EXTENSION):
+						projects_found.append(full_path)
+				file_name = dir.get_next()
+			dir.list_dir_end()
+
+	if projects_found.is_empty():
+		var accept_dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Scan Complete"))
+		accept_dialog.dialog_text = tr("No projects found in the selected folder.")
+		add_child(accept_dialog)
+		accept_dialog.popup_centered()
+		return
+
+	var paths: Array[String] = []
+	var file: FileAccess
+	if FileAccess.file_exists(Project.RECENT_PROJECTS_FILE):
+		file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.READ)
+		while not file.eof_reached():
+			var line: String = file.get_line().strip_edges()
+			if not line.is_empty() and not paths.has(line):
+				paths.append(line)
+		file.close()
+
+	var added_count: int = 0
+	for project: String in projects_found:
+		if not paths.has(project):
+			paths.append(project)
+			added_count += 1
+
+	if added_count > 0:
+		if FileAccess.file_exists(Project.RECENT_PROJECTS_FILE):
+			file = FileAccess.open(Project.RECENT_PROJECTS_FILE, FileAccess.WRITE)
+			for project_path: String in paths:
+				file.store_line(project_path)
+			file.close()
+
+		_set_recent_projects()
+
+	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Scan Complete"))
+	dialog.dialog_text = tr("Found and added %d new project(s) to the recent projects list.") % added_count
+	add_child(dialog)
+	dialog.popup_centered()
 
 
 
