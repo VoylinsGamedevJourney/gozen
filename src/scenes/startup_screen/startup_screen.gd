@@ -158,9 +158,13 @@ func _build_recent_projects_ui() -> void:
 	match sort_index:
 		# Latest
 		0: sorted_data.sort_custom(func(a: RecentProjectData, b: RecentProjectData) -> bool:
+					if a.modified_time != b.modified_time:
+						return a.modified_time > b.modified_time
 					return a.original_index < b.original_index)
 		# Oldest
 		1: sorted_data.sort_custom(func(a: RecentProjectData, b: RecentProjectData) -> bool:
+					if a.modified_time != b.modified_time:
+						return a.modified_time < b.modified_time
 					return a.original_index > b.original_index)
 		# Name A-Z
 		2: sorted_data.sort_custom(func(a: RecentProjectData, b: RecentProjectData) -> bool:
