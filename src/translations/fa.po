@@ -242,119 +242,125 @@ msgstr "افزودن متن"
 msgid "Add color"
 msgstr "افزودن رنگ"
 
-#: modules/core_file_panel/file_panel.gd:113
-#: modules/core_file_panel/file_panel.gd:179
+#: modules/core_file_panel/file_panel.gd:114
+#: modules/core_file_panel/file_panel.gd:182
 msgid "Add files ..."
 msgstr "افزودن فایل ها ..."
 
-#: modules/core_file_panel/file_panel.gd:136
+#: modules/core_file_panel/file_panel.gd:137
 msgid "Rename"
 msgstr "تغییر نام"
 
-#: modules/core_file_panel/file_panel.gd:137
+#: modules/core_file_panel/file_panel.gd:139
+#: modules/core_file_panel/file_panel.gd:288 scripts/logic/file_logic.gd:928
+#, fuzzy
+msgid "Relink file ..."
+msgstr "آماده سازی فایل ها ..."
+
+#: modules/core_file_panel/file_panel.gd:140
 msgid "Reload"
 msgstr "بارگذاری مجدد"
 
-#: modules/core_file_panel/file_panel.gd:138 scenes/editor/editor.gd:534
+#: modules/core_file_panel/file_panel.gd:141 scenes/editor/editor.gd:534
 msgid "Delete"
 msgstr "حذف"
 
-#: modules/core_file_panel/file_panel.gd:142
+#: modules/core_file_panel/file_panel.gd:145
 msgid "Image options"
 msgstr "گزینه های تصویر"
 
-#: modules/core_file_panel/file_panel.gd:143
+#: modules/core_file_panel/file_panel.gd:146
 msgid "Save image as ..."
 msgstr "ذخیره تصویر به عنوان ..."
 
-#: modules/core_file_panel/file_panel.gd:145
+#: modules/core_file_panel/file_panel.gd:148
 #: modules/core_timeline_panel/timeline_panel.gd:943
 msgid "Video options"
 msgstr "گزینه های ویدیو"
 
-#: modules/core_file_panel/file_panel.gd:149
+#: modules/core_file_panel/file_panel.gd:152
 msgid "Create proxy"
 msgstr "ساخت پروکسی"
 
-#: modules/core_file_panel/file_panel.gd:151
+#: modules/core_file_panel/file_panel.gd:154
 msgid "Re-create proxy"
 msgstr "بازسازی پروکسی"
 
-#: modules/core_file_panel/file_panel.gd:152
+#: modules/core_file_panel/file_panel.gd:155
 msgid "Remove proxy"
 msgstr "حذف پروکسی"
 
-#: modules/core_file_panel/file_panel.gd:154
+#: modules/core_file_panel/file_panel.gd:157
 msgid "Replace audio"
 msgstr "جایگزینی صدا"
 
-#: modules/core_file_panel/file_panel.gd:155
+#: modules/core_file_panel/file_panel.gd:158
 msgid "Extract audio to file ..."
 msgstr "استخراج صدا در قالب فایل ..."
 
-#: modules/core_file_panel/file_panel.gd:157
+#: modules/core_file_panel/file_panel.gd:160
 msgid "Text options"
 msgstr "گزینه های متن"
 
-#: modules/core_file_panel/file_panel.gd:158
+#: modules/core_file_panel/file_panel.gd:161
 msgid "Duplicate"
 msgstr "تکثیر"
 
-#: modules/core_file_panel/file_panel.gd:160
+#: modules/core_file_panel/file_panel.gd:163
 #, fuzzy
 msgid "Extra"
 msgstr "امکانات جانبی"
 
-#: modules/core_file_panel/file_panel.gd:161
+#: modules/core_file_panel/file_panel.gd:164
 msgid "File Info"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:163
+#: modules/core_file_panel/file_panel.gd:166
 msgid "Folder options"
 msgstr "گزینه های پوشه"
 
-#: modules/core_file_panel/file_panel.gd:165
-#: scenes/startup_screen/startup_screen.gd:253
+#: modules/core_file_panel/file_panel.gd:168
+#: scenes/startup_screen/startup_screen.gd:256
 msgid "Open in file manager"
 msgstr "باز کردن در مدیریت فایل"
 
-#: modules/core_file_panel/file_panel.gd:166
+#: modules/core_file_panel/file_panel.gd:169
 msgid "Copy file path"
 msgstr "کپی مسیر فایل"
 
-#: modules/core_file_panel/file_panel.gd:167
-#: modules/core_file_panel/file_panel.gd:185
-#: modules/core_file_panel/file_panel.gd:597
+#: modules/core_file_panel/file_panel.gd:170
+#: modules/core_file_panel/file_panel.gd:188
+#: modules/core_file_panel/file_panel.gd:612
 msgid "Create folder"
 msgstr "ایجاد پوشه"
 
-#: modules/core_file_panel/file_panel.gd:188
+#: modules/core_file_panel/file_panel.gd:191
 msgid "Rename folder"
 msgstr "تغییر نام پوشه"
 
-#: modules/core_file_panel/file_panel.gd:189
+#: modules/core_file_panel/file_panel.gd:192
 msgid "Delete folder"
 msgstr "حذف پوشه"
 
-#: modules/core_file_panel/file_panel.gd:229
+#: modules/core_file_panel/file_panel.gd:233
 #: scenes/rename_file/rename_file.tscn
 msgid "Rename file"
 msgstr "تغییر نام فایل"
 
-#: modules/core_file_panel/file_panel.gd:234
-#: modules/core_file_panel/file_panel.gd:602
+#: modules/core_file_panel/file_panel.gd:238
+#: modules/core_file_panel/file_panel.gd:617
 msgid "Folder name"
 msgstr "نام پوشه"
 
-#: modules/core_file_panel/file_panel.gd:287
+#: modules/core_file_panel/file_panel.gd:302
 msgid "Save image to file"
 msgstr "ذخیره تصویر در فایل"
 
-#: modules/core_file_panel/file_panel.gd:300
+#: modules/core_file_panel/file_panel.gd:315
 msgid "Save video audio to WAV"
 msgstr "ذخیره صدای ویدیو به صورت WAV"
 
-#: modules/core_file_panel/file_panel.gd:435
+#: modules/core_file_panel/file_panel.gd:450
 msgid "(Loading thumbnail...)"
 msgstr "(بارگذاری تامبنیل...)"
 
@@ -1277,7 +1283,7 @@ msgstr "افزودن فایل رنگ"
 #: scenes/color_popup/color_popup.tscn
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 #: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
-#: scenes/auto_cut_popup/auto_cut_popup.tscn scripts/autoloads/project.gd:379
+#: scenes/auto_cut_popup/auto_cut_popup.tscn scripts/autoloads/project.gd:374
 #: scripts/logic/file_logic.gd:262
 msgid "Cancel"
 msgstr "لغو"
@@ -1744,6 +1750,11 @@ msgid "Open a previously created project through your file explorer."
 msgstr "بازکردن پروژه ای که از قبل ایجاد شده توسط جستوجوگر فایل."
 
 #: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+msgid "Scan for projects"
+msgstr "ذخیره پروژه"
+
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Go to the menu to set the settings of your new project."
 msgstr "رفتن به منو برای تنظیمات پروژه جدیدتان."
 
@@ -1817,7 +1828,7 @@ msgstr "بازگشت"
 msgid "Image by"
 msgstr "تصویر از"
 
-#: scenes/startup_screen/startup_screen.gd:254
+#: scenes/startup_screen/startup_screen.gd:257
 #, fuzzy
 msgid "Remove from list"
 msgstr "حذف پروکسی"
@@ -1834,6 +1845,24 @@ msgstr "فایل پروژه GoZen"
 #: scenes/startup_screen/startup_screen.gd:454
 msgid "Select project save path"
 msgstr "انتخاب مسیر ذخیره پروژه"
+
+#: scenes/startup_screen/startup_screen.gd:577
+#, fuzzy
+msgid "Select folder to scan"
+msgstr "حذف پوشه"
+
+#: scenes/startup_screen/startup_screen.gd:614
+#: scenes/startup_screen/startup_screen.gd:645
+msgid "Scan Complete"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.gd:615
+msgid "No projects found in the selected folder."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.gd:646
+msgid "Found and added %d new project(s) to the recent projects list."
+msgstr ""
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Update marker"
@@ -1924,20 +1953,20 @@ msgstr "درحال بارگذاری فایل های پروژه ..."
 msgid "GoZen project files"
 msgstr "فایل های پروژه GoZen"
 
-#: scripts/autoloads/project.gd:378
+#: scripts/autoloads/project.gd:373
 msgid "Don't save"
 msgstr "ذخیره نکردن"
 
-#: scripts/autoloads/project.gd:383
+#: scripts/autoloads/project.gd:378
 msgid "Unsaved changes"
 msgstr ""
 
-#: scripts/autoloads/project.gd:384
+#: scripts/autoloads/project.gd:379
 msgid ""
 "You have unsaved changes in your current project. Save before proceeding?"
 msgstr ""
 
-#: scripts/autoloads/project.gd:385
+#: scripts/autoloads/project.gd:380
 msgid "Save"
 msgstr "ذخیره"
 
@@ -2007,11 +2036,84 @@ msgstr "فایل ها اضافه شدند"
 msgid "Files loading ..."
 msgstr "درحال بارگذاری فایل ها ..."
 
-#: scripts/logic/file_logic.gd:917
+#: scripts/logic/file_logic.gd:920
+msgid "File Missing"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:921
+msgid "The following file could not be found:"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:922
+msgid "Do you want to relink it now?"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:923
+msgid "Relink"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:924
+msgid "Keep as missing"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:936
+#, fuzzy
+msgid "Files Missing"
+msgstr "درحال بارگذاری فایل ها ..."
+
+#: scripts/logic/file_logic.gd:937
+msgid "The following files could not be found:"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:939
+msgid ""
+"They will be kept as missing. You can right-click them in the file panel to "
+"relink."
+msgstr ""
+
+#: scripts/logic/file_logic.gd:953 scripts/logic/file_logic.gd:973
 #, fuzzy
 msgid "Files Updated"
 msgstr "فایل ها اضافه شدند"
 
-#: scripts/logic/file_logic.gd:918
+#: scripts/logic/file_logic.gd:954 scripts/logic/file_logic.gd:974
 msgid "The following files were modified externally and have been reloaded:"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:981
+#, fuzzy
+msgid "Files Updated & Shortened"
+msgstr "فایل ها اضافه شدند"
+
+#: scripts/logic/file_logic.gd:982
+msgid "The following files were modified externally and are now shorter:"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:984
+msgid ""
+"Some clips on the timeline exceed the new file lengths. Do you want to "
+"automatically shorten these clips to fit?"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:985 scripts/logic/file_logic.gd:1152
+#, fuzzy
+msgid "Shorten clips"
+msgstr "حذف کلیپ"
+
+#: scripts/logic/file_logic.gd:986 scripts/logic/file_logic.gd:1153
+msgid "Keep intact"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:1148
+msgid "File Shortened"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:1149
+msgid "The relinked file is shorter than the original."
+msgstr ""
+
+#: scripts/logic/file_logic.gd:1150
+msgid ""
+"Some clips on the timeline exceed the new file length. Do you want to "
+"automatically shorten these clips to fit?"
 msgstr ""

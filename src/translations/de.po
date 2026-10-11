@@ -226,122 +226,128 @@ msgstr "Text hinzufügen"
 msgid "Add color"
 msgstr "Farbe hinzufügen"
 
-#: modules/core_file_panel/file_panel.gd:113
-#: modules/core_file_panel/file_panel.gd:179
+#: modules/core_file_panel/file_panel.gd:114
+#: modules/core_file_panel/file_panel.gd:182
 msgid "Add files ..."
 msgstr "Dateien hinzufügen ..."
 
-#: modules/core_file_panel/file_panel.gd:136
+#: modules/core_file_panel/file_panel.gd:137
 msgid "Rename"
 msgstr "Umbenennen"
 
-#: modules/core_file_panel/file_panel.gd:137
+#: modules/core_file_panel/file_panel.gd:139
+#: modules/core_file_panel/file_panel.gd:288 scripts/logic/file_logic.gd:928
+#, fuzzy
+msgid "Relink file ..."
+msgstr "Dateien suchen ..."
+
+#: modules/core_file_panel/file_panel.gd:140
 msgid "Reload"
 msgstr "Neu lade"
 
-#: modules/core_file_panel/file_panel.gd:138 scenes/editor/editor.gd:534
+#: modules/core_file_panel/file_panel.gd:141 scenes/editor/editor.gd:534
 msgid "Delete"
 msgstr "Löschen"
 
-#: modules/core_file_panel/file_panel.gd:142
+#: modules/core_file_panel/file_panel.gd:145
 msgid "Image options"
 msgstr "Bildoptionen"
 
-#: modules/core_file_panel/file_panel.gd:143
+#: modules/core_file_panel/file_panel.gd:146
 msgid "Save image as ..."
 msgstr "Bild speichern unter ..."
 
-#: modules/core_file_panel/file_panel.gd:145
+#: modules/core_file_panel/file_panel.gd:148
 #: modules/core_timeline_panel/timeline_panel.gd:943
 msgid "Video options"
 msgstr "Videooptionen"
 
-#: modules/core_file_panel/file_panel.gd:149
+#: modules/core_file_panel/file_panel.gd:152
 msgid "Create proxy"
 msgstr "Proxy erstellen"
 
-#: modules/core_file_panel/file_panel.gd:151
+#: modules/core_file_panel/file_panel.gd:154
 msgid "Re-create proxy"
 msgstr "Proxy neu erstellen"
 
-#: modules/core_file_panel/file_panel.gd:152
+#: modules/core_file_panel/file_panel.gd:155
 msgid "Remove proxy"
 msgstr "Proxy entfernen"
 
-#: modules/core_file_panel/file_panel.gd:154
+#: modules/core_file_panel/file_panel.gd:157
 msgid "Replace audio"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:155
+#: modules/core_file_panel/file_panel.gd:158
 msgid "Extract audio to file ..."
 msgstr "Audio in datei extrahieren ..."
 
-#: modules/core_file_panel/file_panel.gd:157
+#: modules/core_file_panel/file_panel.gd:160
 msgid "Text options"
 msgstr "Textoptionen"
 
-#: modules/core_file_panel/file_panel.gd:158
+#: modules/core_file_panel/file_panel.gd:161
 msgid "Duplicate"
 msgstr "Duplizieren"
 
-#: modules/core_file_panel/file_panel.gd:160
+#: modules/core_file_panel/file_panel.gd:163
 #, fuzzy
 msgid "Extra"
 msgstr "Extras"
 
-#: modules/core_file_panel/file_panel.gd:161
+#: modules/core_file_panel/file_panel.gd:164
 msgid "File Info"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:163
+#: modules/core_file_panel/file_panel.gd:166
 #, fuzzy
 msgid "Folder options"
 msgstr "Geschwindigkeit"
 
-#: modules/core_file_panel/file_panel.gd:165
-#: scenes/startup_screen/startup_screen.gd:253
+#: modules/core_file_panel/file_panel.gd:168
+#: scenes/startup_screen/startup_screen.gd:256
 msgid "Open in file manager"
 msgstr "Im Dateimanager öffnen"
 
-#: modules/core_file_panel/file_panel.gd:166
+#: modules/core_file_panel/file_panel.gd:169
 msgid "Copy file path"
 msgstr "Dateipfad kopieren"
 
-#: modules/core_file_panel/file_panel.gd:167
-#: modules/core_file_panel/file_panel.gd:185
-#: modules/core_file_panel/file_panel.gd:597
+#: modules/core_file_panel/file_panel.gd:170
+#: modules/core_file_panel/file_panel.gd:188
+#: modules/core_file_panel/file_panel.gd:612
 msgid "Create folder"
 msgstr "Ordner erstellen"
 
-#: modules/core_file_panel/file_panel.gd:188
+#: modules/core_file_panel/file_panel.gd:191
 msgid "Rename folder"
 msgstr "Ordner umbenennen"
 
-#: modules/core_file_panel/file_panel.gd:189
+#: modules/core_file_panel/file_panel.gd:192
 msgid "Delete folder"
 msgstr "Ordner löschen"
 
-#: modules/core_file_panel/file_panel.gd:229
+#: modules/core_file_panel/file_panel.gd:233
 #: scenes/rename_file/rename_file.tscn
 #, fuzzy
 msgid "Rename file"
 msgstr "Datei umbenennen zu ..."
 
-#: modules/core_file_panel/file_panel.gd:234
-#: modules/core_file_panel/file_panel.gd:602
+#: modules/core_file_panel/file_panel.gd:238
+#: modules/core_file_panel/file_panel.gd:617
 msgid "Folder name"
 msgstr "Ordnername"
 
-#: modules/core_file_panel/file_panel.gd:287
+#: modules/core_file_panel/file_panel.gd:302
 #, fuzzy
 msgid "Save image to file"
 msgstr "Bild in Datei speichern"
 
-#: modules/core_file_panel/file_panel.gd:300
+#: modules/core_file_panel/file_panel.gd:315
 msgid "Save video audio to WAV"
 msgstr "Videoaudio als WAV speichern"
 
-#: modules/core_file_panel/file_panel.gd:435
+#: modules/core_file_panel/file_panel.gd:450
 msgid "(Loading thumbnail...)"
 msgstr "(Vorschaubild wird geladen...)"
 
@@ -1277,7 +1283,7 @@ msgstr "Farbdatei hinzufügen"
 #: scenes/color_popup/color_popup.tscn
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 #: scenes/rename_file/rename_file.tscn scenes/marker_popup/marker_popup.tscn
-#: scenes/auto_cut_popup/auto_cut_popup.tscn scripts/autoloads/project.gd:379
+#: scenes/auto_cut_popup/auto_cut_popup.tscn scripts/autoloads/project.gd:374
 #: scripts/logic/file_logic.gd:262
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -1743,6 +1749,11 @@ msgid "Open a previously created project through your file explorer."
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+msgid "Scan for projects"
+msgstr "Projekt speichern"
+
+#: scenes/startup_screen/startup_screen.tscn
 msgid "Go to the menu to set the settings of your new project."
 msgstr ""
 
@@ -1815,7 +1826,7 @@ msgstr "Zurück"
 msgid "Image by"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:254
+#: scenes/startup_screen/startup_screen.gd:257
 #, fuzzy
 msgid "Remove from list"
 msgstr "Proxy entfernen"
@@ -1832,6 +1843,24 @@ msgstr "GoZen Projektdatei"
 
 #: scenes/startup_screen/startup_screen.gd:454
 msgid "Select project save path"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.gd:577
+#, fuzzy
+msgid "Select folder to scan"
+msgstr "Ordner löschen"
+
+#: scenes/startup_screen/startup_screen.gd:614
+#: scenes/startup_screen/startup_screen.gd:645
+msgid "Scan Complete"
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.gd:615
+msgid "No projects found in the selected folder."
+msgstr ""
+
+#: scenes/startup_screen/startup_screen.gd:646
+msgid "Found and added %d new project(s) to the recent projects list."
 msgstr ""
 
 #: scenes/marker_popup/marker_popup.tscn
@@ -1925,20 +1954,20 @@ msgstr "Projektdateien werden geladen ..."
 msgid "GoZen project files"
 msgstr "GoZen Projektdateien"
 
-#: scripts/autoloads/project.gd:378
+#: scripts/autoloads/project.gd:373
 msgid "Don't save"
 msgstr "Nicht speichern"
 
-#: scripts/autoloads/project.gd:383
+#: scripts/autoloads/project.gd:378
 msgid "Unsaved changes"
 msgstr ""
 
-#: scripts/autoloads/project.gd:384
+#: scripts/autoloads/project.gd:379
 msgid ""
 "You have unsaved changes in your current project. Save before proceeding?"
 msgstr ""
 
-#: scripts/autoloads/project.gd:385
+#: scripts/autoloads/project.gd:380
 msgid "Save"
 msgstr "Speichern"
 
@@ -2007,11 +2036,84 @@ msgstr "Dateien abgelegt"
 msgid "Files loading ..."
 msgstr "Dateien werden geladen ..."
 
-#: scripts/logic/file_logic.gd:917
+#: scripts/logic/file_logic.gd:920
+msgid "File Missing"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:921
+msgid "The following file could not be found:"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:922
+msgid "Do you want to relink it now?"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:923
+msgid "Relink"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:924
+msgid "Keep as missing"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:936
+#, fuzzy
+msgid "Files Missing"
+msgstr "Dateien werden geladen ..."
+
+#: scripts/logic/file_logic.gd:937
+msgid "The following files could not be found:"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:939
+msgid ""
+"They will be kept as missing. You can right-click them in the file panel to "
+"relink."
+msgstr ""
+
+#: scripts/logic/file_logic.gd:953 scripts/logic/file_logic.gd:973
 #, fuzzy
 msgid "Files Updated"
 msgstr "Dateien abgelegt"
 
-#: scripts/logic/file_logic.gd:918
+#: scripts/logic/file_logic.gd:954 scripts/logic/file_logic.gd:974
 msgid "The following files were modified externally and have been reloaded:"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:981
+#, fuzzy
+msgid "Files Updated & Shortened"
+msgstr "Dateien abgelegt"
+
+#: scripts/logic/file_logic.gd:982
+msgid "The following files were modified externally and are now shorter:"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:984
+msgid ""
+"Some clips on the timeline exceed the new file lengths. Do you want to "
+"automatically shorten these clips to fit?"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:985 scripts/logic/file_logic.gd:1152
+#, fuzzy
+msgid "Shorten clips"
+msgstr "Clip löschen"
+
+#: scripts/logic/file_logic.gd:986 scripts/logic/file_logic.gd:1153
+msgid "Keep intact"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:1148
+msgid "File Shortened"
+msgstr ""
+
+#: scripts/logic/file_logic.gd:1149
+msgid "The relinked file is shorter than the original."
+msgstr ""
+
+#: scripts/logic/file_logic.gd:1150
+msgid ""
+"Some clips on the timeline exceed the new file length. Do you want to "
+"automatically shorten these clips to fit?"
 msgstr ""
