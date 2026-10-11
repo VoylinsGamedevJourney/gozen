@@ -69,7 +69,7 @@ func _strict_input_check(event: InputEvent) -> bool:
 		return false
 
 	if event.is_action_pressed("open_marker_popup", false, true):
-		open_marker_popup()
+		PopupManager.open(PopupManager.MARKER)
 		return true
 	elif event.is_action_pressed("timeline_play_pause", false, true):
 		EditorCore.on_play_pressed()
@@ -106,15 +106,29 @@ func _strict_input_check(event: InputEvent) -> bool:
 		region.y = EditorCore.frame_nr
 		Project.set_render_region(region)
 		return true
+	elif event.is_action_pressed("slip_clip_left", true, true):
+		ClipLogic.slip_selected_clips(-1)
+		return true
+	elif event.is_action_pressed("slip_clip_right", true, true):
+		ClipLogic.slip_selected_clips(1)
+		return true
 	return false
 
 
-func show_editor_workspace() -> void: on_show_editor_workspace.emit()
-func show_render_workspace() -> void: on_show_render_workspace.emit()
-func switch_workspace() -> void: 	  on_switch_workspace.emit()
+func show_editor_workspace() -> void:
+	on_show_editor_workspace.emit()
 
-func _on_closing_editor() -> void: 	  undo_redo.free()
-func open_marker_popup() -> void:	  PopupManager.open(PopupManager.MARKER)
+
+func show_render_workspace() -> void:
+	on_show_render_workspace.emit()
+
+
+func switch_workspace() -> void:
+	on_switch_workspace.emit()
+
+
+func _on_closing_editor() -> void:
+	undo_redo.free()
 
 
 func clipboard_paste() -> void:

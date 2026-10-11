@@ -50,6 +50,8 @@ func _ready() -> void:
 	register(Command.new("Ungroup selected clips", ClipLogic.ungroup_selected_clips, "ungroup_clips"))
 	register(Command.new("Trim clips to start", Timeline.trim_clips_to_start, "trim_clips_to_start"))
 	register(Command.new("Trim clips to end", Timeline.trim_clips_to_end, "trim_clips_to_end"))
+	register(Command.new("Slip clips left", ClipLogic.slip_selected_clips.bind(-1), "slip_clip_left"))
+	register(Command.new("Slip clips right", ClipLogic.slip_selected_clips.bind(1), "slip_clip_right"))
 
 	register(Command.new("Add track", TrackLogic.add_track_to_end, ""))
 	register(Command.new("Clear selection", ClipLogic.clear_selection, ""))
@@ -57,7 +59,7 @@ func _ready() -> void:
 	register(Command.new("Undo", InputManager.undo_redo.undo, "ui_undo"))
 	register(Command.new("Redo", InputManager.undo_redo.redo, "ui_redo"))
 
-	register(Command.new("Open marker popup", InputManager.open_marker_popup, "open_marker_popup"))
+	register(Command.new("Open marker popup", PopupManager.open.bind(PopupManager.MARKER), "open_marker_popup"))
 	register(Command.new("About GoZen", PopupManager.open.bind(PopupManager.CREDITS), "help"))
 
 	Settings.on_localization_updated.connect(_localize_commands)

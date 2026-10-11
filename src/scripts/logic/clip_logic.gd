@@ -396,9 +396,13 @@ func insert_clips(clips_to_insert: Array[ClipData], action_name: String, files_t
 		selected.emit(active_clips[-1])
 
 
-func duplicate_selected_clips() -> int: return duplicate_clips(active_clips)
+func duplicate_selected_clips() -> int:
+	return duplicate_clips(active_clips)
+
+
 func duplicate_clips(clips_to_duplicate: Array[ClipData], duplicate_files: bool = false) -> int:
-	if clips_to_duplicate.is_empty(): return 0
+	if clips_to_duplicate.is_empty():
+		return 0
 
 	var new_clips: Array[ClipData] = []
 	var new_files: Array[FileData] = []
@@ -458,17 +462,58 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData], duplicate_files: bool 
 		else:
 			failed_duplicates += 1
 
-	if not new_clips.is_empty(): insert_clips(new_clips, "Duplicate clip(s)", new_files)
+	if not new_clips.is_empty():
+		insert_clips(new_clips, "Duplicate clip(s)", new_files)
 	return failed_duplicates
 
 
+func slip_selected_clips(amount: int) -> void:
+	if active_clips.is_empty():
+		return
+	slip(active_clips, amount)
+
+
+func slip(clips_to_slip: Array[ClipData], amount: int) -> void:
+	var requests: Array[Dictionary] = []
+	for clip: ClipData in clips_to_slip:
+		var file: FileData = FileLogic.get_data(clip.file)
+		if not file or not (file.type & (Type.VIDEO | Type.AUDIO)):
+			continue
+
+		var new_begin: int = clip.begin + amount
+		if new_begin < 0:
+			continue
+
+		var max_begin: int = file.duration - int(clip.duration * clip.speed)
+		if new_begin > max_begin:
+			continue
+
+		requests.append({"clip": clip, "new_begin": new_begin, "old_begin": clip.begin})
+	if requests.is_empty():
+		return
+
+	InputManager.undo_redo.create_action("Slip clip(s)")
+	for req: Dictionary in requests:
+		InputManager.undo_redo.add_do_method(_slip.bind(req.clip, req.new_begin))
+		InputManager.undo_redo.add_undo_method(_slip.bind(req.clip, req.old_begin))
+	InputManager.undo_redo.commit_action()
+
+
+func _slip(clip: ClipData, new_begin: int) -> void:
+	clip.begin = new_begin
+	Project.unsaved_changes = true
+	updated.emit.call_deferred()
+
+
 func get_group_clips(clip: ClipData) -> Array[ClipData]:
-	if clip.groups.is_empty(): return []
+	if clip.groups.is_empty():
+		return []
 
 	var out_group: int = clip.groups[-1]
 	var group_clips_data: Array[ClipData] = []
 	for clip_data: ClipData in clips.values():
-		if clip_data == clip: continue
+		if clip_data == clip:
+			continue
 
 		if not clip_data.groups.is_empty() and clip_data.groups[-1] == out_group:
 			group_clips_data.append(clip_data)
@@ -486,12 +531,15 @@ func _get_all_group_ids() -> Array[int]:
 	var ids: Array[int] = []
 	for clip: ClipData in clips.values():
 		for group: int in clip.groups:
-			if group in ids: continue
-			ids.append(group)
+			if group not in ids:
+				ids.append(group)
 	return ids
 
 
-func group_selected_clips() -> void: group_clips(active_clips)
+func group_selected_clips() -> void:
+	group_clips(active_clips)
+
+
 func group_clips(clips_to_group: Array[ClipData]) -> void:
 	if clips_to_group.size() > 1:
 		var group_id: int = get_new_id(_get_all_group_ids())
@@ -505,7 +553,10 @@ func group_clips(clips_to_group: Array[ClipData]) -> void:
 		InputManager.undo_redo.commit_action()
 
 
-func ungroup_selected_clips() -> void: ungroup_clips(active_clips)
+func ungroup_selected_clips() -> void:
+	ungroup_clips(active_clips)
+
+
 func ungroup_clips(clips_to_ungroup: Array[ClipData]) -> void:
 	if clips_to_ungroup.is_empty(): return
 

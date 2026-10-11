@@ -26,7 +26,7 @@ func _ready() -> void:
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		button.button_group = button_group
 		button.toggle_mode = true
-		if button.pressed.connect(_on_button_pressed):
+		if button.pressed.connect(_on_button_pressed.bind(index)):
 			printerr("CommandBar: Couldn't connect command button to '_on_button_pressed'!")
 
 		if command_buttons.get_child_count() > MAX_COMMANDS:
@@ -75,12 +75,12 @@ func _on_command_line_edit_text_changed(command_text: String) -> void:
 
 func _on_command_line_edit_text_submitted(_command_text: String) -> void:
 	for button: Button in command_buttons.get_children():
-		if !button.visible: continue
-
-		if selected_button != 0:
-			selected_button -= 1
-		else:
-			return button.pressed.emit()
+		if button.visible:
+			if selected_button != 0:
+				selected_button -= 1
+			else:
+				button.pressed.emit()
+				return
 	_close()
 
 
