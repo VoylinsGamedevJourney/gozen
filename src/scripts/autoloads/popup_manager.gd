@@ -15,8 +15,11 @@ enum {
 	REPLACE_AUDIO,
 	WELCOME,
 	AUTO_CUT,
-	FILE_INFO }
-
+	FILE_INFO,
+	RENDER_FINISHED,
+	SCAN_COMPLETE, # Start screen only.
+	SAVE_PROFILE_PRESET, # Start screen only.
+	}
 
 var _open_popups: Dictionary [int, Control] = {}
 var _popup_uids: Dictionary [int, String] = {
@@ -33,7 +36,11 @@ var _popup_uids: Dictionary [int, String] = {
 	REPLACE_AUDIO: "uid://c3c08cihs1see",
 	WELCOME: "uid://bdxuv18wukbj5",
 	AUTO_CUT: "uid://td87gbksxsi3",
-	FILE_INFO: "uid://w1n0m33ll8vp" }
+	FILE_INFO: "uid://w1n0m33ll8vp",
+	RENDER_FINISHED: "uid://b2p7khnqofboy",
+	SCAN_COMPLETE: "uid://c50l3xlo6cawd",
+	SAVE_PROFILE_PRESET: "uid://ccpft706e57gp",
+	}
 
 var control: Control = Control.new()
 
@@ -63,15 +70,14 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func open(popup: int) -> void:
-	if popup in _open_popups: return
+	if popup not in _open_popups:
+		_open_popups[popup] = (load(_popup_uids[popup]) as PackedScene).instantiate()
+		match popup:
+			SETTINGS: _open_editor_settings(_open_popups[popup] as SettingsPanel)
+			PROJECT_SETTINGS: _open_project_settings(_open_popups[popup] as SettingsPanel)
 
-	_open_popups[popup] = (load(_popup_uids[popup]) as PackedScene).instantiate()
-	match popup:
-		SETTINGS: _open_editor_settings(_open_popups[popup] as SettingsPanel)
-		PROJECT_SETTINGS: _open_project_settings(_open_popups[popup] as SettingsPanel)
-
-	control.add_child(_open_popups[popup])
-	control.visible = true
+		control.add_child(_open_popups[popup])
+		control.visible = true
 
 
 func _open_editor_settings(settings_panel: SettingsPanel) -> void:
@@ -114,24 +120,6 @@ func create_file_dialog(title: String, mode: FileDialog.FileMode, filters: Array
 		dialog.filters = filters
 
 	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.call_deferred("queue_free"))
-	return dialog
-
-
-func create_accept_dialog(title: String) -> AcceptDialog:
-	var dialog: AcceptDialog = AcceptDialog.new()
-	dialog.title = title
-
-	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.call_deferred("queue_free"))
-	return dialog
-
-
-func create_confirmation_dialog(title: String, text: String) -> ConfirmationDialog:
-	var dialog: ConfirmationDialog = ConfirmationDialog.new()
-	dialog.title = title
-	dialog.dialog_text = text
-
-	dialog.visibility_changed.connect(func() -> void: if not dialog.visible: dialog.call_deferred("queue_free"))
-	control.add_child(dialog)
 	return dialog
 
 

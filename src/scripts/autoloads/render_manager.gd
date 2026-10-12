@@ -39,6 +39,7 @@ var start_time: int = 0
 var encoding_time: int = 0
 
 var current_render_resolution: Vector2i
+var current_render_path: String
 
 var buffer_size: int = 5
 var frame_queue: Array[Dictionary] = []
@@ -98,6 +99,7 @@ func get_render_profile(profile_name: String) -> RenderProfile:
 
 
 func start_cli_render(export_path: String, profile_name: String, video_only: bool = false, audio_only: bool = false, draft: bool = false) -> void:
+	current_render_path = export_path
 	if profile_name.is_empty():
 		profile_name = Settings.get_default_render_profile()
 
@@ -135,6 +137,7 @@ func start_cli_render(export_path: String, profile_name: String, video_only: boo
 
 
 func start_render(export_path: String, profile: RenderProfile, threads: int, start_frame: int = 0, end_frame: int = -1, draft: bool = false) -> void:
+	current_render_path = export_path
 	if end_frame == -1:
 		end_frame = project_data.timeline_end
 
@@ -254,17 +257,14 @@ func _on_update_encoder_status(status: Status) -> void:
 
 
 func _render_finished() -> void:
-	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Rendering finished"))
-	dialog.dialog_text = "Render time: %s" % Format.time_str(encoding_time / 1000.0)
-	dialog.exclusive = true
-
-	get_tree().root.add_child(dialog)
-	dialog.popup_centered()
+	var popup: Control = PopupManager.get_popup(PopupManager.RENDER_FINISHED)
+	popup.call("set_data", encoding_time, current_render_path)
 	PopupManager.close(PopupManager.PROGRESS)
 	progress_overlay = null
 
 
-func _cancel_render() -> void: cancel_encoding = true
+func _cancel_render() -> void:
+	cancel_encoding = true
 
 
 func show_error(message: String) -> void:

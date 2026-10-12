@@ -1,0 +1,91 @@
+[gd_scene format=3 uid="uid://b2p7khnqofboy"]
+
+[ext_resource type="Script" uid="uid://crtqmtn5lthq1" path="res://scenes/render_finished_popup/render_finished.gd" id="1_6sddg"]
+
+[node name="RenderFinished" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("label_render_time", "label_path")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_6sddg")
+label_render_time = NodePath("Panel/Margin/Panel/Margin/VBox/TimeHBox/RenderTime")
+label_path = NodePath("Panel/Margin/Panel/Margin/VBox/TimeHBox/Path")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1408338188]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=24319677]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="Panel/Margin" unique_id=551898759]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/Panel" unique_id=615545259]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/Panel/Margin" unique_id=314445209]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=633965755]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Render finished"
+
+[node name="TimeHBox" type="GridContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1325393964]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 2
+
+[node name="RenderTimeLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox/TimeHBox" unique_id=1962189893]
+layout_mode = 2
+theme_type_variation = &"info_label"
+text = "Render time: "
+
+[node name="RenderTime" type="Label" parent="Panel/Margin/Panel/Margin/VBox/TimeHBox" unique_id=607740587]
+auto_translate_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PathLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox/TimeHBox" unique_id=1641779685]
+layout_mode = 2
+size_flags_vertical = 1
+theme_type_variation = &"info_label"
+text = "Path:"
+vertical_alignment = 2
+
+[node name="Path" type="Label" parent="Panel/Margin/Panel/Margin/VBox/TimeHBox" unique_id=1957309025]
+auto_translate_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_type_variation = &"info_label"
+vertical_alignment = 2
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="ButtonHBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=522281658]
+layout_mode = 2
+
+[node name="OpenVideoButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=1379271472]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Open rendered file"
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=1888846888]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Close"
+
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/OpenVideoButton" to="." method="_on_open_video_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/CloseButton" to="." method="_on_close_button_pressed"]
