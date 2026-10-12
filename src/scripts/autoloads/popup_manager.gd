@@ -17,6 +17,7 @@ enum {
 	AUTO_CUT,
 	FILE_INFO,
 	RENDER_FINISHED,
+	RENDER_FAILED,
 	SCAN_COMPLETE, # Start screen only.
 	SAVE_PROFILE_PRESET, # Start screen only.
 	}
@@ -38,6 +39,7 @@ var _popup_uids: Dictionary [int, String] = {
 	AUTO_CUT: "uid://td87gbksxsi3",
 	FILE_INFO: "uid://w1n0m33ll8vp",
 	RENDER_FINISHED: "uid://b2p7khnqofboy",
+	RENDER_FAILED: "uid://b46mlum2m65tv",
 	SCAN_COMPLETE: "uid://c50l3xlo6cawd",
 	SAVE_PROFILE_PRESET: "uid://ccpft706e57gp",
 	}

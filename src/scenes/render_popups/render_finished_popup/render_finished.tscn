@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b2p7khnqofboy"]
 
-[ext_resource type="Script" uid="uid://crtqmtn5lthq1" path="res://scenes/render_finished_popup/render_finished.gd" id="1_6sddg"]
+[ext_resource type="Script" uid="uid://crtqmtn5lthq1" path="res://scenes/render_popups/render_finished_popup/render_finished.gd" id="1_6sddg"]
 
 [node name="RenderFinished" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("label_render_time", "label_path")]
 anchors_preset = 15

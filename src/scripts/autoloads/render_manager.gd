@@ -268,12 +268,8 @@ func _cancel_render() -> void:
 
 
 func show_error(message: String) -> void:
-	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Error whilst rendering video"))
-	dialog.dialog_text = message
-	dialog.exclusive = true
-
-	get_tree().root.add_child(dialog)
-	dialog.popup_centered()
+	var popup: Control = PopupManager.get_popup(PopupManager.SCAN_COMPLETE)
+	popup.call("set_data", message)
 	PopupManager.close(PopupManager.PROGRESS)
 	progress_overlay = null
 
