@@ -1007,20 +1007,11 @@ func _on_popup_action_clip_auto_cut() -> void:
 
 
 func _on_popup_action_clip_change_speed() -> void:
-	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(tr("Change speed"), "")
-	var spinbox: SpinBox = SpinBox.new()
-	spinbox.min_value = 0.01
-	spinbox.max_value = 100.0
-	spinbox.step = 0.01
-	spinbox.value = right_click_clip.speed
-	spinbox.suffix = "x"
-	dialog.add_child(spinbox)
-
-	dialog.confirmed.connect(func() -> void:
-			var new_speed: float = spinbox.value
+	var popup: Control = PopupManager.get_popup(PopupManager.CHANGE_CLIP_SPEED)
+	(popup.get("confirmed") as Signal).connect(func(new_speed: float) -> void:
 			var new_duration: int = maxi(1, int((right_click_clip.duration * right_click_clip.speed) / new_speed))
-
-			var free_region: Vector2i = TrackLogic.get_free_region(right_click_clip.track, right_click_clip.start + 1, [right_click_clip.id])
+			var free_region: Vector2i = TrackLogic.get_free_region(
+					right_click_clip.track, right_click_clip.start + 1, [right_click_clip.id])
 			if right_click_clip.start + new_duration > free_region.y:
 				new_duration = free_region.y - right_click_clip.start
 
@@ -1029,9 +1020,8 @@ func _on_popup_action_clip_change_speed() -> void:
 			request.clip = right_click_clip
 			request.resize_amount = delta
 			request.from_end = true
-			ClipLogic.change_speed([request])
-			dialog.queue_free())
-	dialog.popup_centered(Vector2i(200, 80))
+			ClipLogic.change_speed([request]))
+	popup.call("set_data", right_click_clip.speed)
 
 
 func _on_popup_action_clip_reset_speed() -> void:
