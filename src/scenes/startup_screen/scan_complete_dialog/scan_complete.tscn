@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://c50l3xlo6cawd"]
+
+[ext_resource type="Script" uid="uid://eh52rxhu6pce" path="res://scenes/startup_screen/scan_complete_dialog/scan_complete.gd" id="1_550ng"]
+
+[node name="ScanComplete" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("label_count", "label_zero")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_550ng")
+label_count = NodePath("Panel/Margin/Panel/Margin/VBox/CountLabel")
+label_zero = NodePath("Panel/Margin/Panel/Margin/VBox/NoCountLabel")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1213813620]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=229609296]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="Panel/Margin" unique_id=399454871]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/Panel" unique_id=251620140]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/Panel/Margin" unique_id=306206666]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=944685048]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Scan complete"
+
+[node name="CountLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1949958164]
+layout_mode = 2
+text = "Found and added %d new project(s) to the recent projects list."
+
+[node name="NoCountLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1217185594]
+layout_mode = 2
+text = "No projects found in the selected folder."
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox" unique_id=2147131319]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Close"
+
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/CloseButton" to="." method="_on_close_button_pressed"]

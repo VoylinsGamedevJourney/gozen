@@ -502,47 +502,25 @@ func _on_new_project_option_button_item_selected(index: int) -> void:
 
 
 func _on_save_profile_preset_button_pressed() -> void:
-	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(tr("Save preset"), "")
-	var line_edit: LineEdit = LineEdit.new()
-	line_edit.placeholder_text = tr("Preset name")
-	dialog.add_child(line_edit)
+	var popup: Control = PopupManager.get_popup(PopupManager.SAVE_PROFILE_PRESET)
+	var profile: ProjectProfile = ProjectProfile.new()
+	profile.resolution = Vector2i(int(resolution_x_spinbox.value), int(resolution_y_spinbox.value))
+	profile.framerate = framerate_spinbox.value
+	profile.advanced_settings_enabled = advanced_options_button.button_pressed
+	profile.background_color = background_color_picker.color
+	popup.call("set_data", profile)
+	(popup.get("confirmed") as Signal).connect(_on_save_profile_confirmed)
 
-	var confirm_lambda: Callable = func() -> void:
-		var preset_name: String = line_edit.text.strip_edges()
-		if preset_name.is_empty():
-			preset_name = "Custom"
 
-		var profile: ProjectProfile = ProjectProfile.new()
-		profile.profile_name = preset_name
-		profile.resolution = Vector2i(int(resolution_x_spinbox.value), int(resolution_y_spinbox.value))
-		profile.framerate = framerate_spinbox.value
-		profile.advanced_settings_enabled = advanced_options_button.button_pressed
-		profile.background_color = background_color_picker.color
-
-		if not DirAccess.dir_exists_absolute(get_user_profiles_path()):
-			var _dir_err: int = DirAccess.make_dir_recursive_absolute(get_user_profiles_path())
-
-		var save_path: String = get_user_profiles_path().path_join(preset_name.validate_filename() + ".tres")
-		ResourceSaver.save(profile, save_path)
-
-		_set_new_project_defaults()
-
-		for i: int in project_presets_option_button.item_count:
-			var item_id: int = project_presets_option_button.get_item_id(i)
-			if item_id >= 0 and item_id < loaded_preset_profiles.size():
-				if loaded_preset_profiles[item_id].profile_name == preset_name:
-					project_presets_option_button.selected = i
-					_on_new_project_option_button_item_selected(i)
-					break
-		dialog.call_deferred("queue_free")
-
-	dialog.confirmed.connect(confirm_lambda)
-	line_edit.text_submitted.connect(func(_text: String) -> void:
-				confirm_lambda.call())
-
-	add_child(dialog)
-	dialog.popup_centered(Vector2i(250, 80))
-	line_edit.grab_focus()
+func _on_save_profile_confirmed(preset_name: String) -> void:
+	_set_new_project_defaults()
+	for i: int in project_presets_option_button.item_count:
+		var item_id: int = project_presets_option_button.get_item_id(i)
+		if item_id >= 0 and item_id < loaded_preset_profiles.size():
+			if loaded_preset_profiles[item_id].profile_name == preset_name:
+				project_presets_option_button.selected = i
+				_on_new_project_option_button_item_selected(i)
+				break
 
 
 func _on_delete_profile_preset_button_pressed() -> void:
@@ -610,11 +588,10 @@ func _scan_folder_for_projects(folder_path: String) -> void:
 				file_name = dir.get_next()
 			dir.list_dir_end()
 
+	var popup: Control
 	if projects_found.is_empty():
-		var accept_dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Scan Complete"))
-		accept_dialog.dialog_text = tr("No projects found in the selected folder.")
-		add_child(accept_dialog)
-		accept_dialog.popup_centered()
+		popup = PopupManager.get_popup(PopupManager.SCAN_COMPLETE)
+		popup.call("set_data", 0)
 		return
 
 	var paths: Array[String] = []
@@ -639,13 +616,10 @@ func _scan_folder_for_projects(folder_path: String) -> void:
 			for project_path: String in paths:
 				file.store_line(project_path)
 			file.close()
-
 		_set_recent_projects()
 
-	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Scan Complete"))
-	dialog.dialog_text = tr("Found and added %d new project(s) to the recent projects list.") % added_count
-	add_child(dialog)
-	dialog.popup_centered()
+	popup = PopupManager.get_popup(PopupManager.SCAN_COMPLETE)
+	popup.call("set_data", added_count)
 
 
 
