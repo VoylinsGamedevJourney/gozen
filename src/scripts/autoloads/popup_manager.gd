@@ -20,6 +20,8 @@ enum {
 	RENDER_FAILED,
 	SCAN_COMPLETE, # Start screen only.
 	SAVE_PROFILE_PRESET, # Start screen only.
+	NEW_WORKSPACE, # Editor.
+	DELETE_WORKSPACE, # Editor.
 	}
 
 var _open_popups: Dictionary [int, Control] = {}
@@ -42,6 +44,8 @@ var _popup_uids: Dictionary [int, String] = {
 	RENDER_FAILED: "uid://b46mlum2m65tv",
 	SCAN_COMPLETE: "uid://c50l3xlo6cawd",
 	SAVE_PROFILE_PRESET: "uid://ccpft706e57gp",
+	NEW_WORKSPACE: "uid://xio6rtqr55wg",
+	DELETE_WORKSPACE: "uid://b3n1tmr7pr8m4",
 	}
 
 var control: Control = Control.new()

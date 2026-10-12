@@ -466,21 +466,15 @@ func _on_info_popup_menu_id_pressed(id: int) -> void:
 
 
 func _create_new_workspace() -> void:
-	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(tr("New workspace"), "")
-	var line_edit: LineEdit = LineEdit.new()
-	line_edit.placeholder_text = tr("Workspace name")
-	dialog.add_child(line_edit)
-
-	dialog.confirmed.connect(_on_create_new_workspace_confirmed.bind(dialog, line_edit))
-	dialog.popup_centered(Vector2i(250, 80))
-	line_edit.grab_focus()
+	var popup: Control = PopupManager.get_popup(PopupManager.NEW_WORKSPACE)
+	(popup.get("confirmed") as Signal).connect(_on_create_new_workspace_confirmed)
+	popup.call("set_data")
 
 
-func _on_create_new_workspace_confirmed(dialog: ConfirmationDialog, line_edit: LineEdit) -> void:
-	var workspace_name: String = line_edit.text.strip_edges().capitalize()
+func _on_create_new_workspace_confirmed(workspace_name: String) -> void:
+	workspace_name = workspace_name.strip_edges().capitalize()
 	if not workspace_name.is_empty() and not WorkspaceManager.available_workspaces.has(workspace_name):
 		WorkspaceManager.create_workspace(workspace_name)
-	dialog.call_deferred("queue_free")
 
 
 #--- Workspace functions ---
@@ -576,11 +570,9 @@ func _move_workspace(workspace_name: String, direction: int) -> void:
 
 
 func _delete_workspace_prompt(workspace_name: String) -> void:
-	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
-			tr("Delete Workspace"),
-			tr("Are you sure you want to delete the workspace '%s'?") % workspace_name)
-	dialog.confirmed.connect(func() -> void: _delete_workspace(workspace_name))
-	dialog.popup_centered()
+	var popup: Control = PopupManager.get_popup(PopupManager.DELETE_WORKSPACE)
+	(popup.get("confirmed") as Signal).connect(_delete_workspace.bind(workspace_name))
+	popup.call("set_data", workspace_name)
 
 
 func _delete_workspace(workspace_name: String) -> void:

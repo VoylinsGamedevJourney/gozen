@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://xio6rtqr55wg"]
+
+[ext_resource type="Script" uid="uid://b5vtk1ghpvedm" path="res://scenes/editor/new_workspace_popup/new_workspace_popup.gd" id="1_vxvx7"]
+
+[node name="NewWorkspace" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("line_edit_workspace_name")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_vxvx7")
+line_edit_workspace_name = NodePath("Panel/Margin/Panel/Margin/VBox/HBox/WorkspaceNameLineEdit")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1213813620]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=229609296]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="Panel/Margin" unique_id=399454871]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/Panel" unique_id=251620140]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/Panel/Margin" unique_id=306206666]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=944685048]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "New workspace"
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1913460500]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Margin/Panel/Margin/VBox/HBox" unique_id=1949958164]
+layout_mode = 2
+text = "Workspace name:"
+
+[node name="WorkspaceNameLineEdit" type="LineEdit" parent="Panel/Margin/Panel/Margin/VBox/HBox" unique_id=1360389154]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonHBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1214426114]
+layout_mode = 2
+
+[node name="SaveWorkspaceButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=2147131319]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_type_variation = &"main_button"
+text = "Save workspace"
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=499159915]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Close"
+
+[connection signal="text_submitted" from="Panel/Margin/Panel/Margin/VBox/HBox/WorkspaceNameLineEdit" to="." method="_on_workspace_name_line_edit_text_submitted"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/SaveWorkspaceButton" to="." method="_on_save_workspace_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/CloseButton" to="." method="_on_close_button_pressed"]
