@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://nmdtjin0sdp5"]
+
+[ext_resource type="Script" uid="uid://d0b561bhlv8jn" path="res://scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.gd" id="1_ao6lr"]
+
+[node name="UpdateAudioFiles" type="PanelContainer" unique_id=830041705]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_ao6lr")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1213813620]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=229609296]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="Panel/Margin" unique_id=399454871]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/Panel" unique_id=251620140]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/Panel/Margin" unique_id=306206666]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=944685048]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Update existing clips?"
+
+[node name="Label" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1949958164]
+layout_mode = 2
+text = "This file is currently used by '%d' clip(s).\\nDo you want to apply the audio replacement to all existing clips?"
+
+[node name="ButtonHBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1214426114]
+layout_mode = 2
+
+[node name="ApplyToAllButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=2147131319]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_type_variation = &"main_button"
+text = "Apply to all"
+
+[node name="ApplyToFileButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=1605287065]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Apply to file only"
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=499159915]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Cancel"
+
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/ApplyToAllButton" to="." method="_on_apply_to_all_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/ApplyToFileButton" to="." method="_on_apply_to_file_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/CloseButton" to="." method="_on_close_button_pressed"]

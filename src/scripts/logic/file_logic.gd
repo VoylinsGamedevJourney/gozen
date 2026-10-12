@@ -255,21 +255,12 @@ func apply_replace_audio(file: FileData, audio_file: FileData, offset: float) ->
 		_commit_ato(file, active, audio_file.id, offset, false,[])
 		return
 
-	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
-		tr("Update existing clips?"),
-		tr("This file is currently used by '%d' clip(s).\nDo you want to apply the audio replacement to all existing clips?") % affected_clips.size())
-	dialog.get_ok_button().text = tr("Apply to All")
-	dialog.get_cancel_button().text = tr("Cancel")
-
-	dialog.add_button(tr("Apply to File Only"), true, "file_only")
-	dialog.confirmed.connect(func() -> void:
-		_commit_ato(file, active, audio_file.id, offset, true, affected_clips))
-	dialog.custom_action.connect(func(action: String) -> void:
-		if action == "file_only":
-			_commit_ato(file, active, audio_file.id, offset, false,[])
-			dialog.hide())
-
-	dialog.popup_centered()
+	var popup: Control = PopupManager.get_popup(PopupManager.APPLY_REPLACE_AUDIO)
+	(popup.get("confirm_clips") as Signal).connect(
+			_commit_ato.bind(file, active, audio_file.id, offset, true, affected_clips))
+	(popup.get("confirm_file") as Signal).connect(func() -> void:
+			_commit_ato.bind(file, active, audio_file.id, offset, false, []))
+	popup.call("set_data", affected_clips.size())
 
 
 func _commit_ato(file: FileData, active: bool, audio_file_id: int, offset: float, update_clips: bool, clips: Array[ClipData]) -> void:
