@@ -4,12 +4,12 @@ extends Control
 signal confirmed(workspace_name: String)
 
 
-@export var label: Label
+@export var line_edit_workspace_name: LineEdit
 
 
 
-func set_data(workspace_name: String) -> void:
-	label.text = label.text % workspace_name
+func set_data() -> void:
+	line_edit_workspace_name.grab_focus()
 
 
 func _input(event: InputEvent) -> void:

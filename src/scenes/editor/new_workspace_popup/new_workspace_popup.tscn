@@ -48,10 +48,17 @@ text = "Workspace name:"
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ButtonHBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1214426114]
+[node name="ButtonsHBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1214426114]
 layout_mode = 2
 
-[node name="SaveWorkspaceButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=2147131319]
+[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonsHBox" unique_id=499159915]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Close"
+
+[node name="SaveWorkspaceButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonsHBox" unique_id=2147131319]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -59,13 +66,6 @@ size_flags_vertical = 8
 theme_type_variation = &"main_button"
 text = "Save workspace"
 
-[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=499159915]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 8
-text = "Close"
-
 [connection signal="text_submitted" from="Panel/Margin/Panel/Margin/VBox/HBox/WorkspaceNameLineEdit" to="." method="_on_workspace_name_line_edit_text_submitted"]
-[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/SaveWorkspaceButton" to="." method="_on_save_workspace_button_pressed"]
-[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/SaveWorkspaceButton" to="." method="_on_save_workspace_button_pressed"]

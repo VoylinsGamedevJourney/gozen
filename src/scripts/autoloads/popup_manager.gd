@@ -60,11 +60,6 @@ func _ready() -> void:
 	await get_tree().root.ready
 	get_tree().root.add_child(control)
 
-	var background: PanelContainer = PanelContainer.new()
-	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	background.theme_type_variation = "overlay_background"
-
-	control.add_child(background)
 	control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	control.visible = false
 	control.top_level = true

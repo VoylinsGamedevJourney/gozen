@@ -40,10 +40,17 @@ text = "Delete workspace"
 layout_mode = 2
 text = "Are you sure you want to delete the workspace '%s'?"
 
-[node name="ButtonHBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1214426114]
+[node name="ButtonsHBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1214426114]
 layout_mode = 2
 
-[node name="DeleteWorkspaceButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=2147131319]
+[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonsHBox" unique_id=499159915]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Cancel"
+
+[node name="DeleteWorkspaceButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonsHBox" unique_id=2147131319]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -51,12 +58,5 @@ size_flags_vertical = 8
 theme_type_variation = &"main_button"
 text = "Delete workspace"
 
-[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=499159915]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 8
-text = "Cancel"
-
-[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/DeleteWorkspaceButton" to="." method="_on_delete_workspace_button_pressed"]
-[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/DeleteWorkspaceButton" to="." method="_on_delete_workspace_button_pressed"]

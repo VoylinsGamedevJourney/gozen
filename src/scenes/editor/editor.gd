@@ -572,7 +572,6 @@ func _move_workspace(workspace_name: String, direction: int) -> void:
 func _delete_workspace_prompt(workspace_name: String) -> void:
 	var popup: Control = PopupManager.get_popup(PopupManager.DELETE_WORKSPACE)
 	(popup.get("confirmed") as Signal).connect(_delete_workspace.bind(workspace_name))
-	popup.call("set_data", workspace_name)
 
 
 func _delete_workspace(workspace_name: String) -> void:

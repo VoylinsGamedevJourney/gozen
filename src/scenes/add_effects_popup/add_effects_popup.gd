@@ -23,7 +23,7 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		PopupManager.close(PopupManager.ADD_EFFECTS)
+		_on_close_button_pressed()
 	elif event.is_action_pressed("ui_up"):
 		if shown_buttons.size() > 0:
 			selected_button = maxi(0, selected_button - 1)
@@ -36,6 +36,16 @@ func _input(event: InputEvent) -> void:
 			shown_buttons[selected_button].button_pressed = true
 			scroll.ensure_control_visible(shown_buttons[selected_button])
 			get_viewport().set_input_as_handled()
+
+
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+		if mouse_event.pressed and mouse_event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+			_on_close_button_pressed()
+
+
 
 
 func load_effects(effect_type: int, clips: Array[ClipData]) -> void:

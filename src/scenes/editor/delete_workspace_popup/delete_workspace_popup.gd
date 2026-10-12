@@ -4,13 +4,6 @@ extends Control
 signal confirmed
 
 
-@export var line_edit_workspace_name: LineEdit
-
-
-
-func set_data() -> void:
-	line_edit_workspace_name.grab_focus()
-
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel", false, true):

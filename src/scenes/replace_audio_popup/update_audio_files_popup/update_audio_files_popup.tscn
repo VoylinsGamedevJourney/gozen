@@ -43,13 +43,12 @@ text = "This file is currently used by '%d' clip(s).\\nDo you want to apply the 
 [node name="ButtonHBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1214426114]
 layout_mode = 2
 
-[node name="ApplyToAllButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=2147131319]
+[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=499159915]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 8
-theme_type_variation = &"main_button"
-text = "Apply to all"
+text = "Cancel"
 
 [node name="ApplyToFileButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=1605287065]
 custom_minimum_size = Vector2(200, 0)
@@ -58,13 +57,14 @@ size_flags_horizontal = 3
 size_flags_vertical = 8
 text = "Apply to file only"
 
-[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=499159915]
+[node name="ApplyToAllButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonHBox" unique_id=2147131319]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 8
-text = "Cancel"
+theme_type_variation = &"main_button"
+text = "Apply to all"
 
-[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/ApplyToAllButton" to="." method="_on_apply_to_all_button_pressed"]
-[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/ApplyToFileButton" to="." method="_on_apply_to_file_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/ApplyToFileButton" to="." method="_on_apply_to_file_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/ApplyToAllButton" to="." method="_on_apply_to_all_button_pressed"]
