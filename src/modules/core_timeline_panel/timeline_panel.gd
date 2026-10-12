@@ -161,10 +161,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			var duplicate_files: bool = (event as InputEventKey).shift_pressed
 			var failed_dupes: int = ClipLogic.duplicate_clips(ClipLogic.active_clips, duplicate_files)
 			if failed_dupes > 0:
-				var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Duplication failed"))
-				dialog.dialog_text = tr("Could not duplicate %d clip(s) because there was not enough empty space.") % failed_dupes
-				add_child(dialog)
-				dialog.popup_centered()
+				var popup: Control = PopupManager.get_popup(PopupManager.DUPLICATION_ERROR)
+				popup.call("set_data", failed_dupes)
 			draw_clips.queue_redraw()
 		elif event.is_action_pressed("split_clips_at_mouse", false, true):
 			Timeline.split_clips_at(get_frame_from_mouse())

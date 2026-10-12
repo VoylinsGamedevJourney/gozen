@@ -609,28 +609,12 @@ func _get_recursive_ids(item: TreeItem) -> Array[int]:
 
 
 func _show_create_folder_dialog() -> void:
-	var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Create folder"))
-	var vbox: VBoxContainer = VBoxContainer.new()
-	var line_edit: LineEdit = LineEdit.new()
-	var label: Label = Label.new()
-
-	label.text = tr("Folder name")
-	vbox.add_child(label)
-	vbox.add_child(line_edit)
-	dialog.add_child(vbox)
-
-	var confirm_lambda: Callable = func(_t: String = "") -> void:
-		var new_folder_name: String = line_edit.text.strip_edges()
-		if new_folder_name not in ["", "/"]:
-			_create_folder_at_selected(new_folder_name)
-		dialog.queue_free()
-
-	dialog.confirmed.connect(confirm_lambda)
-	line_edit.text_submitted.connect(confirm_lambda)
-
-	add_child(dialog)
-	dialog.popup_centered(Vector2(300, 100))
-	line_edit.grab_focus()
+	var popup: Control = PopupManager.get_popup(PopupManager.CREATE_FOLDER)
+	(popup.get("confirmed") as Signal).connect(func(folder_name: String) -> void:
+			folder_name = folder_name.strip_edges()
+			if folder_name not in ["", "/"]:
+				_create_folder_at_selected(folder_name))
+	popup.call("set_data")
 
 
 func _create_folder_at_selected(folder_name: String) -> void:

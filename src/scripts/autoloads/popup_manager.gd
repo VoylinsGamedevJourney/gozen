@@ -24,6 +24,8 @@ enum {
 	SAVE_PROFILE_PRESET, # Start screen only.
 	NEW_WORKSPACE, # Editor.
 	DELETE_WORKSPACE, # Editor.
+	DUPLICATION_ERROR,
+	CREATE_FOLDER,
 	}
 
 var _open_popups: Dictionary [int, Control] = {}
@@ -50,6 +52,8 @@ var _popup_uids: Dictionary [int, String] = {
 	SAVE_PROFILE_PRESET: "uid://ccpft706e57gp",
 	NEW_WORKSPACE: "uid://xio6rtqr55wg",
 	DELETE_WORKSPACE: "uid://b3n1tmr7pr8m4",
+	DUPLICATION_ERROR: "uid://dvjs0g0dsgqxd",
+	CREATE_FOLDER: "uid://cyfsdm8w12mdq",
 	}
 
 var control: Control = Control.new()

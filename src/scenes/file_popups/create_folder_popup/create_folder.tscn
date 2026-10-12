@@ -1,0 +1,71 @@
+[gd_scene format=3 uid="uid://cyfsdm8w12mdq"]
+
+[ext_resource type="Script" uid="uid://dleigveghopym" path="res://scenes/file_popups/create_folder_popup/create_folder.gd" id="1_0pjsc"]
+
+[node name="CreateFolder" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("line_edit")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_0pjsc")
+line_edit = NodePath("Panel/Margin/Panel/Margin/VBox/HBox/LineEdit")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1213813620]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=229609296]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="Panel/Margin" unique_id=399454871]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/Panel" unique_id=251620140]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/Panel/Margin" unique_id=306206666]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=944685048]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Create folder"
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=104979764]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Margin/Panel/Margin/VBox/HBox" unique_id=1217185594]
+layout_mode = 2
+text = "Folder name:"
+
+[node name="LineEdit" type="LineEdit" parent="Panel/Margin/Panel/Margin/VBox/HBox" unique_id=621039346]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=550264097]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonsHBox" unique_id=2147131319]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Close"
+
+[node name="CreateButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonsHBox" unique_id=233490143]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_type_variation = &"main_button"
+text = "Create"
+
+[connection signal="text_submitted" from="Panel/Margin/Panel/Margin/VBox/HBox/LineEdit" to="." method="_on_line_edit_text_submitted"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/CreateButton" to="." method="_on_create_button_pressed"]
