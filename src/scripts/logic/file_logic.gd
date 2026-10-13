@@ -167,7 +167,17 @@ func delete(ids: Array[int]) -> void:
 
 
 func _delete(file: FileData) -> void:
-	# TODO: We should check if some other file relies on using this one as ATO.
+	for other_file: FileData in files.values():
+		if other_file.ato_active and other_file.ato_file == file.id:
+			other_file.ato_active = false
+			other_file.ato_file = -1
+			ato_changed.emit(other_file)
+
+	for clip: ClipData in ClipLogic.clips.values():
+		if clip.effects.ato_active and clip.effects.ato_file == file.id:
+			clip.effects.ato_active = false
+			clip.effects.ato_file = -1
+
 	if !files.erase(file.id) or !data.erase(file.id):
 		printerr("FileLogic: File id '%s' isn't present in files/data!" % file.id)
 
