@@ -29,6 +29,7 @@ func _gui_input(event: InputEvent) -> void:
 
 func _on_apply_button_pressed() -> void:
 	confirmed.emit(spinbox_speed.value)
+	_on_close_button_pressed()
 
 
 func _on_close_button_pressed() -> void:

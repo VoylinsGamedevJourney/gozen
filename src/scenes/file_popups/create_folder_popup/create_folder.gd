@@ -31,6 +31,7 @@ func _on_line_edit_text_submitted(_new_text: String) -> void:
 
 func _on_create_button_pressed() -> void:
 	confirmed.emit(line_edit.text)
+	_on_close_button_pressed()
 
 
 func _on_close_button_pressed() -> void:

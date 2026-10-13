@@ -19,6 +19,7 @@ func _gui_input(event: InputEvent) -> void:
 
 func _on_delete_workspace_button_pressed() -> void:
 	confirmed.emit()
+	_on_close_button_pressed()
 
 
 func _on_close_button_pressed() -> void:

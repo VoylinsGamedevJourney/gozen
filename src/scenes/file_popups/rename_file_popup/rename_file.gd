@@ -35,7 +35,7 @@ func _on_rename_file_line_edit_text_submitted(new_nickname: String) -> void:
 	# Only save if an actual new nickname got given.
 	if new_nickname != "" and file.nickname != new_nickname:
 		FileLogic.set_nickname(file, new_nickname)
-	self.queue_free()
+	_on_cancel_button_pressed()
 
 
 func _on_cancel_button_pressed() -> void:

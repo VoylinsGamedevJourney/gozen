@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://mk4pnxw14y5q" path="res://assets/icons/playback/play.tres" id="2_m1rbc"]
 [ext_resource type="Script" uid="uid://bpy8rtg87clbh" path="res://scenes/replace_audio_popup/replace_audio_wave.gd" id="3_8tgyo"]
 
-[node name="MarkerPopup" type="Control" unique_id=96151348 node_paths=PackedStringArray("video_file_label", "audio_play_button", "offset_spinbox", "file_b_list", "file_a_wave", "file_b_wave", "file_a_player", "file_b_player")]
+[node name="ReplaceAudioPopup" type="Control" unique_id=96151348 node_paths=PackedStringArray("video_file_label", "audio_play_button", "offset_spinbox", "file_b_list", "file_a_wave", "file_b_wave", "file_a_player", "file_b_player")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

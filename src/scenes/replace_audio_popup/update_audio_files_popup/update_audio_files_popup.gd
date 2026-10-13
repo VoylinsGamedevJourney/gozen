@@ -27,10 +27,12 @@ func _gui_input(event: InputEvent) -> void:
 
 func _on_apply_to_all_button_pressed() -> void:
 	confirm_clips.emit()
+	_on_close_button_pressed()
 
 
 func _on_apply_to_file_button_pressed() -> void:
 	confirm_file.emit()
+	_on_close_button_pressed()
 
 
 func _on_close_button_pressed() -> void:

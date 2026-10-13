@@ -24,9 +24,16 @@ func _gui_input(event: InputEvent) -> void:
 			_on_close_button_pressed()
 
 
+func _on_workspace_name_line_edit_text_submitted(_new_text: String) -> void:
+	_on_save_workspace_button_pressed()
+
+
 func _on_save_workspace_button_pressed() -> void:
 	confirmed.emit(line_edit_workspace_name.text)
+	_on_close_button_pressed()
 
 
 func _on_close_button_pressed() -> void:
 	PopupManager.close(PopupManager.NEW_WORKSPACE)
+
+

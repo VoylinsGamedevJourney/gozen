@@ -30,6 +30,7 @@ func _gui_input(event: InputEvent) -> void:
 
 func _on_apply_button_pressed() -> void:
 	EditorCore.set_frame(spinbox.value as int)
+	_on_close_button_pressed()
 
 
 func _on_close_button_pressed() -> void:

@@ -44,6 +44,7 @@ func _on_rename_folder_line_edit_text_submitted(new_nickname: String) -> void:
 		else:
 			new_path = parent_path + "/" + new_folder_name + "/"
 		FolderLogic.rename(folder_path, new_path)
+	_on_cancel_button_pressed()
 
 
 func _on_cancel_button_pressed() -> void:
