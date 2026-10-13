@@ -1,7 +1,6 @@
 extends Control
 # Non re-linked files should be made tagged as "missing" but not deleted just
 # in case, people can relink files manually.
-# TODO: a nice addition might be to add the file paths to the file labels.
 
 signal confirmed
 
@@ -11,11 +10,14 @@ signal confirmed
 
 
 ## This is basically our _ready() for the popup.
-func set_data(files: PackedStringArray) -> void:
-	for file: String in files:
+func set_data(files: Array[FileData]) -> void:
+	for file: FileData in files:
 		var label: Label = Label.new()
-		label.text = file
+		label.text = file.nickname + " (" + file.path + ")"
+		label.tooltip_text = file.nickname + "\n(" + file.path + ")"
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		label.size_flags_horizontal = Control.SIZE_FILL
+		label.custom_minimum_size.x = 200
 		vbox.add_child(label)
 
 
@@ -37,4 +39,4 @@ func _on_shorten_button_pressed() -> void:
 
 
 func _on_close_button_pressed() -> void:
-	PopupManager.close(PopupManager.SHORTENED_FILES)
+	PopupManager.close(PopupManager.FILES_SHORTENED)

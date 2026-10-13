@@ -4,10 +4,6 @@ extends Control
 static var instance: EditorUI
 
 
-const SCENE_STARTUP: String = "uid://bqlcn30hs8qp5"
-const SCENE_WELCOME: String = "uid://bdxuv18wukbj5"
-
-
 @export var menu_bar: MenuBar
 
 @export var workspaces: TabContainer
@@ -176,9 +172,9 @@ func _ready() -> void:
 		request.framerate = Settings.get_quick_create_vertical_fps()
 		Project.new_project(request)
 	else:
-		add_child((load(SCENE_STARTUP) as PackedScene).instantiate())
+		PopupManager.open(PopupManager.STARTUP_SCREEN)
 		if Settings.get_is_first_time():
-			add_child((load(SCENE_WELCOME) as PackedScene).instantiate())
+			PopupManager.open(PopupManager.WELCOME_SCREEN)
 
 	if is_view_mode and is_render_mode:
 		menu_bar.visible = false
@@ -317,19 +313,18 @@ func _on_project_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0:
 			if not get_tree().root.has_node("StartupPanel"):
-				var splash: Node = (load(SCENE_STARTUP) as PackedScene).instantiate()
-				get_tree().root.add_child(splash)
-				splash.get("tab_container").current_tab = 1
+				var popup: Control = PopupManager.get_popup(PopupManager.STARTUP_SCREEN)
+				popup.get("tab_container").current_tab = 1
 		1: Project.save()
 		2: Project.save_as()
 		3: Project.archive_as()
 		# -------------
 		4: Project.open_project()
 		# 5 is Recent projects
-		6: get_tree().root.add_child((load(SCENE_STARTUP) as PackedScene).instantiate())
-		9: get_tree().root.add_child((load(SCENE_WELCOME) as PackedScene).instantiate())
+		6: PopupManager.open(PopupManager.STARTUP_SCREEN)
+		9: PopupManager.open(PopupManager.WELCOME_SCREEN)
 		# -------------
-		7: Project.open_settings_menu()
+		7: PopupManager.open(PopupManager.PROJECT_SETTINGS)
 		8: get_tree().quit()
 
 
@@ -414,9 +409,7 @@ func _create_preferences_popup_menu() -> void:
 	menu_bar.add_child(menu)
 
 	menu.add_theme_constant_override("icon_max_width", 20)
-
 	menu.add_icon_item(load(Library.ICON_EDITOR_SETTINGS) as Icon, "Editor settings", 0)
-
 	if not OS.has_feature("demo"):
 		menu.add_icon_item(load(Library.ICON_MODULE_MANAGER) as Icon, "Module manager", 1)
 		menu.add_separator()
@@ -427,7 +420,7 @@ func _create_preferences_popup_menu() -> void:
 
 func _on_preferences_popup_menu_id_pressed(id: int) -> void:
 	match id:
-		0: Settings.open_settings_menu()
+		0: PopupManager.open(PopupManager.EDITOR_SETTINGS)
 		1: PopupManager.open(PopupManager.MODULE_MANAGER)
 		# Line.
 		2: PopupManager.open(PopupManager.COMMAND_BAR)
@@ -684,9 +677,6 @@ func register_linux_file_icons() -> void:
 
 	var svg_file: String = svg_folder.path_join("application-x-gozen.svg")
 	var xml_file: String = xml_folder.path_join("application-x-gozen.xml")
-
-	# TODO: We should probably have a quick read of check if the file is still
-	# up-to-date when we add changes here in the future.
 	if FileAccess.file_exists(svg_file) and FileAccess.file_exists(xml_file):
 		return
 

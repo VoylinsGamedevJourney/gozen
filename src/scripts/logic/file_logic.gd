@@ -916,7 +916,7 @@ func _check_external_modifications() -> void:
 			load_data(files[file_id])
 			reloaded.emit(files[file_id])
 
-		var popup: Control = PopupManager.get_popup(PopupManager.MISSING_FILES)
+		var popup: Control = PopupManager.get_popup(PopupManager.FILES_MISSING)
 		popup.call("set_data", missing_file_data)
 
 	if not modified_files.is_empty():
@@ -929,7 +929,7 @@ func _check_external_modifications() -> void:
 		if not shortened_files.is_empty():
 			_handle_shortened_files(shortened_files, file_names)
 		else:
-			var popup: Control = PopupManager.get_popup(PopupManager.UPDATED_FILES)
+			var popup: Control = PopupManager.get_popup(PopupManager.FILES_UPDATED)
 			popup.call("set_data", file_names)
 		ClipLogic.updated.emit()
 		EffectsHandler.effects_updated.emit()
@@ -946,11 +946,11 @@ func _handle_shortened_files(shortened_files: Array[FileData], modified_names: P
 
 	var popup: Control
 	if affected_clips.is_empty():
-		popup = PopupManager.get_popup(PopupManager.UPDATED_FILES)
+		popup = PopupManager.get_popup(PopupManager.FILES_UPDATED)
 		popup.call("set_data", modified_names)
 		return
 
-	popup = PopupManager.get_popup(PopupManager.SHORTENED_FILES)
+	popup = PopupManager.get_popup(PopupManager.FILES_SHORTENED)
 	(popup.get("confirmed") as Signal).connect(func() -> void:
 			var requests: Array[RequestClipResize] = []
 			for clip: ClipData in affected_clips:
@@ -967,7 +967,7 @@ func _handle_shortened_files(shortened_files: Array[FileData], modified_names: P
 					requests.append(request)
 			if not requests.is_empty():
 				ClipLogic.resize(requests))
-	popup.call("set_data", modified_names)
+	popup.call("set_data", shortened_files)
 
 
 func _scale_image_to_fit(image: Image, target_size: Vector2i) -> void:
@@ -1109,7 +1109,7 @@ func relink_file(file: FileData, new_path: String) -> void:
 					affected_clips.append(clip)
 
 		if not affected_clips.is_empty():
-			var popup: Control = PopupManager.get_popup(PopupManager.SHORTENED_FILES)
+			var popup: Control = PopupManager.get_popup(PopupManager.FILES_SHORTENED)
 			(popup.get("confirmed") as Signal).connect(func() -> void:
 					var requests: Array[RequestClipResize] = []
 					for clip: ClipData in affected_clips:

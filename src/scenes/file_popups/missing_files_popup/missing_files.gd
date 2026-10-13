@@ -46,4 +46,4 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _on_close_button_pressed() -> void:
-	PopupManager.close(PopupManager.MISSING_FILES)
+	PopupManager.close(PopupManager.FILES_MISSING)

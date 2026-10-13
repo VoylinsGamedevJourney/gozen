@@ -195,8 +195,7 @@ func _setup_rendering_tab() -> void:
 	_bind_shortcut(region_in_line_edit, "render_region_in")
 	_bind_shortcut(region_out_line_edit, "render_region_out")
 
-	# TODO: Load in all default profiles instead of doing it manually.
-	var profiles: Array[String] = ["YouTube", "YouTube HQ", "AV1", "VP9", "VP8"]
+	var profiles: Array[String] = RenderManager.get_all_profile_names()
 	for profile: String in profiles:
 		option_button_default_profile.add_item(profile)
 

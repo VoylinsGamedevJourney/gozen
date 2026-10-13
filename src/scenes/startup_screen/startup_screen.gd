@@ -1,9 +1,4 @@
 extends PanelContainer
-# TODO: Add popup, with fuzzy searching, to browse through all projects.
-# Save a thumbnail of each project at 2 seconds in the timeline to show in the
-# popup to make it easy for people to select the project they are looking for.
-# Set the default focus on the button which opens the popup to browse through
-# all projects.
 
 const DEFAULT_PROFILES_PATH: String = "res://profiles/project/"
 
@@ -353,7 +348,7 @@ func _set_new_project_defaults() -> void:
 
 
 func _on_editor_settings_button_pressed() -> void:
-	Settings.open_settings_menu()
+	PopupManager.open(PopupManager.EDITOR_SETTINGS)
 
 
 func _on_image_author_meta_clicked(meta: Variant) -> void:  URL.open(str(meta))

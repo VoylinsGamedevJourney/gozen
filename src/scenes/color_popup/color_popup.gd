@@ -5,7 +5,7 @@ extends Control
 
 func _on_create_color_pressed() -> void:
 	FileLogic.add_colors([color_picker.color.to_html()])
-	PopupManager.close(PopupManager.COLOR)
+	PopupManager.close(PopupManager.COLOR_PICKER)
 
 
 func _input(event: InputEvent) -> void:
@@ -16,4 +16,4 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_cancel_button_pressed() -> void:
-	PopupManager.close(PopupManager.COLOR)
+	PopupManager.close(PopupManager.COLOR_PICKER)

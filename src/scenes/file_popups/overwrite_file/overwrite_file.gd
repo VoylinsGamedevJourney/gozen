@@ -27,4 +27,4 @@ func _on_overwrite_button_pressed() -> void:
 
 
 func _on_close_button_pressed() -> void:
-	PopupManager.close(PopupManager.OVERWRITE_FILE)
+	PopupManager.close(PopupManager.FILE_OVERWRITE)

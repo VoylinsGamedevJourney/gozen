@@ -248,7 +248,7 @@ func open(new_project_path: String) -> void:
 			missing_files.append(file)
 
 	if not missing_files.is_empty():
-		var popup: Control = PopupManager.get_popup(PopupManager.MISSING_FILES)
+		var popup: Control = PopupManager.get_popup(PopupManager.FILES_MISSING)
 		popup.call("set_data", missing_files)
 
 	FileLogic._startup_loading()
@@ -300,10 +300,6 @@ func open_project() -> void:
 	dialog.file_selected.connect(_open_project)
 	add_child(dialog)
 	dialog.popup_centered()
-
-
-func open_settings_menu() -> void:
-	PopupManager.open(PopupManager.PROJECT_SETTINGS)
 
 
 func _auto_save() -> void:

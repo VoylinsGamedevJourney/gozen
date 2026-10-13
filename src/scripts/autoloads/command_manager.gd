@@ -11,8 +11,8 @@ var actions: Array[String] = []
 func _ready() -> void:
 	if OS.has_feature("demo"): return # No commands for demo :p
 
-	register(Command.new("Open editor settings", Settings.open_settings_menu, "open_settings"))
-	register(Command.new("Open project settings", Project.open_settings_menu, "open_project_settings"))
+	register(Command.new("Open editor settings", PopupManager.open.bind(PopupManager.EDITOR_SETTINGS), "open_settings"))
+	register(Command.new("Open project settings", PopupManager.open.bind(PopupManager.PROJECT_SETTINGS), "open_project_settings"))
 	register(Command.new("Open module manager", PopupManager.open.bind(PopupManager.MODULE_MANAGER), ""))
 
 	register(Command.new("Switch to Edit workspace", InputManager.show_editor_workspace, ""))
@@ -26,7 +26,7 @@ func _ready() -> void:
 	register(Command.new("Archive project", Project.archive_as, ""))
 
 	register(Command.new("Add text file", FileLogic.add.bind(["temp://text"]), ""))
-	register(Command.new("Add color file", PopupManager.open.bind(PopupManager.COLOR), ""))
+	register(Command.new("Add color file", PopupManager.open.bind(PopupManager.COLOR_PICKER), ""))
 
 	register(Command.new("Play/Pause timeline", EditorCore.on_play_pressed, "timeline_play_pause"))
 	register(Command.new("Focus on playhead", Timeline.focus_on_playhead, "focus_on_playhead"))

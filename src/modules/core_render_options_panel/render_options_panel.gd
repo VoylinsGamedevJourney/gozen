@@ -432,7 +432,7 @@ func _on_start_render_button_pressed(draft: bool = false) -> void:
 	var threads: int = int(threads_spin_box.value)
 
 	if FileAccess.file_exists(export_path) and not is_quick_render:
-		var popup: Control = PopupManager.get_popup(PopupManager.OVERWRITE_FILE)
+		var popup: Control = PopupManager.get_popup(PopupManager.FILE_OVERWRITE)
 		(popup.get("confirmed") as Signal).connect(func() -> void:
 				await RenderManager.start_render(export_path, profile, threads, start_frame, end_frame, draft))
 	else:

@@ -74,6 +74,31 @@ func _ready() -> void:
 
 #--- Render logic ---
 
+func get_all_profile_names() -> Array[String]:
+	var names: Array[String] = []
+	var defaults: Array[String] = [
+		RENDER_PROFILE_YOUTUBE,
+		RENDER_PROFILE_YOUTUBE_HQ,
+		RENDER_PROFILE_AV1,
+		RENDER_PROFILE_VP9,
+		RENDER_PROFILE_VP8,
+	]
+	for path: String in defaults:
+		var profile: RenderProfile = load(path)
+		if profile:
+			names.append(profile.profile_name)
+
+	var user_path: String = Utils.get_config_dir().path_join("profiles/render")
+	if DirAccess.dir_exists_absolute(user_path):
+		for file_name: String in DirAccess.get_files_at(user_path):
+			file_name = file_name.trim_suffix(".remap")
+			if not file_name.ends_with(".tres") and not file_name.ends_with(".res"): continue
+			var profile: RenderProfile = load(user_path.path_join(file_name))
+			if profile:
+				names.append(profile.profile_name)
+	return names
+
+
 func get_render_profile(profile_name: String) -> RenderProfile:
 	var defaults: Array[String] = [
 		RENDER_PROFILE_YOUTUBE,

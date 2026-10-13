@@ -1,6 +1,4 @@
 extends Node
-# TODO: We should make it possible to have a UI to see all the proxy clips
-# with how much data they use and maybe with when they were last accessed.
 
 
 signal proxy_loading(file: FileData, progress: int) ## Progess is 0/100.

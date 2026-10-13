@@ -118,7 +118,7 @@ func _file_menu_pressed(id: int) -> void:
 			dialog.files_selected.connect(FileLogic.dropped)
 			dialog.popup_centered()
 		1: FileLogic.add(["temp://text"])
-		2: PopupManager.open(PopupManager.COLOR)
+		2: PopupManager.open(PopupManager.COLOR_PICKER)
 
 
 func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = false) -> void:

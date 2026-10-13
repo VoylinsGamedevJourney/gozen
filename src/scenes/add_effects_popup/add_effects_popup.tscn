@@ -10,59 +10,58 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_rcm8h")
-search_line_edit = NodePath("Center/Panel/Margin/VBox/SearchBox")
-effect_buttons = NodePath("Center/Panel/Margin/VBox/AddEffectsPanel/Margin/Scroll/AddEffectsVBox")
+search_line_edit = NodePath("Panel/Margin/VBox/SearchBox")
+effect_buttons = NodePath("Panel/Margin/VBox/AddEffectsPanel/Margin/Scroll/AddEffectsVBox")
 
-[node name="Center" type="CenterContainer" parent="." unique_id=1893031404]
-layout_mode = 2
-
-[node name="Panel" type="PanelContainer" parent="Center" unique_id=483563730]
+[node name="Panel" type="PanelContainer" parent="." unique_id=483563730]
 custom_minimum_size = Vector2(350, 400)
 custom_maximum_size = Vector2(400, 600)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_type_variation = &"box"
 
-[node name="Margin" type="MarginContainer" parent="Center/Panel" unique_id=683844105]
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=683844105]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="Center/Panel/Margin" unique_id=1503547117]
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin" unique_id=1503547117]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Center/Panel/Margin/VBox" unique_id=1462194663]
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox" unique_id=1462194663]
 layout_mode = 2
 theme_type_variation = &"title_label"
 text = "Add effect"
 
-[node name="SearchBox" type="LineEdit" parent="Center/Panel/Margin/VBox" unique_id=979914212]
+[node name="SearchBox" type="LineEdit" parent="Panel/Margin/VBox" unique_id=979914212]
 layout_mode = 2
 placeholder_text = "Enter effect name ..."
 
-[node name="AddEffectsPanel" type="PanelContainer" parent="Center/Panel/Margin/VBox" unique_id=2009601869]
+[node name="AddEffectsPanel" type="PanelContainer" parent="Panel/Margin/VBox" unique_id=2009601869]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Margin" type="MarginContainer" parent="Center/Panel/Margin/VBox/AddEffectsPanel" unique_id=1547627352]
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/VBox/AddEffectsPanel" unique_id=1547627352]
 layout_mode = 2
 
-[node name="Scroll" type="ScrollContainer" parent="Center/Panel/Margin/VBox/AddEffectsPanel/Margin" unique_id=1033694491]
+[node name="Scroll" type="ScrollContainer" parent="Panel/Margin/VBox/AddEffectsPanel/Margin" unique_id=1033694491]
 layout_mode = 2
 
-[node name="AddEffectsVBox" type="VBoxContainer" parent="Center/Panel/Margin/VBox/AddEffectsPanel/Margin/Scroll" unique_id=1855124781]
+[node name="AddEffectsVBox" type="VBoxContainer" parent="Panel/Margin/VBox/AddEffectsPanel/Margin/Scroll" unique_id=1855124781]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBox" type="HBoxContainer" parent="Center/Panel/Margin/VBox" unique_id=1449212041]
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox" unique_id=1449212041]
 layout_mode = 2
 
-[node name="CloseButton" type="Button" parent="Center/Panel/Margin/VBox/HBox" unique_id=1026846797]
+[node name="CloseButton" type="Button" parent="Panel/Margin/VBox/HBox" unique_id=1026846797]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 text = "Close popup"
 
-[connection signal="text_changed" from="Center/Panel/Margin/VBox/SearchBox" to="." method="_on_search_box_text_changed"]
-[connection signal="text_submitted" from="Center/Panel/Margin/VBox/SearchBox" to="." method="_on_search_box_text_submitted"]
-[connection signal="pressed" from="Center/Panel/Margin/VBox/HBox/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="text_changed" from="Panel/Margin/VBox/SearchBox" to="." method="_on_search_box_text_changed"]
+[connection signal="text_submitted" from="Panel/Margin/VBox/SearchBox" to="." method="_on_search_box_text_submitted"]
+[connection signal="pressed" from="Panel/Margin/VBox/HBox/CloseButton" to="." method="_on_close_button_pressed"]

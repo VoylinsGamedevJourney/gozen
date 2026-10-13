@@ -2,72 +2,106 @@ extends Node
 
 
 enum {
-	SETTINGS,
+	# Settings.
+	EDITOR_SETTINGS,
 	PROJECT_SETTINGS,
-	CREDITS,
-	COLOR,
-	MARKER,
-	PROGRESS,
-	COMMAND_BAR,
 	MODULE_MANAGER,
-	RECENT_PROJECTS,
-	ADD_EFFECTS,
-	REPLACE_AUDIO,
-	APPLY_REPLACE_AUDIO,
-	CHANGE_CLIP_SPEED,
-	WELCOME,
-	AUTO_CUT,
+
+	# File stuff.
 	FILE_INFO,
 	FILE_RENAME,
-	OVERWRITE_FILE,
-	MISSING_FILES,
-	UPDATED_FILES,
-	SHORTENED_FILES,
+	FILE_OVERWRITE,
+
+	FILES_MISSING,
+	FILES_UPDATED,
+	FILES_SHORTENED,
+
+	# Folder stuff.
+	FOLDER_RENAME,
+	CREATE_FOLDER,
+
+	# Render stuff.
 	RENDER_FINISHED,
 	RENDER_FAILED,
-	SCAN_COMPLETE, # Start screen only.
-	SAVE_PROFILE_PRESET, # Start screen only.
-	NEW_WORKSPACE, # Editor.
-	DELETE_WORKSPACE, # Editor.
-	DUPLICATION_ERROR,
-	CREATE_FOLDER,
-	FOLDER_RENAME,
+
+	# Timeline/clip stuff.
+	MARKER,
+	AUTO_CUT,
+	ADD_EFFECTS,
 	JUMP_TO_FRAME,
+	CHANGE_CLIP_SPEED,
+	DUPLICATION_ERROR,
+
+	REPLACE_AUDIO,
+	APPLY_REPLACE_AUDIO,
+
+	# Start screen.
+	STARTUP_SCREEN,
+	WELCOME_SCREEN,
+	SAVE_PROFILE_PRESET,
+	SCAN_COMPLETE,
+
+	# Workspace stuff.
+	NEW_WORKSPACE,
+	DELETE_WORKSPACE,
+
+	# Extra popups.
+	CREDITS,
+	PROGRESS,
+	COMMAND_BAR,
+	COLOR_PICKER,
 	}
 
 var _open_popups: Dictionary [int, Control] = {}
 var _popup_uids: Dictionary [int, String] = {
-	SETTINGS: "uid://dnhn66udpn7vp",
+	# Settings.
+	EDITOR_SETTINGS: "uid://dnhn66udpn7vp",
 	PROJECT_SETTINGS: "uid://dnhn66udpn7vp",
-	CREDITS: "uid://d4e5ndtm65ok3",
-	COLOR: "uid://brbxvynl0y3ha",
-	MARKER: "uid://ce1hy5ks465h7",
-	PROGRESS: "uid://d4h7t8ccus0yv",
-	COMMAND_BAR: "uid://rj2h8g761jr1",
 	MODULE_MANAGER: "uid://bcu0coqxgk2do",
-	RECENT_PROJECTS: "", # TODO
-	ADD_EFFECTS: "uid://dqsbn4yb7nd0",
-	REPLACE_AUDIO: "uid://c3c08cihs1see",
-	APPLY_REPLACE_AUDIO: "uid://nmdtjin0sdp5",
-	CHANGE_CLIP_SPEED: "uid://cbbu6mhc0c3kj",
-	WELCOME: "uid://bdxuv18wukbj5",
-	AUTO_CUT: "uid://td87gbksxsi3",
+
+	# File stuff.
 	FILE_INFO: "uid://w1n0m33ll8vp",
 	FILE_RENAME: "uid://y450a2mtc4om",
-	OVERWRITE_FILE: "uid://dvgpe8pybbyk5",
-	MISSING_FILES: "uid://cay7444it7bqa",
-	UPDATED_FILES: "uid://yym5tccggc88",
-	SHORTENED_FILES: "uid://dwuk3bbyw16cp",
-	RENDER_FINISHED: "uid://b2p7khnqofboy",
-	RENDER_FAILED: "uid://b46mlum2m65tv",
-	SCAN_COMPLETE: "uid://c50l3xlo6cawd",
-	SAVE_PROFILE_PRESET: "uid://ccpft706e57gp",
-	NEW_WORKSPACE: "uid://xio6rtqr55wg",
-	DELETE_WORKSPACE: "uid://b3n1tmr7pr8m4",
-	DUPLICATION_ERROR: "uid://dvjs0g0dsgqxd",
+	FILE_OVERWRITE: "uid://dvgpe8pybbyk5",
+
+	FILES_MISSING: "uid://cay7444it7bqa",
+	FILES_UPDATED: "uid://yym5tccggc88",
+	FILES_SHORTENED: "uid://dwuk3bbyw16cp",
+
+	# Folder stuff.
 	CREATE_FOLDER: "uid://cyfsdm8w12mdq",
 	FOLDER_RENAME: "uid://6f381g3j2gdd",
+
+	# Render stuff.
+	RENDER_FINISHED: "uid://b2p7khnqofboy",
+	RENDER_FAILED: "uid://b46mlum2m65tv",
+
+	# Timeline/clip stuff.
+	MARKER: "uid://ce1hy5ks465h7",
+	AUTO_CUT: "uid://td87gbksxsi3",
+	ADD_EFFECTS: "uid://dqsbn4yb7nd0",
 	JUMP_TO_FRAME: "uid://cfu334o2qox1a",
+	CHANGE_CLIP_SPEED: "uid://cbbu6mhc0c3kj",
+	DUPLICATION_ERROR: "uid://dvjs0g0dsgqxd",
+
+	REPLACE_AUDIO: "uid://c3c08cihs1see",
+	APPLY_REPLACE_AUDIO: "uid://nmdtjin0sdp5",
+
+	# Start screen.
+	STARTUP_SCREEN: "uid://bqlcn30hs8qp5",
+	WELCOME_SCREEN: "uid://bdxuv18wukbj5",
+	SAVE_PROFILE_PRESET: "uid://ccpft706e57gp",
+	SCAN_COMPLETE: "uid://c50l3xlo6cawd",
+
+	# Workspace stuff.
+	NEW_WORKSPACE: "uid://xio6rtqr55wg",
+	DELETE_WORKSPACE: "uid://b3n1tmr7pr8m4",
+
+	# Extra popups.
+	CREDITS: "uid://d4e5ndtm65ok3",
+	PROGRESS: "uid://d4h7t8ccus0yv",
+	COMMAND_BAR: "uid://rj2h8g761jr1",
+	COLOR_PICKER: "uid://brbxvynl0y3ha",
 	}
 
 var control: Control = Control.new()
@@ -81,8 +115,8 @@ func _ready() -> void:
 	get_tree().root.add_child(control)
 
 	control.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	control.visible = false
 	control.top_level = true
+	_check_background()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -96,11 +130,11 @@ func open(popup: int) -> void:
 	if popup not in _open_popups:
 		_open_popups[popup] = (load(_popup_uids[popup]) as PackedScene).instantiate()
 		match popup:
-			SETTINGS: _open_editor_settings(_open_popups[popup] as SettingsPanel)
+			EDITOR_SETTINGS: _open_editor_settings(_open_popups[popup] as SettingsPanel)
 			PROJECT_SETTINGS: _open_project_settings(_open_popups[popup] as SettingsPanel)
 
 		control.add_child(_open_popups[popup])
-		control.visible = true
+		_check_background()
 
 
 func _open_editor_settings(settings_panel: SettingsPanel) -> void:

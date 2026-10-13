@@ -64,10 +64,6 @@ func save() -> void:
 		printerr("Settings: Something went wrong saving settings! ", response)
 
 
-func open_settings_menu() -> void:
-	PopupManager.open(PopupManager.SETTINGS)
-
-
 func load_system_fonts() -> void:
 	available_system_fonts = OS.get_system_fonts()
 

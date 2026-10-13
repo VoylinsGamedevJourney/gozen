@@ -3,8 +3,7 @@
 [ext_resource type="Script" uid="uid://c3kvea2ql7tqn" path="res://scenes/settings_menu/settings_menu.gd" id="1_26ncd"]
 [ext_resource type="Texture2D" uid="uid://dmqhsyh4vjsnp" path="res://assets/icons/search.tres" id="2_p28av"]
 
-[node name="Settings" type="Control" unique_id=2082599071 node_paths=PackedStringArray("panel_label", "side_bar_vbox", "search_line_edit", "settings_vbox")]
-layout_mode = 3
+[node name="Settings" type="PanelContainer" unique_id=1297610038 node_paths=PackedStringArray("side_bar_vbox", "search_line_edit", "settings_vbox")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -12,25 +11,13 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_26ncd")
-panel_label = NodePath("")
 side_bar_vbox = NodePath("SettingsPanel/Margin/HBox/VBoxContainer/ScrollContainer/SideBarVBox")
 search_line_edit = NodePath("SettingsPanel/Margin/HBox/VBoxContainer/SearchLineEdit")
 settings_vbox = NodePath("SettingsPanel/Margin/HBox/VBox/Scroll/SettingsOptionsPanel/Margin/SettingsVBox")
 
 [node name="SettingsPanel" type="PanelContainer" parent="." unique_id=228170693]
 custom_minimum_size = Vector2(900, 450)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -450.0
-offset_top = -225.0
-offset_right = 450.0
-offset_bottom = 225.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_type_variation = &"box"

@@ -1,6 +1,6 @@
 class_name CommandBar
 extends Control
-# TODO: Display the actions in a better way
+
 
 const MAX_COMMANDS: int = 5
 

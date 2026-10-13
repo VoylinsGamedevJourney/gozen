@@ -94,7 +94,7 @@ func _gui_input(event: InputEvent) -> void:
 func _on_close_button_pressed() -> void:
 	_stop_listening()
 	Settings.save()
-	PopupManager.close(PopupManager.SETTINGS)
+	PopupManager.close(PopupManager.EDITOR_SETTINGS)
 	PopupManager.close(PopupManager.PROJECT_SETTINGS)
 
 
