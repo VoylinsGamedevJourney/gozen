@@ -1,5 +1,5 @@
 extends Node
-# TODO: Load custom effects.
+
 
 signal effect_added(clip: ClipData, index: int, is_visual: bool)
 signal effect_removed(clip: ClipData, index: int, is_visual: bool)

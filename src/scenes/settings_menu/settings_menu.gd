@@ -308,6 +308,16 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 				tr("Changing this setting should be done with a path which points to an already existing folder. All previously made proxy clips will need to be generated again and deleted manually from the previous folder."))
 		])
 
+	var cache: Array = [
+		create_header(tr("Cache Management")), Control.new(),
+		create_label(tr("Waveforms")),
+		create_cache_clear_row(FileLogic.wave_folder, _clear_waveforms),
+		create_label(tr("Thumbnails")),
+		create_cache_clear_row(Thumbnailer.folder_files, _clear_thumbnails),
+		create_label(tr("Proxies")),
+		create_cache_clear_row(Settings.get_proxies_path(), _clear_proxies)
+	]
+
 	var options: Dictionary = {
 		tr("Appearance"): appearance_options,
 
@@ -394,6 +404,7 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 		],
 
 		tr("Shortcuts"): shortcut_nodes,
+		tr("Cache"): cache,
 	}
 
 	var has_core_modules: bool = false
@@ -786,6 +797,76 @@ func create_shortcut_buttons(action: String) -> HBoxContainer:
 		button.pressed.connect(_on_shortcut_button_pressed.bind(button, action, i))
 		hbox.add_child(button)
 	return hbox
+
+
+func create_cache_clear_row(path: String, clear_func: Callable) -> Control:
+	var hbox: HBoxContainer = HBoxContainer.new()
+	var size_label: Label = Label.new()
+	size_label.text = String.humanize_size(_get_directory_size(path))
+	size_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var clear_button: Button = Button.new()
+	clear_button.text = tr("Clear")
+	clear_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	clear_button.pressed.connect(func() -> void:
+			clear_func.call()
+			size_label.text = String.humanize_size(_get_directory_size(path)))
+
+	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hbox.add_child(size_label)
+	hbox.add_child(clear_button)
+	return hbox
+
+
+func _get_directory_size(path: String) -> int:
+	var directory_size: int = 0
+	if DirAccess.dir_exists_absolute(path):
+		var directory: DirAccess = DirAccess.open(path)
+		directory.list_dir_begin()
+
+		var file_name: String = directory.get_next()
+		while file_name != "":
+			if file_name not in [".", ".."]:
+				var full_path: String = path.path_join(file_name)
+				if directory.current_is_dir():
+					directory_size += _get_directory_size(full_path)
+				else:
+					directory_size += FileAccess.get_size(full_path)
+			file_name = directory.get_next()
+	return directory_size
+
+
+func _delete_dir_contents(path: String) -> void:
+	if DirAccess.dir_exists_absolute(path):
+		var directory: DirAccess = DirAccess.open(path)
+		directory.list_dir_begin()
+
+		var file_name: String = directory.get_next()
+		while file_name != "":
+			if file_name not in [".", ".."]:
+				var full_path: String = path.path_join(file_name)
+				if directory.current_is_dir():
+					_delete_dir_contents(full_path)
+					directory.remove(file_name)
+				else:
+					directory.remove(file_name)
+			file_name = directory.get_next()
+
+
+func _clear_waveforms() -> void:
+	_delete_dir_contents(FileLogic.wave_folder)
+	NotificationManager.info(tr("Waveforms cache cleared."))
+
+
+func _clear_thumbnails() -> void:
+	_delete_dir_contents(Thumbnailer.folder_files)
+	_delete_dir_contents(Thumbnailer.folder_projects)
+	NotificationManager.info(tr("Thumbnails cache cleared."))
+
+
+func _clear_proxies() -> void:
+	_delete_dir_contents(Settings.get_proxies_path())
+	NotificationManager.info(tr("Proxies cleared."))
 
 
 func _on_shortcut_button_pressed(button: Button, action: String, index: int) -> void:
