@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://y450a2mtc4om"]
 
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_3h8ep"]
 [ext_resource type="Script" uid="uid://bvp07tbvon7gj" path="res://scenes/file_popups/rename_file_popup/rename_file.gd" id="1_4de6o"]
 
 [node name="RenameFile" type="PanelContainer" unique_id=183496158 node_paths=PackedStringArray("rename_line_edit")]
+material = ExtResource("1_3h8ep")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

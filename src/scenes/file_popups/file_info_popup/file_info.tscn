@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://w1n0m33ll8vp"]
 
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_2trub"]
 [ext_resource type="Script" uid="uid://ckkr2wr40qup8" path="res://scenes/file_popups/file_info_popup/file_info.gd" id="1_oyty4"]
 
 [node name="FileInfo" type="PanelContainer" unique_id=890807878 node_paths=PackedStringArray("title_label", "match_project_button", "separator_bottom", "grid_general", "label_path", "label_type", "label_size", "label_resolution", "label_framerate", "label_duration", "grid_video", "label_video_codec", "label_color_space", "label_pixel_format", "label_aspect_ratio", "label_video_bitrate", "label_b_frames", "label_scanning", "grid_audio", "label_audio_codec", "label_audio_streams", "label_audio_bitrate", "label_audio_duration")]
+material = ExtResource("1_2trub")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

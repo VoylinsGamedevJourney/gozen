@@ -1,8 +1,13 @@
 [gd_scene format=3 uid="uid://rj2h8g761jr1"]
 
 [ext_resource type="Script" uid="uid://cc5bnmmakhd8r" path="res://scenes/command_bar/command_bar.gd" id="1_maggb"]
+[ext_resource type="Shader" uid="uid://bfyhqxaqjbm5x" path="res://theming/background_blur.gdshader" id="1_q7iw3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qbaq3"]
+shader = ExtResource("1_q7iw3")
 
 [node name="CommandBar" type="PanelContainer" unique_id=1604715155 node_paths=PackedStringArray("command_line", "command_buttons")]
+material = SubResource("ShaderMaterial_qbaq3")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

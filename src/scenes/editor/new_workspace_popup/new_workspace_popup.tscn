@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://xio6rtqr55wg"]
 
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_iahq1"]
 [ext_resource type="Script" uid="uid://b5vtk1ghpvedm" path="res://scenes/editor/new_workspace_popup/new_workspace_popup.gd" id="1_vxvx7"]
 
 [node name="NewWorkspace" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("line_edit_workspace_name")]
+material = ExtResource("1_iahq1")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -11,6 +13,7 @@ grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_vxvx7")
 line_edit_workspace_name = NodePath("Panel/Margin/Panel/Margin/VBox/HBox/WorkspaceNameLineEdit")
+metadata/_edit_lock_ = true
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=1213813620]
 custom_minimum_size = Vector2(900, 0)

@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://b46mlum2m65tv"]
 
 [ext_resource type="Script" uid="uid://bp4ixcvv5rivy" path="res://scenes/render_popups/render_error_popup/render_error.gd" id="1_75lbh"]
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_qp6lv"]
 
 [node name="RenderError" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("label_info")]
+material = ExtResource("1_qp6lv")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

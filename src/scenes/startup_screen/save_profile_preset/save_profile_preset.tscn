@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://ccpft706e57gp"]
 
 [ext_resource type="Script" uid="uid://carv86cw4cmxc" path="res://scenes/startup_screen/save_profile_preset/save_profile_preset.gd" id="1_47wp4"]
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_jh7gu"]
 
 [node name="SaveProfilePreset" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("line_edit_preset_name")]
+material = ExtResource("1_jh7gu")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

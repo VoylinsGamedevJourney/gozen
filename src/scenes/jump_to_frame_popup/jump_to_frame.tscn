@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://cfu334o2qox1a"]
 
 [ext_resource type="Script" uid="uid://svthwa4lr4hr" path="res://scenes/jump_to_frame_popup/jump_to_frame.gd" id="1_88vde"]
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_b5jnc"]
 
 [node name="JumpToFrame" type="PanelContainer" unique_id=830041705]
+material = ExtResource("1_b5jnc")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

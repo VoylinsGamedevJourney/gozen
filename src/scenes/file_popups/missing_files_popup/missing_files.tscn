@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://cay7444it7bqa"]
 
 [ext_resource type="Script" uid="uid://drx76v7i8faef" path="res://scenes/file_popups/missing_files_popup/missing_files.gd" id="1_2dd7s"]
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_7gwq7"]
 
 [node name="MissingFiles" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("vbox")]
+material = ExtResource("1_7gwq7")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

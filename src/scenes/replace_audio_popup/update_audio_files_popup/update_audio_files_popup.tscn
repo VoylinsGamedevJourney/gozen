@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://nmdtjin0sdp5"]
 
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_i6i3m"]
 [ext_resource type="Script" uid="uid://d0b561bhlv8jn" path="res://scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.gd" id="1_y8flh"]
 
 [node name="UpdateAudioFiles" type="PanelContainer" unique_id=830041705]
+material = ExtResource("1_i6i3m")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

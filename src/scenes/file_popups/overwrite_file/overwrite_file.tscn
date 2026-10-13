@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://dvgpe8pybbyk5"]
 
 [ext_resource type="Script" uid="uid://bkqnt1xk5oatv" path="res://scenes/file_popups/overwrite_file/overwrite_file.gd" id="1_8i413"]
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_052gr"]
 
 [node name="UpdateAudioFiles" type="PanelContainer" unique_id=830041705]
+material = ExtResource("1_052gr")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

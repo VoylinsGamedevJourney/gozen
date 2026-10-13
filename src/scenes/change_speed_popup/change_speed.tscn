@@ -1,8 +1,13 @@
 [gd_scene format=3 uid="uid://cbbu6mhc0c3kj"]
 
 [ext_resource type="Script" uid="uid://vp8stv3e5gry" path="res://scenes/change_speed_popup/change_speed.gd" id="1_1lf1w"]
+[ext_resource type="Shader" uid="uid://bfyhqxaqjbm5x" path="res://theming/background_blur.gdshader" id="1_3y2ot"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iw7hp"]
+shader = ExtResource("1_3y2ot")
 
 [node name="ChangeSpeed" type="PanelContainer" unique_id=830041705]
+material = SubResource("ShaderMaterial_iw7hp")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

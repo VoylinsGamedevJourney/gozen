@@ -1,10 +1,15 @@
 [gd_scene format=3 uid="uid://td87gbksxsi3"]
 
+[ext_resource type="Shader" uid="uid://bfyhqxaqjbm5x" path="res://theming/background_blur.gdshader" id="1_r672j"]
 [ext_resource type="Script" uid="uid://drxwwlsm6dehq" path="res://scenes/auto_cut_popup/auto_cut_popup.gd" id="1_scripts"]
 [ext_resource type="Texture2D" uid="uid://mk4pnxw14y5q" path="res://assets/icons/playback/play.tres" id="2_0do6h"]
 [ext_resource type="Script" uid="uid://c1iy4cj7tl12s" path="res://scenes/auto_cut_popup/auto_cut_wave.gd" id="2_wave"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r25jx"]
+shader = ExtResource("1_r672j")
+
 [node name="AutoCutPopup" type="PanelContainer" unique_id=1716343517 node_paths=PackedStringArray("threshold_spinbox", "min_duration_spinbox", "padding_spinbox", "apply_group_checkbox", "ripple_checkbox", "wave_preview", "audio_play_button", "audio_player")]
+material = SubResource("ShaderMaterial_r25jx")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

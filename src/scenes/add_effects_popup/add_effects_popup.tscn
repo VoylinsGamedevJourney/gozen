@@ -1,8 +1,13 @@
 [gd_scene format=3 uid="uid://dqsbn4yb7nd0"]
 
 [ext_resource type="Script" uid="uid://didhk4wfastnl" path="res://scenes/add_effects_popup/add_effects_popup.gd" id="1_rcm8h"]
+[ext_resource type="Shader" uid="uid://bfyhqxaqjbm5x" path="res://theming/background_blur.gdshader" id="1_t2k64"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4ubr3"]
+shader = ExtResource("1_t2k64")
 
 [node name="AddEffectsPopup" type="PanelContainer" unique_id=1600151441 node_paths=PackedStringArray("search_line_edit", "effect_buttons")]
+material = SubResource("ShaderMaterial_4ubr3")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://yym5tccggc88"]
 
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_mhsta"]
 [ext_resource type="Script" uid="uid://cip2t7polmvkx" path="res://scenes/file_popups/updated_files_popup/updated_files.gd" id="1_vqi84"]
 
 [node name="UpdatedFiles" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("vbox")]
+material = ExtResource("1_mhsta")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

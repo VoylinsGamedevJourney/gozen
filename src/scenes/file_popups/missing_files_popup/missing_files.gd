@@ -9,6 +9,10 @@ extends Control
 
 ## This is basically our _ready() for the popup.
 func set_data(missing_files: Array[FileData]) -> void:
+	if vbox.get_child_count() != 0:
+		for child: Control in vbox.get_children():
+			child.queue_free()
+
 	for file: FileData in missing_files:
 		var hbox: HBoxContainer = HBoxContainer.new()
 		var label: Label = Label.new()

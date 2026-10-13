@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://cyfsdm8w12mdq"]
 
 [ext_resource type="Script" uid="uid://dleigveghopym" path="res://scenes/file_popups/create_folder_popup/create_folder.gd" id="1_0pjsc"]
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_tjjri"]
 
 [node name="CreateFolder" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("line_edit")]
+material = ExtResource("1_tjjri")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

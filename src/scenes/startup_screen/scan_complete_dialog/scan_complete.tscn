@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://c50l3xlo6cawd"]
 
 [ext_resource type="Script" uid="uid://eh52rxhu6pce" path="res://scenes/startup_screen/scan_complete_dialog/scan_complete.gd" id="1_550ng"]
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_ill77"]
 
 [node name="ScanComplete" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("label_count", "label_zero")]
+material = ExtResource("1_ill77")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

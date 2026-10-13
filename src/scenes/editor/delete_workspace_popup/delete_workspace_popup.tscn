@@ -1,8 +1,13 @@
 [gd_scene format=3 uid="uid://b3n1tmr7pr8m4"]
 
+[ext_resource type="Shader" uid="uid://bfyhqxaqjbm5x" path="res://theming/background_blur.gdshader" id="1_6fj53"]
 [ext_resource type="Script" uid="uid://dr25i1fiam7cy" path="res://scenes/editor/delete_workspace_popup/delete_workspace_popup.gd" id="1_8a11q"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o1nh8"]
+shader = ExtResource("1_6fj53")
+
 [node name="DeleteWorkspace" type="PanelContainer" unique_id=830041705]
+material = SubResource("ShaderMaterial_o1nh8")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

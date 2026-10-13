@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://re4fsjjudiwc" path="res://scenes/welcome/welcome.gd" id="1_1s38k"]
 [ext_resource type="Texture2D" uid="uid://cdwjkb2q2c6it" path="res://assets/welcome_header.webp" id="1_3p20f"]
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_hdf7e"]
 [ext_resource type="Texture2D" uid="uid://cwv5gaisvmwv7" path="res://icon.svg" id="3_kfldb"]
 [ext_resource type="Texture2D" uid="uid://cgetxovfmpffg" path="res://assets/icons/guide.tres" id="4_shhtm"]
 [ext_resource type="Texture2D" uid="uid://cy0wf25emij1j" path="res://assets/profiles/youtube.tres" id="5_e3rrl"]
@@ -41,6 +42,7 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_klhbv"]
 
 [node name="Welcome" type="PanelContainer" unique_id=248286192 node_paths=PackedStringArray("full_only_buttons", "tab_container", "option_button_language", "option_button_theme", "option_button_video_drag", "grid_modes", "grid_shortcuts", "button_flow_website", "button_flow_manual", "button_flow_tutorials", "button_flow_discord", "button_flow_source_code", "button_flow_support_kofi", "button_itch_modules", "button_steam_workshop", "button_gozen_module_repo", "option_button_default_profile", "region_in_line_edit", "region_out_line_edit", "spinbox_resolution_x", "spinbox_resolution_y", "spinbox_framerate", "check_button_auto_save", "option_button_empty_space")]
+material = ExtResource("1_hdf7e")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

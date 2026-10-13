@@ -1,11 +1,12 @@
 [gd_scene format=3 uid="uid://c3c08cihs1see"]
 
 [ext_resource type="Script" uid="uid://b7gl7xgmp5prv" path="res://scenes/replace_audio_popup/replace_audio_popup.gd" id="1_6g3wj"]
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_enkxx"]
 [ext_resource type="Texture2D" uid="uid://mk4pnxw14y5q" path="res://assets/icons/playback/play.tres" id="2_m1rbc"]
 [ext_resource type="Script" uid="uid://bpy8rtg87clbh" path="res://scenes/replace_audio_popup/replace_audio_wave.gd" id="3_8tgyo"]
 
-[node name="ReplaceAudioPopup" type="Control" unique_id=96151348 node_paths=PackedStringArray("video_file_label", "audio_play_button", "offset_spinbox", "file_b_list", "file_a_wave", "file_b_wave", "file_a_player", "file_b_player")]
-layout_mode = 3
+[node name="ReplaceAudioPopup" type="PanelContainer" unique_id=1458819546 node_paths=PackedStringArray("video_file_label", "audio_play_button", "offset_spinbox", "file_b_list", "file_a_wave", "file_b_wave", "file_a_player", "file_b_player")]
+material = ExtResource("1_enkxx")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -24,18 +25,7 @@ file_b_player = NodePath("FileBAudioStreamPlayer")
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=534759731]
 custom_minimum_size = Vector2(750, 240)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -250.0
-offset_top = -41.0
-offset_right = 250.0
-offset_bottom = 41.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_type_variation = &"box"

@@ -1,8 +1,13 @@
 [gd_scene format=3 uid="uid://d4e5ndtm65ok3"]
 
+[ext_resource type="Shader" uid="uid://bfyhqxaqjbm5x" path="res://theming/background_blur.gdshader" id="1_ae4wk"]
 [ext_resource type="Script" uid="uid://cd0krdlykelvg" path="res://scenes/about_gozen_popup/about_gozen.gd" id="1_ecejt"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_prxut"]
+shader = ExtResource("1_ae4wk")
+
 [node name="AboutGoZen" type="PanelContainer" unique_id=890807878 node_paths=PackedStringArray("line_edit_version")]
+material = SubResource("ShaderMaterial_prxut")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
