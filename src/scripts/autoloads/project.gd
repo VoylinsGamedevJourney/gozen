@@ -242,10 +242,10 @@ func open(new_project_path: String) -> void:
 	# 7% = Timeline ready to accept clips.
 	loading_overlay.update(7, tr("Loading project files ..."))
 
-	var missing_files: Array[String] = []
+	var missing_files: Array[FileData] = []
 	for file: FileData in data.files.values():
 		if not file.path.begins_with("temp://") and not FileAccess.file_exists(file.path):
-			missing_files.append(file.nickname)
+			missing_files.append(file)
 
 	if not missing_files.is_empty():
 		var popup: Control = PopupManager.get_popup(PopupManager.MISSING_FILES)

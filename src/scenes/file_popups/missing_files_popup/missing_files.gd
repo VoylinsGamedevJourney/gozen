@@ -8,26 +8,27 @@ extends Control
 
 
 ## This is basically our _ready() for the popup.
-func set_data(missing_files: Array[String]) -> void:
-	for missing_file: String in missing_files:
+func set_data(missing_files: Array[FileData]) -> void:
+	for file: FileData in missing_files:
 		var hbox: HBoxContainer = HBoxContainer.new()
 		var label: Label = Label.new()
 		var button_relink: Button = Button.new()
-		label.text = missing_file
+		label.text = file.nickname
 		label.size_flags_horizontal = Control.SIZE_FILL
 		button_relink.text = tr("Re-link file")
 
 		hbox.add_child(label)
 		hbox.add_child(button_relink)
-		# TODO: Add relink logic here.
-					# var file: FileData = files[missing_files[0]]
-					# var file_dialog: FileDialog = PopupManager.create_file_dialog(
-					# 		tr("Relink file ..."), FileDialog.FILE_MODE_OPEN_FILE)
-					# file_dialog.current_dir = file.path.get_base_dir()
-					# file_dialog.file_selected.connect(func(path: String) -> void:
-					# 		relink_file(file, path))
-					# get_tree().root.add_child.call_deferred(file_dialog)
-					# file_dialog.call_deferred("popup_centered"))
+
+		button_relink.pressed.connect(func() -> void:
+			var file_dialog: FileDialog = PopupManager.create_file_dialog(
+					tr("Relink file ..."), FileDialog.FILE_MODE_OPEN_FILE)
+			file_dialog.current_dir = file.path.get_base_dir()
+			file_dialog.file_selected.connect(func(path: String) -> void:
+					FileLogic.relink_file(file, path)
+					hbox.queue_free())
+			add_child(file_dialog)
+			file_dialog.popup_centered())
 
 		vbox.add_child(hbox)
 

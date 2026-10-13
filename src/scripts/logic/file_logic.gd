@@ -900,14 +900,14 @@ func _check_external_modifications() -> void:
 			modified_files.append(file)
 
 	if not missing_files.is_empty():
-		var missing_names: PackedStringArray = []
+		var missing_file_data: Array[FileData] = []
 		for file_id: int in missing_files:
-			missing_names.append(files[file_id].nickname)
+			missing_file_data.append(files[file_id])
 			load_data(files[file_id])
 			reloaded.emit(files[file_id])
 
 		var popup: Control = PopupManager.get_popup(PopupManager.MISSING_FILES)
-		popup.call("set_data", missing_names)
+		popup.call("set_data", missing_file_data)
 
 	if not modified_files.is_empty():
 		var file_names: PackedStringArray = []
