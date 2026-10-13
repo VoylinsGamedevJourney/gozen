@@ -18,6 +18,11 @@ enum {
 	WELCOME,
 	AUTO_CUT,
 	FILE_INFO,
+	FILE_RENAME,
+	OVERWRITE_FILE,
+	MISSING_FILES,
+	UPDATED_FILES,
+	SHORTENED_FILES,
 	RENDER_FINISHED,
 	RENDER_FAILED,
 	SCAN_COMPLETE, # Start screen only.
@@ -26,6 +31,8 @@ enum {
 	DELETE_WORKSPACE, # Editor.
 	DUPLICATION_ERROR,
 	CREATE_FOLDER,
+	FOLDER_RENAME,
+	JUMP_TO_FRAME,
 	}
 
 var _open_popups: Dictionary [int, Control] = {}
@@ -46,6 +53,11 @@ var _popup_uids: Dictionary [int, String] = {
 	WELCOME: "uid://bdxuv18wukbj5",
 	AUTO_CUT: "uid://td87gbksxsi3",
 	FILE_INFO: "uid://w1n0m33ll8vp",
+	FILE_RENAME: "uid://y450a2mtc4om",
+	OVERWRITE_FILE: "uid://dvgpe8pybbyk5",
+	MISSING_FILES: "uid://cay7444it7bqa",
+	UPDATED_FILES: "uid://yym5tccggc88",
+	SHORTENED_FILES: "uid://dwuk3bbyw16cp",
 	RENDER_FINISHED: "uid://b2p7khnqofboy",
 	RENDER_FAILED: "uid://b46mlum2m65tv",
 	SCAN_COMPLETE: "uid://c50l3xlo6cawd",
@@ -54,6 +66,8 @@ var _popup_uids: Dictionary [int, String] = {
 	DELETE_WORKSPACE: "uid://b3n1tmr7pr8m4",
 	DUPLICATION_ERROR: "uid://dvjs0g0dsgqxd",
 	CREATE_FOLDER: "uid://cyfsdm8w12mdq",
+	FOLDER_RENAME: "uid://6f381g3j2gdd",
+	JUMP_TO_FRAME: "uid://cfu334o2qox1a",
 	}
 
 var control: Control = Control.new()

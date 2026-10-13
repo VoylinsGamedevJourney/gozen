@@ -906,30 +906,8 @@ func _check_external_modifications() -> void:
 			load_data(files[file_id])
 			reloaded.emit(files[file_id])
 
-		if missing_files.size() == 1:
-			var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
-					tr("File Missing"),
-					tr("The following file could not be found:") + "\n\n- " + missing_names[0] +\
-					"\n\n" + tr("Do you want to relink it now?"))
-			dialog.get_ok_button().text = tr("Relink")
-			dialog.get_cancel_button().text = tr("Keep as missing")
-			dialog.confirmed.connect(func() -> void:
-					var file: FileData = files[missing_files[0]]
-					var file_dialog: FileDialog = PopupManager.create_file_dialog(
-							tr("Relink file ..."), FileDialog.FILE_MODE_OPEN_FILE)
-					file_dialog.current_dir = file.path.get_base_dir()
-					file_dialog.file_selected.connect(func(path: String) -> void:
-							relink_file(file, path))
-					get_tree().root.add_child.call_deferred(file_dialog)
-					file_dialog.call_deferred("popup_centered"))
-			dialog.call_deferred("popup_centered")
-		else:
-			var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Files Missing"))
-			dialog.dialog_text = tr("The following files could not be found:") + "\n\n- " +\
-					"\n- ".join(missing_names) + "\n\n" +\
-					tr("They will be kept as missing. You can right-click them in the file panel to relink.")
-			get_tree().root.add_child.call_deferred(dialog)
-			dialog.call_deferred("popup_centered")
+		var popup: Control = PopupManager.get_popup(PopupManager.MISSING_FILES)
+		popup.call("set_data", missing_names)
 
 	if not modified_files.is_empty():
 		var file_names: PackedStringArray = []
@@ -941,12 +919,8 @@ func _check_external_modifications() -> void:
 		if not shortened_files.is_empty():
 			_handle_shortened_files(shortened_files, file_names)
 		else:
-			var dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Files Updated"))
-			dialog.dialog_text = tr("The following files were modified externally and have been reloaded:") +\
-					"\n" + "\n- ".join(file_names)
-			get_tree().root.add_child.call_deferred(dialog)
-			dialog.call_deferred("popup_centered")
-
+			var popup: Control = PopupManager.get_popup(PopupManager.UPDATED_FILES)
+			popup.call("set_data", file_names)
 		ClipLogic.updated.emit()
 		EffectsHandler.effects_updated.emit()
 
@@ -960,23 +934,14 @@ func _handle_shortened_files(shortened_files: Array[FileData], modified_names: P
 				if required_duration > file.duration:
 					affected_clips.append(clip)
 
+	var popup: Control
 	if affected_clips.is_empty():
-		var accept_dialog: AcceptDialog = PopupManager.create_accept_dialog(tr("Files Updated"))
-		accept_dialog.dialog_text = tr("The following files were modified externally and have been reloaded:") +\
-				"\n" + "\n- ".join(modified_names)
-		get_tree().root.add_child.call_deferred(accept_dialog)
-		accept_dialog.call_deferred("popup_centered")
+		popup = PopupManager.get_popup(PopupManager.UPDATED_FILES)
+		popup.call("set_data", modified_names)
 		return
 
-	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
-			tr("Files Updated & Shortened"),
-			tr("The following files were modified externally and are now shorter:") + "\n\n- " +\
-					"\n- ".join(modified_names) + "\n\n" +\
-			tr("Some clips on the timeline exceed the new file lengths. Do you want to automatically shorten these clips to fit?"))
-	dialog.get_ok_button().text = tr("Shorten clips")
-	dialog.get_cancel_button().text = tr("Keep intact")
-
-	dialog.confirmed.connect(func() -> void:
+	popup = PopupManager.get_popup(PopupManager.SHORTENED_FILES)
+	(popup.get("confirmed") as Signal).connect(func() -> void:
 			var requests: Array[RequestClipResize] = []
 			for clip: ClipData in affected_clips:
 				var file: FileData = files[clip.file]
@@ -991,9 +956,8 @@ func _handle_shortened_files(shortened_files: Array[FileData], modified_names: P
 					request.from_end = true
 					requests.append(request)
 			if not requests.is_empty():
-				ClipLogic.resize(requests)
-			dialog.queue_free())
-	dialog.call_deferred("popup_centered")
+				ClipLogic.resize(requests))
+	popup.call("set_data", modified_names)
 
 
 func _scale_image_to_fit(image: Image, target_size: Vector2i) -> void:
@@ -1135,15 +1099,8 @@ func relink_file(file: FileData, new_path: String) -> void:
 					affected_clips.append(clip)
 
 		if not affected_clips.is_empty():
-			var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
-					tr("File Shortened"),
-					tr("The relinked file is shorter than the original.") + "\n\n" +\
-					tr("Some clips on the timeline exceed the new file length. Do you want to automatically shorten these clips to fit?")
-			)
-			dialog.get_ok_button().text = tr("Shorten clips")
-			dialog.get_cancel_button().text = tr("Keep intact")
-
-			dialog.confirmed.connect(func() -> void:
+			var popup: Control = PopupManager.get_popup(PopupManager.SHORTENED_FILES)
+			(popup.get("confirmed") as Signal).connect(func() -> void:
 					var requests: Array[RequestClipResize] = []
 					for clip: ClipData in affected_clips:
 						var max_clip_duration: int = int((new_duration - clip.begin) / clip.speed)
@@ -1157,10 +1114,8 @@ func relink_file(file: FileData, new_path: String) -> void:
 							request.from_end = true
 							requests.append(request)
 					if not requests.is_empty():
-						ClipLogic.resize(requests)
-					dialog.queue_free())
-			add_child(dialog)
-			dialog.popup_centered()
+						ClipLogic.resize(requests))
+			popup.call("set_data", file.nickname)
 
 
 func _relink_file(file: FileData, new_path: String) -> void:

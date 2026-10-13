@@ -22,4 +22,4 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _on_close_button_pressed() -> void:
-	PopupManager.close(PopupManager.SAVE_PROFILE_PRESET)
+	PopupManager.close(PopupManager.DUPLICATION_ERROR)

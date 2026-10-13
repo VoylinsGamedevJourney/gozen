@@ -29,4 +29,4 @@ func _on_save_workspace_button_pressed() -> void:
 
 
 func _on_close_button_pressed() -> void:
-	PopupManager.close(PopupManager.SAVE_PROFILE_PRESET)
+	PopupManager.close(PopupManager.NEW_WORKSPACE)

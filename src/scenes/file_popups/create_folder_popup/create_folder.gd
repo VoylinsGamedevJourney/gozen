@@ -34,5 +34,4 @@ func _on_create_button_pressed() -> void:
 
 
 func _on_close_button_pressed() -> void:
-	PopupManager.close(PopupManager.SCAN_COMPLETE)
-
+	PopupManager.close(PopupManager.CREATE_FOLDER)

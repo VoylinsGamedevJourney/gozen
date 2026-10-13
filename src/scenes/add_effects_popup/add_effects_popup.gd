@@ -128,7 +128,7 @@ func _on_effect_clicked(effect_id: String, is_visual: bool) -> void:
 
 
 func _on_close_button_pressed() -> void:
-	PopupManager.close_all()
+	PopupManager.close(PopupManager.ADD_EFFECTS)
 
 
 

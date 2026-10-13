@@ -12,6 +12,7 @@ signal confirmed(new_speed: float)
 func set_data(speed: float) -> void:
 	spinbox_speed.value = speed
 	spinbox_speed.grab_focus()
+	spinbox_speed.get_line_edit().text_submitted.connect(_on_apply_button_pressed.unbind(1))
 
 
 func _input(event: InputEvent) -> void:
@@ -31,4 +32,4 @@ func _on_apply_button_pressed() -> void:
 
 
 func _on_close_button_pressed() -> void:
-	PopupManager.close(PopupManager.SCAN_COMPLETE)
+	PopupManager.close(PopupManager.CHANGE_CLIP_SPEED)

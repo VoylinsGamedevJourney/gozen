@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://6f381g3j2gdd"]
+
+[ext_resource type="Script" uid="uid://300ixt75v4gs" path="res://scenes/file_popups/rename_folder_popup/rename_folder.gd" id="1_dyeqv"]
+
+[node name="RenameFolder" type="PanelContainer" unique_id=183496158 node_paths=PackedStringArray("rename_line_edit")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_dyeqv")
+rename_line_edit = NodePath("Panel/Margin/VBox/RenameFolderLineEdit")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=141925252]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=1817311691]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin" unique_id=911362107]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Margin/VBox" unique_id=1622664140]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Rename folder"
+
+[node name="RenameFolderLineEdit" type="LineEdit" parent="Panel/Margin/VBox" unique_id=542653628]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/VBox" unique_id=1193625731]
+layout_mode = 2
+
+[node name="CancelButton" type="Button" parent="Panel/Margin/VBox/HBox" unique_id=1412406034]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+text = "Cancel"
+
+[node name="SaveButton" type="Button" parent="Panel/Margin/VBox/HBox" unique_id=2132974770]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
+theme_type_variation = &"main_button"
+text = "Confirm"
+
+[connection signal="text_submitted" from="Panel/Margin/VBox/RenameFolderLineEdit" to="." method="_on_rename_folder_line_edit_text_submitted"]
+[connection signal="pressed" from="Panel/Margin/VBox/HBox/CancelButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/VBox/HBox/SaveButton" to="." method="_on_save_button_pressed"]

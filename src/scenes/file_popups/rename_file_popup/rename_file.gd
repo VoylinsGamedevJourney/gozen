@@ -1,4 +1,3 @@
-class_name FileRenameDialog
 extends PanelContainer
 
 @export var rename_line_edit: LineEdit
@@ -7,9 +6,11 @@ extends PanelContainer
 var file: FileData = null
 
 
-func prepare(file_data: FileData) -> void:
+
+func set_data(file_data: FileData) -> void:
 	file = file_data
 	rename_line_edit.text = file.nickname
+	rename_line_edit.grab_focus()
 
 
 func _input(event: InputEvent) -> void:
@@ -26,16 +27,16 @@ func _gui_input(event: InputEvent) -> void:
 			_on_cancel_button_pressed()
 
 
-func _on_cancel_button_pressed() -> void:
-	PopupManager.close_all()
-
-
 func _on_save_button_pressed() -> void:
 	_on_rename_file_line_edit_text_submitted(rename_line_edit.text)
 
 
 func _on_rename_file_line_edit_text_submitted(new_nickname: String) -> void:
-	# Only save if an actual new nickname got given
+	# Only save if an actual new nickname got given.
 	if new_nickname != "" and file.nickname != new_nickname:
 		FileLogic.set_nickname(file, new_nickname)
 	self.queue_free()
+
+
+func _on_cancel_button_pressed() -> void:
+	PopupManager.close(PopupManager.FILE_RENAME)

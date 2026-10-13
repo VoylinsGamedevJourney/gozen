@@ -723,11 +723,10 @@ func create_resolution_hbox(getter: Callable, default_res: Vector2i, setter: Cal
 	var resolution_hbox: HBoxContainer = HBoxContainer.new()
 	var x_label: Label = Label.new()
 	var y_label: Label = Label.new()
-
 	x_label.text = "X:" # NO_TRANSLATE
 	y_label.text = "Y:" # NO_TRANSLATE
-	var current_res: Vector2i = getter.call()
 
+	var current_res: Vector2i = getter.call()
 	resolution_hbox.add_child(x_label)
 	resolution_hbox.add_child(create_spinbox(
 			current_res.x,
@@ -751,7 +750,6 @@ func create_resolution_hbox(getter: Callable, default_res: Vector2i, setter: Cal
 
 func create_marker_setting(index: int) -> HBoxContainer:
 	var default_settings: SettingsData = SettingsData.new()
-
 	var name_function: Callable = func(text: String) -> void:
 			Settings.set_marker_name(index, text)
 
@@ -778,12 +776,10 @@ func create_marker_setting(index: int) -> HBoxContainer:
 func create_shortcut_buttons(action: String) -> HBoxContainer:
 	var events: Array[InputEvent] = Settings.get_events_for_action(action)
 	var hbox: HBoxContainer = HBoxContainer.new()
-
 	hbox.size_flags_horizontal = SIZE_EXPAND_FILL
 
 	for i: int in 2:
 		var button: Button = Button.new()
-
 		button.size_flags_horizontal = SIZE_EXPAND_FILL
 		button.toggle_mode = true
 		button.text = _get_event_text(events[i])

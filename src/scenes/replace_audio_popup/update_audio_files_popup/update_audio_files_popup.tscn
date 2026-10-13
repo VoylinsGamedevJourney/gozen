@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://nmdtjin0sdp5"]
 
-[ext_resource type="Script" uid="uid://d0b561bhlv8jn" path="res://scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.gd" id="1_ao6lr"]
+[ext_resource type="Script" uid="uid://d0b561bhlv8jn" path="res://scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.gd" id="1_y8flh"]
 
 [node name="UpdateAudioFiles" type="PanelContainer" unique_id=830041705]
 anchors_preset = 15
@@ -9,7 +9,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
-script = ExtResource("1_ao6lr")
+script = ExtResource("1_y8flh")
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=1213813620]
 custom_minimum_size = Vector2(900, 0)

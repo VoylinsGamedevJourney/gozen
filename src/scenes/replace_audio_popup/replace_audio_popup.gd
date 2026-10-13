@@ -37,7 +37,7 @@ func _on_wave_zoom_requested(new_duration: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
-		PopupManager.close_all()
+		_on_cancel_button_pressed()
 	elif event.is_action_pressed("timeline_play_pause"):
 		if !file_a_player.playing:
 			_start_playback(file_a_wave.get("playback_position") as float)
@@ -145,7 +145,7 @@ func _on_replace_audio_button_pressed() -> void:
 		var clip: ClipData = ClipLogic.get_data(current_clip_id)
 		if clip:
 			ClipLogic.apply_replace_audio(clip, file_b_id, offset_spinbox.value)
-	PopupManager.close_all()
+	_on_cancel_button_pressed()
 
 
 func _on_play_audio_button_pressed() -> void:
@@ -176,7 +176,7 @@ func _on_audio_file_option_button_item_selected(index: int) -> void:
 
 func _on_cancel_button_pressed() -> void:
 	_stop_playback()
-	PopupManager.close_all()
+	PopupManager.close(PopupManager.REPLACE_AUDIO)
 
 
 func _start_playback(start_time: float) -> void:

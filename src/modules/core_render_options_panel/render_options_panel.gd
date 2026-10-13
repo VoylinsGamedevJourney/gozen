@@ -432,14 +432,9 @@ func _on_start_render_button_pressed(draft: bool = false) -> void:
 	var threads: int = int(threads_spin_box.value)
 
 	if FileAccess.file_exists(export_path) and not is_quick_render:
-		var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(
-				tr("Overwrite file?"),
-				tr("A file already exists at the chosen export path. Do you want to overwrite it?"))
-
-		dialog.confirmed.connect(func() -> void:
+		var popup: Control = PopupManager.get_popup(PopupManager.OVERWRITE_FILE)
+		(popup.get("confirmed") as Signal).connect(func() -> void:
 				await RenderManager.start_render(export_path, profile, threads, start_frame, end_frame, draft))
-		dialog.canceled.connect(func() -> void: dialog.call_deferred("queue_free"))
-		dialog.popup_centered()
 	else:
 		await RenderManager.start_render(export_path, profile, threads, start_frame, end_frame, draft)
 

@@ -99,4 +99,5 @@ func update_file(path: String, status: int) -> void:
 
 
 ## If errors happen, we want the user to be able to see them and not close directly.
-func show_close() -> void: close_button.visible = true
+func show_close() -> void:
+	close_button.visible = true

@@ -205,7 +205,7 @@ func _on_settings_changed(_value: float) -> void:
 
 func _on_cancel_pressed() -> void:
 	_stop_playback()
-	PopupManager.close_all()
+	PopupManager.close(PopupManager.AUTO_CUT)
 
 
 func _on_confirm_pressed() -> void:

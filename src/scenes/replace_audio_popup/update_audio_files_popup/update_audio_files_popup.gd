@@ -34,4 +34,4 @@ func _on_apply_to_file_button_pressed() -> void:
 
 
 func _on_close_button_pressed() -> void:
-	PopupManager.close(PopupManager.SAVE_PROFILE_PRESET)
+	PopupManager.close(PopupManager.APPLY_REPLACE_AUDIO)

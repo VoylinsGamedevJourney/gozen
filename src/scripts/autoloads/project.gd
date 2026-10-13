@@ -248,10 +248,8 @@ func open(new_project_path: String) -> void:
 			missing_files.append(file.nickname)
 
 	if not missing_files.is_empty():
-		var dialog: AcceptDialog = PopupManager.create_accept_dialog("Missing Files")
-		dialog.dialog_text = "The following files are missing and could not be loaded:\n" + "\n\t".join(missing_files)
-		add_child(dialog)
-		dialog.popup_centered()
+		var popup: Control = PopupManager.get_popup(PopupManager.MISSING_FILES)
+		popup.call("set_data", missing_files)
 
 	FileLogic._startup_loading()
 	loading_overlay.update_bar(98)

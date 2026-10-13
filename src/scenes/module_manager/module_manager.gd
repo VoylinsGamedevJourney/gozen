@@ -25,6 +25,12 @@ func _ready() -> void:
 	_populate_tree()
 
 
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		_on_close_pressed()
+		get_viewport().set_input_as_handled()
+
+
 func _populate_tree() -> void:
 	tree.clear()
 	var root: TreeItem = tree.create_item()
@@ -100,9 +106,3 @@ func _on_file_selected(path: String) -> void:
 
 func _on_close_pressed() -> void:
 	PopupManager.close(PopupManager.MODULE_MANAGER)
-
-
-func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel"):
-		_on_close_pressed()
-		get_viewport().set_input_as_handled()

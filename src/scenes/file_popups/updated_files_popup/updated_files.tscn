@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://yym5tccggc88"]
+
+[ext_resource type="Script" uid="uid://cip2t7polmvkx" path="res://scenes/file_popups/updated_files_popup/updated_files.gd" id="1_vqi84"]
+
+[node name="UpdatedFiles" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("vbox")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("1_vqi84")
+vbox = NodePath("Panel/Margin/Panel/Margin/VBox/PanelContainer/ScrollContainer/VBox")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1213813620]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=229609296]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="Panel/Margin" unique_id=399454871]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/Panel" unique_id=251620140]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/Panel/Margin" unique_id=306206666]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=944685048]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Missing files"
+
+[node name="Label" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1821958462]
+layout_mode = 2
+text = "The following files were modified externally and have been reloaded:"
+
+[node name="PanelContainer" type="PanelContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1894195548]
+layout_mode = 2
+theme_type_variation = &"overlay_background"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/Margin/Panel/Margin/VBox/PanelContainer" unique_id=739961005]
+custom_minimum_size = Vector2(0, 40)
+custom_maximum_size = Vector2(-1, 200)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/Panel/Margin/VBox/PanelContainer/ScrollContainer" unique_id=141869444]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox" unique_id=2147131319]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Close"
+
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/CloseButton" to="." method="_on_close_button_pressed"]

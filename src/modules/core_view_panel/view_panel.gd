@@ -54,28 +54,8 @@ func _on_label_gui_input(event: InputEvent) -> void:
 
 func _on_label_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 	if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		_show_jump_to_frame_dialog()
-
-
-func _show_jump_to_frame_dialog() -> void:
-	var dialog: ConfirmationDialog = PopupManager.create_confirmation_dialog(tr("Jump to frame"), "")
-	var spinbox: SpinBox = SpinBox.new()
-	spinbox.min_value = 0
-	spinbox.max_value = Project.data.timeline_end
-	spinbox.value = EditorCore.frame_nr
-	spinbox.allow_greater = true
-	spinbox.alignment = HORIZONTAL_ALIGNMENT_CENTER
-	spinbox.get_line_edit().focus_next = get_path_to(dialog.get_ok_button())
-
-	spinbox.get_line_edit().text_submitted.connect(func(value: String) -> void:
-			EditorCore.set_frame(int(value))
-			dialog.queue_free())
-	dialog.focus_exited.connect(dialog.queue_free)
-	dialog.confirmed.connect(func() -> void: EditorCore.set_frame(int(spinbox.value)))
-
-	dialog.add_child(spinbox)
-	dialog.popup_centered(Vector2i(200, 80))
-	spinbox.get_line_edit().grab_focus()
+		var popup: Control = PopupManager.get_popup(PopupManager.JUMP_TO_FRAME)
+		popup.call("set_data", EditorCore.frame_nr, Project.data.timeline_end)
 
 
 func _on_play_changed(value: bool) -> void:
