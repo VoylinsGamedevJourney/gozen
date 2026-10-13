@@ -97,7 +97,7 @@ func _gui_input(event: InputEvent) -> void:
 
 func dismiss() -> void:
 	if Project.is_loaded:
-		self.queue_free()
+		PopupManager.close(PopupManager.STARTUP_SCREEN)
 	else:
 		_on_create_quick_h_project_button_pressed()
 
@@ -385,7 +385,7 @@ func open_project(path: String) -> void:
 			Project._cleanup()
 			await get_tree().process_frame
 			await Project.open(path)
-			self.queue_free())
+			PopupManager.close(PopupManager.STARTUP_SCREEN))
 
 
 func _on_create_new_project_button_pressed() -> void:
@@ -417,7 +417,7 @@ func _on_create_new_project_button_pressed() -> void:
 			Project._cleanup()
 			await get_tree().process_frame
 			Project.new_project(request)
-			self.queue_free())
+			PopupManager.close(PopupManager.STARTUP_SCREEN))
 
 
 func _on_create_quick_h_project_button_pressed() -> void: ## Horizontal.
@@ -429,7 +429,7 @@ func _on_create_quick_h_project_button_pressed() -> void: ## Horizontal.
 			Project._cleanup()
 			await get_tree().process_frame
 			Project.new_project(request)
-			self.queue_free())
+			PopupManager.close(PopupManager.STARTUP_SCREEN))
 
 
 func _on_create_quick_v_project_button_pressed() -> void: ## Vertical.
@@ -441,7 +441,7 @@ func _on_create_quick_v_project_button_pressed() -> void: ## Vertical.
 			Project._cleanup()
 			await get_tree().process_frame
 			Project.new_project(request)
-			self.queue_free())
+			PopupManager.close(PopupManager.STARTUP_SCREEN))
 
 
 func _on_project_path_button_pressed() -> void:

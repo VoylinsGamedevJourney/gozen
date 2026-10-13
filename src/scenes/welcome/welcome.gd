@@ -102,7 +102,7 @@ func _on_show_tab(id: int) -> void:
 func _on_close_button_pressed() -> void:
 	Settings.set_is_first_time(false)
 	Settings.save()
-	self.queue_free()
+	PopupManager.close(PopupManager.WELCOME_SCREEN)
 
 
 func _stop_listening() -> void:
