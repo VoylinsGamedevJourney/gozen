@@ -2,7 +2,7 @@ extends PanelContainer
 # TODO: Enable the option to change Audio Bit rate (will need lots of work).
 
 
-@export var button_save_render_profile: Button
+@export var button_save_render_profile: TextureButton
 @export var button_set_default_profile: Button
 @export var option_button_render_profiles: OptionButton
 
@@ -118,6 +118,9 @@ func _ready() -> void:
 	option_button_render_profiles.select(default_index)
 	_on_render_profile_option_button_item_selected(default_index)
 	button_save_render_profile.visible = false
+
+	region_start_spinbox.visible = Project.data.use_render_region
+	region_end_spinbox.visible = Project.data.use_render_region
 	_on_project_ready()
 
 
