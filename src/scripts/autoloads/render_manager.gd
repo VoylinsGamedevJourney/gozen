@@ -717,11 +717,10 @@ func _convert_rgba_to_yuv(input_texture_rid: RID, res: Vector2i) -> PackedByteAr
 	uniform_params.binding = 2
 	uniform_params.add_id(yuv_params_buffer)
 
-	var uniform_set: RID = rendering_device.uniform_set_create([uniform_input, uniform_output, uniform_params], yuv_shader, 0)
+	var yuv_set: RID = UniformSetCacheRD.get_cache(yuv_shader, 0, [uniform_input, uniform_output, uniform_params])
 	var compute_list: int = rendering_device.compute_list_begin()
 	rendering_device.compute_list_bind_compute_pipeline(compute_list, yuv_pipeline)
-	rendering_device.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
+	rendering_device.compute_list_bind_uniform_set(compute_list, yuv_set, 0)
 	rendering_device.compute_list_dispatch(compute_list, ceili(res.x / 8.0), ceili(res.y / 8.0), 1)
 	rendering_device.compute_list_end()
-	rendering_device.free_rid(uniform_set)
 	return rendering_device.texture_get_data(yuv_output_tex, 0)

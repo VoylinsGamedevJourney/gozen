@@ -71,8 +71,8 @@ var pong_texture: RID
 var display_texture: Texture2DRD
 var default_sampler: RID
 
-var effects_cache: Dictionary[String, EffectCache] = {} # { shader_path : shader cache }
-var effect_buffers: Dictionary[int, Array] = {} # { effect_instance_id : [RID, RID, ...] }
+var effects_cache: Dictionary[String, EffectCache] = {} ## { shader_path : shader cache }
+var effect_buffers: Dictionary[int, Array] = {} ## { effect_instance_id : [RID, RID, ...] }
 
 var resolution: Vector2i
 var initialized: bool = false
@@ -124,9 +124,10 @@ func _init_start(p_resolution: Vector2i) -> void:
 
 
 func _init_ping_pong() -> void:
-	if ping_texture.is_valid(): return # Already created and valid for this resolution
+	if ping_texture.is_valid():
+		return # Already created and valid for this resolution.
 
-	# Create RGBA8 format
+	# Create RGBA8 format.
 	var format_rgba: RDTextureFormat = RDTextureFormat.new()
 	format_rgba.format = device.DATA_FORMAT_R8G8B8A8_UNORM
 	format_rgba.width = resolution.x
@@ -134,7 +135,7 @@ func _init_ping_pong() -> void:
 	format_rgba.usage_bits = USAGE_BITS_RGBA
 	format_rgba.texture_type = device.TEXTURE_TYPE_2D
 
-	# Create textures
+	# Create textures.
 	ping_texture = device.texture_create(format_rgba, RDTextureView.new(),[])
 	pong_texture = device.texture_create(format_rgba, RDTextureView.new(),[])
 	display_texture.texture_rd_rid = ping_texture
@@ -232,14 +233,13 @@ func process_video_frame(video: Video, effects: Array[Effect], transition_left: 
 		_create_sampler_uniform(a_texture, 3),
 		_create_image_uniform(ping_texture, 4),
 		_create_buffer_uniform(yuv_params, 5)]
-	var yuv_set: RID = device.uniform_set_create(yuv_uniforms, yuv_shader, 0)
+	var yuv_set: RID = UniformSetCacheRD.get_cache(yuv_shader, 0, yuv_uniforms)
 
 	device.compute_list_bind_uniform_set(compute_list, yuv_set, 0)
 	device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
 	device.compute_list_add_barrier(compute_list)
 
 	_process_frame(compute_list, effects, transition_left, fade_in, transition_right, fade_out, frame_nr)
-	device.free_rid(yuv_set)
 
 
 func process_image_frame(effects: Array[Effect], transition_left: Effect, fade_in: float, transition_right: Effect, fade_out: float, frame_nr: int) -> void:
@@ -279,13 +279,12 @@ func process_texture_frame(texture_rid: RID, effects: Array[Effect], transition_
 			_create_sampler_uniform(pong_texture, 0),
 			_create_image_uniform(ping_texture, 1),
 			_create_buffer_uniform(copy_buffer, 2)]
-	var copy_set: RID = device.uniform_set_create(copy_uniforms, fade_shader, 0)
+	var copy_set: RID = UniformSetCacheRD.get_cache(fade_shader, 0, copy_uniforms)
 	device.compute_list_bind_uniform_set(compute_list, copy_set, 0)
 	device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
 	device.compute_list_add_barrier(compute_list)
 
 	_process_frame(compute_list, effects, transition_left, fade_in, transition_right, fade_out, frame_nr)
-	device.free_rid(copy_set)
 
 
 func cleanup() -> void:
@@ -375,7 +374,6 @@ func _update_effect_buffers(effects: Array[Effect], current_frame: int) -> void:
 
 
 func _process_frame(compute_list: int, effects: Array[Effect], transition_left: Effect, fade_in: float, transition_right: Effect, fade_out: float, _current_frame: int) -> void:
-	var sets_to_free: Array[RID] = []
 	for effect: Effect in effects:
 		if not effect.is_enabled: continue
 
@@ -385,12 +383,12 @@ func _process_frame(compute_list: int, effects: Array[Effect], transition_left: 
 		for pass_index: int in effect.shader_passes:
 			device.compute_list_bind_compute_pipeline(compute_list, cache.pipeline)
 
+			var buffer_rid: RID = effect_buffers[effect.get_instance_id()][pass_index] as RID
 			var effect_uniforms: Array[RDUniform] = [
 				_create_sampler_uniform(ping_texture, 0),
 				_create_image_uniform(pong_texture, 1),
-				_create_buffer_uniform(effect_buffers[effect.get_instance_id()][pass_index] as RID, 2)]
-			var effect_set: RID = device.uniform_set_create(effect_uniforms, cache.shader, 0)
-			sets_to_free.append(effect_set)
+				_create_buffer_uniform(buffer_rid, 2)]
+			var effect_set: RID = UniformSetCacheRD.get_cache(cache.shader, 0, effect_uniforms)
 
 			device.compute_list_bind_uniform_set(compute_list, effect_set, 0)
 			device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
@@ -401,15 +399,13 @@ func _process_frame(compute_list: int, effects: Array[Effect], transition_left: 
 			pong_texture = temp_texture
 
 	if fade_in < 1.0 and transition_left:
-		_apply_transition(compute_list, transition_left, fade_in, fade_in_buffer, sets_to_free)
+		_apply_transition(compute_list, transition_left, fade_in, fade_in_buffer)
 
 	if fade_out < 1.0 and transition_right:
-		_apply_transition(compute_list, transition_right, fade_out, fade_out_buffer, sets_to_free)
+		_apply_transition(compute_list, transition_right, fade_out, fade_out_buffer)
 
 	device.compute_list_end()
 	display_texture.texture_rd_rid = ping_texture
-	for rid: RID in sets_to_free:
-		device.free_rid(rid)
 
 
 func _update_transition_buffers(transition_left: Effect, fade_in: float, transition_right: Effect, fade_out: float) -> void:
@@ -431,20 +427,20 @@ func _update_fade_buffer(fade: float, transition: Effect, buffer: RID) -> void:
 		printerr("VisualCompositor: Updating device 'fade_buffer' failed with '%s'!" % err)
 
 
-func _apply_transition(compute_list: int, transition: Effect, _progress: float, progress_buffer: RID, sets_to_free: Array[RID]) -> void:
+func _apply_transition(compute_list: int, transition: Effect, _progress: float, progress_buffer: RID) -> void:
 	var cache: EffectCache = _get_effect_pipeline(transition.shader_path, transition)
 	if not cache: return
 
 	for pass_index: int in transition.shader_passes:
 		device.compute_list_bind_compute_pipeline(compute_list, cache.pipeline)
 
+		var buffer_rid: RID = effect_buffers[transition.get_instance_id()][pass_index] as RID
 		var effect_uniforms: Array[RDUniform] = [
 			_create_sampler_uniform(ping_texture, 0),
 			_create_image_uniform(pong_texture, 1),
-			_create_buffer_uniform(effect_buffers[transition.get_instance_id()][pass_index] as RID, 2),
+			_create_buffer_uniform(buffer_rid, 2),
 			_create_buffer_uniform(progress_buffer, 3)]
-		var effect_set: RID = device.uniform_set_create(effect_uniforms, cache.shader, 0)
-		sets_to_free.append(effect_set)
+		var effect_set: RID = UniformSetCacheRD.get_cache(cache.shader, 0, effect_uniforms)
 
 		device.compute_list_bind_uniform_set(compute_list, effect_set, 0)
 		device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
