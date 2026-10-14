@@ -1,0 +1,7 @@
+[gd_resource type="ImageTexture" script_class="Icon" format=3 uid="uid://f0pq06eq80kq"]
+
+[ext_resource type="Script" uid="uid://c3xb5cvay2wbf" path="res://scripts/classes/icon.gd" id="1_6gqrh"]
+
+[resource]
+script = ExtResource("1_6gqrh")
+metadata/_custom_type_script = "uid://c3xb5cvay2wbf"

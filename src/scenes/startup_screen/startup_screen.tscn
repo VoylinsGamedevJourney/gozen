@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://43v154g7ibyl" path="res://assets/icons/video_guide.tres" id="12_4kk3e"]
 [ext_resource type="Texture2D" uid="uid://kll463gy1ppm" path="res://assets/icons/support.tres" id="13_pcyft"]
 [ext_resource type="Texture2D" uid="uid://ca5yfytbff5wr" path="res://assets/icons/add.tres" id="14_80ee3"]
+[ext_resource type="Texture2D" uid="uid://68jlumpok6fc" path="res://assets/icons/save.tres" id="15_j711k"]
 [ext_resource type="Texture2D" uid="uid://cm8roaxbwvyv8" path="res://assets/icons/delete.tres" id="15_pcyft"]
 [ext_resource type="Texture2D" uid="uid://17gcpvhkgkjl" path="res://assets/icons/open.tres" id="16_pcyft"]
 
@@ -135,11 +136,12 @@ vertical_alignment = 2
 [node name="StartupTabContainer" type="TabContainer" parent="Control/Panel/VBox" unique_id=611256809]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 0
+current_tab = 1
 tabs_visible = false
 
 [node name="MainMenu" type="HBoxContainer" parent="Control/Panel/VBox/StartupTabContainer" unique_id=703377150]
 auto_translate_mode = 2
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -316,7 +318,6 @@ expand_icon = true
 
 [node name="NewProject" type="VBoxContainer" parent="Control/Panel/VBox/StartupTabContainer" unique_id=1384044314]
 auto_translate_mode = 2
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
@@ -334,7 +335,7 @@ text = "New project"
 custom_minimum_size = Vector2(24, 0)
 layout_mode = 2
 mouse_default_cursor_shape = 2
-texture_normal = ExtResource("14_80ee3")
+texture_normal = ExtResource("15_j711k")
 ignore_texture_size = true
 stretch_mode = 5
 
