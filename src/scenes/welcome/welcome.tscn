@@ -170,7 +170,7 @@ alignment = 0
 layout_mode = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(10, 0)
-text = "Extra's"
+text = "Extras"
 alignment = 0
 
 [node name="Spacer" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/Sidebar" unique_id=1973584282]
@@ -462,7 +462,7 @@ autowrap_mode = 3
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Some people do prefer to have their video's split into 2 clips, separating the visuals from the audio. This is possible by holding ctrl/shift when dragging in video files to the timeline."
+text = "Some people do prefer to have their videos split into 2 clips, separating the visuals from the audio. This is possible by holding CTRL/SHIFT when dragging in video files to the timeline."
 autowrap_mode = 3
 
 [node name="Spacer1" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox" unique_id=1850579927]
@@ -1173,7 +1173,7 @@ theme_override_constants/separation = 30
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Modules change the editor and add functionality to the editor, but there's another type of modules refered to as pck files. These are Godot scene's which can be used directly in the timeline for visuals. For the creation of these files a bit of development is needed inside of custom Godot project."
+text = "Modules change the editor and add functionality to the editor, but there's another type of modules refered to as pck files. These are Godot scenes which can be used directly in the timeline for visuals. For the creation of these files a bit of development is needed inside of custom Godot project."
 autowrap_mode = 3
 
 [node name="PCKModuleRepoButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer" unique_id=1088044426]
@@ -1218,7 +1218,7 @@ metadata/_tab_index = 6
 [node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox" unique_id=114046512]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "Extra's"
+text = "Extras"
 
 [node name="HSeparator" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ExtrasVBox" unique_id=1475001746]
 layout_mode = 2
