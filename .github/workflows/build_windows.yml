@@ -212,7 +212,9 @@ jobs:
 
       - name: Bundle Windows
         working-directory: ${{ env.PATH_EXPORT }}
-        run: cp ../../LICENSE .
+        run: |
+          rm -f *.tmp *template_debug*
+          cp ../../LICENSE .
 
       - uses: actions/upload-artifact@v6
         with:
@@ -291,7 +293,9 @@ jobs:
 
       - name: Bundle Windows
         working-directory: ${{ env.PATH_EXPORT }}
-        run: cp ../../LICENSE .
+        run: |
+          rm -f *.tmp *template_debug*
+          cp ../../LICENSE .
 
       - uses: actions/upload-artifact@v6
         with:
