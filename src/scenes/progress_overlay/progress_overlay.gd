@@ -71,7 +71,7 @@ func _update_estimate() -> void:
 		if remaining == -2.0:
 			return
 		elif remaining == 0.0:
-			estimated_time_label.text = tr("Estimated time") + " - 99:60:60"
+			estimated_time_label.text = tr("Estimated time") + " - --:--:--"
 			return
 
 		var remaining_str: String = Format.time_str(remaining, true)

@@ -13,9 +13,26 @@
 script = ExtResource("1_panel")
 scene = ExtResource("3_scene")
 
+[sub_resource type="Resource" id="Resource_uveyq"]
+script = ExtResource("8_1r3k1")
+id = "marker_prefix"
+name = "Prefix"
+description = "The prefix you want markers to have in the markers panel."
+default_value = ""
+metadata/_custom_type_script = "uid://dhlfblonhwake"
+
+[sub_resource type="Resource" id="Resource_n6cfw"]
+script = ExtResource("8_1r3k1")
+id = "marker_suffix"
+name = "Suffix"
+description = "The suffix you want markers to have in the markers panel."
+default_value = " "
+metadata/_custom_type_script = "uid://dhlfblonhwake"
+
 [resource]
 script = ExtResource("2_mod")
 name = "Core Markers Panel"
 description = "The default markers panel for GoZen."
 author = "Voylin"
+settings = Array[ExtResource("8_1r3k1")]([SubResource("Resource_uveyq"), SubResource("Resource_n6cfw")])
 custom_panels = Array[ExtResource("1_panel")]([SubResource("Resource_panel")])

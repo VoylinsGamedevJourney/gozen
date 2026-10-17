@@ -9,7 +9,7 @@ size_flags_vertical = 3
 theme_type_variation = &"box"
 script = ExtResource("1_336cf")
 markers_text_edit = NodePath("Margin/Panel/Margin/VBox/MarkersTextEdit")
-markers_option_button = NodePath("Margin/Panel/Margin/VBox/HBox/MarkersOptionButton")
+markers_option_button = NodePath("Margin/Panel/Margin/VBox/TitleHBox/MarkersOptionButton")
 
 [node name="Margin" type="MarginContainer" parent="." unique_id=433927477]
 layout_mode = 2
@@ -23,20 +23,20 @@ layout_mode = 2
 [node name="VBox" type="VBoxContainer" parent="Margin/Panel/Margin" unique_id=1341113964]
 layout_mode = 2
 
-[node name="HBox" type="HBoxContainer" parent="Margin/Panel/Margin/VBox" unique_id=259597298]
+[node name="TitleHBox" type="HBoxContainer" parent="Margin/Panel/Margin/VBox" unique_id=259597298]
 layout_mode = 2
 
-[node name="TitleLabel" type="Label" parent="Margin/Panel/Margin/VBox/HBox" unique_id=617936011]
+[node name="TitleLabel" type="Label" parent="Margin/Panel/Margin/VBox/TitleHBox" unique_id=617936011]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"title_label"
 text = "Markers"
 
-[node name="MarkersOptionButton" type="OptionButton" parent="Margin/Panel/Margin/VBox/HBox" unique_id=1945821773]
+[node name="MarkersOptionButton" type="OptionButton" parent="Margin/Panel/Margin/VBox/TitleHBox" unique_id=1945821773]
 layout_mode = 2
 flat = true
 
-[node name="CopyMarkersButton" type="TextureButton" parent="Margin/Panel/Margin/VBox/HBox" unique_id=723875809]
+[node name="CopyMarkersButton" type="TextureButton" parent="Margin/Panel/Margin/VBox/TitleHBox" unique_id=723875809]
 custom_minimum_size = Vector2(17, 0)
 layout_mode = 2
 mouse_default_cursor_shape = 2
@@ -52,5 +52,5 @@ editable = false
 scroll_smooth = true
 scroll_fit_content_width = true
 
-[connection signal="item_selected" from="Margin/Panel/Margin/VBox/HBox/MarkersOptionButton" to="." method="_on_markers_button_item_selected"]
-[connection signal="pressed" from="Margin/Panel/Margin/VBox/HBox/CopyMarkersButton" to="." method="_on_copy_markers_button_pressed"]
+[connection signal="item_selected" from="Margin/Panel/Margin/VBox/TitleHBox/MarkersOptionButton" to="." method="_on_markers_button_item_selected"]
+[connection signal="pressed" from="Margin/Panel/Margin/VBox/TitleHBox/CopyMarkersButton" to="." method="_on_copy_markers_button_pressed"]

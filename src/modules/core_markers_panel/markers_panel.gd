@@ -29,10 +29,15 @@ func _on_markers_updated() -> void:
 	markers_text.fill("")
 	markers_option_button.clear()
 
+	var total_time: float = Project.data.timeline_end / Project.data.framerate
+	var has_hours: bool = total_time >= 3600
+
 	# Updating the options button.
 	var marker_names: Array[String] = Settings.get_marker_names()
 	var marker_colors: Array[Color] = Settings.get_marker_colors()
 	var icon_image: Image = Image.create(16, 16, false, Image.FORMAT_RGB8)
+	var prefix: String = Settings.get_module_setting("core_markers_panel", "marker_prefix", "")
+	var suffix: String = Settings.get_module_setting("core_markers_panel", "marker_suffix", "")
 	for id: int in marker_names.size():
 		var icon: Image = icon_image.duplicate()
 		icon.fill(marker_colors[id])
@@ -42,7 +47,10 @@ func _on_markers_updated() -> void:
 	var selected: int = markers_option_button.selected
 	for marker: MarkerData in MarkerLogic.markers:
 		var time: String = Format.time_str_from_frame(marker.frame_nr, Project.data.framerate, true)
-		markers_text[marker.type] += "%s %s\n" % [time, marker.text]
+		if !has_hours:
+			time = time.trim_prefix("00:")
+
+		markers_text[marker.type] += "%s%s%s%s\n" % [prefix, time, suffix, marker.text]
 	markers_option_button.selected = max(0, selected)
 	_on_markers_button_item_selected(markers_option_button.selected)
 

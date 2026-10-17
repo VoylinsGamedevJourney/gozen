@@ -87,6 +87,7 @@ custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 8
+theme_type_variation = &"main_button"
 text = "Close"
 
 [connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonHBox/OpenVideoButton" to="." method="_on_open_video_button_pressed"]
