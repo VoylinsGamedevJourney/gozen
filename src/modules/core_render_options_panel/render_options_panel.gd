@@ -124,7 +124,8 @@ func _ready() -> void:
 	_on_project_ready()
 
 
-func get_user_profiles_path() -> String: return Utils.get_config_dir() + "profiles/render/"
+func get_user_profiles_path() -> String:
+	return Utils.get_config_dir() + "profiles/render/"
 
 
 func _on_project_ready() -> void:

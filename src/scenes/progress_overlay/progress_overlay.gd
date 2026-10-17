@@ -17,6 +17,7 @@ var start_time: int = 0
 
 var _tween: Tween
 var _target_value: float = 0.0
+var _progress_history: Array[Vector2] = []
 
 
 
@@ -66,11 +67,15 @@ func increment_bar(value: float) -> void:
 
 func _update_estimate() -> void:
 	if _target_value > 0:
-		var time_elapsed: float = (Time.get_ticks_msec() - start_time) / 1000.0
-		var rate: float = time_elapsed / _target_value
-		var remaining_sec: float = rate * (100.0 - _target_value)
-		var remaining: String = Format.time_str(remaining_sec, true)
-		estimated_time_label.text = "Estimated time - %s" % remaining
+		var remaining: float = Approximator.calculate_remaining(_progress_history, _target_value)
+		if remaining == -2.0:
+			return
+		elif remaining == 0.0:
+			estimated_time_label.text = tr("Estimated time") + " - 99:60:60"
+			return
+
+		var remaining_str: String = Format.time_str(remaining, true)
+		estimated_time_label.text = tr("Estimated time") + " - %s" % remaining_str
 
 
 func set_state_file_loading(loading_size: int) -> void:
