@@ -80,8 +80,10 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("open_project", false, true):
+		get_viewport().set_input_as_handled()
 		_on_open_project_button_pressed()
 	elif event.is_action_pressed("ui_cancel", false, true):
+		get_viewport().set_input_as_handled()
 		if tab_container.current_tab != 0 and not Project.is_loaded:
 			tab_container.current_tab = 0
 		else:

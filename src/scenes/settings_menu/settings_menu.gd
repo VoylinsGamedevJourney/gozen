@@ -619,7 +619,6 @@ func _option_button_item_selected(id: int, option_button: OptionButton, callable
 
 func create_line_edit(current_value: String, reset_value: String, callable: Callable, tooltip: String = "") -> Control:
 	var line_edit: LineEdit = LineEdit.new()
-	line_edit.flat = true
 	line_edit.text = current_value
 	line_edit.tooltip_text = tooltip
 	line_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
