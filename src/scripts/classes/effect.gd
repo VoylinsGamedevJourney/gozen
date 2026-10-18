@@ -10,6 +10,8 @@ extends Resource
 @export var params: Array[EffectParam]
 @export var is_enabled: bool = true
 
+@export var display_default_keyframe_bar: bool = true ## For effects which have their own implementation.
+
 @export_category("Visual Effects")
 @export var shader_path: String
 @export var shader_passes: int = 1

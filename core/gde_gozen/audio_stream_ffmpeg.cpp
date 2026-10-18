@@ -1,5 +1,6 @@
 #include "audio_stream_ffmpeg.hpp"
 
+
 int AudioStreamFFmpeg::open(const String& path, int stream_index) {
 	if (mutex) {
 		close();
@@ -90,11 +91,8 @@ int AudioStreamFFmpeg::open(const String& path, int stream_index) {
 
 	// Discard all non-audio streams.
 	for (int i = 0; i < av_format_ctx->nb_streams; i++) {
-		AVCodecParameters* av_codec_params = av_format_ctx->streams[i]->codecpar;
-
-		if (!avcodec_find_decoder(av_codec_params->codec_id)) {
-			if (i != stream_index)
-				av_format_ctx->streams[i]->discard = AVDISCARD_ALL;
+		if (i != av_stream->index) {
+			av_format_ctx->streams[i]->discard = AVDISCARD_ALL;
 		}
 	}
 

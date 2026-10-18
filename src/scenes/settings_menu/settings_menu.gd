@@ -312,8 +312,10 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 		create_header(tr("Cache Management")), Control.new(),
 		create_label(tr("Waveforms")),
 		create_cache_clear_row(FileLogic.wave_folder, _clear_waveforms),
-		create_label(tr("Thumbnails")),
-		create_cache_clear_row(Thumbnailer.folder_files, _clear_thumbnails),
+		create_label(tr("File thumbnails")),
+		create_cache_clear_row(Thumbnailer.folder_files, _clear_file_thumbnails),
+		create_label(tr("Project thumbnails")),
+		create_cache_clear_row(Thumbnailer.folder_projects, _clear_project_thumbnails),
 		create_label(tr("Proxies")),
 		create_cache_clear_row(Settings.get_proxies_path(), _clear_proxies)
 	]
@@ -857,10 +859,14 @@ func _clear_waveforms() -> void:
 	NotificationManager.info(tr("Waveforms cache cleared."))
 
 
-func _clear_thumbnails() -> void:
+func _clear_file_thumbnails() -> void:
 	_delete_dir_contents(Thumbnailer.folder_files)
+	NotificationManager.info(tr("File thumbnails cache cleared."))
+
+
+func _clear_project_thumbnails() -> void:
 	_delete_dir_contents(Thumbnailer.folder_projects)
-	NotificationManager.info(tr("Thumbnails cache cleared."))
+	NotificationManager.info(tr("Project thumbnails cache cleared."))
 
 
 func _clear_proxies() -> void:

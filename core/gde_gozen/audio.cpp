@@ -279,10 +279,8 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 
 	// Discard all non-audio streams.
 	for (int i = 0; i < format_ctx->nb_streams; i++) {
-		AVCodecParameters* av_codec_params = format_ctx->streams[i]->codecpar;
-		if (!avcodec_find_decoder(av_codec_params->codec_id)) {
-			if (i != stream_index)
-				format_ctx->streams[i]->discard = AVDISCARD_ALL;
+		if (i != stream_index) {
+			format_ctx->streams[i]->discard = AVDISCARD_ALL;
 		}
 	}
 
@@ -646,10 +644,8 @@ Error Audio::open(String file_path, int stream_index) {
 
 	// Getting rid of all non-audio streams.
 	for (int i = 0; i < format_ctx_inst->nb_streams; i++) {
-		AVCodecParameters* av_codec_params = format_ctx_inst->streams[i]->codecpar;
-		if (!avcodec_find_decoder(av_codec_params->codec_id)) {
-			if (i != stream_index)
-				format_ctx_inst->streams[i]->discard = AVDISCARD_ALL;
+		if (i != stream_index) {
+			format_ctx_inst->streams[i]->discard = AVDISCARD_ALL;
 		}
 	}
 

@@ -713,12 +713,13 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 					custom_scene.call("setup", effect, active_clip, is_visual)
 				content_vbox.add_child(custom_scene)
 
-	if keyframes_found:
+	if keyframes_found and effect.display_default_keyframe_bar:
 		var track_hbox: HBoxContainer = HBoxContainer.new()
-		track_hbox.name = "TrackHBox"
 		var track_scroll: ScrollContainer = ScrollContainer.new()
-		track_scroll.name = "TrackScroll"
 		var track: KeyframeTrack = KeyframeTrack.new()
+
+		track_hbox.name = "TrackHBox"
+		track_scroll.name = "TrackScroll"
 
 		var prev_button: TextureButton = TextureButton.new()
 		prev_button.texture_normal = load(Library.ICON_PREV_KEYFRAME)
@@ -1380,7 +1381,7 @@ func _update_ui_values_for_container(effect: Effect, content_vbox: VBoxContainer
 					keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
 			keyframes_found = true
 
-	if keyframes_found:
+	if keyframes_found and effect.display_default_keyframe_bar:
 		var track_hbox: HBoxContainer = content_vbox.get_node_or_null("TrackHBox")
 		if track_hbox:
 			var track_scroll: ScrollContainer = track_hbox.get_node_or_null("TrackScroll")

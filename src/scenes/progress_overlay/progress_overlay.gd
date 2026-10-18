@@ -68,14 +68,10 @@ func increment_bar(value: float) -> void:
 func _update_estimate() -> void:
 	if _target_value > 0:
 		var remaining: float = Approximator.calculate_remaining(_progress_history, _target_value)
-		if remaining == -2.0:
-			return
-		elif remaining == 0.0:
+		if remaining == 0.0:
 			estimated_time_label.text = tr("Estimated time") + " - --:--:--"
-			return
-
-		var remaining_str: String = Format.time_str(remaining, true)
-		estimated_time_label.text = tr("Estimated time") + " - %s" % remaining_str
+		elif remaining != -2.0:
+			estimated_time_label.text = tr("Estimated time") + " - %s" % Format.time_str(remaining, true)
 
 
 func set_state_file_loading(loading_size: int) -> void:
