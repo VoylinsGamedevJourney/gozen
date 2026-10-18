@@ -68,7 +68,7 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 		return video.close()
 
 	# RGBA to YUV stuff.
-	var rendering_device: RenderingDevice = RenderingServer.get_rendering_device()
+	var rendering_device: RenderingDevice = RenderingServer.create_local_rendering_device()
 	var shader_file: RDShaderFile = load("uid://de0r3l6ipvr0y")
 	var rd_yuv_shader: RID = rendering_device.shader_create_from_spirv(shader_file.get_spirv())
 	var rd_yuv_pipeline: RID = rendering_device.compute_pipeline_create(rd_yuv_shader)
@@ -157,6 +157,7 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 	rendering_device.free_rid(yuv_output_tex)
 	rendering_device.free_rid(yuv_sampler)
 	rendering_device.free_rid(yuv_params_buffer)
+	rendering_device.free()
 	FileLogic.set_proxy_path(file, output_path)
 
 
