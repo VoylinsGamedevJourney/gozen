@@ -9,18 +9,22 @@ func _draw() -> void:
 func _draw_split() -> void:
 	var timeline_panel: Control = get_parent()
 	var mouse_pos: Vector2 = get_local_mouse_position()
+	var frame: int = timeline_panel.call("get_frame_from_mouse", mouse_pos)
 
 	if Input.is_key_pressed(KEY_CTRL):
-		var frame: int = timeline_panel.call("get_frame_from_mouse", mouse_pos)
 		var was_snap: bool = Timeline.snap_enabled
 		Timeline.snap_enabled = true
 		var snap_delta: int = Timeline.find_snap_offset([frame], maxi(1, int(15.0 / Timeline.zoom)))
 		Timeline.snap_enabled = was_snap
-		mouse_pos.x = (frame + snap_delta) * Timeline.zoom
+		frame += snap_delta
+	mouse_pos.x = frame * Timeline.zoom
 
 	var fade_pos: float = mouse_pos.x + 1
 	var split_color: Color = get_theme_color("split", "Timeline")
+	var frame_rect_color: Color = split_color
+	frame_rect_color.a *= 0.1
 
+	draw_rect(Rect2(mouse_pos.x, 0, Timeline.zoom, size.y), frame_rect_color)
 	draw_line(Vector2(mouse_pos.x, 0), Vector2(mouse_pos.x, size.y), split_color)
 	draw_line(Vector2(fade_pos, 0), Vector2(fade_pos, size.y), get_theme_color("split_fade", "Timeline"))
 
@@ -28,9 +32,7 @@ func _draw_split() -> void:
 	if !target:
 		return
 
-	var frame_pos: int = timeline_panel.call("get_frame_from_mouse", mouse_pos)
 	var clips_to_split: Array[ClipData] = []
-
 	if target in ClipLogic.active_clips:
 		clips_to_split = ClipLogic.active_clips
 	else:
@@ -40,7 +42,7 @@ func _draw_split() -> void:
 		if TrackLogic.tracks[clip.track].is_locked:
 			continue
 
-		if clip.start < frame_pos and clip.end > frame_pos:
+		if clip.start < frame and clip.end > frame:
 			var start: float = clip.track * Timeline.track_total_size
 			var end: float = start + Timeline.track_height
 			var highlight_color: Color = Color(split_color.r, split_color.g, split_color.b, 1.0)

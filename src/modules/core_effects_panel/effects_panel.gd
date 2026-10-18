@@ -1626,7 +1626,7 @@ func _jump_next_keyframe_all(effect: Effect) -> void:
 						target = mini(target, key)
 
 		if target == -1:
-			target = active_clip.duration
+			target = active_clip.duration - 1
 		EditorCore.set_frame(active_clip.start + target)
 
 
