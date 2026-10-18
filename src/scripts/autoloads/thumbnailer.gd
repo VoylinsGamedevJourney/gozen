@@ -98,7 +98,8 @@ func get_thumb(file: FileData) -> Texture2D:
 	Threader.mutex.unlock()
 
 	if !has_thumb:
-		thumbs_todo.append(file)
+		if not thumbs_todo.has(file):
+			thumbs_todo.append(file)
 		match file.type: # Add the correct placeholder image.
 			Type.AUDIO: return _get_default_thumb(Library.THUMB_DEFAULT_AUDIO)
 			Type.TEXT: return _get_default_thumb(Library.THUMB_DEFAULT_TEXT)
@@ -119,6 +120,28 @@ func _get_default_thumb(icon_uid: String) -> Texture2D:
 	return ImageTexture.create_from_image(image)
 
 
+func _get_video_thumb(file: FileData) -> Image:
+	var image: Image = null
+	var video: Video = Video.new()
+	if video.open(file.path) == OK:
+		image = video.generate_thumbnail_at_frame(0)
+		if image and not image.is_empty():
+			var is_black: bool = true
+			var sample_img: Image = image.duplicate()
+			sample_img.resize(16, 16, Image.INTERPOLATE_NEAREST)
+			for y: int in 16:
+				for x: int in 16:
+					if sample_img.get_pixel(x, y).get_luminance() > 0.05:
+						is_black = false
+						break
+				if not is_black:
+					break
+			if is_black:
+				image = video.generate_thumbnail_at_frame(int(video.get_framerate() * 5.0))
+		video.close()
+	return image
+
+
 ## This function is for generating thumbnails, should only be called from the
 ## _process function and in a thread through Threader.
 ## NOTE: PCK files only use a placeholder for now!
@@ -128,12 +151,8 @@ func _gen_thumb(file: FileData, try: int = 0) -> void:
 	match file.type:
 		Type.IMAGE: image = Image.load_from_file(file.path)
 		Type.AUDIO: image = FileLogic.generate_audio_thumb(file)
-		Type.PCK:   image = _get_default_thumb(Library.THUMB_DEFAULT_PCK).get_image()
-		Type.VIDEO:
-			var video: Video = Video.new()
-			if video.open(file.path) == OK:
-				image = video.generate_thumbnail_at_frame(0)
-				video.close()
+		Type.VIDEO: image = _get_video_thumb(file)
+		Type.PCK: image = _get_default_thumb(Library.THUMB_DEFAULT_PCK).get_image()
 
 	if !image:
 		if try < 2:
@@ -153,7 +172,7 @@ func _gen_thumb(file: FileData, try: int = 0) -> void:
 
 
 func _on_audio_wave_generated(file: FileData) -> void:
-	if !(file.type & Type.GROUP_AUDIO):
+	if file.type != Type.AUDIO:
 		return
 
 	# Remove the potentially flat/empty cached thumbnail data.
@@ -165,8 +184,8 @@ func _on_audio_wave_generated(file: FileData) -> void:
 	Threader.mutex.unlock()
 
 	# Queue this file for immediate thumbnail regeneration.
-	if not thumbs_todo.has(file) and thumbs_todo.insert(0, file):
-		printerr("Thumbnailer: Couldn't insert '%s' in thumbs_todo!" % file.path)
+	if not thumbs_todo.has(file):
+		thumbs_todo.insert(0, file)
 
 
 func scale_thumbnail(image: Image) -> Image:
