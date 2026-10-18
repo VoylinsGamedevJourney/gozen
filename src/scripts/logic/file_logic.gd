@@ -577,7 +577,6 @@ func _create_wave(file: FileData) -> void:
 
 	call_deferred("emit_signal", "wave_loading", file, 100)
 	call_deferred("_on_wave_ready", file)
-	Print.info("FileLogic", "Wave creation/loading done for '%s'!" % file.nickname)
 
 
 func _create_wave_for_stream(file: FileData, stream_index: int, current_index: int = 0, num_streams: int = 1) -> void:

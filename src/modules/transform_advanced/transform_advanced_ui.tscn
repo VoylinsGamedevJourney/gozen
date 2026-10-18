@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://bv6y0gr0aj744"]
+
+[ext_resource type="Script" uid="uid://dakj3qqtpv333" path="res://modules/transform_advanced/transform_advanced_ui.gd" id="1_dkcxu"]
+
+[node name="TransformAdvancedUi" type="VBoxContainer" unique_id=1868612350 node_paths=PackedStringArray("param_option", "graph", "scroll", "y_axis")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dkcxu")
+param_option = NodePath("OptionButton")
+graph = NodePath("HBoxContainer/Scroll/KeyframeGraph")
+scroll = NodePath("HBoxContainer/Scroll")
+y_axis = NodePath("HBoxContainer/YControl")
+
+[node name="OptionButton" type="OptionButton" parent="." unique_id=1822258353]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1951831040]
+layout_mode = 2
+
+[node name="YControl" type="Control" parent="HBoxContainer" unique_id=325844116]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="HBoxContainer" unique_id=44860997]
+custom_minimum_size = Vector2(100, 200)
+layout_mode = 2
+size_flags_horizontal = 3
+scroll_horizontal_by_default = true
+
+[node name="KeyframeGraph" type="ColorRect" parent="HBoxContainer/Scroll" unique_id=1101434337]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0, 0, 0, 1)

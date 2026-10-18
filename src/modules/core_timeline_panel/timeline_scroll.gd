@@ -13,7 +13,6 @@ func _ready() -> void:
 
 	get_h_scroll_bar().value_changed.connect(_on_timeline_h_scrolling)
 	get_v_scroll_bar().value_changed.connect(_on_timeline_v_scrolling_self)
-
 	Timeline.scroll_changed.connect(_on_global_scroll_changed)
 
 
@@ -26,27 +25,27 @@ func _sync_scroll() -> void:
 
 
 func _on_timestamp_scrolling(value: float) -> void:
-	if self.scroll_horizontal != int(value):
-		self.scroll_horizontal = int(value)
-	Timeline.set_scroll_x(self.scroll_horizontal)
+	if scroll_horizontal != int(value):
+		scroll_horizontal = int(value)
+	Timeline.set_scroll_x(scroll_horizontal)
 
 
 func _on_timeline_v_scrolling(value: float) -> void:
-	if self.scroll_vertical != int(value):
-		self.scroll_vertical = int(value)
-	Timeline.set_scroll_y(self.scroll_vertical)
+	if scroll_vertical != int(value):
+		scroll_vertical = int(value)
+	Timeline.set_scroll_y(scroll_vertical)
 
 
 func _on_timeline_h_scrolling(value: float) -> void:
 	if timestamp_scroll.scroll_horizontal != int(value):
 		timestamp_scroll.scroll_horizontal = int(value)
-	Timeline.set_scroll_x(self.scroll_horizontal)
+	Timeline.set_scroll_x(scroll_horizontal)
 
 
 func _on_timeline_v_scrolling_self(value: float) -> void:
 	if track_controls_scroll.scroll_vertical != int(value):
 		track_controls_scroll.scroll_vertical = int(value)
-	Timeline.set_scroll_y(self.scroll_vertical)
+	Timeline.set_scroll_y(scroll_vertical)
 
 
 func _on_global_scroll_changed(new_scroll: Vector2) -> void:

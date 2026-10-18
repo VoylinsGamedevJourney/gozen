@@ -91,6 +91,7 @@ folder_colors={
 "res://modules/extra_theme_dark/": "blue",
 "res://modules/extra_theme_light/": "blue",
 "res://modules/godot_themes/": "orange",
+"res://modules/transform_advanced/": "orange",
 "res://translations/": "gray"
 }
 
