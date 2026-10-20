@@ -18,7 +18,8 @@ func set_data(missing_files: Array[FileData]) -> void:
 		var label: Label = Label.new()
 		var button_relink: Button = Button.new()
 		label.text = file.nickname
-		label.size_flags_horizontal = Control.SIZE_FILL
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		button_relink.text = tr("Re-link file")
 
 		hbox.add_child(label)

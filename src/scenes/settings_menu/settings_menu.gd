@@ -617,6 +617,10 @@ func _option_button_item_selected(id: int, option_button: OptionButton, callable
 		callable.call(option_button.get_item_metadata(id) as float)
 	elif type == TYPE_STRING:
 		callable.call(option_button.get_item_metadata(id) as String)
+	elif type == TYPE_BOOL:
+		callable.call(option_button.get_item_metadata(id) as bool)
+	else:
+		callable.call(option_button.get_item_metadata(id))
 
 
 func create_line_edit(current_value: String, reset_value: String, callable: Callable, tooltip: String = "") -> Control:
