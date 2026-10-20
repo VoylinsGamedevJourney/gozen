@@ -38,37 +38,41 @@ func delete(folder: String) -> void:
 	folders_to_delete.reverse() # Folders should be sorted already.
 
 	# Get all files from the folder and subfolders to delete.
+	# Get all files from the folder and subfolders to delete.
 	var files_to_delete: Array[FileData] = []
+	var file_ids_to_delete: Array[int] = []
 	for file: FileData in FileLogic.files.values():
 		if file.folder.begins_with(folder):
 			files_to_delete.append(file)
+			file_ids_to_delete.append(file.id)
 	files_to_delete.sort()
 	files_to_delete.reverse()
 
 	# Get all the clips to delete.
 	var clips_to_delete: Array[ClipData] = []
 	for clip: ClipData in ClipLogic.clips.values():
-		if clip.file in files_to_delete:
+		if clip.file in file_ids_to_delete:
 			clips_to_delete.append(clip)
 	clips_to_delete.sort()
 	clips_to_delete.reverse()
 
 	InputManager.undo_redo.create_action("Delete folder")
 
-	# Start by deleting folders.
-	for path: String in folders_to_delete:
-		InputManager.undo_redo.add_do_method(_delete.bind(path))
-		InputManager.undo_redo.add_undo_method(_add.bind(path))
+	# Start by deleting all clips.
+	for clip: ClipData in clips_to_delete:
+		InputManager.undo_redo.add_do_method(ClipLogic._delete.bind(clip))
+		InputManager.undo_redo.add_undo_method(ClipLogic._restore_clip.bind(clip))
 
-	# And remove files from the folder + subfolders.
+	# Remove files from the folder + subfolders.
 	for file: FileData in files_to_delete:
 		InputManager.undo_redo.add_do_method(FileLogic._delete.bind(file))
 		InputManager.undo_redo.add_undo_method(FileLogic._restore.bind(file))
 
-	# End by deleting all clips.
-	for clip: ClipData in clips_to_delete:
-		InputManager.undo_redo.add_do_method(ClipLogic._delete.bind(clip))
-		InputManager.undo_redo.add_undo_method(ClipLogic._restore_clip.bind(clip))
+	# End by deleting folders.
+	for path: String in folders_to_delete:
+		InputManager.undo_redo.add_do_method(_delete.bind(path))
+		InputManager.undo_redo.add_undo_method(_add.bind(path))
+
 	InputManager.undo_redo.commit_action()
 
 

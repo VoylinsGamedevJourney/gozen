@@ -473,7 +473,9 @@ func _on_added(file: FileData) -> void:
 
 func _on_deleted(file_id: int) -> void:
 	if file_items.has(file_id):
-		file_items[file_id].get_parent().remove_child(file_items[file_id])
+		var item: TreeItem = file_items[file_id]
+		if is_instance_valid(item) and is_instance_valid(item.get_parent()):
+			item.get_parent().remove_child(item)
 		if !file_items.erase(file_id):
 			printerr("FilePanel: Couldn't erase '%s' from file_items!" % file_id)
 
