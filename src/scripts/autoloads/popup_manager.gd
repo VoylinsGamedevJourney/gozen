@@ -190,7 +190,11 @@ func create_menu(permanent: bool = false) -> PopupMenu:
 
 
 func show_menu(popup: PopupMenu) -> void:
-	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
+	var mouse_pos: Vector2
+	if !popup.is_embedded():
+		mouse_pos = DisplayServer.mouse_get_position()
+	else:
+		mouse_pos = get_viewport().get_mouse_position()
 	popup.position.x = int(mouse_pos.x)
 	popup.position.y = int(mouse_pos.y + (popup.size.y / 2.0))
 	add_child(popup)

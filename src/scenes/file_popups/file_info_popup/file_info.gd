@@ -109,12 +109,11 @@ func load_data(file_id: int) -> void:
 			video.close()
 	elif file.type == Type.AUDIO:
 		grid_audio.visible = true
-		# TODO: This duration is not accurate! We should get a more correct duration from the file itself!
-		label_audio_duration.text = Format.time_str(file.duration / Project.data.framerate, false)
 		label_audio_streams.text = str(maxi(1, file.audio_streams.size()))
 
 		var audio_stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
 		if audio_stream.open(file.path) == OK:
+			label_audio_duration.text = Format.time_str(audio_stream.get_length(), false)
 			var audio_bitrate: int = audio_stream.get_audio_bitrate()
 			label_audio_codec.text = audio_stream.get_audio_codec().to_upper()
 			if audio_bitrate > 0:

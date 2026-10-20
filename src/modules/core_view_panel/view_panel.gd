@@ -1,6 +1,5 @@
 extends PanelContainer
-# TODO: Make it possible to detach the view panel into a floating window.
-# TODO: Add option to preview at lower quality (performance, needs to be done through EditorCore)
+
 
 @export var project_view: TextureRect
 

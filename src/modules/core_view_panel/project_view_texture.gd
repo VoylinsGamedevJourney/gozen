@@ -5,7 +5,8 @@ enum PopupType {
 	SAVE_SCREENSHOT,
 	SAVE_SCREENSHOT_TO_PROJECT,
 #	COPY_SCREENSHOT # TODO: Godot doesn't have the option yet to set clipboard image
-	TOGGLE_SAFE_AREAS
+	TOGGLE_SAFE_AREAS,
+	TOGGLE_PREVIEW_WINDOW,
 }
 
 
@@ -22,6 +23,8 @@ var view_zoom: float = 1.0
 var active_clip: ClipData = null
 var active_effect: Effect = null
 var active_overlay: EffectOverlay = null
+
+var preview_window: Window
 
 
 
@@ -134,6 +137,11 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		popup.add_check_item("Show safe areas", PopupType.TOGGLE_SAFE_AREAS)
 		popup.set_item_checked(popup.get_item_index(PopupType.TOGGLE_SAFE_AREAS), show_safe_areas)
 		# popup.add_item("Copy screenshot to clipboard", PopupType.COPY_SCREENSHOT) # TODO: Godot doesn't have the option yet to set clipboard image
+		popup.add_separator()
+		if preview_window:
+			popup.add_item("Close full screen preview", PopupType.TOGGLE_PREVIEW_WINDOW)
+		else:
+			popup.add_item("Open full screen preview", PopupType.TOGGLE_PREVIEW_WINDOW)
 
 		popup.id_pressed.connect(_on_popup_id_pressed)
 		PopupManager.show_menu(popup)
@@ -206,6 +214,27 @@ func _on_popup_id_pressed(id: int) -> void:
 #		if image:
 #			DisplayServer.clipboard_set_image(image)
 #			NotificationManager.info("Screenshot copied to clipboard")
+	elif id == PopupType.TOGGLE_PREVIEW_WINDOW:
+		if preview_window:
+			preview_window.queue_free()
+		else:
+			preview_window = Window.new()
+			preview_window.title = "GoZen Preview"
+
+			var texture_rect: TextureRect = TextureRect.new()
+			texture_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			texture_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+			if EditorCore.viewport != null:
+				texture_rect.texture = EditorCore.viewport.get_texture()
+
+			preview_window.add_child(texture_rect)
+			preview_window.close_requested.connect(func() -> void:
+					preview_window.queue_free())
+
+			add_child(preview_window)
+			preview_window.popup_centered(Vector2i(1280, 720))
 
 
 func _on_save_screenshot_to_project(path: String) -> void:

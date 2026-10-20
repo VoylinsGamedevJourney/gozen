@@ -915,10 +915,12 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 		ClipLogic.active_clips = [right_click_clip]
 		ClipLogic.selected.emit(right_click_clip)
 
-	# TODO: Set shortcuts.
 	popup.add_theme_constant_override("icon_max_width", 20)
 	popup.add_icon_item(load(Library.ICON_DELETE) as Icon, tr("Delete clip"), PopupAction.CLIP_DELETE)
+	_set_popup_shortcut(popup, PopupAction.CLIP_DELETE, "delete_clips")
+
 	popup.add_icon_item(load(Library.ICON_TIMELINE_MODE_SPLIT) as Icon, tr("Split clip"), PopupAction.CLIP_SPLIT)
+	_set_popup_shortcut(popup, PopupAction.CLIP_SPLIT, "split_clips_at_mouse")
 
 	popup.add_separator()
 	if right_click_clip.type & Type.GROUP_VISUAL:
@@ -961,6 +963,15 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 					InputManager.undo_redo.add_do_method(ClipLogic._set_audio_stream.bind(right_click_clip.effects, id))
 					InputManager.undo_redo.add_undo_method(ClipLogic._set_audio_stream.bind(right_click_clip.effects, right_click_clip.effects.audio_stream_index))
 					InputManager.undo_redo.commit_action())
+
+
+func _set_popup_shortcut(popup: PopupMenu, action_id: int, action_name: String) -> void:
+	var events: Array[InputEvent] = Settings.get_events_for_action(action_name)
+	if events.size() > 0 and events[0] is InputEventKey:
+		var key_event: InputEventKey = events[0] as InputEventKey
+		var keycode: Key = key_event.keycode | key_event.get_modifiers_mask() as Key
+		if keycode != KEY_NONE:
+			popup.set_item_accelerator(popup.get_item_index(action_id), keycode)
 
 
 func _on_popup_menu_id_pressed(id: PopupAction) -> void:

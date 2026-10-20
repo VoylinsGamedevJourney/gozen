@@ -1760,10 +1760,14 @@ func _show_preset_popup(is_section: bool, is_visual: bool, effect: Effect, butto
 				hbox.add_child(button_delete)
 				vbox.add_child(hbox)
 			file_name = dir.get_next()
-
 	popup.popup_hide.connect(popup.queue_free)
 	add_child(popup)
-	popup.position = Vector2i(button.get_screen_transform().origin) + Vector2i(0, int(button.size.y))
+	var pos: Vector2i
+	if !popup.is_embedded():
+		pos = Vector2i(button.get_screen_position())
+	else:
+		pos = Vector2i(button.global_position)
+	popup.position = pos + Vector2i(0, int(button.size.y))
 	popup.popup()
 
 
