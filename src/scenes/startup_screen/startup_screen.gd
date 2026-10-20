@@ -361,7 +361,6 @@ func _on_gozen_logo_button_pressed() -> void:	   URL.open("site")
 func _on_site_button_pressed() -> void: 		   URL.open("site")
 func _on_manual_button_pressed() -> void: 		   URL.open("manual")
 func _on_tutorials_button_pressed() -> void: 	   URL.open("tutorials")
-func _on_discord_server_button_pressed() -> void:  URL.open("discord")
 
 
 func _on_create_project_button_pressed() -> void:		 tab_container.current_tab = 1
