@@ -29,40 +29,6 @@ static func get_unique_id(keys: Array[int]) -> int:
 	return id
 
 
-static func find_subfolder_files(dropped_paths: Array[String]) -> Dictionary:
-	var result: Dictionary = {}
-	var folders: Array[Dictionary] = []
-
-	for path: String in dropped_paths:
-		path = path.replace("\\", "/")
-		if FileAccess.file_exists(path):
-			if FileLogic.check(path):
-				result[path] = "/"
-		elif DirAccess.dir_exists_absolute(path):
-			var folder_name: String = path.trim_suffix("/").get_file()
-			folders.append({"path": path, "virtual": "/" + folder_name + "/"})
-
-	while !folders.is_empty():
-		var new_folders: Array[Dictionary] = []
-
-		for folder_data: Dictionary in folders:
-			var dir_path: String = folder_data["path"]
-			var virtual_path: String = folder_data["virtual"]
-
-			for file_name: String in DirAccess.get_files_at(dir_path):
-				var full_path: String = dir_path.path_join(file_name)
-				if FileLogic.check(full_path):
-					result[full_path] = virtual_path
-
-			for subdir_name: String in DirAccess.get_directories_at(dir_path):
-				new_folders.append({
-					"path": dir_path.path_join(subdir_name),
-					"virtual": virtual_path + subdir_name + "/"
-				})
-		folders = new_folders
-	return result
-
-
 static func get_video_extension(video_codec: Encoder.VideoCodec) -> String:
 	match video_codec:
 		Encoder.VideoCodec.V_H264: return ".mp4"

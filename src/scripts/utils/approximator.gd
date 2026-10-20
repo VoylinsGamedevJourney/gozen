@@ -15,7 +15,7 @@ static func calculate_remaining(history: Array[Vector2], current_target: float) 
 		return -2.0 # Not enough time has passed to calculate a new rate.
 
 	history.append(Vector2(now, current_target))
-	if history.size() < HISTORY_AMOUNT / 1000:
+	if history.size() < HISTORY_AMOUNT / 1000.0:
 		return 0.0
 
 	while history.size() > 2 and now - history[0].x > HISTORY_AMOUNT:

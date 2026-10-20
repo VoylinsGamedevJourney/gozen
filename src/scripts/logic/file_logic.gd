@@ -327,11 +327,17 @@ func dropped(dropped_file_paths: Array[String]) -> void:
 	current_drop_folder = "/"
 	request_drop_folder.emit(drop_mouse_pos)
 
+	var progress: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
+	progress.set_state_file_loading(0)
+	progress.update_title(tr("Files dropped"))
+	progress.update(0, tr("Scanning files ..."))
+	await get_tree().process_frame
+
 	var existing_paths: Array[String] = []
 	for file: FileData in files.values():
 		existing_paths.append(file.path)
 
-	var paths_dict: Dictionary = Utils.find_subfolder_files(dropped_file_paths)
+	var paths_dict: Dictionary = await _find_subfolder_files_async(dropped_file_paths, progress)
 	var paths_to_process: Dictionary = {}
 	var missing_folders: Dictionary = {}
 	for path: String in paths_dict:
@@ -351,19 +357,20 @@ func dropped(dropped_file_paths: Array[String]) -> void:
 
 	if paths_to_process.is_empty():
 		files_dropping = false
+		PopupManager.close(PopupManager.PROGRESS)
 		return
 
 	for folder: String in missing_folders:
 		FolderLogic._add(folder)
 
-	var progress: ProgressOverlay = PopupManager.get_popup(PopupManager.PROGRESS)
 	var progress_increment: float = (1.0 / float(paths_to_process.size())) * 50.0
 	progress.set_state_file_loading(paths_to_process.size())
-	progress.update_title(tr("Files dropped"))
 	progress.update(0, "")
 
 	var error_occured: bool = false
 	var dropped_files: Array[FileData] = []
+
+	var files_processed: int = 0
 	for path: String in paths_to_process:
 		var file: FileData = _create_file(path)
 		if file:
@@ -374,6 +381,13 @@ func dropped(dropped_file_paths: Array[String]) -> void:
 		else:
 			progress.update_file(path, -1)
 			error_occured = true
+
+		files_processed += 1
+		if files_processed % 5 == 0:
+			if is_instance_valid(progress):
+				progress.update_hint(tr("Processing file: ") + path.get_file())
+			await get_tree().process_frame
+
 	progress.update(10, tr("Files loading ..."))
 
 	var final_dropped_files: Array[FileData] = []
@@ -1193,3 +1207,52 @@ func check(file_path: String) -> bool:
 		ext in ProjectSettings.get_setting("extensions/audio") or
 		ext in ProjectSettings.get_setting("extensions/video") or
 		ext in ProjectSettings.get_setting("extensions/pck"))
+
+
+func _find_subfolder_files_async(dropped_paths: Array[String], progress: ProgressOverlay) -> Dictionary:
+	var result: Dictionary = {}
+	var folders: Array[Dictionary] = []
+
+	var exts_img: PackedStringArray = ProjectSettings.get_setting("extensions/image")
+	var exts_aud: PackedStringArray = ProjectSettings.get_setting("extensions/audio")
+	var exts_vid: PackedStringArray = ProjectSettings.get_setting("extensions/video")
+	var exts_pck: PackedStringArray = ProjectSettings.get_setting("extensions/pck")
+
+	for path: String in dropped_paths:
+		path = path.replace("\\", "/")
+		if FileAccess.file_exists(path):
+			var ext: String = path.get_extension().to_lower()
+			if ext in exts_img or ext in exts_aud or ext in exts_vid or ext in exts_pck:
+				result[path] = "/"
+		elif DirAccess.dir_exists_absolute(path):
+			var folder_name: String = path.trim_suffix("/").get_file()
+			folders.append({"path": path, "virtual": "/" + folder_name + "/"})
+
+	var folders_processed: int = 0
+	while !folders.is_empty():
+		var new_folders: Array[Dictionary] = []
+
+		for folder_data: Dictionary in folders:
+			var dir_path: String = folder_data["path"]
+			var virtual_path: String = folder_data["virtual"]
+
+			var dir_files: PackedStringArray = DirAccess.get_files_at(dir_path)
+			for file_name: String in dir_files:
+				var ext: String = file_name.get_extension().to_lower()
+				if ext in exts_img or ext in exts_aud or ext in exts_vid or ext in exts_pck:
+					var full_path: String = dir_path.path_join(file_name)
+					result[full_path] = virtual_path
+
+			for subdir_name: String in DirAccess.get_directories_at(dir_path):
+				new_folders.append({
+						"path": dir_path.path_join(subdir_name),
+						"virtual": virtual_path + subdir_name + "/" })
+
+			folders_processed += 1
+			if folders_processed % 10 == 0:
+				if is_instance_valid(progress):
+					progress.update_hint(tr("Scanning folder: ") + virtual_path)
+				await get_tree().process_frame
+
+		folders = new_folders
+	return result
