@@ -117,10 +117,11 @@ func _set_active_effect(effect: Effect) -> void:
 
 
 func _on_gui_input(event: InputEvent) -> void:
-	if active_overlay:
-		active_overlay.input(event, self)
-		if event.is_canceled() or get_viewport().is_input_handled():
-			return
+	if active_overlay and active_clip:
+		if EditorCore.visual_frame_nr >= active_clip.start and EditorCore.visual_frame_nr < active_clip.end:
+			active_overlay.input(event, self)
+			if event.is_canceled() or get_viewport().is_input_handled():
+				return
 
 	if event is InputEventMouseButton:
 		_on_gui_input_mouse_button(event as InputEventMouseButton)
