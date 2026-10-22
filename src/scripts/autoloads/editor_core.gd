@@ -567,6 +567,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
 				texture_rid, effects, transition_left, fade_in, transition_right, fade_out, clip_frame))
 		view_textures[track_id].texture = compositors[track_id].display_texture
+		view_textures[track_id].queue_redraw()
 	elif clip.type == Type.PCK:
 		var texture_rid: RID = track_viewports[track_id].get_texture().get_rid()
 		if update or Project.data.resolution != compositors[track_id].resolution:
@@ -575,6 +576,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
 				texture_rid, effects, transition_left, fade_in, transition_right, fade_out, clip_frame))
 		view_textures[track_id].texture = compositors[track_id].display_texture
+		view_textures[track_id].queue_redraw()
 	elif raw_data is Video and clip.type == Type.VIDEO:
 		var video: Video = FileLogic.get_video_reader(file, instance_index)
 		if update or Project.data.resolution != compositors[track_id].resolution:
@@ -583,6 +585,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 		RenderingServer.call_on_render_thread(compositors[track_id].process_video_frame.bind(
 				video, effects, transition_left, fade_in, transition_right, fade_out, clip_frame))
 		view_textures[track_id].texture = compositors[track_id].display_texture
+		view_textures[track_id].queue_redraw()
 	elif raw_data is Texture2D:
 		var image: Texture2D = raw_data
 		var texture_rid: RID = image.get_rid()
@@ -592,6 +595,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
 				texture_rid, effects, transition_left, fade_in, transition_right, fade_out, clip_frame))
 		view_textures[track_id].texture = compositors[track_id].display_texture
+		view_textures[track_id].queue_redraw()
 
 	_apply_track_blend_mode(track_id, effects, clip_frame)
 
