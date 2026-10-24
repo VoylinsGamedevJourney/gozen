@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="GoZenModule" format=3 uid="uid://bmpjg22m53jx4"]
+
+[ext_resource type="Script" uid="uid://bxqfbvdauxheh" path="res://scripts/classes/modules/gozen_module_effect.gd" id="1_phtag"]
+[ext_resource type="Resource" uid="uid://bkkohbxwohdao" path="res://modules/transform_advanced/transform_advanced.tres" id="2_mw576"]
+[ext_resource type="Script" uid="uid://dgyc50ducwiqn" path="res://scripts/classes/modules/gozen_module_panel.gd" id="2_n8dko"]
+[ext_resource type="Script" uid="uid://c5dmnury61k0a" path="res://scripts/classes/modules/gozen_module_scene.gd" id="3_mw576"]
+[ext_resource type="Script" uid="uid://bc60ffhh1gpmq" path="res://scripts/classes/modules/gozen_module_theme.gd" id="4_j7faw"]
+[ext_resource type="Script" uid="uid://iwug055y5eyg" path="res://scripts/classes/modules/gozen_module_transition.gd" id="5_11amc"]
+[ext_resource type="Script" uid="uid://bupjtpen4yap5" path="res://scripts/classes/modules/gozen_module.gd" id="6_m1g3m"]
+[ext_resource type="Script" uid="uid://dhlfblonhwake" path="res://scripts/classes/modules/gozen_module_setting.gd" id="7_tvx8k"]
+
+[sub_resource type="Resource" id="Resource_g2g5b"]
+script = ExtResource("1_phtag")
+effect = ExtResource("2_mw576")
+metadata/_custom_type_script = "uid://bxqfbvdauxheh"
+
+[resource]
+script = ExtResource("6_m1g3m")
+name = "Transform (advanced)"
+description = "Advanced transform with better keyframing."
+author = "Voylin"
+custom_effects = Array[ExtResource("1_phtag")]([SubResource("Resource_g2g5b")])
+metadata/_custom_type_script = "uid://bupjtpen4yap5"

@@ -382,7 +382,7 @@ func _on_open_project_button_pressed() -> void:
 
 func open_project(path: String) -> void:
 	Project.check_unsaved_and_perform(func() -> void:
-			self.visible = false
+			visible = false
 			Project._cleanup()
 			await get_tree().process_frame
 			await Project.open(path)
@@ -414,7 +414,7 @@ func _on_create_new_project_button_pressed() -> void:
 		request.track_amount = int(track_amount_spinbox.value)
 
 	Project.check_unsaved_and_perform(func() -> void:
-			self.visible = false
+			visible = false
 			Project._cleanup()
 			await get_tree().process_frame
 			Project.new_project(request)
@@ -426,7 +426,7 @@ func _on_create_quick_h_project_button_pressed() -> void: ## Horizontal.
 	request.resolution = Settings.get_quick_create_horizontal_res()
 	request.framerate  = Settings.get_quick_create_horizontal_fps()
 	Project.check_unsaved_and_perform(func() -> void:
-			self.visible = false
+			visible = false
 			Project._cleanup()
 			await get_tree().process_frame
 			Project.new_project(request)
@@ -438,7 +438,7 @@ func _on_create_quick_v_project_button_pressed() -> void: ## Vertical.
 	request.resolution = Settings.get_quick_create_vertical_res()
 	request.framerate  = Settings.get_quick_create_vertical_fps()
 	Project.check_unsaved_and_perform(func() -> void:
-			self.visible = false
+			visible = false
 			Project._cleanup()
 			await get_tree().process_frame
 			Project.new_project(request)

@@ -1,0 +1,143 @@
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://bkkohbxwohdao"]
+
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_t6xty"]
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="2_sk0c1"]
+[ext_resource type="PackedScene" uid="uid://bv6y0gr0aj744" path="res://modules/transform_advanced/transform_advanced_ui.tscn" id="2_xi2t8"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="3_xi2t8"]
+
+[sub_resource type="Resource" id="Resource_ayq7p"]
+script = ExtResource("1_t6xty")
+param_id = "position"
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="Resource_rpanl"]
+script = ExtResource("1_t6xty")
+param_id = "scale"
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="Resource_sk0c1"]
+script = ExtResource("1_t6xty")
+param_id = "pivot"
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="Resource_k2lio"]
+script = ExtResource("1_t6xty")
+param_id = "rotation_x"
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="Resource_14g62"]
+script = ExtResource("1_t6xty")
+param_id = "rotation_y"
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="Resource_mq3x6"]
+script = ExtResource("1_t6xty")
+param_id = "rotation_z"
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="Resource_rfj53"]
+script = ExtResource("1_t6xty")
+param_id = "fov"
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="Resource_khoeu"]
+script = ExtResource("1_t6xty")
+param_id = "alpha"
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="Resource_tcpn3"]
+script = ExtResource("1_t6xty")
+custom_ui = ExtResource("2_xi2t8")
+metadata/_custom_type_script = "uid://d25iocjdybfbl"
+
+[sub_resource type="Resource" id="Resource_8gpwu"]
+script = ExtResource("2_sk0c1")
+id = "position"
+nickname = "Position"
+default_value = Vector2i(0, 0)
+min_value = null
+max_value = null
+step = 1.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_ii7w3"]
+script = ExtResource("2_sk0c1")
+id = "scale"
+nickname = "Scale"
+default_value = Vector2(1, 1)
+min_value = Vector2(0.01, 0.01)
+max_value = null
+step = 0.01
+is_linkable = true
+is_linked = true
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_qx218"]
+script = ExtResource("2_sk0c1")
+id = "pivot"
+nickname = "Pivot"
+default_value = Vector2i(960, 540)
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_kku3n"]
+script = ExtResource("2_sk0c1")
+id = "rotation_x"
+nickname = "Rotation X"
+default_value = 0.0
+min_value = -360.0
+max_value = 360.0
+step = 0.5
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_g2g5b"]
+script = ExtResource("2_sk0c1")
+id = "rotation_y"
+nickname = "Rotation Y"
+default_value = 0.0
+min_value = -360.0
+max_value = 360.0
+step = 0.5
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_xi2t8"]
+script = ExtResource("2_sk0c1")
+id = "rotation_z"
+nickname = "Rotation Z"
+default_value = 0.0
+min_value = -360.0
+max_value = 360.0
+step = 0.5
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_xftx4"]
+script = ExtResource("2_sk0c1")
+id = "fov"
+nickname = "FOV"
+default_value = 2.0
+min_value = 0.1
+max_value = 10.0
+step = 0.1
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_t6xty"]
+script = ExtResource("2_sk0c1")
+id = "alpha"
+nickname = "Alpha"
+default_value = 1.0
+min_value = 0.0
+max_value = 1.0
+step = 0.01
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("3_xi2t8")
+id = "transform_advanced"
+nickname = "Transform (advanced)"
+tooltip = "Advanced transform with better keyframing."
+custom_ui = Array[ExtResource("1_t6xty")]([SubResource("Resource_ayq7p"), SubResource("Resource_rpanl"), SubResource("Resource_sk0c1"), SubResource("Resource_k2lio"), SubResource("Resource_14g62"), SubResource("Resource_mq3x6"), SubResource("Resource_rfj53"), SubResource("Resource_khoeu"), SubResource("Resource_tcpn3")])
+params = Array[ExtResource("2_sk0c1")]([SubResource("Resource_8gpwu"), SubResource("Resource_ii7w3"), SubResource("Resource_qx218"), SubResource("Resource_kku3n"), SubResource("Resource_g2g5b"), SubResource("Resource_xi2t8"), SubResource("Resource_xftx4"), SubResource("Resource_t6xty")])
+display_default_keyframe_bar = false
+shader_path = "uid://b0rpuqt1kkhor"
+metadata/_custom_type_script = "uid://jveevg12khsa"

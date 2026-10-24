@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://b0rpuqt1kkhor"
+path="res://.godot/imported/transform_advanced.glsl-73dcb0bb9003d3119d8e48c708baa220.res"
+
+[deps]
+
+source_file="res://modules/transform_advanced/transform_advanced.glsl"
+dest_files=["res://.godot/imported/transform_advanced.glsl-73dcb0bb9003d3119d8e48c708baa220.res"]
+
+[params]
+
