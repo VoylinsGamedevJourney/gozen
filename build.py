@@ -198,17 +198,12 @@ def install_windows_deps() -> ExitCode:
 
 def git_check() -> None:
     match _print_options(
-        "Init/Update submodules (If this is a fresh git clone, you should pick initialize)", 
-        ["no", "initialize", "update"]
+        "Init submodules (If this is a fresh git clone, you should pick initialize)",
+        ["no", "initialize"]
         ):
         case "initialize":
             subprocess.run(
                 [utils.GIT_PATH, "submodule", "update", "--init", "--recursive"],
-                cwd="./",
-            )
-        case "update":
-            subprocess.run(
-                [utils.GIT_PATH, "submodule", "update", "--recursive", "--remote"],
                 cwd="./",
             )
 
