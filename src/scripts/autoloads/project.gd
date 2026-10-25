@@ -437,7 +437,7 @@ func _cleanup() -> void:
 
 	Thumbnailer.thumbs_todo.clear()
 
-	InputManager.undo_redo.clear_history()
+	UndoManager.clear_history()
 
 	data = ProjectData.new()
 
@@ -589,7 +589,7 @@ func set_framerate(new_framerate: float, force: bool = false) -> void:
 		render_region_updated.emit()
 		ClipLogic.updated.emit()
 
-		InputManager.undo_redo.clear_history()
+		UndoManager.clear_history()
 
 	framerate_changed.emit()
 

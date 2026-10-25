@@ -24,10 +24,10 @@ func add(frame_nr: int, text: String, type: int) -> void:
 	if marker_index != -1:
 		return update(frame_nr, text, type, markers[marker_index])
 
-	InputManager.undo_redo.create_action("Add marker")
-	InputManager.undo_redo.add_do_method(_add.bind(frame_nr, text, type))
-	InputManager.undo_redo.add_undo_method(_remove.bind(frame_nr))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Add marker")
+	UndoManager.add_do(_add.bind(frame_nr, text, type))
+	UndoManager.add_undo(_remove.bind(frame_nr))
+	UndoManager.commit_action()
 
 
 func _add(frame_nr: int, text: String, type: int) -> void:
@@ -46,11 +46,11 @@ func update(frame_nr: int, text: String, type: int, marker: MarkerData = null) -
 	if marker == null: marker = get_marker(frame_nr)
 	if marker == null: return # To avoid crashing if something went wrong.
 
-	InputManager.undo_redo.create_action("Update marker")
-	InputManager.undo_redo.add_do_method(_update.bind(frame_nr, text, type, marker))
-	InputManager.undo_redo.add_undo_method(_update.bind(
+	UndoManager.create_action("Update marker")
+	UndoManager.add_do(_update.bind(frame_nr, text, type, marker))
+	UndoManager.add_undo(_update.bind(
 			marker.frame_nr, marker.text, marker.type, marker))
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 
 
 func _update(frame_nr: int, text: String, type: int, marker: MarkerData) -> void:
@@ -66,10 +66,10 @@ func _update(frame_nr: int, text: String, type: int, marker: MarkerData) -> void
 func remove(frame_nr: int) -> void:
 	var marker: MarkerData = get_marker(frame_nr)
 
-	InputManager.undo_redo.create_action("Remove marker")
-	InputManager.undo_redo.add_do_method(_remove.bind(frame_nr))
-	InputManager.undo_redo.add_undo_method(_add.bind(frame_nr, marker.text, marker.type))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Remove marker")
+	UndoManager.add_do(_remove.bind(frame_nr))
+	UndoManager.add_undo(_add.bind(frame_nr, marker.text, marker.type))
+	UndoManager.commit_action()
 
 
 func _remove(frame_nr: int) -> void:

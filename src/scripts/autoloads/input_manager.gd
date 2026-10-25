@@ -8,12 +8,7 @@ signal switch_timeline_mode_select
 signal switch_timeline_mode_split
 
 
-var undo_redo: UndoRedo = UndoRedo.new()
 
-
-
-func _ready() -> void:
-	undo_redo.max_steps = 200
 
 
 func _input(event: InputEvent) -> void:
@@ -45,12 +40,12 @@ func _input(event: InputEvent) -> void:
 			return
 		await clipboard_paste()
 		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("ui_undo", false, true) and undo_redo.has_undo():
-		if !undo_redo.undo():
+	elif event.is_action_pressed("ui_undo", false, true) and UndoManager.has_undo():
+		if !UndoManager.undo():
 			printerr("InputManager: Couldn't undo!")
 		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("ui_redo", false, true) and undo_redo.has_redo():
-		if !undo_redo.redo():
+	elif event.is_action_pressed("ui_redo", false, true) and UndoManager.has_redo():
+		if !UndoManager.redo():
 			printerr("InputManager: Couldn't redo!")
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("switch_workspace"):
@@ -125,10 +120,6 @@ func show_render_workspace() -> void:
 
 func switch_workspace() -> void:
 	on_switch_workspace.emit()
-
-
-func _on_closing_editor() -> void:
-	undo_redo.free()
 
 
 func clipboard_paste() -> void:

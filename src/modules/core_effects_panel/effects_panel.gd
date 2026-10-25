@@ -558,16 +558,16 @@ func _load_effects() -> void:
 				option_button.selected = i
 
 		option_button.item_selected.connect(func(index: int) -> void:
-				InputManager.undo_redo.create_action("Change audio track")
-				InputManager.undo_redo.add_do_method(
+				UndoManager.create_action("Change audio track")
+				UndoManager.add_do(
 						ClipLogic._set_audio_stream.bind(
 								active_clip.effects,
 								option_button.get_item_id(index)))
-				InputManager.undo_redo.add_undo_method(
+				UndoManager.add_undo(
 						ClipLogic._set_audio_stream.bind(
 								active_clip.effects,
 								active_clip.effects.audio_stream_index))
-				InputManager.undo_redo.commit_action())
+				UndoManager.commit_action())
 
 		hbox.add_child(label)
 		hbox.add_child(option_button)
@@ -799,10 +799,10 @@ func _on_reset_text_effect() -> void:
 	var text_effect: Effect = active_file.temp_file.text_effect
 	var old_keyframes: Dictionary = Effect.duplicate_keyframes(text_effect.keyframes)
 
-	InputManager.undo_redo.create_action("Reset text effect")
-	InputManager.undo_redo.add_do_method(_reset_text_effect)
-	InputManager.undo_redo.add_undo_method(_restore_text_effect_keyframes.bind(old_keyframes))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Reset text effect")
+	UndoManager.add_do(_reset_text_effect)
+	UndoManager.add_undo(_restore_text_effect_keyframes.bind(old_keyframes))
+	UndoManager.commit_action()
 
 
 func _reset_text_effect() -> void:
@@ -851,7 +851,7 @@ func _on_keyframe_all_pressed(effect: Effect, is_visual: bool) -> void:
 	if not has_keyframeable:
 		return
 
-	InputManager.undo_redo.create_action("Keyframe all parameters")
+	UndoManager.create_action("Keyframe all parameters")
 
 	var index: int = _get_effect_index(effect, is_visual)
 	for param: EffectParam in effect.params:
@@ -864,18 +864,18 @@ func _on_keyframe_all_pressed(effect: Effect, is_visual: bool) -> void:
 			if relative_frame_nr != 0 and param_keyframes.has(relative_frame_nr):
 				var old_value: Variant = param_keyframes[relative_frame_nr]
 				var old_transition: int = (effect.keyframe_transitions.get(param_id, {}) as Dictionary).get(relative_frame_nr, 0)
-				InputManager.undo_redo.add_do_method(EffectsHandler._remove_keyframe.bind(
+				UndoManager.add_do(EffectsHandler._remove_keyframe.bind(
 						active_clip, index, is_visual, param_id, relative_frame_nr))
-				InputManager.undo_redo.add_undo_method(EffectsHandler._set_keyframe.bind(
+				UndoManager.add_undo(EffectsHandler._set_keyframe.bind(
 						active_clip, index, is_visual, param_id, relative_frame_nr, old_value, old_transition))
 		else:
 			if not param_keyframes.has(relative_frame_nr):
 				var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)
-				InputManager.undo_redo.add_do_method(EffectsHandler._set_keyframe.bind(
+				UndoManager.add_do(EffectsHandler._set_keyframe.bind(
 						active_clip, index, is_visual, param_id, relative_frame_nr, value, transition_type))
-				InputManager.undo_redo.add_undo_method(EffectsHandler._remove_keyframe.bind(
+				UndoManager.add_undo(EffectsHandler._remove_keyframe.bind(
 						active_clip, index, is_visual, param_id, relative_frame_nr))
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 
 
 func _on_keyframe_added_effect_ui(frame: int, effect: Effect, is_visual: bool) -> void:
@@ -1850,10 +1850,10 @@ func _apply_preset(path: String, is_section: bool, is_visual: bool, effect: Effe
 		else:
 			old_effects = _copy_effect_array(active_clip.effects.audio as Array)
 
-		InputManager.undo_redo.create_action("Apply section preset")
-		InputManager.undo_redo.add_do_method(_set_section_effects.bind(active_clip, new_effects, is_visual))
-		InputManager.undo_redo.add_undo_method(_set_section_effects.bind(active_clip, old_effects, is_visual))
-		InputManager.undo_redo.commit_action()
+		UndoManager.create_action("Apply section preset")
+		UndoManager.add_do(_set_section_effects.bind(active_clip, new_effects, is_visual))
+		UndoManager.add_undo(_set_section_effects.bind(active_clip, old_effects, is_visual))
+		UndoManager.commit_action()
 	elif typeof(data) == TYPE_DICTIONARY:
 		var effect_id: String = (data as Dictionary).get("id", "")
 		var new_effect: Effect
@@ -1869,16 +1869,16 @@ func _apply_preset(path: String, is_section: bool, is_visual: bool, effect: Effe
 
 		var old_effect: Effect = effect.deep_copy()
 		old_effect.keyframes = effect.keyframes.duplicate(true)
-		InputManager.undo_redo.create_action("Apply effect preset")
+		UndoManager.create_action("Apply effect preset")
 
 		var index: int = _get_effect_index(effect, is_visual)
-		InputManager.undo_redo.add_do_method(_replace_effect.bind(active_clip, index, new_effect, is_visual))
-		InputManager.undo_redo.add_undo_method(_replace_effect.bind(active_clip, index, old_effect, is_visual))
-		InputManager.undo_redo.commit_action()
+		UndoManager.add_do(_replace_effect.bind(active_clip, index, new_effect, is_visual))
+		UndoManager.add_undo(_replace_effect.bind(active_clip, index, old_effect, is_visual))
+		UndoManager.commit_action()
 
 
 func _apply_default_section_preset(is_visual: bool) -> void:
-	InputManager.undo_redo.create_action("Apply default preset")
+	UndoManager.create_action("Apply default preset")
 	var old_effects: Array
 	if is_visual:
 		old_effects = _copy_effect_array(active_clip.effects.video as Array)
@@ -1898,9 +1898,9 @@ func _apply_default_section_preset(is_visual: bool) -> void:
 		volume_effect.set_default_keyframe()
 		new_effects.append(volume_effect)
 
-	InputManager.undo_redo.add_do_method(_set_section_effects.bind(active_clip, new_effects, is_visual))
-	InputManager.undo_redo.add_undo_method(_set_section_effects.bind(active_clip, old_effects, is_visual))
-	InputManager.undo_redo.commit_action()
+	UndoManager.add_do(_set_section_effects.bind(active_clip, new_effects, is_visual))
+	UndoManager.add_undo(_set_section_effects.bind(active_clip, old_effects, is_visual))
+	UndoManager.commit_action()
 
 
 func _set_section_effects(clip: ClipData, effects: Array, is_visual: bool) -> void:

@@ -85,15 +85,15 @@ func add(paths: Array[String]) -> void:
 	for file: FileData in files.values():
 		existing_file_paths.append(file.path)
 
-	InputManager.undo_redo.create_action("Add file(s)")
+	UndoManager.create_action("Add file(s)")
 	for path: String in paths:
 		if path in existing_file_paths and not path.begins_with("temp://"):
 			continue # Duplication check.
 		var file: FileData = _create_file(path)
 		if file:
-			InputManager.undo_redo.add_do_method(_restore.bind(file))
-			InputManager.undo_redo.add_undo_method(_delete.bind(file))
-	InputManager.undo_redo.commit_action()
+			UndoManager.add_do(_restore.bind(file))
+			UndoManager.add_undo(_delete.bind(file))
+	UndoManager.commit_action()
 
 
 func add_colors(html_colors: Array[String]) -> void:
@@ -153,17 +153,17 @@ func _create_file(path: String) -> FileData:
 
 
 func delete(ids: Array[int]) -> void:
-	InputManager.undo_redo.create_action("Delete file")
+	UndoManager.create_action("Delete file")
 	for clip: ClipData in ClipLogic.clips.values():
 		if clip.file in ids:
-			InputManager.undo_redo.add_do_method(ClipLogic._delete.bind(clip))
-			InputManager.undo_redo.add_undo_method(ClipLogic._restore_clip.bind(clip))
+			UndoManager.add_do(ClipLogic._delete.bind(clip))
+			UndoManager.add_undo(ClipLogic._restore_clip.bind(clip))
 
 	for file_id: int in ids:
 		if has(file_id):
-			InputManager.undo_redo.add_do_method(_delete.bind(files[file_id]))
-			InputManager.undo_redo.add_undo_method(_restore.bind(files[file_id]))
-	InputManager.undo_redo.commit_action()
+			UndoManager.add_do(_delete.bind(files[file_id]))
+			UndoManager.add_undo(_restore.bind(files[file_id]))
+	UndoManager.commit_action()
 
 
 func _delete(file: FileData) -> void:
@@ -201,11 +201,11 @@ func _restore(snapshot: FileData) -> void:
 
 
 func move(files_to_move: Array[FileData], target: String) -> void:
-	InputManager.undo_redo.create_action("Move file(s)")
+	UndoManager.create_action("Move file(s)")
 	for file: FileData in files_to_move:
-		InputManager.undo_redo.add_do_method(_move.bind(file, target))
-		InputManager.undo_redo.add_undo_method(_move.bind(file, file.folder))
-	InputManager.undo_redo.commit_action()
+		UndoManager.add_do(_move.bind(file, target))
+		UndoManager.add_undo(_move.bind(file, file.folder))
+	UndoManager.commit_action()
 
 
 func _move(file: FileData, target: String) -> void:
@@ -215,10 +215,10 @@ func _move(file: FileData, target: String) -> void:
 
 
 func change_nickname(file: FileData, new_name: String) -> void:
-	InputManager.undo_redo.create_action("Change file nickname")
-	InputManager.undo_redo.add_do_method(_change_nickname.bind(file, new_name))
-	InputManager.undo_redo.add_undo_method(_change_nickname.bind(file, file.nickname))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Change file nickname")
+	UndoManager.add_do(_change_nickname.bind(file, new_name))
+	UndoManager.add_undo(_change_nickname.bind(file, file.nickname))
+	UndoManager.commit_action()
 
 
 func _change_nickname(file: FileData, new_name: String) -> void:
@@ -229,7 +229,7 @@ func _change_nickname(file: FileData, new_name: String) -> void:
 
 ## Pasting from clipboard (through InputManager).
 func paste_image(image: Image) -> FileData:
-	InputManager.undo_redo.create_action("Paste Image")
+	UndoManager.create_action("Paste Image")
 	var file: FileData = FileData.new()
 	file.id = get_new_id()
 	file.path = "temp://image#" + str(file.id)
@@ -248,9 +248,9 @@ func paste_image(image: Image) -> FileData:
 			time_dict.year, time_dict.month, time_dict.day,
 			time_dict.hour, time_dict.minute, time_dict.second]
 
-	InputManager.undo_redo.add_do_method(_restore.bind(file))
-	InputManager.undo_redo.add_undo_method(_delete.bind(file))
-	InputManager.undo_redo.commit_action()
+	UndoManager.add_do(_restore.bind(file))
+	UndoManager.add_undo(_delete.bind(file))
+	UndoManager.commit_action()
 	return file
 
 
@@ -278,18 +278,18 @@ func _commit_ato(file: FileData, active: bool, audio_file_id: int, offset: float
 	var old_file: int = file.ato_file
 	var old_offset: float = file.ato_offset
 
-	InputManager.undo_redo.create_action("Replace file audio")
-	InputManager.undo_redo.add_do_method(_apply_replace_audio.bind(file, active, audio_file_id, offset))
-	InputManager.undo_redo.add_undo_method(_apply_replace_audio.bind(file, old_active, old_file, old_offset))
+	UndoManager.create_action("Replace file audio")
+	UndoManager.add_do(_apply_replace_audio.bind(file, active, audio_file_id, offset))
+	UndoManager.add_undo(_apply_replace_audio.bind(file, old_active, old_file, old_offset))
 
 	if update_clips: # Clips Undo/Redo
 		for clip: ClipData in clips:
 			var effects: ClipEffects = clip.effects
-			InputManager.undo_redo.add_do_method(ClipLogic._apply_replace_audio.bind(
+			UndoManager.add_do(ClipLogic._apply_replace_audio.bind(
 					clip, active, audio_file_id, offset))
-			InputManager.undo_redo.add_undo_method(ClipLogic._apply_replace_audio.bind(
+			UndoManager.add_undo(ClipLogic._apply_replace_audio.bind(
 					clip, effects.ato_active, effects.ato_file, effects.ato_offset))
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 
 
 func _apply_replace_audio(file: FileData, active: bool, audio_file_id: int, offset: float) -> void:
@@ -311,16 +311,16 @@ func duplicate_text(file: FileData) -> FileData:
 	new_file.id = get_new_id()
 	new_file.nickname = file.nickname + " (copy)"
 
-	InputManager.undo_redo.create_action("Duplicate Text File")
-	InputManager.undo_redo.add_do_method(_restore.bind(new_file))
-	InputManager.undo_redo.add_undo_method(_delete.bind(new_file))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Duplicate Text File")
+	UndoManager.add_do(_restore.bind(new_file))
+	UndoManager.add_undo(_delete.bind(new_file))
+	UndoManager.commit_action()
 	return new_file
 
 
 #--- File dropping ---
 
-## File dropping can't be un-done with the undo_redo system!
+## File dropping can't be un-done with the UndoManager system!
 func dropped(dropped_file_paths: Array[String]) -> void:
 	drop_mouse_pos = get_viewport().get_mouse_position()
 	files_dropping = true
@@ -417,10 +417,10 @@ func dropped(dropped_file_paths: Array[String]) -> void:
 
 
 func set_nickname(file: FileData, new_nickname: String) -> void:
-	InputManager.undo_redo.create_action("Renaming file")
-	InputManager.undo_redo.add_do_method(_set_nickname.bind(file, new_nickname))
-	InputManager.undo_redo.add_undo_method(_set_nickname.bind(file, file.nickname))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Renaming file")
+	UndoManager.add_do(_set_nickname.bind(file, new_nickname))
+	UndoManager.add_undo(_set_nickname.bind(file, file.nickname))
+	UndoManager.commit_action()
 
 
 func _set_nickname(file: FileData, nickname: String) -> void:
@@ -1032,10 +1032,10 @@ func set_proxy_path(file: FileData, path: String) -> void:
 func update_text_param(file: FileData, param_id: String, new_value: Variant, old_value: Variant) -> void:
 	var action_name: String = "Update text %s_%d" % [param_id, file.id]
 
-	InputManager.undo_redo.create_action(action_name, UndoRedo.MERGE_ENDS)
-	InputManager.undo_redo.add_do_method(_set_text_param.bind(file, param_id, new_value))
-	InputManager.undo_redo.add_undo_method(_set_text_param.bind(file, param_id, old_value))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action(action_name, UndoRedo.MERGE_ENDS)
+	UndoManager.add_do(_set_text_param.bind(file, param_id, new_value))
+	UndoManager.add_undo(_set_text_param.bind(file, param_id, old_value))
+	UndoManager.commit_action()
 
 
 func _set_text_param(file: FileData, param_id: String, value: Variant) -> void:
@@ -1062,12 +1062,12 @@ func _set_text_param(file: FileData, param_id: String, value: Variant) -> void:
 
 func toggle_ato(file: FileData) -> void:
 	if file.ato_active:
-		InputManager.undo_redo.create_action("Disable file 'replace audio'")
+		UndoManager.create_action("Disable file 'replace audio'")
 	else:
-		InputManager.undo_redo.create_action("Enable file 'replace audio'")
-	InputManager.undo_redo.add_do_method(_toggle_ato.bind(file, !file.ato_active))
-	InputManager.undo_redo.add_undo_method(_toggle_ato.bind(file, file.ato_active))
-	InputManager.undo_redo.commit_action()
+		UndoManager.create_action("Enable file 'replace audio'")
+	UndoManager.add_do(_toggle_ato.bind(file, !file.ato_active))
+	UndoManager.add_undo(_toggle_ato.bind(file, file.ato_active))
+	UndoManager.commit_action()
 
 
 func _toggle_ato(file: FileData, value: bool) -> void:
@@ -1076,10 +1076,10 @@ func _toggle_ato(file: FileData, value: bool) -> void:
 
 
 func relink_file(file: FileData, new_path: String) -> void:
-	InputManager.undo_redo.create_action("Relink file")
-	InputManager.undo_redo.add_do_method(_relink_file.bind(file, new_path))
-	InputManager.undo_redo.add_undo_method(_relink_file.bind(file, file.path))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Relink file")
+	UndoManager.add_do(_relink_file.bind(file, new_path))
+	UndoManager.add_undo(_relink_file.bind(file, file.path))
+	UndoManager.commit_action()
 
 	var new_duration: int = file.duration
 	var extension: String = new_path.get_extension().to_lower()

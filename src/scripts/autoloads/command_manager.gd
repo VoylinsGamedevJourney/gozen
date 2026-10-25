@@ -56,8 +56,8 @@ func _ready() -> void:
 	register(Command.new("Add track", TrackLogic.add_track_to_end, ""))
 	register(Command.new("Clear selection", ClipLogic.clear_selection, ""))
 
-	register(Command.new("Undo", InputManager.undo_redo.undo, "ui_undo"))
-	register(Command.new("Redo", InputManager.undo_redo.redo, "ui_redo"))
+	register(Command.new("Undo", UndoManager.undo, "ui_undo"))
+	register(Command.new("Redo", UndoManager.redo, "ui_redo"))
 
 	register(Command.new("Open marker popup", PopupManager.open.bind(PopupManager.MARKER), "open_marker_popup"))
 	register(Command.new("About GoZen", PopupManager.open.bind(PopupManager.CREDITS), "help"))

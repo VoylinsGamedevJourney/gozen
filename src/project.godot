@@ -26,6 +26,7 @@ boot_splash/minimum_display_time=500
 
 [autoload]
 
+UndoManager="*res://scripts/autoloads/undo_redo.gd"
 CommandManager="*res://scripts/autoloads/command_manager.gd"
 ModuleManager="*res://scripts/autoloads/module_manager.gd"
 Settings="*res://scripts/autoloads/settings.gd"

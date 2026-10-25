@@ -25,7 +25,7 @@ func get_new_id(ids: Array = clips.keys()) -> int: return Utils.get_unique_id(id
 func add(requests: Array[RequestClipAdd]) -> void:
 	if requests.is_empty(): return
 
-	InputManager.undo_redo.create_action("Add new clip(s)")
+	UndoManager.create_action("Add new clip(s)")
 
 	var current_track_size: int = TrackLogic.tracks.size()
 	var existing_keys: Array[int] = clips.keys()
@@ -33,8 +33,8 @@ func add(requests: Array[RequestClipAdd]) -> void:
 
 	for request: RequestClipAdd in requests:
 		for i: int in range(current_track_size, request.track + 1):
-			InputManager.undo_redo.add_do_method(TrackLogic._add_track.bind(i))
-			InputManager.undo_redo.add_undo_method(TrackLogic._remove_track.bind(i))
+			UndoManager.add_do(TrackLogic._add_track.bind(i))
+			UndoManager.add_undo(TrackLogic._remove_track.bind(i))
 		current_track_size = maxi(current_track_size, request.track + 1)
 
 	for request: RequestClipAdd in requests:
@@ -62,10 +62,10 @@ func add(requests: Array[RequestClipAdd]) -> void:
 
 		if FileLogic.get_data(request.file.id).path.to_lower().ends_with(".gif"):
 			new_clip.effects.is_muted = true
-		InputManager.undo_redo.add_do_method(_restore_clip.bind(new_clip))
-		InputManager.undo_redo.add_undo_method(_delete.bind(new_clip))
+		UndoManager.add_do(_restore_clip.bind(new_clip))
+		UndoManager.add_undo(_delete.bind(new_clip))
 		active_clips.append(new_clip)
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 
 	if active_clips.size() > 0:
 		selected.emit(active_clips[-1])
@@ -85,11 +85,11 @@ func delete_selected_clips() -> void: delete(active_clips)
 func delete(clips_to_delete: Array[ClipData]) -> void:
 	if clips_to_delete.is_empty(): return
 
-	InputManager.undo_redo.create_action("Delete clip_data(s)")
+	UndoManager.create_action("Delete clip_data(s)")
 	for clip: ClipData in clips_to_delete:
-		InputManager.undo_redo.add_do_method(_delete.bind(clip))
-		InputManager.undo_redo.add_undo_method(_restore_clip.bind(clip))
-	InputManager.undo_redo.commit_action()
+		UndoManager.add_do(_delete.bind(clip))
+		UndoManager.add_undo(_restore_clip.bind(clip))
+	UndoManager.commit_action()
 
 
 func _delete(clip: ClipData) -> void:
@@ -117,10 +117,10 @@ func ripple_delete(clips_to_delete: Array[ClipData]) -> void:
 			ranges_by_track[clip.track].x = mini(ranges_by_track[clip.track].x, clip.start)
 			ranges_by_track[clip.track].y = maxi(ranges_by_track[clip.track].y, clip.end)
 
-	InputManager.undo_redo.create_action("Ripple delete clip_data(s)")
+	UndoManager.create_action("Ripple delete clip_data(s)")
 	for clip: ClipData in clips_to_delete: # First delete the clips.
-		InputManager.undo_redo.add_do_method(_delete.bind(clip))
-		InputManager.undo_redo.add_undo_method(_restore_clip.bind(clip))
+		UndoManager.add_do(_delete.bind(clip))
+		UndoManager.add_undo(_restore_clip.bind(clip))
 
 	for track: int in ranges_by_track: # Move remaining clips to fill the gap.
 		var gap_range: Vector2i = ranges_by_track[track]
@@ -129,31 +129,31 @@ func ripple_delete(clips_to_delete: Array[ClipData]) -> void:
 
 		for move_clip: ClipData in TrackLogic.get_clips_after(track, gap_start):
 			if move_clip in clips_to_delete: continue
-			InputManager.undo_redo.add_do_method(_move.bind(
+			UndoManager.add_do(_move.bind(
 					move_clip, track, move_clip.start - gap_size))
-			InputManager.undo_redo.add_undo_method(_move.bind(
+			UndoManager.add_undo(_move.bind(
 					move_clip, track, move_clip.start))
 
 	var leftmost_frame: int = ranges_by_track.values().map(func(vec: Vector2i) -> int: return vec.x).min()
 	if !EditorCore.is_playing:
-		InputManager.undo_redo.add_do_method(
+		UndoManager.add_do(
 				EditorCore.scrub_to_frame.bind(leftmost_frame))
-		InputManager.undo_redo.add_undo_method(
+		UndoManager.add_undo(
 				EditorCore.scrub_to_frame.bind(EditorCore.visual_frame_nr))
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 
 
 func move(requests: Array[RequestClipMove]) -> void:
 	if requests.is_empty(): return
 
-	InputManager.undo_redo.create_action("Move clip_data(s)")
+	UndoManager.create_action("Move clip_data(s)")
 	for request: RequestClipMove in requests:
 		var clip: ClipData = request.clip
 		var new_track: int = clip.track + request.offset_track
 		var new_start: int = clip.start + request.offset_frame
-		InputManager.undo_redo.add_do_method(_move.bind(clip, new_track, new_start))
-		InputManager.undo_redo.add_undo_method(_move.bind(clip, clip.track, clip.start))
-	InputManager.undo_redo.commit_action()
+		UndoManager.add_do(_move.bind(clip, new_track, new_start))
+		UndoManager.add_undo(_move.bind(clip, clip.track, clip.start))
+	UndoManager.commit_action()
 
 
 func _move(clip: ClipData, new_track: int, new_frame: int) -> void:
@@ -173,7 +173,7 @@ func split(requests: Array[RequestClipSplit]) -> Array[ClipData]:
 	var new_clips: Array[ClipData] = []
 	var existing_group_ids: Array[int] = _get_all_group_ids()
 	var group_id_map: Dictionary = {}
-	InputManager.undo_redo.create_action("Split clip_data(s)")
+	UndoManager.create_action("Split clip_data(s)")
 
 	for request: RequestClipSplit in requests:
 		var clip: ClipData = request.clip
@@ -188,9 +188,9 @@ func split(requests: Array[RequestClipSplit]) -> Array[ClipData]:
 		var v_fade_out: int = clip.effects.fade_visual.y
 		var a_fade_in: int = clip.effects.fade_audio.x
 		var a_fade_out: int = clip.effects.fade_audio.y
-		InputManager.undo_redo.add_do_method(_resize_and_fade.bind(
+		UndoManager.add_do(_resize_and_fade.bind(
 				clip, -duration_right, true, v_fade_in, 0, a_fade_in, 0))
-		InputManager.undo_redo.add_undo_method(_resize_and_fade.bind(
+		UndoManager.add_undo(_resize_and_fade.bind(
 				clip, duration_right, true, v_fade_in, v_fade_out, a_fade_in, a_fade_out))
 
 		# Construct the new clip snapshot.
@@ -223,23 +223,23 @@ func split(requests: Array[RequestClipSplit]) -> Array[ClipData]:
 				existing_group_ids.append(new_id)
 			snapshot.groups[-1] = group_id_map[old_group]
 
-		InputManager.undo_redo.add_do_method(_restore_clip.bind(snapshot))
-		InputManager.undo_redo.add_undo_method(_delete.bind(snapshot))
+		UndoManager.add_do(_restore_clip.bind(snapshot))
+		UndoManager.add_undo(_delete.bind(snapshot))
 
 		new_clips.append(snapshot)
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 	return new_clips
 
 
 func resize(requests: Array[RequestClipResize]) -> void:
-	InputManager.undo_redo.create_action("Resize clip_data(s)")
+	UndoManager.create_action("Resize clip_data(s)")
 	for request: RequestClipResize in requests:
 		var clip: ClipData = request.clip
-		InputManager.undo_redo.add_do_method(_resize.bind(
+		UndoManager.add_do(_resize.bind(
 				clip, request.resize_amount, request.from_end))
-		InputManager.undo_redo.add_undo_method(_resize_restore.bind(
+		UndoManager.add_undo(_resize_restore.bind(
 				clip, clip.start, clip.duration, clip.begin))
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 
 
 func _resize(clip: ClipData, amount: int, from_end: bool) -> void:
@@ -371,25 +371,25 @@ func paste_copied_clips() -> void:
 
 
 func insert_clips(clips_to_insert: Array[ClipData], action_name: String, files_to_insert: Array[FileData] = []) -> void:
-	InputManager.undo_redo.create_action(action_name)
+	UndoManager.create_action(action_name)
 	var new_selected: Array[ClipData] = []
 
 	for file: FileData in files_to_insert:
-		InputManager.undo_redo.add_do_method(FileLogic._restore.bind(file))
-		InputManager.undo_redo.add_undo_method(FileLogic._delete.bind(file))
+		UndoManager.add_do(FileLogic._restore.bind(file))
+		UndoManager.add_undo(FileLogic._delete.bind(file))
 
 	var current_track_size: int = TrackLogic.tracks.size()
 	for clip: ClipData in clips_to_insert:
 		for i: int in range(current_track_size, clip.track + 1):
-			InputManager.undo_redo.add_do_method(TrackLogic._add_track.bind(i))
-			InputManager.undo_redo.add_undo_method(TrackLogic._remove_track.bind(i))
+			UndoManager.add_do(TrackLogic._add_track.bind(i))
+			UndoManager.add_undo(TrackLogic._remove_track.bind(i))
 		current_track_size = maxi(current_track_size, clip.track + 1)
 
 	for clip: ClipData in clips_to_insert:
-		InputManager.undo_redo.add_do_method(_restore_clip.bind(clip))
-		InputManager.undo_redo.add_undo_method(_delete.bind(clip))
+		UndoManager.add_do(_restore_clip.bind(clip))
+		UndoManager.add_undo(_delete.bind(clip))
 		new_selected.append(clip)
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 
 	active_clips = new_selected
 	if new_selected.size() > 0:
@@ -492,11 +492,11 @@ func slip(clips_to_slip: Array[ClipData], amount: int) -> void:
 	if requests.is_empty():
 		return
 
-	InputManager.undo_redo.create_action("Slip clip(s)")
+	UndoManager.create_action("Slip clip(s)")
 	for req: Dictionary in requests:
-		InputManager.undo_redo.add_do_method(_slip.bind(req.clip, req.new_begin))
-		InputManager.undo_redo.add_undo_method(_slip.bind(req.clip, req.old_begin))
-	InputManager.undo_redo.commit_action()
+		UndoManager.add_do(_slip.bind(req.clip, req.new_begin))
+		UndoManager.add_undo(_slip.bind(req.clip, req.old_begin))
+	UndoManager.commit_action()
 
 
 func _slip(clip: ClipData, new_begin: int) -> void:
@@ -543,14 +543,14 @@ func group_selected_clips() -> void:
 func group_clips(clips_to_group: Array[ClipData]) -> void:
 	if clips_to_group.size() > 1:
 		var group_id: int = get_new_id(_get_all_group_ids())
-		InputManager.undo_redo.create_action("Group clips")
+		UndoManager.create_action("Group clips")
 
 		for clip: ClipData in clips_to_group:
 			var new_groups: Array[int] = clip.groups.duplicate()
 			new_groups.append(group_id)
-			InputManager.undo_redo.add_do_method(_set_clip_groups.bind(clip, new_groups))
-			InputManager.undo_redo.add_undo_method(_set_clip_groups.bind(clip, clip.groups))
-		InputManager.undo_redo.commit_action()
+			UndoManager.add_do(_set_clip_groups.bind(clip, new_groups))
+			UndoManager.add_undo(_set_clip_groups.bind(clip, clip.groups))
+		UndoManager.commit_action()
 
 
 func ungroup_selected_clips() -> void:
@@ -568,14 +568,14 @@ func ungroup_clips(clips_to_ungroup: Array[ClipData]) -> void:
 			groups_to_remove.append(out_group)
 
 	if !groups_to_remove.is_empty():
-		InputManager.undo_redo.create_action("Ungroup clips")
+		UndoManager.create_action("Ungroup clips")
 		for clip: ClipData in clips.values():
 			if not clip.groups.is_empty() and clip.groups[-1] in groups_to_remove:
 				var new_groups: Array[int] = clip.groups.duplicate()
 				new_groups.pop_back()
-				InputManager.undo_redo.add_do_method(_set_clip_groups.bind(clip, new_groups))
-				InputManager.undo_redo.add_undo_method(_set_clip_groups.bind(clip, clip.groups))
-		InputManager.undo_redo.commit_action()
+				UndoManager.add_do(_set_clip_groups.bind(clip, new_groups))
+				UndoManager.add_undo(_set_clip_groups.bind(clip, clip.groups))
+		UndoManager.commit_action()
 
 
 func _set_clip_groups(clip: ClipData, new_groups: Array[int]) -> void:
@@ -626,12 +626,12 @@ func apply_replace_audio(clip: ClipData, audio_file: int, offset: float) -> void
 	var effects: ClipEffects = clip.effects
 	var active: bool = audio_file != -1
 
-	InputManager.undo_redo.create_action("Set clip replace audio")
-	InputManager.undo_redo.add_do_method(_apply_replace_audio.bind(
+	UndoManager.create_action("Set clip replace audio")
+	UndoManager.add_do(_apply_replace_audio.bind(
 			clip, active, audio_file, offset))
-	InputManager.undo_redo.add_undo_method(_apply_replace_audio.bind(
+	UndoManager.add_undo(_apply_replace_audio.bind(
 			clip, effects.ato_active, effects.ato_file, effects.ato_offset))
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 
 
 func _apply_replace_audio(clip: ClipData, active: bool, audio_file_id: int, offset: float) -> void:
@@ -740,15 +740,15 @@ func auto_cut_silence(target_clip: ClipData, local_ranges: Array[Vector2i], appl
 				snapshot.start -= shift
 			new_clips_to_add.append(snapshot)
 
-	InputManager.undo_redo.create_action("Auto-Cut Silence")
+	UndoManager.create_action("Auto-Cut Silence")
 
 	for clip: ClipData in clips_to_delete:
-		InputManager.undo_redo.add_do_method(_delete.bind(clip))
-		InputManager.undo_redo.add_undo_method(_restore_clip.bind(clip))
+		UndoManager.add_do(_delete.bind(clip))
+		UndoManager.add_undo(_restore_clip.bind(clip))
 
 	for new_clip: ClipData in new_clips_to_add:
-		InputManager.undo_redo.add_do_method(_restore_clip.bind(new_clip))
-		InputManager.undo_redo.add_undo_method(_delete.bind(new_clip))
+		UndoManager.add_do(_restore_clip.bind(new_clip))
+		UndoManager.add_undo(_delete.bind(new_clip))
 
 	if ripple and not clips_to_delete.is_empty():
 		var total_silence: int = 0
@@ -759,17 +759,17 @@ func auto_cut_silence(target_clip: ClipData, local_ranges: Array[Vector2i], appl
 			var track_range: Vector2i = ranges_by_track[track]
 			for move_clip: ClipData in TrackLogic.get_clips_after(track, track_range.y):
 				if move_clip in clips_to_delete: continue
-				InputManager.undo_redo.add_do_method(_move.bind(
+				UndoManager.add_do(_move.bind(
 						move_clip, track, move_clip.start - total_silence))
-				InputManager.undo_redo.add_undo_method(_move.bind(
+				UndoManager.add_undo(_move.bind(
 						move_clip, track, move_clip.start))
 
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 	updated.emit.call_deferred()
 
 
 func change_speed(requests: Array[RequestClipResize]) -> void:
-	InputManager.undo_redo.create_action("Change speed clip(s)")
+	UndoManager.create_action("Change speed clip(s)")
 
 	for request: RequestClipResize in requests:
 		var clip: ClipData = request.clip
@@ -778,11 +778,11 @@ func change_speed(requests: Array[RequestClipResize]) -> void:
 		var new_duration: int = maxi(clip.duration + (amount if from_end else -amount), 1)
 		var new_speed: float = (clip.duration * clip.speed) / float(new_duration)
 
-		InputManager.undo_redo.add_do_method(_change_speed.bind(
+		UndoManager.add_do(_change_speed.bind(
 				clip, amount, from_end, new_speed))
-		InputManager.undo_redo.add_undo_method(_change_speed_restore.bind(
+		UndoManager.add_undo(_change_speed_restore.bind(
 				clip, clip.start, clip.duration, clip.speed))
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 
 
 func _change_speed(clip: ClipData, amount: int, from_end: bool, new_speed: float) -> void:
@@ -813,12 +813,12 @@ func switch_ato_active(clip: ClipData) -> void:
 
 func set_ato_active(clip: ClipData, value: bool) -> void:
 	if value:
-		InputManager.undo_redo.create_action("Enable clip 'replace audio'")
+		UndoManager.create_action("Enable clip 'replace audio'")
 	else:
-		InputManager.undo_redo.create_action("Disable clip 'replace audio'")
-	InputManager.undo_redo.add_do_method(_set_ato_active.bind(clip.effects, value))
-	InputManager.undo_redo.add_undo_method(_set_ato_active.bind(clip.effects, !value))
-	InputManager.undo_redo.commit_action()
+		UndoManager.create_action("Disable clip 'replace audio'")
+	UndoManager.add_do(_set_ato_active.bind(clip.effects, value))
+	UndoManager.add_undo(_set_ato_active.bind(clip.effects, !value))
+	UndoManager.commit_action()
 
 
 func _set_ato_active(effects: ClipEffects, value: bool) -> void:
@@ -827,10 +827,10 @@ func _set_ato_active(effects: ClipEffects, value: bool) -> void:
 
 
 func toggle_clip_visible(clip: ClipData, visible: bool) -> void:
-	InputManager.undo_redo.create_action("Show clip" if visible else "Hide clip")
-	InputManager.undo_redo.add_do_method(_set_clip_visible.bind(clip.effects, visible))
-	InputManager.undo_redo.add_undo_method(_set_clip_visible.bind(clip.effects, !visible))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Show clip" if visible else "Hide clip")
+	UndoManager.add_do(_set_clip_visible.bind(clip.effects, visible))
+	UndoManager.add_undo(_set_clip_visible.bind(clip.effects, !visible))
+	UndoManager.commit_action()
 
 
 func _set_clip_visible(effects: ClipEffects, visible: bool) -> void:
@@ -840,10 +840,10 @@ func _set_clip_visible(effects: ClipEffects, visible: bool) -> void:
 
 
 func toggle_clip_mute(clip: ClipData, muted: bool) -> void:
-	InputManager.undo_redo.create_action("Mute clip" if muted else "Unmute clip")
-	InputManager.undo_redo.add_do_method(_set_clip_mute.bind(clip.effects, muted))
-	InputManager.undo_redo.add_undo_method(_set_clip_mute.bind(clip.effects, !muted))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Mute clip" if muted else "Unmute clip")
+	UndoManager.add_do(_set_clip_mute.bind(clip.effects, muted))
+	UndoManager.add_undo(_set_clip_mute.bind(clip.effects, !muted))
+	UndoManager.commit_action()
 
 
 func _set_clip_mute(effects: ClipEffects, muted: bool) -> void:

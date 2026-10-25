@@ -767,10 +767,10 @@ func _commit_current_fade() -> void:
 		else:
 			clip.effects.fade_audio = old_fade
 
-		InputManager.undo_redo.create_action("Change fade")
-		InputManager.undo_redo.add_do_method(EffectsHandler._set_fade.bind(clip, is_visual, new_fade))
-		InputManager.undo_redo.add_undo_method(EffectsHandler._set_fade.bind(clip, is_visual, old_fade))
-		InputManager.undo_redo.commit_action()
+		UndoManager.create_action("Change fade")
+		UndoManager.add_do(EffectsHandler._set_fade.bind(clip, is_visual, new_fade))
+		UndoManager.add_undo(EffectsHandler._set_fade.bind(clip, is_visual, old_fade))
+		UndoManager.commit_action()
 	Timeline.fade_target = null
 	draw_clips.queue_redraw()
 
@@ -959,10 +959,10 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 			popup.add_child(audio_submenu)
 			popup.add_submenu_node_item("Select Audio Track", audio_submenu)
 			audio_submenu.id_pressed.connect(func(id: int) -> void:
-					InputManager.undo_redo.create_action("Change audio track")
-					InputManager.undo_redo.add_do_method(ClipLogic._set_audio_stream.bind(right_click_clip.effects, id))
-					InputManager.undo_redo.add_undo_method(ClipLogic._set_audio_stream.bind(right_click_clip.effects, right_click_clip.effects.audio_stream_index))
-					InputManager.undo_redo.commit_action())
+					UndoManager.create_action("Change audio track")
+					UndoManager.add_do(ClipLogic._set_audio_stream.bind(right_click_clip.effects, id))
+					UndoManager.add_undo(ClipLogic._set_audio_stream.bind(right_click_clip.effects, right_click_clip.effects.audio_stream_index))
+					UndoManager.commit_action())
 
 
 func _set_popup_shortcut(popup: PopupMenu, action_id: int, action_name: String) -> void:

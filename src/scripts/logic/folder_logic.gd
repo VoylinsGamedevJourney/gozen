@@ -13,10 +13,10 @@ var folders: Array[String]
 
 func add(folder: String) -> void:
 	if !folders.has(folder):
-		InputManager.undo_redo.create_action("Add folder")
-		InputManager.undo_redo.add_do_method(_add.bind(folder))
-		InputManager.undo_redo.add_undo_method(_delete.bind(folder))
-		InputManager.undo_redo.commit_action()
+		UndoManager.create_action("Add folder")
+		UndoManager.add_do(_add.bind(folder))
+		UndoManager.add_undo(_delete.bind(folder))
+		UndoManager.commit_action()
 
 
 func _add(folder: String) -> void:
@@ -56,24 +56,24 @@ func delete(folder: String) -> void:
 	clips_to_delete.sort()
 	clips_to_delete.reverse()
 
-	InputManager.undo_redo.create_action("Delete folder")
+	UndoManager.create_action("Delete folder")
 
 	# Start by deleting all clips.
 	for clip: ClipData in clips_to_delete:
-		InputManager.undo_redo.add_do_method(ClipLogic._delete.bind(clip))
-		InputManager.undo_redo.add_undo_method(ClipLogic._restore_clip.bind(clip))
+		UndoManager.add_do(ClipLogic._delete.bind(clip))
+		UndoManager.add_undo(ClipLogic._restore_clip.bind(clip))
 
 	# Remove files from the folder + subfolders.
 	for file: FileData in files_to_delete:
-		InputManager.undo_redo.add_do_method(FileLogic._delete.bind(file))
-		InputManager.undo_redo.add_undo_method(FileLogic._restore.bind(file))
+		UndoManager.add_do(FileLogic._delete.bind(file))
+		UndoManager.add_undo(FileLogic._restore.bind(file))
 
 	# End by deleting folders.
 	for path: String in folders_to_delete:
-		InputManager.undo_redo.add_do_method(_delete.bind(path))
-		InputManager.undo_redo.add_undo_method(_add.bind(path))
+		UndoManager.add_do(_delete.bind(path))
+		UndoManager.add_undo(_add.bind(path))
 
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 
 
 func _delete(path: String) -> void:
@@ -93,11 +93,11 @@ func rename(old_name: String, new_name: String) -> void:
 			folders_to_rename.append(path)
 			new_names.append(new_name + path.trim_prefix(old_name))
 
-	InputManager.undo_redo.create_action("Rename folder")
+	UndoManager.create_action("Rename folder")
 	for i: int in folders_to_rename.size():
-		InputManager.undo_redo.add_do_method(_rename.bind(folders_to_rename[i], new_names[i]))
-		InputManager.undo_redo.add_undo_method(_rename.bind(new_names[i], folders_to_rename[i]))
-	InputManager.undo_redo.commit_action()
+		UndoManager.add_do(_rename.bind(folders_to_rename[i], new_names[i]))
+		UndoManager.add_undo(_rename.bind(new_names[i], folders_to_rename[i]))
+	UndoManager.commit_action()
 
 
 func _rename(old_path: String, new_path: String) -> void:

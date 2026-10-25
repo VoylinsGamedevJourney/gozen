@@ -56,10 +56,10 @@ func set_transition(clip: ClipData, is_left: bool, transition_id: String) -> voi
 	var old_transition: Effect = clip.effects.transition_left if is_left else clip.effects.transition_right
 	new_transition.set_default_keyframe()
 
-	InputManager.undo_redo.create_action("Set transition")
-	InputManager.undo_redo.add_do_method(_set_transition.bind(clip, is_left, new_transition))
-	InputManager.undo_redo.add_undo_method(_set_transition.bind(clip, is_left, old_transition))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Set transition")
+	UndoManager.add_do(_set_transition.bind(clip, is_left, new_transition))
+	UndoManager.add_undo(_set_transition.bind(clip, is_left, old_transition))
+	UndoManager.commit_action()
 
 
 func _set_transition(clip: ClipData, is_left: bool, transition: Effect) -> void:
@@ -76,10 +76,10 @@ func set_transition_smoothing(clip: ClipData, is_left: bool, smooth: bool) -> vo
 		var old_value: int = (transition.keyframe_transitions.get("fade", {}) as Dictionary).get(0, 0)
 		var new_value: int = 1 if smooth else 0
 
-		InputManager.undo_redo.create_action("Toggle transition smoothing")
-		InputManager.undo_redo.add_do_method(_set_transition_smoothing.bind(transition, new_value))
-		InputManager.undo_redo.add_undo_method(_set_transition_smoothing.bind(transition, old_value))
-		InputManager.undo_redo.commit_action()
+		UndoManager.create_action("Toggle transition smoothing")
+		UndoManager.add_do(_set_transition_smoothing.bind(transition, new_value))
+		UndoManager.add_undo(_set_transition_smoothing.bind(transition, old_value))
+		UndoManager.commit_action()
 
 
 func _set_transition_smoothing(transition: Effect, val: int) -> void:
@@ -95,10 +95,10 @@ func update_transition_param(clip: ClipData, is_left: bool, param_id: String, va
 	var old_value: Variant = transition.keyframes[param_id][0]
 	var new_value: Variant = value as int if typeof(old_value) == TYPE_INT else value
 
-	InputManager.undo_redo.create_action("Update transition param")
-	InputManager.undo_redo.add_do_method(_set_transition_param.bind(transition, param_id, new_value))
-	InputManager.undo_redo.add_undo_method(_set_transition_param.bind(transition, param_id, old_value))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Update transition param")
+	UndoManager.add_do(_set_transition_param.bind(transition, param_id, new_value))
+	UndoManager.add_undo(_set_transition_param.bind(transition, param_id, old_value))
+	UndoManager.commit_action()
 
 
 func _set_transition_param(transition: Effect, param_id: String, value: Variant) -> void:
@@ -110,10 +110,10 @@ func _set_transition_param(transition: Effect, param_id: String, value: Variant)
 func set_fade(clip: ClipData, is_visual: bool, fade: Vector2i) -> void:
 	var old_fade: Vector2i = clip.effects.fade_visual if is_visual else clip.effects.fade_audio
 
-	InputManager.undo_redo.create_action("Set Fade")
-	InputManager.undo_redo.add_do_method(_set_fade.bind(clip, is_visual, fade))
-	InputManager.undo_redo.add_undo_method(_set_fade.bind(clip, is_visual, old_fade))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Set Fade")
+	UndoManager.add_do(_set_fade.bind(clip, is_visual, fade))
+	UndoManager.add_undo(_set_fade.bind(clip, is_visual, old_fade))
+	UndoManager.commit_action()
 
 
 func _set_fade(clip: ClipData, is_visual: bool, fade: Vector2i) -> void:
@@ -194,7 +194,7 @@ func _apply_param_exceptions(effect: Effect) -> void:
 #---- Adding effects ----
 
 func add_effect(clips: Array[ClipData], effect: Effect, is_visual: bool) -> void:
-	InputManager.undo_redo.create_action("Add effect: %s" % effect.nickname)
+	UndoManager.create_action("Add effect: %s" % effect.nickname)
 	for clip: ClipData in clips:
 		if is_visual and !(clip.type & Type.GROUP_VISUAL): continue
 		if !is_visual and !(clip.type & Type.GROUP_AUDIO): continue
@@ -204,9 +204,9 @@ func add_effect(clips: Array[ClipData], effect: Effect, is_visual: bool) -> void
 		_apply_param_exceptions(effect_copy)
 		effect_copy.set_default_keyframe()
 
-		InputManager.undo_redo.add_do_method(_add_effect.bind(clip, index, effect_copy, is_visual))
-		InputManager.undo_redo.add_undo_method(_remove_effect.bind(clip, index, is_visual))
-	InputManager.undo_redo.commit_action()
+		UndoManager.add_do(_add_effect.bind(clip, index, effect_copy, is_visual))
+		UndoManager.add_undo(_remove_effect.bind(clip, index, is_visual))
+	UndoManager.commit_action()
 
 
 func _add_effect(clip: ClipData, index: int, effect: Effect, is_visual: bool) -> void:
@@ -227,10 +227,10 @@ func reset_effect(clip: ClipData, index: int, is_visual: bool) -> void:
 
 	var old_keyframes: Dictionary = Effect.duplicate_keyframes(effect.keyframes)
 
-	InputManager.undo_redo.create_action("Reset effect: %s" % effect.nickname)
-	InputManager.undo_redo.add_do_method(_reset_effect.bind(clip, index, is_visual))
-	InputManager.undo_redo.add_undo_method(_restore_effect_keyframes.bind(clip, index, is_visual, old_keyframes))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Reset effect: %s" % effect.nickname)
+	UndoManager.add_do(_reset_effect.bind(clip, index, is_visual))
+	UndoManager.add_undo(_restore_effect_keyframes.bind(clip, index, is_visual, old_keyframes))
+	UndoManager.commit_action()
 
 
 func _reset_effect(clip: ClipData, index: int, is_visual: bool) -> void:
@@ -261,10 +261,10 @@ func remove_effect(clip: ClipData, index: int, is_visual: bool) -> void:
 	var effect: Effect = _get_effect(clip, index, is_visual)
 	if not effect: return
 
-	InputManager.undo_redo.create_action("Remove effect: %s" % effect.nickname)
-	InputManager.undo_redo.add_do_method(_remove_effect.bind(clip, index, is_visual))
-	InputManager.undo_redo.add_undo_method(_add_effect.bind(clip, index, effect, is_visual))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Remove effect: %s" % effect.nickname)
+	UndoManager.add_do(_remove_effect.bind(clip, index, is_visual))
+	UndoManager.add_undo(_add_effect.bind(clip, index, effect, is_visual))
+	UndoManager.commit_action()
 
 
 func _remove_effect(clip: ClipData, effect_index: int, is_visual: bool) -> void:
@@ -285,10 +285,10 @@ func move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: b
 	var effect: Effect = _get_effect(clip, effect_index, is_visual)
 	if not effect: return
 
-	InputManager.undo_redo.create_action("Move effect: %s" % effect.nickname)
-	InputManager.undo_redo.add_do_method(_move_effect.bind(clip, effect_index, new_index, is_visual))
-	InputManager.undo_redo.add_undo_method(_move_effect.bind(clip, new_index, effect_index, is_visual))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Move effect: %s" % effect.nickname)
+	UndoManager.add_do(_move_effect.bind(clip, effect_index, new_index, is_visual))
+	UndoManager.add_undo(_move_effect.bind(clip, new_index, effect_index, is_visual))
+	UndoManager.commit_action()
 
 
 func _move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: bool) -> void:
@@ -326,14 +326,14 @@ func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: 
 		target_frame = clampi(EditorCore.frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
 
 	var action_name: String = "Update %s_%s_c%d" % [effect.nickname, param_id, clip.id]
-	InputManager.undo_redo.create_action(action_name, UndoRedo.MERGE_ENDS)
+	UndoManager.create_action(action_name, UndoRedo.MERGE_ENDS)
 
 	if target_frame == 0 and ((!new_keyframe and param_keyframes.size() == 1) or !is_keyframeable):
 		var old_value: Variant = effect.keyframes[param_id][0]
 		var old_transition: int = (effect.keyframe_transitions.get(param_id, {}) as Dictionary).get(0, 0)
-		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
+		UndoManager.add_do(_set_keyframe.bind(
 				clip, effect_index, is_visual, param_id, 0, new_value, transition_type))
-		InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
+		UndoManager.add_undo(_set_keyframe.bind(
 				clip, effect_index, is_visual, param_id, 0, old_value, old_transition))
 	else:
 		var old_value: Variant = null
@@ -350,16 +350,16 @@ func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: 
 		if not keyframe_exists and transition_type == -1:
 			transition_type = Settings.get_default_keyframe_type()
 
-		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
+		UndoManager.add_do(_set_keyframe.bind(
 				clip, effect_index, is_visual, param_id, target_frame, new_value, transition_type))
 
 		if keyframe_exists: # If keyframe already existed, we just adjust the keyframe.
-			InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
+			UndoManager.add_undo(_set_keyframe.bind(
 					clip, effect_index, is_visual, param_id, target_frame, old_value, old_transition))
 		else: # If the keyframe didn't exist yet, we remove the newly created one on undo.
-			InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
+			UndoManager.add_undo(_remove_keyframe.bind(
 					clip, effect_index, is_visual, param_id, target_frame))
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 
 
 #---- Removing keyframes ----
@@ -374,12 +374,12 @@ func remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: Stri
 		var old_value: Variant = effect_keyframes[frame_nr]
 		var old_transition: int = (effect.keyframe_transitions.get(param_id, {}) as Dictionary).get(frame_nr, 0)
 
-		InputManager.undo_redo.create_action("Remove keyframe: %s" % effect.nickname)
-		InputManager.undo_redo.add_do_method(_remove_keyframe.bind(
+		UndoManager.create_action("Remove keyframe: %s" % effect.nickname)
+		UndoManager.add_do(_remove_keyframe.bind(
 				clip, index, is_visual, param_id, frame_nr))
-		InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
+		UndoManager.add_undo(_set_keyframe.bind(
 				clip, index, is_visual, param_id, frame_nr, old_value, old_transition))
-		InputManager.undo_redo.commit_action()
+		UndoManager.commit_action()
 
 
 func _set_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String, frame_nr: int, value: Variant, transition_type: int = -1) -> void:
@@ -430,18 +430,18 @@ func add_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: 
 	if not has_keyframeable or not has_missing_keyframe:
 		return
 
-	InputManager.undo_redo.create_action("Add Effect Keyframe(s)")
+	UndoManager.create_action("Add Effect Keyframe(s)")
 	for param: EffectParam in effect.params:
 		if param.keyframeable:
 			var param_id: String = param.id
 			var keyframes: Dictionary = effect.keyframes.get(param_id, {})
 			if not keyframes.has(frame_nr):
 				var new_value: Variant = effect.get_value(param, frame_nr)
-				InputManager.undo_redo.add_do_method(_set_keyframe.bind(
+				UndoManager.add_do(_set_keyframe.bind(
 						clip, effect_index, is_visual, param_id, frame_nr, new_value, transition_type))
-				InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
+				UndoManager.add_undo(_remove_keyframe.bind(
 						clip, effect_index, is_visual, param_id, frame_nr))
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 	Project.unsaved_changes = true
 	effects_updated.emit()
 
@@ -459,7 +459,7 @@ func move_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual:
 	if not effect:
 		return
 
-	InputManager.undo_redo.create_action("Move/Copy Effect Keyframe(s)")
+	UndoManager.create_action("Move/Copy Effect Keyframe(s)")
 	for param: EffectParam in effect.params:
 		var param_id: String = param.id
 		if not effect.keyframes.has(param_id):
@@ -485,21 +485,21 @@ func move_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual:
 			final_transition = trans_at_target
 
 		if old_frame != 0 and not is_copy:
-			InputManager.undo_redo.add_do_method(
+			UndoManager.add_do(
 					_remove_keyframe.bind(clip, effect_index, is_visual, param_id, old_frame))
-			InputManager.undo_redo.add_undo_method(
+			UndoManager.add_undo(
 					_set_keyframe.bind(clip, effect_index, is_visual, param_id, old_frame, value_to_move, trans_to_move))
 
 		if !(has_target and preserve_existing):
-			InputManager.undo_redo.add_do_method(_set_keyframe.bind(
+			UndoManager.add_do(_set_keyframe.bind(
 					clip, effect_index, is_visual, param_id, new_frame, final_value, final_transition))
 			if has_target:
-				InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
+				UndoManager.add_undo(_set_keyframe.bind(
 						clip, effect_index, is_visual, param_id, new_frame, value_at_target, trans_at_target))
 			else:
-				InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
+				UndoManager.add_undo(_remove_keyframe.bind(
 						clip, effect_index, is_visual, param_id, new_frame))
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 	effects_updated.emit()
 
 
@@ -514,18 +514,18 @@ func remove_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visua
 	if not effect:
 		return
 
-	InputManager.undo_redo.create_action("Remove Effect Keyframe(s)")
+	UndoManager.create_action("Remove Effect Keyframe(s)")
 	for param: EffectParam in effect.params:
 		var param_id: String = param.id
 		if effect.keyframes.has(param_id):
 			var keyframes: Dictionary = effect.keyframes[param_id]
 			if keyframes.has(frame_nr):
 				var old_value: Variant = effect.keyframes[param_id][frame_nr]
-				InputManager.undo_redo.add_do_method(_remove_keyframe.bind(
+				UndoManager.add_do(_remove_keyframe.bind(
 						clip, effect_index, is_visual, param_id, frame_nr))
-				InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
+				UndoManager.add_undo(_set_keyframe.bind(
 						clip, effect_index, is_visual, param_id, frame_nr, old_value))
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 	effects_updated.emit()
 
 
@@ -535,10 +535,10 @@ func switch_enabled(clip: ClipData, index: int, is_visual: bool) -> void:
 	var effect: Effect = _get_effect(clip, index, is_visual)
 	if not effect: return
 
-	InputManager.undo_redo.create_action("Move effect: %s" % effect.nickname)
-	InputManager.undo_redo.add_do_method(_switch_enabled.bind(clip, index, is_visual, !effect.is_enabled))
-	InputManager.undo_redo.add_undo_method(_switch_enabled.bind(clip, index, is_visual, effect.is_enabled))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Move effect: %s" % effect.nickname)
+	UndoManager.add_do(_switch_enabled.bind(clip, index, is_visual, !effect.is_enabled))
+	UndoManager.add_undo(_switch_enabled.bind(clip, index, is_visual, effect.is_enabled))
+	UndoManager.commit_action()
 
 
 func _switch_enabled(clip: ClipData, index: int, is_visual: bool, value: bool) -> void:

@@ -24,10 +24,10 @@ func prepare_data() -> void:
 
 func add_track_to_end() -> void: add_track(tracks.size())
 func add_track(track: int) -> void:
-	InputManager.undo_redo.create_action("Add track: %s" % track)
-	InputManager.undo_redo.add_do_method(_add_track.bind(track))
-	InputManager.undo_redo.add_undo_method(_remove_track.bind(track))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Add track: %s" % track)
+	UndoManager.add_do(_add_track.bind(track))
+	UndoManager.add_undo(_remove_track.bind(track))
+	UndoManager.commit_action()
 
 
 func _add_track(track: int) -> void:
@@ -46,13 +46,13 @@ func _add_track(track: int) -> void:
 
 
 func remove_track(track: int) -> void:
-	InputManager.undo_redo.create_action("Remove track: %s" % track)
+	UndoManager.create_action("Remove track: %s" % track)
 	for clip: ClipData in track_clips[track].clips:
-		InputManager.undo_redo.add_do_method(ClipLogic._delete.bind(clip))
-		InputManager.undo_redo.add_undo_method(ClipLogic._restore_clip.bind(clip))
-	InputManager.undo_redo.add_do_method(_remove_track.bind(track))
-	InputManager.undo_redo.add_undo_method(_add_track.bind(track))
-	InputManager.undo_redo.commit_action()
+		UndoManager.add_do(ClipLogic._delete.bind(clip))
+		UndoManager.add_undo(ClipLogic._restore_clip.bind(clip))
+	UndoManager.add_do(_remove_track.bind(track))
+	UndoManager.add_undo(_add_track.bind(track))
+	UndoManager.commit_action()
 
 
 func _remove_track(track: int) -> void:

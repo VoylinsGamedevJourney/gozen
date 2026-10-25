@@ -21,10 +21,10 @@ func _on_clear_pressed() -> void:
 	if new_keyframes.is_empty():
 		new_keyframes[0] = PackedVector2Array()
 
-	InputManager.undo_redo.create_action("Clear Mask Points")
-	InputManager.undo_redo.add_do_method(_apply_keyframes.bind("points", new_keyframes))
-	InputManager.undo_redo.add_undo_method(_apply_keyframes.bind("points", old_keyframes))
-	InputManager.undo_redo.commit_action()
+	UndoManager.create_action("Clear Mask Points")
+	UndoManager.add_do(_apply_keyframes.bind("points", new_keyframes))
+	UndoManager.add_undo(_apply_keyframes.bind("points", old_keyframes))
+	UndoManager.commit_action()
 
 
 func _apply_keyframes(param_id: String, keyframes: Dictionary) -> void:

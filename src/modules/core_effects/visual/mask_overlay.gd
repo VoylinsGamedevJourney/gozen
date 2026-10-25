@@ -95,10 +95,10 @@ func input(event: InputEvent, control: Control) -> void:
 						keyframe_points.insert(safe_insert_index, normalized_pos)
 						new_keyframes[frame] = keyframe_points
 
-					InputManager.undo_redo.create_action("Add Mask Point")
-					InputManager.undo_redo.add_do_method(_apply_keyframes.bind("points", new_keyframes))
-					InputManager.undo_redo.add_undo_method(_apply_keyframes.bind("points", old_keyframes))
-					InputManager.undo_redo.commit_action()
+					UndoManager.create_action("Add Mask Point")
+					UndoManager.add_do(_apply_keyframes.bind("points", new_keyframes))
+					UndoManager.add_undo(_apply_keyframes.bind("points", old_keyframes))
+					UndoManager.commit_action()
 
 					drag_index = insert_idx
 					drag_start_val = _get_points(frame).duplicate()
@@ -121,10 +121,10 @@ func input(event: InputEvent, control: Control) -> void:
 							pts.remove_at(hovered_index)
 						new_keyframes[0] = pts
 
-					InputManager.undo_redo.create_action("Remove Mask Point")
-					InputManager.undo_redo.add_do_method(_apply_keyframes.bind("points", new_keyframes))
-					InputManager.undo_redo.add_undo_method(_apply_keyframes.bind("points", old_keyframes))
-					InputManager.undo_redo.commit_action()
+					UndoManager.create_action("Remove Mask Point")
+					UndoManager.add_do(_apply_keyframes.bind("points", new_keyframes))
+					UndoManager.add_undo(_apply_keyframes.bind("points", old_keyframes))
+					UndoManager.commit_action()
 
 					hovered_index = -1
 					control.queue_redraw()

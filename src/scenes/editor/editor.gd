@@ -343,8 +343,8 @@ func _create_edit_popup_menu() -> void:
 
 func _on_edit_popup_menu_id_pressed(id: int) -> void:
 	match id:
-		0: InputManager.undo_redo.undo()
-		1: InputManager.undo_redo.redo()
+		0: UndoManager.undo()
+		1: UndoManager.redo()
 
 
 func _create_view_popup_menu() -> void:

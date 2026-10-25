@@ -407,12 +407,12 @@ func _on_graph_mouse_button_left(event: InputEventMouseButton) -> void:
 			_set_advanced_keyframes(old_advanced_keyframes)
 			effect.keyframes[current_param_id] = old_baked_keyframes
 
-			InputManager.undo_redo.create_action("Add Keyframe")
-			InputManager.undo_redo.add_do_method(_swap_state.bind(
+			UndoManager.create_action("Add Keyframe")
+			UndoManager.add_do(_swap_state.bind(
 					current_param_id, current_component, new_advanced_keyframes, new_baked_keyframes))
-			InputManager.undo_redo.add_undo_method(_swap_state.bind(
+			UndoManager.add_undo(_swap_state.bind(
 					current_param_id, current_component, old_advanced_keyframes, old_baked_keyframes))
-			InputManager.undo_redo.commit_action()
+			UndoManager.commit_action()
 
 			selected_keyframe = frame_nr
 			drag_mode = HoverType.NONE
@@ -447,12 +447,12 @@ func _on_graph_mouse_button_left(event: InputEventMouseButton) -> void:
 			_set_advanced_keyframes(drag_start_keyframes_advanced)
 			effect.keyframes[current_param_id] = drag_start_keyframes
 
-			InputManager.undo_redo.create_action("Edit Keyframe Curve")
-			InputManager.undo_redo.add_do_method(_swap_state.bind(
+			UndoManager.create_action("Edit Keyframe Curve")
+			UndoManager.add_do(_swap_state.bind(
 					current_param_id, current_component, new_advanced_keyframes, new_baked_keyframes))
-			InputManager.undo_redo.add_undo_method(_swap_state.bind(
+			UndoManager.add_undo(_swap_state.bind(
 					current_param_id, current_component, drag_start_keyframes_advanced, drag_start_keyframes))
-			InputManager.undo_redo.commit_action()
+			UndoManager.commit_action()
 		elif _is_scrubbing:
 			EditorCore.finish_scrub()
 		drag_mode = HoverType.NONE
@@ -476,12 +476,12 @@ func _on_graph_mouse_button_right() -> void:
 	_set_advanced_keyframes(old_advanced_keyframes)
 	effect.keyframes[current_param_id] = old_baked_keyframes
 
-	InputManager.undo_redo.create_action("Delete Keyframe")
-	InputManager.undo_redo.add_do_method(_swap_state.bind(
+	UndoManager.create_action("Delete Keyframe")
+	UndoManager.add_do(_swap_state.bind(
 			current_param_id, current_component, new_advanced_keyframes, new_baked_keyframes))
-	InputManager.undo_redo.add_undo_method(_swap_state.bind(
+	UndoManager.add_undo(_swap_state.bind(
 			current_param_id, current_component, old_advanced_keyframes, old_baked_keyframes))
-	InputManager.undo_redo.commit_action()
+	UndoManager.commit_action()
 
 	if selected_keyframe == hovered_frame:
 		selected_keyframe = -1
