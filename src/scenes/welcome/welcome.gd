@@ -20,6 +20,9 @@ extends PanelContainer
 @export var button_flow_source_code: Button
 @export var button_flow_support_kofi: Button
 
+@export_group("Effects related buttons")
+@export var option_button_default_keyframe_type: OptionButton
+
 @export_group("Module related buttons")
 @export var button_itch_modules: Button
 @export var button_steam_workshop: Button
@@ -68,6 +71,7 @@ func _ready() -> void:
 	_setup_welcome_tab()
 	_setup_basics_tab()
 	_setup_editing_tab()
+	_setup_effects_tab()
 	_setup_rendering_tab()
 	_setup_extras_tab()
 
@@ -189,6 +193,14 @@ func _setup_editing_tab() -> void:
 	_bind_shortcut(grid_shortcuts.get_node("FocusOnPlayheadLineEdit") as LineEdit, "focus_on_playhead")
 	_bind_shortcut(grid_shortcuts.get_node("TrimToEndLineEdit") as LineEdit, "trim_to_clip_end")
 	_bind_shortcut(grid_shortcuts.get_node("FocusOnTimelineLineEdit") as LineEdit, "timeline_zoom_full")
+
+
+func _setup_effects_tab() -> void:
+	option_button_default_keyframe_type.add_item("Linear", 0)
+	option_button_default_keyframe_type.add_item("Smooth", 1)
+	option_button_default_keyframe_type.selected = Settings.get_default_keyframe_type()
+	option_button_default_keyframe_type.item_selected.connect(func(index: int) -> void:
+			Settings.set_default_keyframe_type(option_button_default_keyframe_type.get_item_id(index)))
 
 
 func _setup_rendering_tab() -> void:

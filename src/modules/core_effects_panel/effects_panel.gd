@@ -7,7 +7,7 @@ extends PanelContainer
 # - Make it possible to edit values;
 # - Draw basic panel UI (not effects UI);
 
-const HEADER: String = "EffectsPanel:" # NO_TRANSLATE
+const HEADER: String = "EffectsPanel:"
 
 const MIN_VALUE: float = -100000
 const MAX_VALUE: float = 100000
@@ -449,6 +449,28 @@ func _create_transition_style_ui(parent: Control, is_left: bool, transition: Eff
 	hbox.add_child(option_button)
 	parent.add_child(hbox)
 
+	var smooth_hbox: HBoxContainer = HBoxContainer.new()
+	smooth_hbox.name = "SmoothLeft" if is_left else "SmoothRight"
+
+	var smooth_title_hbox: HBoxContainer = HBoxContainer.new()
+	smooth_title_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var smooth_label: Label = Label.new()
+	smooth_label.text = "Smooth"
+	smooth_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	smooth_title_hbox.add_child(smooth_label)
+
+	var smooth_check: CheckButton = CheckButton.new()
+	var is_smooth: bool = transition and (transition.keyframe_transitions.get("fade", {}) as Dictionary).get(0, 0) == 1
+	smooth_check.set_pressed_no_signal(is_smooth)
+	smooth_check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	smooth_check.toggled.connect(func(toggled: bool) -> void:
+			EffectsHandler.set_transition_smoothing(active_clip, is_left, toggled))
+
+	smooth_hbox.add_child(smooth_title_hbox)
+	smooth_hbox.add_child(smooth_check)
+	parent.add_child(smooth_hbox)
+
 
 func _create_transition_param_ui(transition: Effect, param: EffectParam, is_left: bool) -> HBoxContainer:
 	var param_hbox: HBoxContainer = HBoxContainer.new()
@@ -559,8 +581,10 @@ func _load_effects() -> void:
 	var vbox_transitions: VBoxContainer = VBoxContainer.new()
 	section_transitions.add_child(vbox_transitions)
 
-	overlay_visuals.set_drag_forwarding(Callable(), _can_drop_effect.bind(true, vbox_visuals), _drop_effect.bind(true, vbox_visuals))
-	overlay_audio.set_drag_forwarding(Callable(), _can_drop_effect.bind(false, vbox_audio), _drop_effect.bind(false, vbox_audio))
+	overlay_visuals.set_drag_forwarding(Callable(),
+			_can_drop_effect.bind(true, vbox_visuals), _drop_effect.bind(true, vbox_visuals))
+	overlay_audio.set_drag_forwarding(Callable(),
+			_can_drop_effect.bind(false, vbox_audio), _drop_effect.bind(false, vbox_audio))
 
 	vbox_visuals.draw.connect(_draw_drop_indicator.bind(vbox_visuals))
 	vbox_audio.draw.connect(_draw_drop_indicator.bind(vbox_audio))
@@ -618,7 +642,8 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 
 		var button_keyframe_all: TextureButton = TextureButton.new()
 		button_keyframe_all.name = "KeyframeAllButton"
-		button_keyframe_all.texture_normal = load(Library.ICON_EFFECTS_KEYFRAME_EMPTY)
+		var default_transition: int = Settings.get_default_keyframe_type()
+		button_keyframe_all.texture_normal = load(Library.ICON_EFFECTS_KEYFRAME_EMPTY_SMOOTH if default_transition == 1 else Library.ICON_EFFECTS_KEYFRAME_EMPTY)
 		button_keyframe_all.tooltip_text = tr("Keyframe all parameters.")
 
 		button_visible.pressed.connect(_on_switch_enabled.bind(effect, is_visual))
@@ -638,7 +663,8 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 	else:
 		var button_keyframe_all: TextureButton = TextureButton.new()
 		button_keyframe_all.name = "KeyframeAllButton"
-		button_keyframe_all.texture_normal = load(Library.ICON_EFFECTS_KEYFRAME_EMPTY)
+		var default_transition: int = Settings.get_default_keyframe_type()
+		button_keyframe_all.texture_normal = load(Library.ICON_EFFECTS_KEYFRAME_EMPTY_SMOOTH if default_transition == 1 else Library.ICON_EFFECTS_KEYFRAME_EMPTY)
 		button_keyframe_all.tooltip_text = tr("Keyframe all parameters.")
 		button_keyframe_all.ignore_texture_size = true
 		button_keyframe_all.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
@@ -717,7 +743,6 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 		var track_hbox: HBoxContainer = HBoxContainer.new()
 		var track_scroll: ScrollContainer = ScrollContainer.new()
 		var track: KeyframeTrack = KeyframeTrack.new()
-
 		track_hbox.name = "TrackHBox"
 		track_scroll.name = "TrackScroll"
 
@@ -811,55 +836,45 @@ func _on_reset_pck_effect() -> void:
 
 func _on_keyframe_all_pressed(effect: Effect, is_visual: bool) -> void:
 	var relative_frame_nr: int = clampi(EditorCore.frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
-
-	var all_keyframed: bool = true
+	var transition_type: int = Settings.get_default_keyframe_type()
 	var has_keyframeable: bool = false
+	var all_keyframed: bool = true
+	if Input.is_key_pressed(KEY_SHIFT):
+		transition_type = 1 if transition_type == 0 else 0
+
 	for param: EffectParam in effect.params:
-		if !param.keyframeable:
-			continue
-
-		has_keyframeable = true
-		if not (effect.keyframes.get(param.id, {}) as Dictionary).has(relative_frame_nr):
-			all_keyframed = false
-			break
-
+		if param.keyframeable:
+			has_keyframeable = true
+			if not (effect.keyframes.get(param.id, {}) as Dictionary).has(relative_frame_nr):
+				all_keyframed = false
+				break
 	if not has_keyframeable:
 		return
 
 	InputManager.undo_redo.create_action("Keyframe all parameters")
 
-	if active_file and active_file.temp_file and active_file.temp_file.text_effect == effect:
-		for param: EffectParam in effect.params:
-			if param.keyframeable:
-				var param_id: String = param.id
-				var param_keyframes: Dictionary = effect.keyframes.get(param_id, {})
-				if all_keyframed:
-					if relative_frame_nr != 0 and param_keyframes.has(relative_frame_nr):
-						var old_value: Variant = param_keyframes[relative_frame_nr]
-						InputManager.undo_redo.add_do_method(FileLogic._remove_text_keyframe.bind(active_file, param_id, relative_frame_nr))
-						InputManager.undo_redo.add_undo_method(FileLogic._set_text_keyframe.bind(active_file, param_id, relative_frame_nr, old_value))
-				else:
-					if not param_keyframes.has(relative_frame_nr):
-						var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)
-						InputManager.undo_redo.add_do_method(FileLogic._set_text_keyframe.bind(active_file, param_id, relative_frame_nr, value))
-						InputManager.undo_redo.add_undo_method(FileLogic._remove_text_keyframe.bind(active_file, param_id, relative_frame_nr))
-	else:
-		var index: int = _get_effect_index(effect, is_visual)
-		for param: EffectParam in effect.params:
-			if param.keyframeable:
-				var param_id: String = param.id
-				var param_keyframes: Dictionary = effect.keyframes.get(param_id, {})
-				if all_keyframed:
-					if relative_frame_nr != 0 and param_keyframes.has(relative_frame_nr):
-						var old_value: Variant = param_keyframes[relative_frame_nr]
-						InputManager.undo_redo.add_do_method(EffectsHandler._remove_keyframe.bind(active_clip, index, is_visual, param_id, relative_frame_nr))
-						InputManager.undo_redo.add_undo_method(EffectsHandler._set_keyframe.bind(active_clip, index, is_visual, param_id, relative_frame_nr, old_value))
-				else:
-					if not param_keyframes.has(relative_frame_nr):
-						var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)
-						InputManager.undo_redo.add_do_method(EffectsHandler._set_keyframe.bind(active_clip, index, is_visual, param_id, relative_frame_nr, value))
-						InputManager.undo_redo.add_undo_method(EffectsHandler._remove_keyframe.bind(active_clip, index, is_visual, param_id, relative_frame_nr))
+	var index: int = _get_effect_index(effect, is_visual)
+	for param: EffectParam in effect.params:
+		if !param.keyframeable:
+			continue
 
+		var param_id: String = param.id
+		var param_keyframes: Dictionary = effect.keyframes.get(param_id, {})
+		if all_keyframed:
+			if relative_frame_nr != 0 and param_keyframes.has(relative_frame_nr):
+				var old_value: Variant = param_keyframes[relative_frame_nr]
+				var old_transition: int = (effect.keyframe_transitions.get(param_id, {}) as Dictionary).get(relative_frame_nr, 0)
+				InputManager.undo_redo.add_do_method(EffectsHandler._remove_keyframe.bind(
+						active_clip, index, is_visual, param_id, relative_frame_nr))
+				InputManager.undo_redo.add_undo_method(EffectsHandler._set_keyframe.bind(
+						active_clip, index, is_visual, param_id, relative_frame_nr, old_value, old_transition))
+		else:
+			if not param_keyframes.has(relative_frame_nr):
+				var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)
+				InputManager.undo_redo.add_do_method(EffectsHandler._set_keyframe.bind(
+						active_clip, index, is_visual, param_id, relative_frame_nr, value, transition_type))
+				InputManager.undo_redo.add_undo_method(EffectsHandler._remove_keyframe.bind(
+						active_clip, index, is_visual, param_id, relative_frame_nr))
 	InputManager.undo_redo.commit_action()
 
 
@@ -868,35 +883,19 @@ func _on_keyframe_added_effect_ui(frame: int, effect: Effect, is_visual: bool) -
 		EditorCore.is_playing = false
 	EditorCore.set_frame(active_clip.start + frame)
 
-	if active_file and active_file.temp_file and active_file.temp_file.text_effect == effect:
-		var has_missing: bool = false
-		for param: EffectParam in effect.params:
-			if param.keyframeable and not (effect.keyframes.get(param.id, {}) as Dictionary).has(frame):
-				has_missing = true
-				break
-		if not has_missing:
-			_update_ui_values()
-			return
+	var transition_type: int = Settings.get_default_keyframe_type()
+	if Input.is_key_pressed(KEY_SHIFT):
+		transition_type = 1 if transition_type == 0 else 0
 
-		InputManager.undo_redo.create_action("Add Effect Keyframe(s)")
-		for param: EffectParam in effect.params:
-			if param.keyframeable:
-				var param_id: String = param.id
-				var param_keyframes: Dictionary = effect.keyframes.get(param_id, {})
-				if not param_keyframes.has(frame):
-					var value: Variant = _get_current_ui_value_for_param(effect, param_id, frame)
-					InputManager.undo_redo.add_do_method(FileLogic._set_text_keyframe.bind(active_file, param_id, frame, value))
-					InputManager.undo_redo.add_undo_method(FileLogic._remove_text_keyframe.bind(active_file, param_id, frame))
-		InputManager.undo_redo.commit_action()
-	else:
-		var effect_index: int = _get_effect_index(effect, is_visual)
-		EffectsHandler.add_effect_keyframe_at_frame(active_clip, effect_index, is_visual, frame)
+	var effect_index: int = _get_effect_index(effect, is_visual)
+	EffectsHandler.add_effect_keyframe_at_frame(active_clip, effect_index, is_visual, frame, transition_type)
 	_update_ui_values()
 
 
 func _on_keyframe_moved_effect_ui(old_frame: int, new_frame: int, preserve_existing: bool, is_copy: bool, effect: Effect, is_visual: bool) -> void:
 	var effect_index: int = _get_effect_index(effect, is_visual)
-	EffectsHandler.move_effect_keyframe_at_frame(active_clip, effect_index, is_visual, old_frame, new_frame, preserve_existing, is_copy)
+	EffectsHandler.move_effect_keyframe_at_frame(
+			active_clip, effect_index, is_visual, old_frame, new_frame, preserve_existing, is_copy)
 	_update_ui_values()
 
 
@@ -951,10 +950,12 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 
 		var param_keyframe_button: TextureButton = TextureButton.new()
 		param_keyframe_button.name = "KEYFRAME_" + param_id
-		param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
+		var default_transition: int = Settings.get_default_keyframe_type()
+		param_keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY_SMOOTH if default_transition == 1 else Library.ICON_EFFECT_KEYFRAME_EMPTY)
 		param_keyframe_button.ignore_texture_size = true
 		param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_keyframe_button.custom_minimum_size.x = 14
+		param_keyframe_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 		param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
 				effect, is_visual, param_id))
@@ -1316,12 +1317,18 @@ func _update_ui_values() -> void:
 
 func _update_transition_ui_values(transition_vbox: VBoxContainer, transition: Effect, is_left: bool) -> void:
 	if !transition: return
-	var style_hbox: HBoxContainer = transition_vbox.get_node_or_null(
-			"StyleLeft" if is_left else "StyleRight") as HBoxContainer
+	var style_hbox: HBoxContainer = transition_vbox.get_node_or_null("StyleLeft" if is_left else "StyleRight")
 	if style_hbox:
 		var reset_button: TextureButton = style_hbox.get_node_or_null("TitleHBox/ResetButton")
 		if reset_button:
 			reset_button.visible = transition.id != "fade"
+
+	var smooth_hbox: HBoxContainer = transition_vbox.get_node_or_null("SmoothLeft" if is_left else "SmoothRight")
+	if smooth_hbox:
+		var check: CheckButton = smooth_hbox.get_child(1) as CheckButton
+		if check:
+			var is_smooth: bool = (transition.keyframe_transitions.get("fade", {}) as Dictionary).get(0, 0) == 1
+			check.set_pressed_no_signal(is_smooth)
 
 	for param: EffectParam in transition.params:
 		var hbox: HBoxContainer = transition_vbox.get_node_or_null(
@@ -1336,27 +1343,31 @@ func _update_transition_ui_values(transition_vbox: VBoxContainer, transition: Ef
 
 func _update_ui_values_for_container(effect: Effect, content_vbox: VBoxContainer, frame_nr: int) -> void:
 	var keyframes_found: bool = false
-	var container: FoldableContainer = content_vbox.get_parent() as FoldableContainer
-	if container:
-		var keyframe_all_button: TextureButton = container.find_child("KeyframeAllButton", true, false)
-		if keyframe_all_button:
-			var all_keyframed: bool = true
-			var has_keyframeable: bool = false
-			for param: EffectParam in effect.params:
-				if param.keyframeable:
-					has_keyframeable = true
-					var effect_keyframes: Dictionary = effect.keyframes.get(param.id, {})
-					if !effect_keyframes.has(frame_nr):
-						all_keyframed = false
-						break
-			if has_keyframeable:
-				keyframe_all_button.visible = true
-				if all_keyframed:
-					keyframe_all_button.texture_normal = load(Library.ICON_EFFECTS_KEYFRAME)
+	var container: FoldableContainer = content_vbox.get_parent()
+	var keyframe_all_button: TextureButton = container.find_child("KeyframeAllButton", true, false)
+	if keyframe_all_button:
+		var all_keyframed: bool = true
+		var has_keyframeable: bool = false
+		var all_smooth: bool = true
+		for param: EffectParam in effect.params:
+			if param.keyframeable:
+				has_keyframeable = true
+				var effect_keyframes: Dictionary = effect.keyframes.get(param.id, {})
+				if !effect_keyframes.has(frame_nr):
+					all_keyframed = false
 				else:
-					keyframe_all_button.texture_normal = load(Library.ICON_EFFECTS_KEYFRAME_EMPTY)
+					var transition_type: int = (effect.keyframe_transitions.get(param.id, {}) as Dictionary).get(frame_nr, 0)
+					if transition_type != 1:
+						all_smooth = false
+		if has_keyframeable:
+			keyframe_all_button.visible = true
+			if all_keyframed:
+				keyframe_all_button.texture_normal = load(Library.ICON_EFFECTS_KEYFRAME_SMOOTH if all_smooth else Library.ICON_EFFECTS_KEYFRAME)
 			else:
-				keyframe_all_button.visible = false
+				var default_transition: int = Settings.get_default_keyframe_type()
+				keyframe_all_button.texture_normal = load(Library.ICON_EFFECTS_KEYFRAME_EMPTY_SMOOTH if default_transition == 1 else Library.ICON_EFFECTS_KEYFRAME_EMPTY)
+		else:
+			keyframe_all_button.visible = false
 
 	for param: EffectParam in effect.params:
 		var param_id: String = param.id
@@ -1373,23 +1384,25 @@ func _update_ui_values_for_container(effect: Effect, content_vbox: VBoxContainer
 
 		if param.keyframeable:
 			var keyframe_button: TextureButton = param_hbox.get_node_or_null("KEYFRAME_" + param_id)
+			keyframe_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 			if keyframe_button:
 				var effect_keyframes: Dictionary = effect.keyframes[param_id]
 				if effect_keyframes.has(frame_nr):
-					keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME)
+					var transition_type: int = (effect.keyframe_transitions.get(param_id, {}) as Dictionary).get(frame_nr, 0)
+					keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_SMOOTH if transition_type == 1 else Library.ICON_EFFECT_KEYFRAME)
 				else:
-					keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY)
+					var default_transition: int = Settings.get_default_keyframe_type()
+					keyframe_button.texture_normal = load(Library.ICON_EFFECT_KEYFRAME_EMPTY_SMOOTH if default_transition == 1 else Library.ICON_EFFECT_KEYFRAME_EMPTY)
 			keyframes_found = true
 
 	if keyframes_found and effect.display_default_keyframe_bar:
 		var track_hbox: HBoxContainer = content_vbox.get_node_or_null("TrackHBox")
 		if track_hbox:
-			var track_scroll: ScrollContainer = track_hbox.get_node_or_null("TrackScroll")
-			if track_scroll:
-				var track: KeyframeTrack = track_scroll.get_child(0)
-				track.current_relative_frame = frame_nr
-				track.clip_duration = active_clip.duration
-				track.queue_redraw()
+			var track_scroll: ScrollContainer = track_hbox.get_node("TrackScroll")
+			var track: KeyframeTrack = track_scroll.get_child(0)
+			track.current_relative_frame = frame_nr
+			track.clip_duration = active_clip.duration
+			track.queue_redraw()
 
 
 func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void:
@@ -1413,12 +1426,12 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 	var effect_container: FoldableContainer
 	if effect.id == "pck_effect_params":
 		if section.get_child_count() > index + child_offset:
-			effect_container = section.get_child(index + child_offset) as FoldableContainer
+			effect_container = section.get_child(index + child_offset)
 	else:
 		if section.get_child_count() > 0 and section.get_child(0).get_child_count() > 0:
 			var container: Control = section.get_child(0).get_child(0)
 			if container.get_child_count() > index + child_offset:
-				effect_container = container.get_child(index + child_offset) as FoldableContainer
+				effect_container = container.get_child(index + child_offset)
 
 	if !effect_container:
 		return
@@ -1539,19 +1552,9 @@ func _open_add_effects_popup(type: int, from_add_button: bool) -> void:
 func _effect_param_update_call(value: Variant, effect: Effect, is_visual: bool, param_id: String) -> void:
 	EffectsHandler.effect_selected.emit(effect)
 	if active_file and active_file.temp_file and active_file.temp_file.text_effect == effect:
-		var frame_nr: int = clampi(EditorCore.frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
 		var param_obj: EffectParam = _get_param_by_id(effect, param_id)
-		var is_keyframeable: bool = param_obj.keyframeable if param_obj else false
-		var param_keyframes: Dictionary = effect.keyframes[param_id]
-
-		if param_keyframes.size() <= 1 or not is_keyframeable:
-			var base_frame: int = param_keyframes.keys()[0] if param_keyframes.size() > 0 else 0
-			var old_value: Variant = param_keyframes.get(base_frame, param_obj.default_value)
-			FileLogic.update_text_param(active_file, param_id, base_frame, value, old_value, false)
-		else:
-			var is_new: bool = not param_keyframes.has(frame_nr)
-			var old_value: Variant = param_keyframes[frame_nr] if !is_new else effect.get_value(param_obj, frame_nr)
-			FileLogic.update_text_param(active_file, param_id, frame_nr, value, old_value, is_new)
+		var old_value: Variant = (effect.keyframes[param_id] as Dictionary).get(0, param_obj.default_value)
+		FileLogic.update_text_param(active_file, param_id, value, old_value)
 	else:
 		EffectsHandler.update_param(
 				active_clip, _get_effect_index(effect, is_visual), is_visual, param_id, value, false)
@@ -1633,25 +1636,23 @@ func _jump_next_keyframe_all(effect: Effect) -> void:
 func _keyframe_button_pressed(effect: Effect, is_visual: bool, param_id: String) -> void:
 	var relative_frame_nr: int = clampi(EditorCore.frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
 
-	if active_file and active_file.temp_file and active_file.temp_file.text_effect == effect:
-		var param_keyframes: Dictionary = effect.keyframes[param_id]
-		if !param_keyframes.has(relative_frame_nr):
-			var param_obj: EffectParam = _get_param_by_id(effect, param_id)
-			var value: Variant = effect.get_value(param_obj, relative_frame_nr)
-			FileLogic.update_text_param(active_file, param_id, relative_frame_nr, value, null, true)
+	var index: int = _get_effect_index(effect, is_visual)
+	var effect_keyframes: Dictionary = effect.keyframes[param_id]
+	if effect_keyframes.has(relative_frame_nr):
+		if Input.is_key_pressed(KEY_SHIFT):
+			var value: Variant = effect_keyframes[relative_frame_nr]
+			var current_transition: int = (effect.keyframe_transitions.get(param_id, {}) as Dictionary).get(relative_frame_nr, 0)
+			var transition_type: int = 1 if current_transition == 0 else 0
+			EffectsHandler.update_param(active_clip, index, is_visual, param_id, value, false, transition_type)
 		elif relative_frame_nr != 0:
-			FileLogic.remove_text_keyframe(active_file, param_id, relative_frame_nr)
-		_update_ui_values()
+			EffectsHandler.remove_keyframe(active_clip, index, is_visual, param_id, relative_frame_nr)
 	else:
-		var index: int = _get_effect_index(effect, is_visual)
-		var effect_keyframes: Dictionary = effect.keyframes[param_id]
-		if effect_keyframes.has(relative_frame_nr):
-			if relative_frame_nr != 0:
-				EffectsHandler.remove_keyframe(active_clip, index, is_visual, param_id, relative_frame_nr)
-		else:
-			var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)
-			EffectsHandler.update_param(active_clip, index, is_visual, param_id, value, true)
-		_update_ui_values()
+		var value: Variant = _get_current_ui_value_for_param(effect, param_id, relative_frame_nr)
+		var transition_type: int = Settings.get_default_keyframe_type()
+		if Input.is_key_pressed(KEY_SHIFT):
+			transition_type = 1 if transition_type == 0 else 0
+		EffectsHandler.update_param(active_clip, index, is_visual, param_id, value, true, transition_type)
+	_update_ui_values()
 
 
 #--- Preset stuff ---
@@ -1829,7 +1830,7 @@ func _apply_preset(path: String, is_section: bool, is_visual: bool, effect: Effe
 			return
 
 		var new_effects: Array = []
-		for effect_value: Variant in data as Array:
+		for effect_value: Variant in data:
 			var effect_id: String = (effect_value as Dictionary).get("id", "")
 			var new_effect: Effect
 			if is_visual and EffectsHandler.visual_effect_instances.has(effect_id):

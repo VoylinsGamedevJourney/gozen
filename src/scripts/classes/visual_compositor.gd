@@ -414,14 +414,18 @@ func _update_transition_buffers(transition_left: Effect, fade_in: float, transit
 
 
 func _update_fade_buffer(fade: float, transition: Effect, buffer: RID) -> void:
-	if fade >= 1.0 or !transition: return
+	if fade >= 1.0 or !transition:
+		return
+
+	var is_smooth: bool = (transition.keyframe_transitions.get("fade", {}) as Dictionary).get(0, 0) == 1
+	var final_fade: float = smoothstep(0.0, 1.0, fade) if is_smooth else fade
 
 	var buffer_data: PackedByteArray = PackedByteArray()
 	var err: int = buffer_data.resize(16)
 	if err != OK:
 		printerr("VisualCompositor: Resizing 'fade_buffer_data' failed with '%s'!" % err)
 
-	buffer_data.encode_float(0, fade)
+	buffer_data.encode_float(0, final_fade)
 	err = device.buffer_update(buffer, 0, 16, buffer_data)
 	if err != OK:
 		printerr("VisualCompositor: Updating device 'fade_buffer' failed with '%s'!" % err)
@@ -429,7 +433,8 @@ func _update_fade_buffer(fade: float, transition: Effect, buffer: RID) -> void:
 
 func _apply_transition(compute_list: int, transition: Effect, _progress: float, progress_buffer: RID) -> void:
 	var cache: EffectCache = _get_effect_pipeline(transition.shader_path, transition)
-	if not cache: return
+	if not cache:
+		return
 
 	for pass_index: int in transition.shader_passes:
 		device.compute_list_bind_compute_pipeline(compute_list, cache.pipeline)

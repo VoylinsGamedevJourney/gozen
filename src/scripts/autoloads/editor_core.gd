@@ -385,7 +385,7 @@ func previous_frame() -> void: frame_nr = clampi(frame_nr - 1, 0, Project.data.t
 
 func set_frame(new_frame: int = frame_nr + 1) -> void:
 	if frame_nr != new_frame:
-		self.frame_nr = new_frame
+		frame_nr = new_frame
 		return
 	_cleanup_unused_instances(frame_nr)
 

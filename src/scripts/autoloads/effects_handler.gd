@@ -70,6 +70,26 @@ func _set_transition(clip: ClipData, is_left: bool, transition: Effect) -> void:
 	effects_updated.emit()
 
 
+func set_transition_smoothing(clip: ClipData, is_left: bool, smooth: bool) -> void:
+	var transition: Effect = clip.effects.transition_left if is_left else clip.effects.transition_right
+	if transition:
+		var old_value: int = (transition.keyframe_transitions.get("fade", {}) as Dictionary).get(0, 0)
+		var new_value: int = 1 if smooth else 0
+
+		InputManager.undo_redo.create_action("Toggle transition smoothing")
+		InputManager.undo_redo.add_do_method(_set_transition_smoothing.bind(transition, new_value))
+		InputManager.undo_redo.add_undo_method(_set_transition_smoothing.bind(transition, old_value))
+		InputManager.undo_redo.commit_action()
+
+
+func _set_transition_smoothing(transition: Effect, val: int) -> void:
+	if not transition.keyframe_transitions.has("fade"):
+		transition.keyframe_transitions["fade"] = {}
+	transition.keyframe_transitions["fade"][0] = val
+	transition._cache_dirty = true
+	effects_updated.emit()
+
+
 func update_transition_param(clip: ClipData, is_left: bool, param_id: String, value: Variant) -> void:
 	var transition: Effect = clip.effects.transition_left if is_left else clip.effects.transition_right
 	var old_value: Variant = transition.keyframes[param_id][0]
@@ -283,9 +303,10 @@ func _move_effect(clip: ClipData, effect_index: int, new_index: int, is_visual: 
 
 #---- Updating effect params ----
 
-func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: String, new_value: Variant, new_keyframe: bool) -> void:
+func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: String, new_value: Variant, new_keyframe: bool, transition_type: int = -1) -> void:
 	var effect: Effect = _get_effect(clip, effect_index, is_visual)
-	if not effect: return
+	if not effect:
+		return
 
 	var effect_param: EffectParam = null
 	for param: EffectParam in effect.params:
@@ -309,26 +330,32 @@ func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: 
 
 	if target_frame == 0 and ((!new_keyframe and param_keyframes.size() == 1) or !is_keyframeable):
 		var old_value: Variant = effect.keyframes[param_id][0]
+		var old_transition: int = (effect.keyframe_transitions.get(param_id, {}) as Dictionary).get(0, 0)
 		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
-				clip, effect_index, is_visual, param_id, 0, new_value))
+				clip, effect_index, is_visual, param_id, 0, new_value, transition_type))
 		InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
-				clip, effect_index, is_visual, param_id, 0, old_value))
+				clip, effect_index, is_visual, param_id, 0, old_value, old_transition))
 	else:
 		var old_value: Variant = null
+		var old_transition: int = 0
 		var keyframe_exists: bool = false
 
 		if param_keyframes.has(target_frame):
 			old_value = effect.keyframes[param_id][target_frame]
+			old_transition = (effect.keyframe_transitions.get(param_id, {}) as Dictionary).get(target_frame, 0)
 			keyframe_exists = true
 		elif effect_param: # New keyframe.
 			old_value = effect.get_value(effect_param, target_frame)
 
+		if not keyframe_exists and transition_type == -1:
+			transition_type = Settings.get_default_keyframe_type()
+
 		InputManager.undo_redo.add_do_method(_set_keyframe.bind(
-				clip, effect_index, is_visual, param_id, target_frame, new_value))
+				clip, effect_index, is_visual, param_id, target_frame, new_value, transition_type))
 
 		if keyframe_exists: # If keyframe already existed, we just adjust the keyframe.
 			InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
-					clip, effect_index, is_visual, param_id, target_frame, old_value))
+					clip, effect_index, is_visual, param_id, target_frame, old_value, old_transition))
 		else: # If the keyframe didn't exist yet, we remove the newly created one on undo.
 			InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
 					clip, effect_index, is_visual, param_id, target_frame))
@@ -339,56 +366,55 @@ func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: 
 
 func remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
 	var effect: Effect = _get_effect(clip, index, is_visual)
-	if not effect: return
-
-	# Check if there is actually a keyframe to remove
-	if not effect.keyframes.has(param_id): return
+	if !effect.keyframes.has(param_id):
+		return
 
 	var effect_keyframes: Dictionary = effect.keyframes[param_id]
-	if not effect_keyframes.has(frame_nr): return
+	if effect_keyframes.has(frame_nr):
+		var old_value: Variant = effect_keyframes[frame_nr]
+		var old_transition: int = (effect.keyframe_transitions.get(param_id, {}) as Dictionary).get(frame_nr, 0)
 
-	var old_value: Variant = effect_keyframes[frame_nr]
-
-	InputManager.undo_redo.create_action("Remove keyframe: %s" % effect.nickname)
-	InputManager.undo_redo.add_do_method(_remove_keyframe.bind(
-			clip, index, is_visual, param_id, frame_nr))
-	InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
-			clip, index, is_visual, param_id, frame_nr, old_value))
-	InputManager.undo_redo.commit_action()
+		InputManager.undo_redo.create_action("Remove keyframe: %s" % effect.nickname)
+		InputManager.undo_redo.add_do_method(_remove_keyframe.bind(
+				clip, index, is_visual, param_id, frame_nr))
+		InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
+				clip, index, is_visual, param_id, frame_nr, old_value, old_transition))
+		InputManager.undo_redo.commit_action()
 
 
-func _set_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String, frame_nr: int, value: Variant) -> void:
+func _set_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String, frame_nr: int, value: Variant, transition_type: int = -1) -> void:
 	var effect: Effect = _get_effect(clip, index, is_visual)
-	if not effect: return
-
 	if not effect.keyframes.has(param_id):
 		var typed_dict: Dictionary[int, Variant] = {}
 		effect.keyframes[param_id] = typed_dict
-
 	effect.keyframes[param_id][frame_nr] = value
+
+	if transition_type != -1:
+		if not effect.keyframe_transitions.has(param_id):
+			effect.keyframe_transitions[param_id] = {}
+		effect.keyframe_transitions[param_id][frame_nr] = transition_type
 	effect._cache_dirty = true
 	effects_updated.emit()
 
 
 func _remove_keyframe(clip: ClipData, index: int, is_visual: bool, param_id: String, frame_nr: int) -> void:
 	var effect: Effect = _get_effect(clip, index, is_visual)
-	if not effect: return
-
 	if effect.keyframes.has(param_id):
 		var effect_keyframes: Dictionary = effect.keyframes[param_id]
-		if !effect_keyframes.erase(frame_nr):
-			printerr("EffectsHandler: Frame nr '%s' wasn't present in effect_keyframes!" % frame_nr)
-		if effect_keyframes.is_empty() and !effect.keyframes.erase(param_id):
-			printerr("EffectsHandler: Param id '%s' wasn't present in effect.keyframes!" % param_id)
-
+		effect_keyframes.erase(frame_nr)
+		if effect_keyframes.is_empty():
+			effect.keyframes.erase(param_id)
+		if effect.keyframe_transitions.has(param_id):
+			(effect.keyframe_transitions[param_id] as Dictionary).erase(frame_nr)
 	effect._cache_dirty = true
 	effects_updated.emit()
+
 
 
 #---- Adding effect keyframes ----
 
 ## Adds keyframes for all keyframeable parameters at a specific frame for this effect.
-func add_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: bool, frame_nr: int) -> void:
+func add_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: bool, frame_nr: int, transition_type: int = -1) -> void:
 	var effect: Effect = _get_effect(clip, effect_index, is_visual)
 	if not effect:
 		return
@@ -406,17 +432,15 @@ func add_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: 
 
 	InputManager.undo_redo.create_action("Add Effect Keyframe(s)")
 	for param: EffectParam in effect.params:
-		if not param.keyframeable:
-			continue
-
-		var param_id: String = param.id
-		var keyframes: Dictionary = effect.keyframes.get(param_id, {})
-		if not keyframes.has(frame_nr):
-			var new_value: Variant = effect.get_value(param, frame_nr)
-			InputManager.undo_redo.add_do_method(_set_keyframe.bind(
-					clip, effect_index, is_visual, param_id, frame_nr, new_value))
-			InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
-					clip, effect_index, is_visual, param_id, frame_nr))
+		if param.keyframeable:
+			var param_id: String = param.id
+			var keyframes: Dictionary = effect.keyframes.get(param_id, {})
+			if not keyframes.has(frame_nr):
+				var new_value: Variant = effect.get_value(param, frame_nr)
+				InputManager.undo_redo.add_do_method(_set_keyframe.bind(
+						clip, effect_index, is_visual, param_id, frame_nr, new_value, transition_type))
+				InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
+						clip, effect_index, is_visual, param_id, frame_nr))
 	InputManager.undo_redo.commit_action()
 	Project.unsaved_changes = true
 	effects_updated.emit()
@@ -428,42 +452,50 @@ func add_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: 
 ## If preserve_existing is true (ctrl pressed), existing values at new_frame
 ## are kept. Otherwise, values from old_frame overwrite existing ones.
 func move_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: bool, old_frame: int, new_frame: int, preserve_existing: bool, is_copy: bool = false) -> void:
-	if old_frame == new_frame: return
+	if old_frame == new_frame:
+		return
 
 	var effect: Effect = _get_effect(clip, effect_index, is_visual)
-	if not effect: return
+	if not effect:
+		return
 
 	InputManager.undo_redo.create_action("Move/Copy Effect Keyframe(s)")
 	for param: EffectParam in effect.params:
 		var param_id: String = param.id
-		if not effect.keyframes.has(param_id): continue
+		if not effect.keyframes.has(param_id):
+			continue
 
 		var keyframes: Dictionary = effect.keyframes[param_id]
-		if not keyframes.has(old_frame): continue
+		if not keyframes.has(old_frame):
+			continue
 
 		var value_to_move: Variant = effect.keyframes[param_id][old_frame]
+		var trans_to_move: int = (effect.keyframe_transitions.get(param_id, {}) as Dictionary).get(old_frame, 0)
 		var value_at_target: Variant = null
+		var trans_at_target: int = 0
 		var has_target: bool = keyframes.has(new_frame)
 		if has_target:
 			value_at_target = effect.keyframes[param_id][new_frame]
+			trans_at_target = (effect.keyframe_transitions.get(param_id, {}) as Dictionary).get(new_frame, 0)
 
 		var final_value: Variant = value_to_move
+		var final_transition: int = trans_to_move
 		if has_target and preserve_existing:
 			final_value = value_at_target
+			final_transition = trans_at_target
 
 		if old_frame != 0 and not is_copy:
 			InputManager.undo_redo.add_do_method(
 					_remove_keyframe.bind(clip, effect_index, is_visual, param_id, old_frame))
 			InputManager.undo_redo.add_undo_method(
-					_set_keyframe.bind(clip, effect_index, is_visual, param_id, old_frame, value_to_move))
+					_set_keyframe.bind(clip, effect_index, is_visual, param_id, old_frame, value_to_move, trans_to_move))
 
 		if !(has_target and preserve_existing):
 			InputManager.undo_redo.add_do_method(_set_keyframe.bind(
-					clip, effect_index, is_visual, param_id, new_frame, final_value))
-
+					clip, effect_index, is_visual, param_id, new_frame, final_value, final_transition))
 			if has_target:
 				InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
-						clip, effect_index, is_visual, param_id, new_frame, value_at_target))
+						clip, effect_index, is_visual, param_id, new_frame, value_at_target, trans_at_target))
 			else:
 				InputManager.undo_redo.add_undo_method(_remove_keyframe.bind(
 						clip, effect_index, is_visual, param_id, new_frame))
@@ -475,22 +507,24 @@ func move_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual:
 
 ## Deletes all parameter keyframes at a specific frame for this effect.
 func remove_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visual: bool, frame_nr: int) -> void:
-	if frame_nr == 0: return
+	if frame_nr == 0:
+		return
 
 	var effect: Effect = _get_effect(clip, effect_index, is_visual)
-	if not effect: return
+	if not effect:
+		return
 
 	InputManager.undo_redo.create_action("Remove Effect Keyframe(s)")
 	for param: EffectParam in effect.params:
 		var param_id: String = param.id
-		if not effect.keyframes.has(param_id): continue
-
-		var keyframes: Dictionary = effect.keyframes[param_id]
-		if not keyframes.has(frame_nr): continue
-
-		var old_value: Variant = effect.keyframes[param_id][frame_nr]
-		InputManager.undo_redo.add_do_method(_remove_keyframe.bind(clip, effect_index, is_visual, param_id, frame_nr))
-		InputManager.undo_redo.add_undo_method(_set_keyframe.bind(clip, effect_index, is_visual, param_id, frame_nr, old_value))
+		if effect.keyframes.has(param_id):
+			var keyframes: Dictionary = effect.keyframes[param_id]
+			if keyframes.has(frame_nr):
+				var old_value: Variant = effect.keyframes[param_id][frame_nr]
+				InputManager.undo_redo.add_do_method(_remove_keyframe.bind(
+						clip, effect_index, is_visual, param_id, frame_nr))
+				InputManager.undo_redo.add_undo_method(_set_keyframe.bind(
+						clip, effect_index, is_visual, param_id, frame_nr, old_value))
 	InputManager.undo_redo.commit_action()
 	effects_updated.emit()
 

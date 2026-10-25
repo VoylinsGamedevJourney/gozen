@@ -6,6 +6,7 @@ const VERSION: int = 1
 
 
 enum AudioWaveformStyle { CENTER, BOTTOM_TO_TOP, TOP_TO_BOTTOM }
+enum KeyframeType { LINEAR, SMOOTH }
 
 
 var version: int = VERSION
@@ -33,6 +34,7 @@ var quick_create_horizontal_res: Vector2i = Vector2i(1920, 1080)
 var quick_create_horizontal_fps: float = 30.0
 var quick_create_vertical_res: Vector2i = Vector2i(1080, 1920)
 var quick_create_vertical_fps: float = 30.0
+var default_keyframe_type: int = KeyframeType.LINEAR
 
 # Rendering
 var default_render_profile: String = "YouTube"

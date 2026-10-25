@@ -2,33 +2,50 @@ class_name Math
 
 
 #--- Interpolation handling ---
-# TODO: Implement different interpolation types
 
 static func simple_interpolate(a: Variant, b: Variant, weight: float) -> Variant:
-	match typeof(a):
-		TYPE_FLOAT, TYPE_INT:
-			return lerp(a as float, b as float, weight)
-		TYPE_VECTOR2:
-			return (a as Vector2).lerp(b as Vector2, weight)
-		TYPE_VECTOR2I:
-			return Vector2i((a as Vector2).lerp(b as Vector2, weight))
-		TYPE_VECTOR3:
-			return (a as Vector3).lerp(b as Vector3, weight)
-		TYPE_VECTOR3I:
-			return Vector3i((a as Vector3).lerp(b as Vector3, weight))
-		TYPE_COLOR:
-			return (a as Color).lerp(b as Color, weight)
-		TYPE_PACKED_VECTOR2_ARRAY:
-			var arr_a: PackedVector2Array = a
-			var arr_b: PackedVector2Array = b
-			var result: PackedVector2Array = PackedVector2Array()
-			var size: int = maxi(arr_a.size(), arr_b.size())
-			for i: int in size:
-				var pt_a: Vector2 = arr_a[i] if i < arr_a.size() else (arr_b[i] if arr_a.is_empty() else arr_a[-1])
-				var pt_b: Vector2 = arr_b[i] if i < arr_b.size() else (arr_a[i] if arr_b.is_empty() else arr_b[-1])
-				result.append(pt_a.lerp(pt_b, weight))
-			return result
-		_: return a # Fallback.
+	var type: int = typeof(a)
+	if type in [TYPE_FLOAT, TYPE_INT]:
+		return lerp(a as float, b as float, weight)
+	elif type == TYPE_VECTOR2:
+		return (a as Vector2).lerp(b as Vector2, weight)
+	elif type == TYPE_VECTOR2I:
+		return Vector2i((a as Vector2).lerp(b as Vector2, weight))
+	elif type == TYPE_VECTOR3:
+		return (a as Vector3).lerp(b as Vector3, weight)
+	elif type == TYPE_VECTOR3I:
+		return Vector3i((a as Vector3).lerp(b as Vector3, weight))
+	elif type == TYPE_COLOR:
+		return (a as Color).lerp(b as Color, weight)
+	elif type == TYPE_PACKED_VECTOR2_ARRAY:
+		var array_a: PackedVector2Array = a
+		var array_b: PackedVector2Array = b
+		var result: PackedVector2Array = PackedVector2Array()
+		var size: int = maxi(array_a.size(), array_b.size())
+		for i: int in size:
+			var point_a: Vector2
+			if i < array_a.size():
+				point_a = array_a[i]
+			elif array_a.is_empty():
+				point_a = array_b[i]
+			else:
+				point_a = array_a[-1]
+
+			var point_b: Vector2
+			if i < array_b.size():
+				point_b = array_b[i]
+			elif array_b.is_empty():
+				point_b = array_a[i]
+			else:
+				point_b = array_b[-1]
+			result.append(point_a.lerp(point_b, weight))
+		return result
+	else:
+		return a # Fallback.
+
+
+static func smooth_interpolate(a: Variant, b: Variant, weight: float) -> Variant:
+	return simple_interpolate(a, b, smoothstep(0.0, 1.0, weight))
 
 
 ## Easier way to check if a value is within a range.

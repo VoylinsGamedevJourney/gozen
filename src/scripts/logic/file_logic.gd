@@ -1029,26 +1029,25 @@ func set_proxy_path(file: FileData, path: String) -> void:
 	file.proxy_path = path
 
 
-func update_text_param(file: FileData, param_id: String, frame_nr: int, new_value: Variant, old_value: Variant, is_new: bool) -> void:
-	var action_name: String = "Update text %s_%d_f%d" % [param_id, file.id, frame_nr]
+func update_text_param(file: FileData, param_id: String, new_value: Variant, old_value: Variant) -> void:
+	var action_name: String = "Update text %s_%d" % [param_id, file.id]
+
 	InputManager.undo_redo.create_action(action_name, UndoRedo.MERGE_ENDS)
-	InputManager.undo_redo.add_do_method(_set_text_keyframe.bind(file, param_id, frame_nr, new_value))
-	if is_new and frame_nr != 0:
-		InputManager.undo_redo.add_undo_method(_remove_text_keyframe.bind(file, param_id, frame_nr))
-	else:
-		InputManager.undo_redo.add_undo_method(_set_text_keyframe.bind(file, param_id, frame_nr, old_value))
+	InputManager.undo_redo.add_do_method(_set_text_param.bind(file, param_id, new_value))
+	InputManager.undo_redo.add_undo_method(_set_text_param.bind(file, param_id, old_value))
 	InputManager.undo_redo.commit_action()
 
 
-func _set_text_keyframe(file: FileData, param_id: String, frame_nr: int, value: Variant) -> void:
+func _set_text_param(file: FileData, param_id: String, value: Variant) -> void:
 	var text_effect: Effect = file.temp_file.text_effect
 	if not text_effect.keyframes.has(param_id):
 		var typed_dict: Dictionary = {}
 		text_effect.keyframes[param_id] = typed_dict
-	text_effect.keyframes[param_id][frame_nr] = value
+	text_effect.keyframes[param_id][0] = value
+
 	text_effect._cache_dirty = true
 
-	if param_id == "text_data" and frame_nr == 0:
+	if param_id == "text_data":
 		var text_str: String = str(value).strip_edges().replace("\n", " ")
 		if text_str == "":
 			text_str = "Text: Empty text"
@@ -1058,32 +1057,6 @@ func _set_text_keyframe(file: FileData, param_id: String, frame_nr: int, value: 
 			Project.unsaved_changes = true
 			ClipLogic.updated.emit()
 			nickname_changed.emit(file)
-	EffectsHandler.effects_updated.emit()
-
-
-func remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> void:
-	var text_effect: Effect = file.temp_file.text_effect
-	var param_keyframes: Dictionary = text_effect.keyframes[param_id]
-	if not text_effect.keyframes.has(param_id) or not param_keyframes.has(frame_nr):
-		return
-	var old_value: Variant = text_effect.keyframes[param_id][frame_nr]
-
-	InputManager.undo_redo.create_action("Remove text keyframe")
-	InputManager.undo_redo.add_do_method(_remove_text_keyframe.bind(file, param_id, frame_nr))
-	InputManager.undo_redo.add_undo_method(_set_text_keyframe.bind(file, param_id, frame_nr, old_value))
-	InputManager.undo_redo.commit_action()
-
-
-func _remove_text_keyframe(file: FileData, param_id: String, frame_nr: int) -> void:
-	var temp_file: TempFile = file.temp_file
-	var text_effect: Effect = temp_file.text_effect
-	var param_keyframes: Dictionary = text_effect.keyframes[param_id]
-
-	if !param_keyframes.erase(frame_nr):
-		printerr("FileLogic: '%s' frame number isn't present in text keyframes!" % frame_nr)
-	text_effect._cache_dirty = true
-	Project.unsaved_changes = true
-	ClipLogic.updated.emit()
 	EffectsHandler.effects_updated.emit()
 
 

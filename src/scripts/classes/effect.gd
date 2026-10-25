@@ -23,6 +23,7 @@ extends Resource
 
 
 var keyframes: Dictionary = {} ## { param_id: { frame_number: value }}
+var keyframe_transitions: Dictionary = {} ## { param_id: { frame_number: transition_type }}
 
 var _key_cache: Dictionary = {}
 var _cache_dirty: bool = true
@@ -56,24 +57,30 @@ func get_value(effect_param: EffectParam, frame_nr: int) -> Variant:
 	var weight: float = float(frame_nr - prev_frame) / difference
 	var value_a: Variant = keyframes[param_id][prev_frame]
 	var value_b: Variant = keyframes[param_id][next_frame]
+	var transition_type: int = 0
+	if keyframe_transitions.has(param_id) and (keyframe_transitions[param_id] as Dictionary).has(prev_frame):
+		transition_type = keyframe_transitions[param_id][prev_frame]
+
+	if transition_type == 1:
+		return Math.smooth_interpolate(value_a, value_b, weight)
 	return Math.simple_interpolate(value_a, value_b, weight)
 
 
 func deep_copy() -> Effect:
-	var copy: Effect = self.duplicate(false)
-	copy.custom_ui = self.custom_ui.duplicate(false)
-	copy.matrix_map = self.matrix_map.duplicate(false)
-	copy.keyframes = duplicate_keyframes(self.keyframes)
+	var copy: Effect = duplicate(false)
+	copy.custom_ui = custom_ui.duplicate(false)
+	copy.matrix_map = matrix_map.duplicate(false)
+	copy.keyframes = duplicate_keyframes(keyframes)
+	copy.keyframe_transitions = duplicate_keyframes(keyframe_transitions)
 	copy._cache_dirty = true
 
 	var new_params: Array[EffectParam] = []
-	for param: EffectParam in self.params:
+	for param: EffectParam in params:
 		new_params.append(param.duplicate(true))
 	copy.params = new_params
 
 	if copy.audio_effect:
 		copy.audio_effect = copy.audio_effect.duplicate(true)
-
 	return copy
 
 
@@ -84,7 +91,6 @@ static func duplicate_keyframes(source_keyframes: Dictionary) -> Dictionary:
 		var new_param_keyframes: Dictionary = {}
 		for frame: int in param_keyframes:
 			var value: Variant = param_keyframes[frame]
-
 			if value is Resource:
 				new_param_keyframes[frame] = (value as Resource).duplicate(true)
 			elif typeof(value) == TYPE_ARRAY:
@@ -123,33 +129,43 @@ func _validate_cache(param_id: String) -> PackedInt64Array:
 		_cache_dirty = false
 
 	if not _key_cache.has(param_id):
-		var param_keyframes: Dictionary = keyframes[param_id]
-		var keys: Array = param_keyframes.keys()
-		keys.sort()
-		_key_cache[param_id] = PackedInt64Array(keys)
-
+		if not keyframes.has(param_id):
+			_key_cache[param_id] = PackedInt64Array()
+		else:
+			var param_keyframes: Dictionary = keyframes[param_id]
+			var keys: Array = param_keyframes.keys()
+			keys.sort()
+			_key_cache[param_id] = PackedInt64Array(keys)
 	return _key_cache[param_id]
 
 
 #--- Data handling ---
 
 func serialize() -> Dictionary:
-	var keyframe_dict: Dictionary = {}
+	var keyframe_data: Dictionary = {}
 	for param_id: String in keyframes:
-		keyframe_dict[param_id] = {}
+		keyframe_data[param_id] = {}
 		for frame: int in keyframes[param_id]:
-			keyframe_dict[param_id][frame] = keyframes[param_id][frame]
+			keyframe_data[param_id][frame] = keyframes[param_id][frame]
 
-	var data: Dictionary = { "id": id, "keyframes": keyframe_dict }
+	var data: Dictionary = { "id": id, "keyframes": keyframe_data }
 	if !is_enabled:
 		data["is_enabled"] = false
+
+	if not keyframe_transitions.is_empty():
+		var transition_data: Dictionary = {}
+		for param_id: String in keyframe_transitions:
+			transition_data[param_id] = {}
+			for frame: int in keyframe_transitions[param_id]:
+				transition_data[param_id][frame] = keyframe_transitions[param_id][frame]
+		data["keyframe_transitions"] = transition_data
 	return data
 
 
-func deserialize(dict: Dictionary) -> void:
-	is_enabled = dict.get("is_enabled", true)
-	if dict.has("keyframes"):
-		var keyframe_dict: Dictionary = dict["keyframes"]
+func deserialize(data: Dictionary) -> void:
+	is_enabled = data.get("is_enabled", true)
+	if data.has("keyframes"):
+		var keyframe_dict: Dictionary = data["keyframes"]
 		keyframes.clear()
 		for param_id: String in keyframe_dict:
 			var frames: Dictionary = keyframe_dict[param_id]
@@ -157,6 +173,16 @@ func deserialize(dict: Dictionary) -> void:
 			for frame_key: int in frames:
 				typed_frames[frame_key] = frames[frame_key]
 			keyframes[param_id] = typed_frames
+
+	if data.has("keyframe_transitions"):
+		var transition_data: Dictionary = data["keyframe_transitions"]
+		keyframe_transitions.clear()
+		for param_id: String in transition_data:
+			var frames: Dictionary = transition_data[param_id]
+			var typed_frames: Dictionary[int, int] = {}
+			for frame_key: int in frames:
+				typed_frames[frame_key] = frames[frame_key]
+			keyframe_transitions[param_id] = typed_frames
 	_cache_dirty = true
 
 

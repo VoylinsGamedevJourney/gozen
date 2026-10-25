@@ -390,6 +390,14 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 					default_settings.quick_create_vertical_fps,
 					1, 1000, 1, false, true,
 					Settings.set_quick_create_vertical_fps),
+			create_header(tr("Keyframes")), Control.new(),
+			create_label(tr("Default keyframe type")),
+			create_option_button(
+					{"Linear": 0, "Smooth": 1},
+					Settings.get_default_keyframe_type(),
+					default_settings.default_keyframe_type,
+					Settings.set_default_keyframe_type,
+					TYPE_INT),
 		],
 
 		tr("Performance"): performance_options,

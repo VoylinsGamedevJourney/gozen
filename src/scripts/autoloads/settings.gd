@@ -386,6 +386,14 @@ func get_quick_create_vertical_fps() -> float:
 	return data.quick_create_vertical_fps
 
 
+func set_default_keyframe_type(type: int) -> void:
+	data.default_keyframe_type = type
+
+
+func get_default_keyframe_type() -> int:
+	return data.default_keyframe_type
+
+
 #--- Modules set/get ---
 
 func set_module_setting(module_folder: String, setting_id: String, value: Variant) -> void:
