@@ -450,7 +450,7 @@ func _on_start_render_button_pressed(draft: bool = false) -> void:
 
 func _on_render_settings_changed() -> void:
 	if !_is_loading_profile:
-		button_save_render_profile.visible =  not OS.has_feature("demo")
+		button_save_render_profile.visible = not OS.has_feature("lite")
 		option_button_render_profiles.selected = -1
 		region_start_spinbox.visible = render_region_check_button.button_pressed
 		region_end_spinbox.visible = render_region_check_button.button_pressed

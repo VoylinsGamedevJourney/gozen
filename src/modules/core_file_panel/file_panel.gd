@@ -144,7 +144,7 @@ func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = fa
 			if file.path.contains("temp://"):
 				popup.add_separator(tr("Image options"))
 				popup.add_item(tr("Save image as ..."), PopupAction.SAVE_TEMP_AS)
-		elif file.type == Type.VIDEO and not OS.has_feature("demo"):
+		elif file.type == Type.VIDEO and not OS.has_feature("lite"):
 			popup.add_separator(tr("Video options"))
 
 			if Settings.get_use_proxies():

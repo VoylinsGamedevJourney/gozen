@@ -58,7 +58,7 @@ func _ready() -> void:
 	# Create menu buttons.
 	_create_project_popup_menu()
 	_create_edit_popup_menu()
-	if not OS.has_feature("demo"):
+	if not OS.has_feature("lite"):
 		_create_view_popup_menu() # Only for full and self-compiled versions.
 	_create_preferences_popup_menu()
 	_create_info_popup_menu()
@@ -257,7 +257,7 @@ func _create_project_popup_menu() -> void:
 	menu.add_separator()
 	menu.add_icon_item(load(Library.ICON_SAVE) as Icon, "Save project", 1)
 	menu.add_icon_item(load(Library.ICON_SAVE) as Icon, "Save project as ...", 2)
-	if not OS.has_feature("demo"):
+	if not OS.has_feature("lite"):
 		menu.add_icon_item(load(Library.ICON_FILE_VIDEO) as Icon, "Archive project ...", 3)
 	menu.add_separator()
 	menu.add_icon_item(load(Library.ICON_OPEN) as Icon, "Open project", 4)
@@ -424,7 +424,7 @@ func _create_preferences_popup_menu() -> void:
 
 	menu.add_theme_constant_override("icon_max_width", 20)
 	menu.add_icon_item(load(Library.ICON_EDITOR_SETTINGS) as Icon, "Editor settings", 0)
-	if not OS.has_feature("demo"):
+	if not OS.has_feature("lite"):
 		menu.add_icon_item(load(Library.ICON_MODULE_MANAGER) as Icon, "Module manager", 1)
 		menu.add_separator()
 		menu.add_icon_item(load(Library.ICON_COMMAND_PROMPT) as Icon, "Command bar", 2)

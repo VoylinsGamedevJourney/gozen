@@ -15,7 +15,8 @@ func _ready() -> void:
 
 
 func request_generation(file: FileData) -> void:
-	if OS.has_feature("demo"): return
+	if OS.has_feature("lite"):
+		return
 
 	var proxy_path: String = Settings.get_proxies_path()
 	if file.type != Type.VIDEO:

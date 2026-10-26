@@ -40,8 +40,7 @@ static func simple_interpolate(a: Variant, b: Variant, weight: float) -> Variant
 				point_b = array_b[-1]
 			result.append(point_a.lerp(point_b, weight))
 		return result
-	else:
-		return a # Fallback.
+	return a # Fallback.
 
 
 static func smooth_interpolate(a: Variant, b: Variant, weight: float) -> Variant:

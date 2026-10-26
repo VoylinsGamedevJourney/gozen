@@ -33,7 +33,7 @@ func _ready() -> void:
 	drag_overlay.set_drag_forwarding(Callable(), _overlay_can_drop_data, _overlay_drop_data)
 	drag_layer.add_child(drag_overlay)
 
-	if OS.has_feature("demo"):
+	if OS.has_feature("lite"):
 		available_workspaces.append("Edit")
 		available_workspaces.append("Render")
 		return
@@ -130,7 +130,7 @@ func _save_node(control: Control) -> WorkspaceNode:
 func load_workspace(workspace_name: String) -> void:
 	var layout: WorkspaceLayout
 
-	if OS.has_feature("demo"):
+	if OS.has_feature("lite"):
 		if workspace_name == "Edit":
 			layout = _create_default_edit_workspace()
 		if workspace_name == "Render":

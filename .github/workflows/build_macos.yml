@@ -137,7 +137,7 @@ jobs:
 
           mkdir -p ../${{ env.PATH_EXPORT }}
           Godot --import project.godot --headless --quit || true
-          Godot --headless --export-release "macOS" ../${{ env.PATH_EXPORT }}/GoZen${{ inputs.demo && '_demo' || '' }}.dmg
+          Godot --headless --export-release "macOS" ../${{ env.PATH_EXPORT }}/GoZen${{ inputs.lite && '_lite' || '' }}.dmg
 
       - name: Upload raw MacOS export
         uses: actions/upload-artifact@v6
@@ -146,9 +146,9 @@ jobs:
           path: ${{ env.PATH_EXPORT }}/GoZen.dmg
 # End full build
 
-# Start demo build
-  export-gozen-demo:
-    name: Export macos demo
+# Start lite build
+  export-gozen-lite:
+    name: Export macos lite
     needs: build-gde
     runs-on: macos-latest
     steps:
@@ -182,11 +182,11 @@ jobs:
 
           mkdir -p ../${{ env.PATH_EXPORT }}
           Godot --import project.godot --headless --quit || true
-          Godot --headless --export-release "macOS_DEMO" ../${{ env.PATH_EXPORT }}/GoZen_demo.dmg
+          Godot --headless --export-release "macOS_LITE" ../${{ env.PATH_EXPORT }}/GoZen_lite.dmg
 
       - name: Upload raw MacOS export
         uses: actions/upload-artifact@v6
         with:
-          name: GoZen_MacOS_demo
-          path: ${{ env.PATH_EXPORT }}/GoZen_demo.dmg
-# End demo build
+          name: GoZen_MacOS_lite
+          path: ${{ env.PATH_EXPORT }}/GoZen_lite.dmg
+# End lite build

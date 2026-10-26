@@ -9,7 +9,8 @@ var actions: Array[String] = []
 
 
 func _ready() -> void:
-	if OS.has_feature("demo"): return # No commands for demo :p
+	if OS.has_feature("lite"):
+		return # No commands for lite :p
 
 	register(Command.new("Open editor settings", PopupManager.open.bind(PopupManager.EDITOR_SETTINGS), "open_settings"))
 	register(Command.new("Open project settings", PopupManager.open.bind(PopupManager.PROJECT_SETTINGS), "open_project_settings"))

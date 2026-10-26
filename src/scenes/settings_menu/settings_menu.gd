@@ -225,7 +225,7 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 				"%"),
 	]
 
-	if not OS.has_feature("demo"):
+	if not OS.has_feature("lite"):
 		appearance_options.append_array([
 			create_label(tr("Editor theme")),
 			create_option_button(
@@ -293,7 +293,7 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 				tr("The maximum number of decoded frames to keep in RAM. Higher values enable smoother backward seeking and scrubbing but increase memory usage.")),
 	]
 
-	if not OS.has_feature("demo"):
+	if not OS.has_feature("lite"):
 		performance_options.append_array([
 			create_label(tr("Use proxies")),
 			create_check_button(

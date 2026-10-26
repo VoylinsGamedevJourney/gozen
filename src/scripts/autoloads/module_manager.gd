@@ -40,7 +40,7 @@ func _save_config() -> void:
 
 
 func _apply_modules() -> void:
-	if not OS.has_feature("demo"):
+	if not OS.has_feature("lite"):
 		for filename: String in loaded_modules.keys():
 			var dict: Dictionary = loaded_modules[filename]
 			if dict.get("enabled", false):
@@ -56,7 +56,7 @@ func _apply_modules() -> void:
 	for module_dir: String in DirAccess.get_directories_at(PATH_MODULES_LOCAL):
 		if module_dir.begins_with("."):
 			continue
-		elif OS.has_feature("demo") and module_dir.begins_with("extra_"):
+		elif OS.has_feature("lite") and module_dir.begins_with("extra_"):
 			continue
 
 		var module_tres: String = PATH_MODULES_LOCAL.path_join(module_dir).path_join("module.tres")
@@ -65,7 +65,7 @@ func _apply_modules() -> void:
 			if module_resource is GoZenModule:
 				loaded_gozen_modules.append(module_resource)
 
-	if not OS.has_feature("demo"):
+	if not OS.has_feature("lite"):
 		var config_changed: bool = false
 		for filename: String in loaded_modules.keys():
 			var data: Dictionary = loaded_modules[filename]

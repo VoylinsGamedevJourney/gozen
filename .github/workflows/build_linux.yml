@@ -164,7 +164,7 @@ jobs:
       - name: Upload raw Linux export
         uses: actions/upload-artifact@v6
         with:
-          name: GoZen_Linux${{ inputs.demo && '_demo' || '' }}
+          name: GoZen_Linux${{ inputs.lite && '_lite' || '' }}
           path: ${{ env.PATH_EXPORT }}
 
   package-gozen-appimage:
@@ -217,9 +217,9 @@ jobs:
           path: ${{ env.APP_NAME }}.AppImage
 # End full build
 
-# Start demo build
-  export-gozen-demo:
-    name: Export linux demo
+# Start lite build
+  export-gozen-lite:
+    name: Export linux lite
     needs: build-gde
     runs-on: ubuntu-22.04
     steps:
@@ -259,31 +259,31 @@ jobs:
           ls -l ../${{ env.PATH_EXPORT }}
 
           godot --import project.godot --headless --quit || true
-          godot --headless --export-release "Linux_x86_64_DEMO" ../${{ env.PATH_EXPORT }}/${{ env.APP_NAME }}_demo.x86_64
+          godot --headless --export-release "Linux_x86_64_LITE" ../${{ env.PATH_EXPORT }}/${{ env.APP_NAME }}_lite.x86_64
 
       - name: Cleanup & fix RPATH
         working-directory: ${{ env.PATH_EXPORT }}
         run: |
           rm -f *template_debug*
-          chmod +x ${{ env.APP_NAME }}_demo.x86_64
-          patchelf --set-rpath '$ORIGIN' ${{ env.APP_NAME }}_demo.x86_64
+          chmod +x ${{ env.APP_NAME }}_lite.x86_64
+          patchelf --set-rpath '$ORIGIN' ${{ env.APP_NAME }}_lite.x86_64
           find . -name "*.so" -exec patchelf --set-rpath '$ORIGIN' {} \;
 
       - name: Upload raw Linux export
         uses: actions/upload-artifact@v6
         with:
-          name: GoZen_Linux_demo
+          name: GoZen_Linux_lite
           path: ${{ env.PATH_EXPORT }}
 
-  package-gozen-appimage-demo:
-    name: Package AppImage demo
-    needs: export-gozen-demo
+  package-gozen-appimage-lite:
+    name: Package AppImage lite
+    needs: export-gozen-lite
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v5
       - uses: actions/download-artifact@v8
         with:
-          name: GoZen_Linux_demo
+          name: GoZen_Linux_lite
           path: bin
           merge-multiple: true
 
@@ -317,10 +317,10 @@ jobs:
           ./linuxdeploy-x86_64.AppImage --appdir $APP_DIR --output appimage
 
           # Rename
-          mv GoZen*.AppImage ${{ env.APP_NAME }}_demo.AppImage
+          mv GoZen*.AppImage ${{ env.APP_NAME }}_lite.AppImage
 
       - uses: actions/upload-artifact@v6
         with:
-          name: GoZen_AppImage_demo
-          path: ${{ env.APP_NAME }}_demo.AppImage
-# End demo build
+          name: GoZen_AppImage_lite
+          path: ${{ env.APP_NAME }}_lite.AppImage
+# End lite build

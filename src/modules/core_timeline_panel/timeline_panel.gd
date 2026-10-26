@@ -314,7 +314,7 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		target_menu.add_check_item(tr("Mute track"), PopupAction.TRACK_TOGGLE_MUTE)
 		target_menu.set_item_checked(target_menu.get_item_index(PopupAction.TRACK_TOGGLE_MUTE), track_data.is_muted)
 
-		if not OS.has_feature("demo"):
+		if not OS.has_feature("lite"):
 			target_menu.add_check_item(tr("Lock track"), PopupAction.TRACK_TOGGLE_LOCK)
 			target_menu.set_item_checked(target_menu.get_item_index(PopupAction.TRACK_TOGGLE_LOCK), track_data.is_locked)
 
@@ -945,12 +945,12 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 
 	if right_click_clip.type == Type.VIDEO:
 		var file: FileData = FileLogic.get_data(right_click_clip.file)
-		var is_demo: bool = OS.has_feature("demo")
+		var is_lite: bool = OS.has_feature("lite")
 		var audio_streams_size: int = file.audio_streams.size()
-		if not is_demo or audio_streams_size > 1:
+		if not is_lite or audio_streams_size > 1:
 			popup.add_separator(tr("Video options"))
 
-		if not is_demo:
+		if not is_lite:
 			popup.add_item(tr("Clip replace audio"), PopupAction.CLIP_REPLACE_AUDIO)
 			popup.add_icon_item(load(Library.ICON_TIMELINE_MODE_SPLIT) as Texture2D,
 					tr("Auto-cut silence"), PopupAction.CLIP_AUTO_CUT)

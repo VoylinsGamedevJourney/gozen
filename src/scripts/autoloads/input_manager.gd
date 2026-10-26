@@ -82,7 +82,7 @@ func _strict_input_check(event: InputEvent) -> bool:
 		Timeline.zoom_to_fit()
 		return true
 	elif event.is_action_pressed("open_command_bar"):
-		if not OS.has_feature("demo"):
+		if not OS.has_feature("lite"):
 			PopupManager.open(PopupManager.COMMAND_BAR)
 		return true
 	elif event.is_action_pressed("next_frame", true, true):

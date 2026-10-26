@@ -83,7 +83,7 @@ func get_system_font(font_name: String, weight: int, italic: bool) -> SystemFont
 
 
 func load_custom_themes() -> void:
-	if OS.has_feature("demo"):
+	if OS.has_feature("lite"):
 		ModuleManager.register_themes()
 		return
 
