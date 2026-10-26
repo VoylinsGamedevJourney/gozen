@@ -12,7 +12,7 @@ signal confirmed(new_speed: float)
 func set_data(speed: float) -> void:
 	spinbox_speed.value = speed
 	spinbox_speed.grab_focus()
-	spinbox_speed.get_line_edit().text_submitted.connect(_on_apply_button_pressed.unbind(1))
+	spinbox_speed.get_line_edit().text_submitted.connect(_on_enter_pressed.unbind(1))
 
 
 func _input(event: InputEvent) -> void:
@@ -26,6 +26,10 @@ func _gui_input(event: InputEvent) -> void:
 		if mouse_event.pressed and mouse_event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
 			_on_close_button_pressed()
 
+func _on_enter_pressed() -> void:
+	# Call deferred, so the spinbox has time to read the value
+	# of the just submitted text
+	_on_apply_button_pressed.call_deferred()
 
 func _on_apply_button_pressed() -> void:
 	confirmed.emit(spinbox_speed.value)

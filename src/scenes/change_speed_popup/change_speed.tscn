@@ -6,7 +6,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iw7hp"]
 shader = ExtResource("1_3y2ot")
 
-[node name="ChangeSpeed" type="PanelContainer" unique_id=830041705]
+[node name="ChangeSpeed" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("spinbox_speed")]
 material = SubResource("ShaderMaterial_iw7hp")
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,6 +15,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_1lf1w")
+spinbox_speed = NodePath("Panel/Margin/Panel/Margin/VBox/HBox/SpeedSpinBox")
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=1213813620]
 custom_minimum_size = Vector2(700, 0)
