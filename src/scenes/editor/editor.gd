@@ -338,6 +338,11 @@ func _create_edit_popup_menu() -> void:
 	menu.add_icon_item(load(Library.ICON_UNDO) as Icon, tr("Undo"), 0)
 	menu.add_icon_item(load(Library.ICON_REDO) as Icon, tr("Redo"), 1)
 
+	menu.add_separator()
+	menu.add_icon_item(load(Library.ICON_FILE_VIDEO) as Texture2D, tr("Add files"), 2)
+	menu.add_icon_item(load(Library.ICON_FILE_TEXT) as Texture2D, tr("Add text"), 3)
+	menu.add_icon_item(load(Library.ICON_FILE_COLOR) as Texture2D, tr("Add color"), 4)
+
 	menu.id_pressed.connect(_on_edit_popup_menu_id_pressed)
 
 
@@ -345,6 +350,16 @@ func _on_edit_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0: UndoManager.undo()
 		1: UndoManager.redo()
+		2: # Add files.
+			var dialog: FileDialog = PopupManager.create_file_dialog(
+					tr("Add files ..."), FileDialog.FILE_MODE_OPEN_ANY)
+			dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
+			add_child(dialog)
+			dialog.dir_selected.connect(FileLogic.dropped)
+			dialog.files_selected.connect(FileLogic.dropped)
+			dialog.popup_centered()
+		3: FileLogic.add(["temp://text"])
+		4: PopupManager.open(PopupManager.COLOR_PICKER)
 
 
 func _create_view_popup_menu() -> void:
