@@ -94,10 +94,63 @@ func _on_effects_updated() -> void:
 	if drag_mode == HoverType.NONE:
 		hovered_frame = -1
 		hovered_type = HoverType.NONE
+		_sync_from_main_keyframes()
 		_get_advanced_keyframes()
 		_update_bounds()
 		_update_graph_size()
 		graph.queue_redraw()
+
+
+func _sync_from_main_keyframes() -> void:
+	var param: EffectParam = _get_current_param()
+	if not param:
+		return
+
+	var main_keyframes: Dictionary = effect.keyframes.get(current_param_id, {})
+	var components: Array[String] = [""]
+	if typeof(param.default_value) in [TYPE_VECTOR2, TYPE_VECTOR2I]:
+		components = ["x", "y"]
+
+	var changed: bool = false
+	var relative_frame: int = clampi(EditorCore.frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
+
+	for component: String in components:
+		var advanced_keyframes: Dictionary = _get_advanced_keyframes(component)
+		if main_keyframes.is_empty() and not advanced_keyframes.is_empty():
+			advanced_keyframes.clear()
+			_set_advanced_keyframes(advanced_keyframes, component)
+			changed = true
+		elif not main_keyframes.is_empty():
+			if not main_keyframes.has(relative_frame) and advanced_keyframes.has(relative_frame):
+				advanced_keyframes.erase(relative_frame)
+				_set_advanced_keyframes(advanced_keyframes, component)
+				changed = true
+			elif main_keyframes.has(relative_frame):
+				var component_value: float = _get_component_value(main_keyframes[relative_frame], component)
+				if advanced_keyframes.has(relative_frame):
+					if abs(advanced_keyframes[relative_frame]["value"] - component_value) > 0.0001:
+						advanced_keyframes[relative_frame]["value"] = component_value
+						_set_advanced_keyframes(advanced_keyframes, component)
+						changed = true
+					continue
+
+				var checked: float = 0.0
+				if advanced_keyframes.is_empty():
+					checked = _get_component_value(param.default_value, component)
+				else:
+					var curve: Curve2D = _build_curve2d(component)
+					checked = _get_y_on_curve(curve, float(relative_frame))
+
+				if abs(component_value - checked) > 0.0001:
+					advanced_keyframes[relative_frame] = {
+						"value": component_value,
+						"in_x": 0.33, "in_y": 0.0,
+						"out_x": 0.33, "out_y": 0.0
+					}
+					_set_advanced_keyframes(advanced_keyframes, component)
+					changed = true
+	if changed:
+		_bake_keyframes()
 
 
 func _update_bounds() -> void:
@@ -165,9 +218,9 @@ func _get_advanced_keyframes(component: String = current_component) -> Dictionar
 	return effect.keyframes[hidden_keyframe_id]
 
 
-func _set_advanced_keyframes(keys: Dictionary, component: String = current_component) -> void:
+func _set_advanced_keyframes(keyframes: Dictionary, component: String = current_component) -> void:
 	var hidden_id: String = "_adv_" + current_param_id + "_" + component
-	effect.keyframes[hidden_id] = keys
+	effect.keyframes[hidden_id] = keyframes
 
 
 func _get_y_ticks() -> Array[float]:
@@ -201,10 +254,10 @@ func _get_y_ticks() -> Array[float]:
 
 func _get_sorted_advanced_keyframes() -> Array[int]:
 	var advanced_keyframes: Dictionary = _get_advanced_keyframes()
-	var keys: Array[int] = []
-	keys.assign(advanced_keyframes.keys())
-	keys.sort()
-	return keys
+	var keyframes: Array[int] = []
+	keyframes.assign(advanced_keyframes.keys())
+	keyframes.sort()
+	return keyframes
 
 
 func _build_curve2d(component: String = current_component) -> Curve2D:
@@ -576,17 +629,17 @@ func _hit_test(mouse_pos: Vector2) -> void:
 	var best_type: HoverType = HoverType.NONE
 	var best_frame: int = -1
 
-	var keys: Array[int] = _get_sorted_advanced_keyframes()
+	var keyframes: Array[int] = _get_sorted_advanced_keyframes()
 	var advanced_keyframes: Dictionary = _get_advanced_keyframes()
-	for i: int in keys.size():
-		var frame_nr: int = keys[i]
+	for i: int in keyframes.size():
+		var frame_nr: int = keyframes[i]
 		var keyframe_data: Dictionary = advanced_keyframes[frame_nr]
 		var value: float = keyframe_data["value"]
 		var keyframe_position: Vector2 = Vector2(_frame_to_x(frame_nr), _value_to_y(value))
 
 		if frame_nr == selected_keyframe:
 			if i > 0:
-				var prev_frame: int = keys[i-1]
+				var prev_frame: int = keyframes[i-1]
 				var frame_distance: float = float(frame_nr - prev_frame)
 				var handle_position: Vector2 = Vector2(
 						_frame_to_x(frame_nr - keyframe_data["in_x"] * frame_distance as float),
@@ -596,8 +649,8 @@ func _hit_test(mouse_pos: Vector2) -> void:
 					best_distance = handle_distance_in
 					best_type = HoverType.HANDLE_IN
 					best_frame = frame_nr
-			if i < keys.size() - 1:
-				var next_frame: int = keys[i+1]
+			if i < keyframes.size() - 1:
+				var next_frame: int = keyframes[i+1]
 				var frame_distance: float = float(next_frame - frame_nr)
 				var handle_position: Vector2 = Vector2(
 						_frame_to_x(frame_nr + keyframe_data["out_x"] * frame_distance as float),
@@ -622,13 +675,13 @@ func _hit_test(mouse_pos: Vector2) -> void:
 			graph.mouse_default_cursor_shape = Control.CURSOR_ARROW
 
 
-func _swap_state(param_id: String, component: String, advanced_keyframes: Dictionary, baked_keys: Dictionary) -> void:
+func _swap_state(param_id: String, component: String, advanced_keyframes: Dictionary, baked_keyframes: Dictionary) -> void:
 	var hidden_id: String = "_adv_" + param_id + "_" + component
 	effect.keyframes[hidden_id] = advanced_keyframes.duplicate(true)
-	if baked_keys.is_empty():
+	if baked_keyframes.is_empty():
 		effect.keyframes.erase(param_id)
 	else:
-		effect.keyframes[param_id] = baked_keys.duplicate(true)
+		effect.keyframes[param_id] = baked_keyframes.duplicate(true)
 	effect._cache_dirty = true
 	_update_bounds()
 	graph.queue_redraw()
@@ -707,10 +760,10 @@ func _on_graph_draw() -> void:
 		graph.draw_line(Vector2(0, y), Vector2(graph.size.x, y), color, thickness)
 
 	# - Curve.
-	var keys: Array[int] = _get_sorted_advanced_keyframes()
+	var keyframes: Array[int] = _get_sorted_advanced_keyframes()
 	var advanced_keyframes: Dictionary = _get_advanced_keyframes()
-	if keys.size() > 0:
-		var first_frame: int = keys[0]
+	if keyframes.size() > 0:
+		var first_frame: int = keyframes[0]
 		var first_value: float = advanced_keyframes[first_frame]["value"]
 		graph.draw_line(
 				Vector2(0, _value_to_y(first_value)),
@@ -727,7 +780,7 @@ func _on_graph_draw() -> void:
 		if screen_points.size() >= 2:
 			graph.draw_polyline(screen_points, Color(0.4, 0.6, 1.0), 2.0)
 
-		var last_frame: int = keys[-1]
+		var last_frame: int = keyframes[-1]
 		var last_value: float = advanced_keyframes[last_frame]["value"]
 		graph.draw_line(
 				Vector2(_frame_to_x(last_frame),
@@ -738,15 +791,15 @@ func _on_graph_draw() -> void:
 				2.0)
 
 	# - Keyframes & handles.
-	for keyframe_index: int in keys.size():
-		var frame_nr: int = keys[keyframe_index]
+	for keyframe_index: int in keyframes.size():
+		var frame_nr: int = keyframes[keyframe_index]
 		var keyframe_data: Dictionary = advanced_keyframes[frame_nr]
 		var value: float = keyframe_data["value"]
 		var pos: Vector2 = Vector2(_frame_to_x(frame_nr), _value_to_y(value))
 
 		if frame_nr == selected_keyframe:
 			if keyframe_index > 0:
-				var previous_frame: int = keys[keyframe_index-1]
+				var previous_frame: int = keyframes[keyframe_index-1]
 				var frame_distance: float = float(frame_nr - previous_frame)
 				var handle_position: Vector2 = Vector2(
 						_frame_to_x(frame_nr - keyframe_data["in_x"] * frame_distance as float),
@@ -754,8 +807,8 @@ func _on_graph_draw() -> void:
 				graph.draw_line(pos, handle_position, Color.YELLOW, 1.0)
 				graph.draw_circle(handle_position, 4.0, Color.YELLOW if (hovered_frame == frame_nr and hovered_type == HoverType.HANDLE_IN) else Color.WHITE)
 
-			if keyframe_index < keys.size() - 1:
-				var next_frame: int = keys[keyframe_index+1]
+			if keyframe_index < keyframes.size() - 1:
+				var next_frame: int = keyframes[keyframe_index+1]
 				var frame_distance: float = float(next_frame - frame_nr)
 				var handle_position: Vector2 = Vector2(
 						_frame_to_x(frame_nr + keyframe_data["out_x"] * frame_distance as float),
