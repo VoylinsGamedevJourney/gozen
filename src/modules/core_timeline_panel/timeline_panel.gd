@@ -3,7 +3,7 @@ extends PanelContainer
 
 enum PopupAction {
 	# Clip options.
-	CLIP_DELETE, CLIP_SPLIT, CLIP_REPLACE_AUDIO, CLIP_AUTO_CUT,
+	CLIP_DELETE, CLIP_SPLIT, CLIP_SPLIT_AT_PLAYHEAD, CLIP_REPLACE_AUDIO, CLIP_AUTO_CUT,
 	CLIP_CHANGE_SPEED, CLIP_RESET_SPEED,
 	CLIP_TOGGLE_VISIBLE, CLIP_TOGGLE_MUTE,
 	# Track options.
@@ -924,8 +924,11 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 	popup.add_icon_item(load(Library.ICON_DELETE) as Icon, tr("Delete clip"), PopupAction.CLIP_DELETE)
 	_set_popup_shortcut(popup, PopupAction.CLIP_DELETE, "delete_clips")
 
-	popup.add_icon_item(load(Library.ICON_TIMELINE_MODE_SPLIT) as Icon, tr("Split clip"), PopupAction.CLIP_SPLIT)
+	popup.add_icon_item(load(Library.ICON_TIMELINE_MODE_SPLIT) as Icon, tr("Split clip on mouse"), PopupAction.CLIP_SPLIT)
 	_set_popup_shortcut(popup, PopupAction.CLIP_SPLIT, "split_clips_at_mouse")
+
+	popup.add_icon_item(load(Library.ICON_TIMELINE_MODE_SPLIT) as Icon, tr("Split clip on playhead"), PopupAction.CLIP_SPLIT_AT_PLAYHEAD)
+	_set_popup_shortcut(popup, PopupAction.CLIP_SPLIT_AT_PLAYHEAD, "split_clips_at_playhead")
 
 	popup.add_separator()
 	if right_click_clip.type & Type.GROUP_VISUAL:
@@ -983,6 +986,7 @@ func _on_popup_menu_id_pressed(id: PopupAction) -> void:
 	match id:
 		PopupAction.CLIP_DELETE: _on_popup_action_clip_delete()
 		PopupAction.CLIP_SPLIT: _on_popup_action_clip_split()
+		PopupAction.CLIP_SPLIT_AT_PLAYHEAD: _on_popup_action_clip_split_at_playhead()
 		PopupAction.CLIP_REPLACE_AUDIO: _on_popup_action_clip_ato()
 		PopupAction.CLIP_AUTO_CUT: _on_popup_action_clip_auto_cut()
 		PopupAction.CLIP_CHANGE_SPEED: _on_popup_action_clip_change_speed()
@@ -1006,6 +1010,10 @@ func _on_popup_action_clip_delete() -> void:
 
 func _on_popup_action_clip_split() -> void:
 	Timeline.split_clips_at(right_click_frame)
+
+
+func _on_popup_action_clip_split_at_playhead() -> void:
+	Timeline.split_clips_at(EditorCore.frame_nr)
 
 
 func _on_popup_action_remove_empty_space() -> void:
