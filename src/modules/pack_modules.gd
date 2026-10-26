@@ -7,7 +7,7 @@ extends EditorScript
 const PATH_EXPORT: String = "res://../modules"
 
 
-@export var export_folders: Array[String] = [ "godot_themes" ]
+@export var export_folders: Array[String] = [ "godot_themes", "transform_advanced" ]
 
 
 

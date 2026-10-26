@@ -841,13 +841,18 @@ func _handle_resize_motion(mouse_pos: Vector2) -> void:
 	var snap_delta: int = Timeline.find_snap_offset([current_frame], maxi(1, int(10.0 / Timeline.zoom)), [clip.id])
 	current_frame += snap_delta
 
+	var min_duration: int = 1
+	if clip.type & Type.GROUP_VISUAL:
+		min_duration = maxi(min_duration, clip.effects.fade_visual.x + clip.effects.fade_visual.y)
+	if clip.type & Type.GROUP_AUDIO:
+		min_duration = maxi(min_duration, clip.effects.fade_audio.x + clip.effects.fade_audio.y)
+
 	if Timeline.resize_target.is_end: # Resizing end.
 		var new_duration: int = current_frame - Timeline.resize_target.original_start
 		var max_allowed_duration: int = file.duration - clip.begin
 
-		if new_duration < 1:
-			new_duration = 1
-
+		if new_duration < min_duration:
+			new_duration = min_duration
 		if Timeline.current_state != Timeline.State.SPEEDING and is_fixed_duration and new_duration > max_allowed_duration:
 			new_duration = max_allowed_duration
 
@@ -860,13 +865,13 @@ func _handle_resize_motion(mouse_pos: Vector2) -> void:
 		Timeline.resize_target.delta = new_duration - Timeline.resize_target.original_duration
 	else: # Resizing beginning.
 		var new_start: int = current_frame
-
-		if new_start > (Timeline.resize_target.original_start + Timeline.resize_target.original_duration - 1):
-			new_start = (Timeline.resize_target.original_start + Timeline.resize_target.original_duration - 1)
+		var max_start: int = Timeline.resize_target.original_start + Timeline.resize_target.original_duration - min_duration
+		if new_start > max_start:
+			new_start = max_start
 		if Timeline.current_state != Timeline.State.SPEEDING and is_fixed_duration:
-			var min_allowed_duration: int = Timeline.resize_target.original_start - clip.begin
-			if new_start < min_allowed_duration:
-				new_start = min_allowed_duration
+			var min_allowed_start: int = Timeline.resize_target.original_start - clip.begin
+			if new_start < min_allowed_start:
+				new_start = min_allowed_start
 
 		# Collision detection.
 		var free_region: Vector2i = TrackLogic.get_free_region(

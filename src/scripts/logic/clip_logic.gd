@@ -235,10 +235,12 @@ func resize(requests: Array[RequestClipResize]) -> void:
 	UndoManager.create_action("Resize clip_data(s)")
 	for request: RequestClipResize in requests:
 		var clip: ClipData = request.clip
+		var old_v_fade: Vector2i = clip.effects.fade_visual
+		var old_a_fade: Vector2i = clip.effects.fade_audio
 		UndoManager.add_do(_resize.bind(
 				clip, request.resize_amount, request.from_end))
 		UndoManager.add_undo(_resize_restore.bind(
-				clip, clip.start, clip.duration, clip.begin))
+				clip, clip.start, clip.duration, clip.begin, old_v_fade, old_a_fade))
 	UndoManager.commit_action()
 
 
@@ -249,6 +251,9 @@ func _resize(clip: ClipData, amount: int, from_end: bool) -> void:
 		clip.start += amount
 		clip.begin += int(amount * clip.speed)
 		clip.duration -= amount
+
+	_clamp_fades(clip)
+
 	Project.unsaved_changes = true
 	Project.update_timeline_end.call_deferred()
 	updated.emit.call_deferred()
@@ -258,12 +263,29 @@ func _resize_and_fade(clip: ClipData, amount: int, from_end: bool, v_fade_in: in
 	_resize(clip, amount, from_end)
 	clip.effects.fade_visual = Vector2i(v_fade_in, v_fade_out)
 	clip.effects.fade_audio = Vector2i(a_fade_in, a_fade_out)
+	_clamp_fades(clip)
 
 
-func _resize_restore(clip: ClipData, start: int, duration: int, begin: int) -> void:
+func _clamp_fades(clip: ClipData) -> void:
+	if clip.type & Type.GROUP_VISUAL:
+		if clip.effects.fade_visual.x + clip.effects.fade_visual.y > clip.duration:
+			var ratio: float = float(clip.duration) / float(maxi(1, clip.effects.fade_visual.x + clip.effects.fade_visual.y))
+			clip.effects.fade_visual.x = floori(clip.effects.fade_visual.x * ratio)
+			clip.effects.fade_visual.y = clip.duration - clip.effects.fade_visual.x
+
+	if clip.type & Type.GROUP_AUDIO:
+		if clip.effects.fade_audio.x + clip.effects.fade_audio.y > clip.duration:
+			var ratio: float = float(clip.duration) / float(maxi(1, clip.effects.fade_audio.x + clip.effects.fade_audio.y))
+			clip.effects.fade_audio.x = floori(clip.effects.fade_audio.x * ratio)
+			clip.effects.fade_audio.y = clip.duration - clip.effects.fade_audio.x
+
+
+func _resize_restore(clip: ClipData, start: int, duration: int, begin: int, old_v_fade: Vector2i, old_a_fade: Vector2i) -> void:
 	clip.start = start
 	clip.begin = begin
 	clip.duration = duration
+	clip.effects.fade_visual = old_v_fade
+	clip.effects.fade_audio = old_a_fade
 	Project.unsaved_changes = true
 	Project.update_timeline_end.call_deferred()
 	updated.emit.call_deferred()
@@ -778,10 +800,13 @@ func change_speed(requests: Array[RequestClipResize]) -> void:
 		var new_duration: int = maxi(clip.duration + (amount if from_end else -amount), 1)
 		var new_speed: float = (clip.duration * clip.speed) / float(new_duration)
 
+		var old_v_fade: Vector2i = clip.effects.fade_visual
+		var old_a_fade: Vector2i = clip.effects.fade_audio
+
 		UndoManager.add_do(_change_speed.bind(
 				clip, amount, from_end, new_speed))
 		UndoManager.add_undo(_change_speed_restore.bind(
-				clip, clip.start, clip.duration, clip.speed))
+				clip, clip.start, clip.duration, clip.speed, old_v_fade, old_a_fade))
 	UndoManager.commit_action()
 
 
@@ -793,14 +818,18 @@ func _change_speed(clip: ClipData, amount: int, from_end: bool, new_speed: float
 		clip.start += amount
 		clip.duration -= amount
 
+	_clamp_fades(clip)
+
 	Project.update_timeline_end.call_deferred()
 	updated.emit.call_deferred()
 
 
-func _change_speed_restore(clip: ClipData, start: int, duration: int, speed: float) -> void:
+func _change_speed_restore(clip: ClipData, start: int, duration: int, speed: float, old_v_fade: Vector2i, old_a_fade: Vector2i) -> void:
 	clip.start = start
 	clip.speed = speed
 	clip.duration = duration
+	clip.effects.fade_visual = old_v_fade
+	clip.effects.fade_audio = old_a_fade
 	Project.update_timeline_end.call_deferred()
 	updated.emit.call_deferred()
 
