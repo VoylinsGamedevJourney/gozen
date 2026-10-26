@@ -339,7 +339,7 @@ func _create_edit_popup_menu() -> void:
 	menu.add_icon_item(load(Library.ICON_REDO) as Icon, tr("Redo"), 1)
 
 	menu.add_separator()
-	menu.add_icon_item(load(Library.ICON_FILE_VIDEO) as Texture2D, tr("Add files"), 2)
+	menu.add_icon_item(load(Library.ICON_FILE_ADD) as Texture2D, tr("Add files"), 2)
 	menu.add_icon_item(load(Library.ICON_FILE_TEXT) as Texture2D, tr("Add text"), 3)
 	menu.add_icon_item(load(Library.ICON_FILE_COLOR) as Texture2D, tr("Add color"), 4)
 
