@@ -63,6 +63,7 @@ func _ready() -> void:
 	_base_reset_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	_base_reset_button.custom_minimum_size = Vector2(14, 14)
 	_base_reset_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_base_reset_button.focus_mode = Control.FOCUS_NONE
 
 	ClipLogic.deleted.connect(_on_clip_deleted)
 	ClipLogic.selected.connect(_on_clip_pressed)
@@ -656,6 +657,7 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 			button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 			button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 			button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+			button.focus_mode = Control.FOCUS_NONE
 
 		container.add_title_bar_control(button_preset)
 		container.add_title_bar_control(button_visible)
@@ -670,6 +672,7 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 		button_keyframe_all.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 		button_keyframe_all.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		button_keyframe_all.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		button_keyframe_all.focus_mode = Control.FOCUS_NONE
 		button_keyframe_all.pressed.connect(_on_keyframe_all_pressed.bind(effect, is_visual))
 
 		var button_reset: TextureButton = TextureButton.new()
@@ -678,6 +681,7 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 		button_reset.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 		button_reset.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		button_reset.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		button_reset.focus_mode = Control.FOCUS_NONE
 		button_reset.tooltip_text = tr("Reset to default.")
 		if effect.id == "text":
 			button_reset.pressed.connect(_on_reset_text_effect)
@@ -752,6 +756,7 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 		prev_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		prev_button.custom_minimum_size = Vector2(10, 10)
 		prev_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		prev_button.focus_mode = Control.FOCUS_NONE
 		prev_button.tooltip_text = tr("Previous keyframe.")
 		prev_button.pressed.connect(_jump_prev_keyframe_all.bind(effect))
 
@@ -761,6 +766,7 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 		next_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		next_button.custom_minimum_size = Vector2(10, 10)
 		next_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		next_button.focus_mode = Control.FOCUS_NONE
 		next_button.tooltip_text = tr("Next keyframe.")
 		next_button.pressed.connect(_jump_next_keyframe_all.bind(effect))
 
@@ -945,6 +951,7 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 		param_prev_button.ignore_texture_size = true
 		param_prev_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_prev_button.custom_minimum_size.x = 8
+		param_prev_button.focus_mode = Control.FOCUS_NONE
 
 		param_prev_button.pressed.connect(_jump_prev_keyframe.bind(effect, param_id))
 
@@ -956,6 +963,7 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 		param_keyframe_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_keyframe_button.custom_minimum_size.x = 14
 		param_keyframe_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		param_keyframe_button.focus_mode = Control.FOCUS_NONE
 
 		param_keyframe_button.pressed.connect(_keyframe_button_pressed.bind(
 				effect, is_visual, param_id))
@@ -966,12 +974,12 @@ func create_effect_param_hbox(param: EffectParam, effect: Effect, is_visual: boo
 		param_next_button.ignore_texture_size = true
 		param_next_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		param_next_button.custom_minimum_size.x = 8
+		param_next_button.focus_mode = Control.FOCUS_NONE
 		param_next_button.pressed.connect(_jump_next_keyframe.bind(effect, param_id))
 
 		param_hbox.add_child(param_prev_button)
 		param_hbox.add_child(param_keyframe_button)
 		param_hbox.add_child(param_next_button)
-
 	return param_hbox
 
 
@@ -1211,6 +1219,7 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 				link_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 				link_button.custom_minimum_size = Vector2(14, 14)
 				link_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+				link_button.focus_mode = Control.FOCUS_NONE
 				link_button.tooltip_text = "Link X and Y."
 
 				link_button.toggled.connect(func(toggled: bool) -> void:
@@ -1531,6 +1540,7 @@ func _get_add_effects_button(type: int) -> TextureButton:
 	texture_button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 	texture_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	texture_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	texture_button.focus_mode = Control.FOCUS_NONE
 
 	texture_button.pressed.connect(_open_add_effects_popup.bind(type, true))
 	return texture_button
@@ -1665,6 +1675,7 @@ func _get_section_preset_button(is_visual: bool) -> TextureButton:
 	texture_button.custom_minimum_size = SIZE_EFFECT_HEADER_ICON
 	texture_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	texture_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	texture_button.focus_mode = Control.FOCUS_NONE
 
 	texture_button.pressed.connect(func() -> void: _show_preset_popup(true, is_visual, null, texture_button))
 	return texture_button
