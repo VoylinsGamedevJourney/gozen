@@ -519,10 +519,19 @@ func _load_video(file: FileData) -> void:
 	var temp_video: Video = Video.new()
 	var path_to_load: String = file.path
 
+	if file.proxy_path.is_empty():
+		var proxy: String = ProxyHandler.find_existing_proxy(file.path)
+		if not proxy.is_empty():
+			file.proxy_path = proxy
+
+	var is_proxy_loaded: bool = false
 	if Settings.get_use_proxies() and !file.proxy_path.is_empty():
-		if FileAccess.file_exists(file.proxy_path) and temp_video.open(file.proxy_path):
+		if FileAccess.file_exists(file.proxy_path) and temp_video.open(file.proxy_path) == OK:
+			is_proxy_loaded = true
+		else:
 			printerr("FileLogic: Couldn't open proxy video at path '%s'!" % file.proxy_path)
-	if !temp_video.is_open() and temp_video.open(path_to_load):
+
+	if !is_proxy_loaded and temp_video.open(path_to_load) != OK:
 		data[file.id] = null
 		return printerr("FileLogic: Couldn't open video at path '%s'!" % file.path)
 
@@ -539,9 +548,26 @@ func _load_video(file: FileData) -> void:
 		# We load the video into the pool, but don't use it here directly.
 		get_video_reader(file, i)
 
-	file.audio_streams.assign(temp_video.get_streams(1))
-	if temp_video.get_audio() != null:
-		Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
+	var audio_source: Video = temp_video
+	var close_audio_source: bool = false
+
+	if is_proxy_loaded:
+		audio_source = Video.new()
+		if audio_source.open(file.path) == OK:
+			close_audio_source = true
+		else:
+			audio_source = null
+
+	if audio_source:
+		file.audio_streams.assign(audio_source.get_streams(1))
+		if audio_source.get_audio() != null:
+			Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
+		else:
+			audio_wave[file.id] = { -1: { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() } }
+			call_deferred("_on_wave_ready", file)
+
+		if close_audio_source:
+			audio_source.close()
 	else:
 		audio_wave[file.id] = { -1: { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() } }
 		call_deferred("_on_wave_ready", file)
@@ -817,10 +843,15 @@ func get_audio_stream(file: FileData, instance_index: int, stream_index: int = -
 		var empty_wave: bool = audio_wave.has(file.id) and audio_wave[file.id].is_empty()
 		if empty_wave:
 			return null
-
-		if stream_index == -1:
+		elif stream_index == -1:
 			var video: Video = get_video_reader(file, instance_index)
-			return null if video == null else video.get_audio()
+			var audio: AudioStreamFFmpeg = video.get_audio() if video else null
+			if audio != null:
+				return audio
+			elif file.audio_streams.size() > 0:
+				stream_index = file.audio_streams[0]
+			else:
+				return null
 
 	if instance_index == 0 and file.type == Type.AUDIO:
 		return data[file.id]
@@ -1027,6 +1058,7 @@ func get_all_video_files() -> Array[FileData]:
 
 func set_proxy_path(file: FileData, path: String) -> void:
 	file.proxy_path = path
+	Project.unsaved_changes = true
 
 
 func update_text_param(file: FileData, param_id: String, new_value: Variant, old_value: Variant) -> void:

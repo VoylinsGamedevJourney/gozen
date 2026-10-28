@@ -166,6 +166,21 @@ func _create_proxy_name(file_path: String) -> String:
 	return  "%s_%s_proxy.mp4" % [FileAccess.get_md5(file_path).left(6), file_path.get_file().get_basename()]
 
 
+func find_existing_proxy(file_path: String) -> String:
+	var proxies_dir: String = Settings.get_proxies_path()
+	if DirAccess.dir_exists_absolute(proxies_dir):
+		var expected_suffix: String = "_" + file_path.get_file().get_basename() + "_proxy.mp4"
+		var directory: DirAccess = DirAccess.open(proxies_dir)
+		directory.list_dir_begin()
+
+		var file_name: String = directory.get_next()
+		while file_name != "":
+			if file_name.ends_with(expected_suffix):
+				return proxies_dir.path_join(file_name)
+			file_name = directory.get_next()
+	return ""
+
+
 func _on_proxy_finished(file: FileData) -> void:
 	if not FileLogic.has(file.id): return
 	if Settings.get_use_proxies():
