@@ -24,7 +24,6 @@ extends PanelContainer
 @export var option_button_default_keyframe_type: OptionButton
 
 @export_group("Module related buttons")
-@export var button_itch_modules: Button
 @export var button_steam_workshop: Button
 @export var button_gozen_module_repo: Button
 
@@ -63,7 +62,6 @@ func _ready() -> void:
 	button_flow_source_code.pressed.connect(func() -> void: URL.open("source_code"))
 	button_flow_support_kofi.pressed.connect(func() -> void: URL.open("support"))
 
-	button_itch_modules.pressed.connect(func() -> void: URL.open("itch_modules"))
 	button_steam_workshop.pressed.connect(func() -> void: URL.open("steam_workshop"))
 
 	button_gozen_module_repo.pressed.connect(func() -> void: URL.open("gozen_module_repo"))

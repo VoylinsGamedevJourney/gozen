@@ -42,7 +42,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_klhbv"]
 
-[node name="Welcome" type="PanelContainer" unique_id=248286192 node_paths=PackedStringArray("full_only_buttons", "tab_container", "option_button_language", "option_button_theme", "option_button_video_drag", "grid_modes", "grid_shortcuts", "button_flow_website", "button_flow_manual", "button_flow_tutorials", "button_flow_discord", "button_flow_source_code", "button_flow_support_kofi", "option_button_default_keyframe_type", "button_itch_modules", "button_steam_workshop", "button_gozen_module_repo", "option_button_default_profile", "region_in_line_edit", "region_out_line_edit", "spinbox_resolution_x", "spinbox_resolution_y", "spinbox_framerate", "check_button_auto_save", "option_button_empty_space")]
+[node name="Welcome" type="PanelContainer" unique_id=248286192 node_paths=PackedStringArray("full_only_buttons", "tab_container", "option_button_language", "option_button_theme", "option_button_video_drag", "grid_modes", "grid_shortcuts", "button_flow_website", "button_flow_manual", "button_flow_tutorials", "button_flow_discord", "button_flow_source_code", "button_flow_support_kofi", "option_button_default_keyframe_type", "button_steam_workshop", "button_gozen_module_repo", "option_button_default_profile", "region_in_line_edit", "region_out_line_edit", "spinbox_resolution_x", "spinbox_resolution_y", "spinbox_framerate", "check_button_auto_save", "option_button_empty_space")]
 material = ExtResource("1_hdf7e")
 anchors_preset = 15
 anchor_right = 1.0
@@ -65,7 +65,6 @@ button_flow_discord = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabCon
 button_flow_source_code = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow/SourceCodeButton")
 button_flow_support_kofi = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow/SupportKofiButton")
 option_button_default_keyframe_type = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsScroll/EffectsVBox/DefaultHBox/DefaultKeyframeTypeOptionButton")
-button_itch_modules = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2/VBoxContainer/ItchModulesButton")
 button_steam_workshop = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2/VBoxContainer/SteamWorkshopButton")
 button_gozen_module_repo = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer/PCKModuleRepoButton")
 option_button_default_profile = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/GridContainer/DefaultRenderProfileOptionButton")
@@ -1173,10 +1172,12 @@ layout_mode = 2
 theme_override_constants/separation = 12
 alignment = 1
 
-[node name="ItchModulesButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2/VBoxContainer" unique_id=698852648]
+[node name="ModulesButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2/VBoxContainer" unique_id=698852648]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
-text = "Itch.io modules"
+tooltip_text = "Coming soon!"
+disabled = true
+text = "GoZen Modules"
 
 [node name="SteamWorkshopButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2/VBoxContainer" unique_id=1661300628]
 custom_minimum_size = Vector2(200, 40)
