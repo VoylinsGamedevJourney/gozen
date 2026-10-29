@@ -3,7 +3,6 @@ extends PanelContainer
 
 
 @export var button_save_render_profile: TextureButton
-@export var button_set_default_profile: Button
 @export var option_button_render_profiles: OptionButton
 
 @export_category("Path")
@@ -80,7 +79,6 @@ func _ready() -> void:
 			if not video_toggle.button_pressed:
 				_update_extension_in_path())
 
-	button_set_default_profile.pressed.connect(_on_set_default_profile_button_pressed)
 	option_button_render_profiles.item_selected.connect(_on_render_profile_option_button_item_selected)
 
 	button_save_render_profile.visible = false
@@ -216,15 +214,6 @@ func _setup_codec_option_buttons() -> void:
 
 	audio_channels_option_button.add_item("Stereo", 2)
 	audio_channels_option_button.add_item("Mono", 1)
-
-
-func _on_set_default_profile_button_pressed() -> void:
-	var index: int = option_button_render_profiles.selected
-	if index != -1:
-		var profile_name: String = option_button_render_profiles.get_item_text(index)
-		Settings.set_default_render_profile(profile_name)
-		Settings.save()
-		NotificationManager.info("Default render profile set to '%s'." % profile_name)
 
 
 func apply_profile_by_name(profile_name: String) -> void:

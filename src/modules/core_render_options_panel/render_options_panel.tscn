@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://diadjef0vgd1o" path="res://assets/icons/arrow_down.tres" id="3_bqj0i"]
 
 [node name="RenderOptionsPanel" type="PanelContainer" unique_id=956249024 node_paths=PackedStringArray("button_save_render_profile", "button_set_default_profile", "option_button_render_profiles", "path_line_edit", "video_toggle", "video_grid", "video_codec_option_button", "video_quality_hslider", "video_quality_spin_box", "video_gop_spin_box", "video_bframes_spin_box", "video_speed_label", "video_speed_hslider", "video_speed_spin_box", "audio_toggle", "audio_grid", "audio_codec_option_button", "audio_channels_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
-custom_minimum_size = Vector2(300, 100)
+custom_minimum_size = Vector2(200, 100)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -16,7 +16,7 @@ size_flags_vertical = 3
 theme_type_variation = &"box"
 script = ExtResource("1_raodm")
 button_save_render_profile = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SaveProfileButton")
-button_set_default_profile = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SetDefaultProfileButton")
+button_set_default_profile = NodePath("")
 option_button_render_profiles = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/RenderProfileOptionButton")
 path_line_edit = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/PathLineEdit")
 video_toggle = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoTitleHBox/VideoCheckButton")
@@ -66,7 +66,7 @@ layout_mode = 2
 columns = 2
 
 [node name="RenderProfilesLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=257110258]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Render profile"
@@ -74,13 +74,8 @@ text = "Render profile"
 [node name="RenderProfilesHBox" type="HBoxContainer" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=1741376081]
 layout_mode = 2
 
-[node name="SetDefaultProfileButton" type="Button" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox" unique_id=1024341994]
-layout_mode = 2
-size_flags_vertical = 4
-tooltip_text = "Set selected profile as the default render profile."
-text = "Set default"
-
 [node name="RenderProfileOptionButton" type="OptionButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox" unique_id=871044819]
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/icon_max_width = 30
@@ -97,7 +92,7 @@ ignore_texture_size = true
 stretch_mode = 5
 
 [node name="PathLabel" type="Label" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox" unique_id=430655514]
-custom_minimum_size = Vector2(150, 0)
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Export path"
