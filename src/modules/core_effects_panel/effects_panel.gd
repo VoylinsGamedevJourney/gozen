@@ -732,6 +732,9 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 			if effect_ui == null: continue
 			if effect_ui.param_id != "":
 				var param: EffectParam = _get_param_by_id(effect, effect_ui.param_id)
+				if param == null:
+					printerr(HEADER, "Effect param not found: ", effect_ui.param_id)
+					continue
 				var param_hbox: HBoxContainer = create_effect_param_hbox(
 						param, effect, is_visual, effect_ui)
 				if param.keyframeable:
