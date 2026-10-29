@@ -138,6 +138,8 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 			rendering_device.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
 			rendering_device.compute_list_dispatch(compute_list, ceili(target_resolution.x / 8.0), ceili(target_resolution.y / 8.0), 1)
 			rendering_device.compute_list_end()
+			rendering_device.submit()
+			rendering_device.sync()
 			var yuv_data: PackedByteArray = rendering_device.texture_get_data(yuv_output_tex, 0)
 			if !encoder.send_frame(yuv_data):
 				printerr("ProxyHandler: Couldn't send yuv_data frame to encoder!")
