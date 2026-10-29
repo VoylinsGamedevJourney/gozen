@@ -19,6 +19,7 @@ signal files_dropped_and_loaded(files: Array[FileData], screen_pos: Vector2)
 
 
 const MAX_16_BIT_VALUE: float = 32767.0 ## For the audio 16 bits/2 (stereo).
+const MAX_CONCURRENT_VIDEO_LOADS: int = 4
 
 
 var files: Dictionary[int, FileData]
@@ -37,6 +38,8 @@ var current_drop_folder: String = "/"
 var wave_folder: String = OS.get_cache_dir().path_join("gozen").path_join("waves")
 
 var _mutex: Mutex = Mutex.new()
+var _video_load_queue: Array[FileData] = []
+var _active_video_loads: int = 0
 
 
 
@@ -178,6 +181,7 @@ func _delete(file: FileData) -> void:
 			clip.effects.ato_active = false
 			clip.effects.ato_file = -1
 
+	_mutex.lock()
 	if !files.erase(file.id) or !data.erase(file.id):
 		printerr("FileLogic: File id '%s' isn't present in files/data!" % file.id)
 
@@ -188,6 +192,7 @@ func _delete(file: FileData) -> void:
 
 	audio_pools.erase(file.id)
 	audio_wave.erase(file.id)
+	_mutex.unlock()
 
 	Project.unsaved_changes = true
 	deleted.emit(file.id)
@@ -475,7 +480,9 @@ func load_data(file: FileData) -> void:
 				printerr("FileLogic: Couldn't load image at path '%s'!" % file.path)
 				data[file.id] = null
 		Type.VIDEO:
-			Threader.add_task(_load_video.bind(file), video_loaded.emit.bind(file))
+			if not _video_load_queue.has(file):
+				_video_load_queue.append(file)
+			_process_video_load_queue()
 		Type.AUDIO:
 			Threader.add_task(_load_audio.bind(file), audio_loaded.emit.bind(file))
 		Type.PCK:
@@ -532,16 +539,21 @@ func _load_video(file: FileData) -> void:
 			printerr("FileLogic: Couldn't open proxy video at path '%s'!" % file.proxy_path)
 
 	if !is_proxy_loaded and temp_video.open(path_to_load) != OK:
+		_mutex.lock()
 		data[file.id] = null
+		_mutex.unlock()
 		return printerr("FileLogic: Couldn't open video at path '%s'!" % file.path)
 
 	temp_video.set_smart_seek_threshold(Settings.get_video_smart_seek_threshold())
 	temp_video.set_cache_size(Settings.get_video_cache_size())
+
+	_mutex.lock()
 	data[file.id] = temp_video
 	if video_pools.has(file.id):
 		for video: Video in video_pools[file.id]:
 			video.close()
-		video_pools[file.id] = []
+	video_pools[file.id] = []
+	_mutex.unlock()
 
 	for i: int in 2:
 		# Get 2 extra video instances which can help with tight cuts.
@@ -563,27 +575,37 @@ func _load_video(file: FileData) -> void:
 		if audio_source.get_audio() != null:
 			Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
 		else:
+			_mutex.lock()
 			audio_wave[file.id] = { -1: { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() } }
+			_mutex.unlock()
 			call_deferred("_on_wave_ready", file)
 
 		if close_audio_source:
 			audio_source.close()
 	else:
+		_mutex.lock()
 		audio_wave[file.id] = { -1: { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() } }
+		_mutex.unlock()
 		call_deferred("_on_wave_ready", file)
 
 
 func _load_audio(file: FileData) -> void:
+	_mutex.lock()
 	if audio_pools.has(file.id):
 		audio_pools[file.id] = []
+	_mutex.unlock()
 
 	var stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
 	if stream.open(file.path) == OK and stream.get_length() != 0:
+		_mutex.lock()
 		data[file.id] = stream
+		_mutex.unlock()
 		Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
 	else:
 		printerr("FileLogic: Couldn't open audio stream!")
+		_mutex.lock()
 		data[file.id] = AudioStreamWAV.new()
+		_mutex.unlock()
 
 
 func _create_wave(file: FileData) -> void:
@@ -622,8 +644,11 @@ func _create_wave_for_stream(file: FileData, stream_index: int, current_index: i
 				return
 
 	# Calculate actual mix rate based on the audio length.
+	_mutex.lock()
 	var stream_length: float = 0.0
 	var raw_data: Variant = data.get(file.id)
+	_mutex.unlock()
+
 	if raw_data != null:
 		if raw_data is Video:
 			var audio_stream: AudioStream = (raw_data as Video).get_audio()
@@ -808,8 +833,11 @@ func reload(file: FileData) -> void:
 
 
 func get_video_reader(file: FileData, instance_index: int) -> Video:
+	_mutex.lock()
 	if instance_index == 0:
-		return data[file.id]
+		var res: Video = data.get(file.id) as Video
+		_mutex.unlock()
+		return res
 
 	if not video_pools.has(file.id):
 		video_pools[file.id] = []
@@ -818,29 +846,43 @@ func get_video_reader(file: FileData, instance_index: int) -> Video:
 	var pool_index: int = instance_index - 1
 	if pool_index < pool.size():
 		var video: Video = pool[pool_index]
+		_mutex.unlock()
 		return video
+	_mutex.unlock()
 
 	# No instance found so we create a new one.
 	var new_video: Video = Video.new()
 	if Settings.get_use_proxies() and !file.proxy_path.is_empty() and FileAccess.file_exists(file.proxy_path):
 		if new_video.open(file.proxy_path) != OK:
 			printerr("FileLogic: Failed to create pool instance for '%s'!" % file.proxy_path)
-			return data[file.id] # Return main video as fallback.
+			_mutex.lock()
+			var res: Video = data.get(file.id) as Video
+			_mutex.unlock()
+			return res # Return main video as fallback.
 
 	if !new_video.is_open() and new_video.open(file.path) != OK:
 			printerr("FileLogic: Failed to create pool instance for '%s'!" % file.path)
-			return data[file.id] # Return main video as fallback.
+			_mutex.lock()
+			var res: Video = data.get(file.id) as Video
+			_mutex.unlock()
+			return res # Return main video as fallback.
 
 	# Lower cache for extra instances might help with ram consumption.
 	new_video.set_cache_size(ceili(Settings.get_video_cache_size() / 2.0))
 	new_video.set_smart_seek_threshold(Settings.get_video_smart_seek_threshold())
-	pool.append(new_video)
+
+	_mutex.lock()
+	if video_pools.has(file.id):
+		video_pools[file.id].append(new_video)
+	_mutex.unlock()
 	return new_video
 
 
 func get_audio_stream(file: FileData, instance_index: int, stream_index: int = -1) -> AudioStreamFFmpeg:
 	if file.type == Type.VIDEO:
+		_mutex.lock()
 		var empty_wave: bool = audio_wave.has(file.id) and audio_wave[file.id].is_empty()
+		_mutex.unlock()
 		if empty_wave:
 			return null
 		elif stream_index == -1:
@@ -853,8 +895,11 @@ func get_audio_stream(file: FileData, instance_index: int, stream_index: int = -
 			else:
 				return null
 
+	_mutex.lock()
 	if instance_index == 0 and file.type == Type.AUDIO:
-		return data[file.id]
+		var res: AudioStreamFFmpeg = data.get(file.id) as AudioStreamFFmpeg
+		_mutex.unlock()
+		return res
 	elif not audio_pools.has(file.id):
 		audio_pools[file.id] = []
 
@@ -880,13 +925,22 @@ func get_audio_stream(file: FileData, instance_index: int, stream_index: int = -
 		pool.append(null) # Padding.
 
 	if pool[pool_index] != null:
-		return pool[pool_index]
+		var res: AudioStreamFFmpeg = pool[pool_index]
+		_mutex.unlock()
+		return res
+	_mutex.unlock()
 
 	var new_stream: AudioStreamFFmpeg = AudioStreamFFmpeg.new()
 	if new_stream.open(file.path, stream_index) != OK:
 		printerr("FileLogic: Failed to create audio pool instance for '%s'!" % file.path)
 		return null
-	pool[pool_index] = new_stream
+
+	_mutex.lock()
+	if audio_pools.has(file.id):
+		var active_pool: Array = audio_pools[file.id]
+		if active_pool.size() > pool_index:
+			active_pool[pool_index] = new_stream
+	_mutex.unlock()
 	return new_stream
 
 
@@ -1175,29 +1229,48 @@ func update_audio_waves() -> void:
 
 func reload_videos() -> void:
 	for file: FileData in get_all_video_files():
-		load_data(file)
+		if not _video_load_queue.has(file):
+			_video_load_queue.append(file)
+	_process_video_load_queue()
+
+
+func _process_video_load_queue() -> void:
+	while _active_video_loads < MAX_CONCURRENT_VIDEO_LOADS and not _video_load_queue.is_empty():
+		_active_video_loads += 1
+		var file: FileData = _video_load_queue.pop_front()
+		Threader.add_task(_load_video.bind(file), _on_video_loaded_from_queue.bind(file))
+
+
+func _on_video_loaded_from_queue(file: FileData) -> void:
+	video_loaded.emit(file)
+	_active_video_loads -= 1
+	_process_video_load_queue()
 
 
 func _update_video_cache_size(value: int) -> void:
 	for file: FileData in get_all_video_files():
-		if data[file.id] is not Video:
-			continue
-		var video: Video = data[file.id]
-		video.set_cache_size(value)
-		if video_pools.has(file.id):
-			for video_instance: Video in video_pools[file.id]:
-				video_instance.set_cache_size(value)
+		_mutex.lock()
+		var temp_video: Variant = data.get(file.id)
+		if temp_video is Video:
+			var video: Video = temp_video
+			video.set_cache_size(value)
+			if video_pools.has(file.id):
+				for video_instance: Video in video_pools[file.id]:
+					video_instance.set_cache_size(value)
+		_mutex.unlock()
 
 
 func _update_video_smart_seek_threshold(value: int) -> void:
 	for file: FileData in get_all_video_files():
-		if data[file.id] is not Video:
-			continue
-		var video: Video = data[file.id]
-		video.set_smart_seek_threshold(value)
-		if video_pools.has(file.id):
-			for video_instance: Video in video_pools[file.id]:
-				video_instance.set_smart_seek_threshold(value)
+		_mutex.lock()
+		var temp_video: Variant = data.get(file.id)
+		if temp_video is Video:
+			var video: Video = temp_video
+			video.set_smart_seek_threshold(value)
+			if video_pools.has(file.id):
+				for video_instance: Video in video_pools[file.id]:
+					video_instance.set_smart_seek_threshold(value)
+		_mutex.unlock()
 
 
 ## Check if a file is (still) valid or not.

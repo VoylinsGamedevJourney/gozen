@@ -409,6 +409,7 @@ func _cleanup() -> void:
 	EditorCore.clips_instance_index.clear()
 	EditorCore.clip_instances.clear()
 
+	FileLogic._mutex.lock()
 	for pool: Array in FileLogic.video_pools.values():
 		for video: Video in pool:
 			video.close()
@@ -416,6 +417,7 @@ func _cleanup() -> void:
 	FileLogic.audio_pools.clear()
 	FileLogic.audio_wave.clear()
 	FileLogic.data.clear()
+	FileLogic._mutex.unlock()
 
 	for file_id: int in FileLogic.files:
 		FileLogic.deleted.emit(file_id)

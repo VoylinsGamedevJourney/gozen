@@ -323,7 +323,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 		Settings.set_use_proxies(false)
 
 		# Wait for tasks like video loading to finish first.
-		while Threader.tasks.size() > 0:
+		while Threader.tasks.size() > 0 or FileLogic._active_video_loads > 0:
 			await get_tree().process_frame
 
 		# Necessary waiting time to make certain all clips are ready..
