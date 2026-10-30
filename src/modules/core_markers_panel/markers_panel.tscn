@@ -8,7 +8,7 @@ custom_minimum_size = Vector2(0, 100)
 size_flags_vertical = 3
 theme_type_variation = &"box"
 script = ExtResource("1_336cf")
-markers_text_edit = NodePath("Margin/Panel/Margin/VBox/ScrollContainer/MarkersTextEdit")
+markers_text_edit = NodePath("Margin/Panel/Margin/VBox/MarkersTextEdit")
 markers_option_button = NodePath("Margin/Panel/Margin/VBox/TitleHBox/MarkersOptionButton")
 
 [node name="Margin" type="MarginContainer" parent="." unique_id=433927477]
@@ -44,18 +44,14 @@ texture_normal = ExtResource("2_e5wos")
 ignore_texture_size = true
 stretch_mode = 5
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Margin/Panel/Margin/VBox" unique_id=188376050]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="MarkersTextEdit" type="TextEdit" parent="Margin/Panel/Margin/VBox/ScrollContainer" unique_id=268981685]
+[node name="MarkersTextEdit" type="TextEdit" parent="Margin/Panel/Margin/VBox" unique_id=268981685]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_colors/font_readonly_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
 editable = false
+tab_input_mode = false
 scroll_smooth = true
-scroll_fit_content_width = true
 
 [connection signal="item_selected" from="Margin/Panel/Margin/VBox/TitleHBox/MarkersOptionButton" to="." method="_on_markers_button_item_selected"]
 [connection signal="pressed" from="Margin/Panel/Margin/VBox/TitleHBox/CopyMarkersButton" to="." method="_on_copy_markers_button_pressed"]
