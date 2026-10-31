@@ -399,9 +399,17 @@ bool Encoder::send_audio(PackedByteArray wav_data) {
 		} else if (converted_samples > 0) {
 			if (converted_samples < frame_size) {
 				int bytes_per_sample_out = av_get_bytes_per_sample(av_codec_ctx_audio->sample_fmt);
-				for (int ch = 0; ch < av_codec_ctx_audio->ch_layout.nb_channels; ch++) {
-					memset(av_frame_out->data[ch] + converted_samples * bytes_per_sample_out, 0,
-						   (frame_size - converted_samples) * bytes_per_sample_out);
+				if (av_sample_fmt_is_planar(av_codec_ctx_audio->sample_fmt)) {
+					for (int ch = 0; ch < av_codec_ctx_audio->ch_layout.nb_channels; ch++) {
+						memset(av_frame_out->data[ch] + converted_samples * bytes_per_sample_out, 0,
+							   (frame_size - converted_samples) * bytes_per_sample_out);
+					}
+				} else {
+					memset(av_frame_out->data[0] +
+							   converted_samples * bytes_per_sample_out * av_codec_ctx_audio->ch_layout.nb_channels,
+						   0,
+						   (frame_size - converted_samples) * bytes_per_sample_out *
+							   av_codec_ctx_audio->ch_layout.nb_channels);
 				}
 				av_frame_out->nb_samples = frame_size;
 			} else {
@@ -457,9 +465,17 @@ bool Encoder::_finalize_encoding() {
 
 			if (converted_samples < frame_size) {
 				int bytes_per_sample_out = av_get_bytes_per_sample(av_codec_ctx_audio->sample_fmt);
-				for (int ch = 0; ch < av_codec_ctx_audio->ch_layout.nb_channels; ch++) {
-					memset(av_frame_out->data[ch] + converted_samples * bytes_per_sample_out, 0,
-						   (frame_size - converted_samples) * bytes_per_sample_out);
+				if (av_sample_fmt_is_planar(av_codec_ctx_audio->sample_fmt)) {
+					for (int ch = 0; ch < av_codec_ctx_audio->ch_layout.nb_channels; ch++) {
+						memset(av_frame_out->data[ch] + converted_samples * bytes_per_sample_out, 0,
+							   (frame_size - converted_samples) * bytes_per_sample_out);
+					}
+				} else {
+					memset(av_frame_out->data[0] +
+							   converted_samples * bytes_per_sample_out * av_codec_ctx_audio->ch_layout.nb_channels,
+						   0,
+						   (frame_size - converted_samples) * bytes_per_sample_out *
+							   av_codec_ctx_audio->ch_layout.nb_channels);
 				}
 				av_frame_out->nb_samples = frame_size;
 			} else {
