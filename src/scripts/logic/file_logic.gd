@@ -186,8 +186,6 @@ func _delete(file: FileData) -> void:
 		printerr("FileLogic: File id '%s' isn't present in files/data!" % file.id)
 
 	if video_pools.has(file.id):
-		for video: Video in video_pools[file.id]:
-			video.close()
 		video_pools.erase(file.id)
 
 	audio_pools.erase(file.id)
@@ -550,15 +548,9 @@ func _load_video(file: FileData) -> void:
 	_mutex.lock()
 	data[file.id] = temp_video
 	if video_pools.has(file.id):
-		for video: Video in video_pools[file.id]:
-			video.close()
+		video_pools.erase(file.id)
 	video_pools[file.id] = []
 	_mutex.unlock()
-
-	for i: int in 2:
-		# Get 2 extra video instances which can help with tight cuts.
-		# We load the video into the pool, but don't use it here directly.
-		get_video_reader(file, i)
 
 	var audio_source: Video = temp_video
 	var close_audio_source: bool = false
@@ -573,12 +565,24 @@ func _load_video(file: FileData) -> void:
 	if audio_source:
 		file.audio_streams.assign(audio_source.get_streams(1))
 		if audio_source.get_audio() != null:
-			Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
+			var wave_streams: Dictionary = audio_wave.get(file.id, {})
+			var has_waves: bool = true
+			if wave_streams.is_empty():
+				has_waves = false
+			else:
+				for stream_index: int in file.audio_streams:
+					if not wave_streams.has(stream_index) or (wave_streams[stream_index] as Dictionary).is_empty():
+						has_waves = false
+						break
+			if !has_waves:
+				Threader.add_task(_create_wave.bind(file), _on_wave_ready.bind(file))
+			else:
+				_on_wave_ready.call_deferred(file)
 		else:
 			_mutex.lock()
 			audio_wave[file.id] = { -1: { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() } }
 			_mutex.unlock()
-			call_deferred("_on_wave_ready", file)
+			_on_wave_ready.call_deferred(file)
 
 		if close_audio_source:
 			audio_source.close()
@@ -586,7 +590,7 @@ func _load_video(file: FileData) -> void:
 		_mutex.lock()
 		audio_wave[file.id] = { -1: { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() } }
 		_mutex.unlock()
-		call_deferred("_on_wave_ready", file)
+		_on_wave_ready.call_deferred(file)
 
 
 func _load_audio(file: FileData) -> void:
@@ -623,8 +627,8 @@ func _create_wave(file: FileData) -> void:
 		_create_wave_for_stream(file, stream_index, current_index, num_streams)
 		current_index += 1
 
-	call_deferred("emit_signal", "wave_loading", file, 100)
-	call_deferred("_on_wave_ready", file)
+	emit_signal.call_deferred("wave_loading", file, 100)
+	_on_wave_ready.call_deferred(file)
 
 
 func _create_wave_for_stream(file: FileData, stream_index: int, current_index: int = 0, num_streams: int = 1) -> void:
@@ -639,7 +643,7 @@ func _create_wave_for_stream(file: FileData, stream_index: int, current_index: i
 			if typeof(loaded_wave) == TYPE_DICTIONARY:
 				audio_wave[file.id][stream_index] = loaded_wave
 				_mutex.lock()
-				call_deferred("_on_wave_ready", file)
+				_on_wave_ready.call_deferred(file)
 				_mutex.unlock()
 				return
 
@@ -722,8 +726,8 @@ func _create_wave_for_stream(file: FileData, stream_index: int, current_index: i
 		var total_progress: int = int((base_progress + stream_progress) * 100.0)
 
 		_mutex.lock()
-		call_deferred("_on_wave_ready", file) # Wave isn't ready, but yeah. :p This should probably be replaced at some point to use the wave_loading signal
-		call_deferred("emit_signal", "wave_loading", file, total_progress)
+		_on_wave_ready.call_deferred(file) # Wave isn't ready, but yeah. :p This should probably be replaced at some point to use the wave_loading signal
+		emit_signal.call_deferred("wave_loading", file, total_progress)
 		_mutex.unlock()
 		current_time += chunk_duration
 

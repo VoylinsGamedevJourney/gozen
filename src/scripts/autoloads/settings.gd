@@ -441,6 +441,10 @@ func get_video_cache_size() -> int:
 
 func set_use_proxies(value: bool) -> void:
 	data.use_proxies = value
+	for video_id: int in EditorCore.active_tasks:
+		if WorkerThreadPool.wait_for_task_completion(EditorCore.active_tasks[video_id] as int):
+			printerr("EditorCore: Something went wrong waiting for task completion!")
+	EditorCore.active_tasks.clear()
 	FileLogic.reload_videos()
 
 
