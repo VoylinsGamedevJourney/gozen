@@ -301,6 +301,7 @@ func show_error(message: String) -> void:
 
 func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	is_encoding = true
+	EditorCore.is_playing = false
 
 	if end_frame == -1:
 		end_frame = project_data.timeline_end
@@ -406,6 +407,7 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 	EditorCore.frame_nr = start_frame # We set the first frame data ready.
 	if EditorCore.data_ready:
 		await EditorCore.frame_changed # View should be ready.
+	await RenderingServer.frame_post_draw # Wait for the frame to be fully rendered.
 	EditorCore.frame_nr = start_frame + 1 # We prepare the second frame data directly.
 
 	for i: int in range(start_frame, end_frame + 1):
@@ -517,11 +519,11 @@ func _encoding_loop(use_audio: bool, use_video: bool) -> void:
 			if use_audio:
 				var audio_data: PackedByteArray = _get_audio_for_frame(frame_nr, active_audio_tracks)
 				if not audio_data.is_empty() and not encoder.send_audio(audio_data):
-					call_deferred("stop_encoder")
+					stop_encoder.call_deferred()
 					printerr("RenderManager: Something went wrong sending audio frame!")
 					break
 			if use_video and not frame_data.is_empty() and not encoder.send_frame(frame_data):
-				call_deferred("stop_encoder")
+				stop_encoder.call_deferred()
 				printerr("RenderManager: Something went wrong sending frame(s)!")
 				break # Error happened in encoder.
 
@@ -723,4 +725,6 @@ func _convert_rgba_to_yuv(input_texture_rid: RID, res: Vector2i) -> PackedByteAr
 	rendering_device.compute_list_bind_uniform_set(compute_list, yuv_set, 0)
 	rendering_device.compute_list_dispatch(compute_list, ceili(res.x / 8.0), ceili(res.y / 8.0), 1)
 	rendering_device.compute_list_end()
+	rendering_device.submit()
+	rendering_device.sync()
 	return rendering_device.texture_get_data(yuv_output_tex, 0)
