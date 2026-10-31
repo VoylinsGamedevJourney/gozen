@@ -254,7 +254,6 @@ func _update_hovered_marker() -> void:
 	for frame_nr: int in marker_rects:
 		if marker_rects[frame_nr].has_point(mouse_pos):
 			found_frame = frame_nr
-			break
 
 	if _possible_drag != found_frame:
 		_possible_drag = found_frame
