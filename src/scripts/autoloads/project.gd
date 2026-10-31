@@ -75,6 +75,7 @@ func new_project(request: RequestProjectNew) -> void:
 	if !data.project_path.is_empty():
 		_auto_save()
 	project_ready.emit()
+	Timeline.focus_on_playhead.call_deferred()
 
 
 func save(auto_saved: bool = false) -> void:
@@ -163,7 +164,7 @@ func _archive_task(zip_path: String, archive_data: Dictionary, file_count: int, 
 	var err: int = packer.open(zip_path)
 	if err != OK:
 		printerr("Failed to open zip packer at ", zip_path)
-		loading_overlay.call_deferred("update", 0, "Failed to open zip packer!")
+		loading_overlay.update.call_deferred(0, "Failed to open zip packer!")
 		return
 
 	var current_file: int = 0
@@ -193,7 +194,7 @@ func _archive_task(zip_path: String, archive_data: Dictionary, file_count: int, 
 
 						var file_progress: float = float(bytes_read) / float(maxi(1, file_len))
 						var total_progress: int = int(((float(current_file) + file_progress) / float(maxi(1, file_count))) * 90)
-						loading_overlay.call_deferred("update", total_progress, "Zipping: " + new_name)
+						loading_overlay.update.call_deferred(total_progress, "Zipping: " + new_name)
 
 					if buffer.size() < chunk_size:
 						break
@@ -201,14 +202,14 @@ func _archive_task(zip_path: String, archive_data: Dictionary, file_count: int, 
 			err = packer.close_file()
 
 		current_file += 1
-		loading_overlay.call_deferred("update", int((float(current_file) / float(maxi(1, file_count))) * 90), "Zipping files ...")
+		loading_overlay.update.call_deferred(int((float(current_file) / float(maxi(1, file_count))) * 90), "Zipping files ...")
 	err = packer.start_file(project_name)
 
 	var project_str: String = var_to_str(archive_data)
 	err = packer.write_file(project_str.to_utf8_buffer())
 	err = packer.close_file()
 	err = packer.close()
-	loading_overlay.call_deferred("update", 100, "Archive complete!")
+	loading_overlay.update.call_deferred(100, "Archive complete!")
 
 
 func _on_archive_finished() -> void:
@@ -281,6 +282,7 @@ func open(new_project_path: String) -> void:
 	_auto_save()
 	await get_tree().process_frame
 	EditorCore.set_frame(data.playhead)
+	Timeline.focus_on_playhead.call_deferred()
 
 
 func open_project() -> void:
@@ -376,14 +378,14 @@ func check_unsaved_and_perform(callback: Callable) -> void:
 	popup.confirmed.connect(func() -> void:
 			save()
 			callback.call()
-			popup.call_deferred("queue_free"))
+			popup.queue_free.call_deferred())
 	dont_save_button.pressed.connect(func() -> void:
 			callback.call()
-			popup.call_deferred("queue_free"))
+			popup.queue_free.call_deferred())
 	cancel_button.pressed.connect(func() -> void:
 			if Settings.get_auto_save() and auto_save_timer != null:
 				auto_save_timer.paused = false
-			popup.call_deferred("queue_free"))
+			popup.queue_free.call_deferred())
 
 	get_tree().root.add_child(popup)
 	popup.popup_centered()
@@ -410,9 +412,6 @@ func _cleanup() -> void:
 	EditorCore.clip_instances.clear()
 
 	FileLogic._mutex.lock()
-	for pool: Array in FileLogic.video_pools.values():
-		for video: Video in pool:
-			video.close()
 	FileLogic.video_pools.clear()
 	FileLogic.audio_pools.clear()
 	FileLogic.audio_wave.clear()

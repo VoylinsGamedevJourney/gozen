@@ -28,7 +28,7 @@ const BASE_SVG_COLOR: Color = Color.WHITE
 
 
 func _init() -> void:
-	call_deferred("_setup")
+	_setup.call_deferred()
 
 
 func _setup() -> void:
