@@ -50,8 +50,8 @@ WorkspaceManager="*uid://cckasly8mw1v3"
 
 [debug]
 
-settings/crash_handler/message="Please include this when reporting the bug. Reporting bugs is possible here: https://github.com/VoylinsGamedevJourney/gozen/issues"
-settings/crash_handler/message.editor="Please include this when reporting the bug: https://github.com/VoylinsGamedevJourney/gozen/issues"
+settings/crash_handler/message="Please include this when reporting the bug. Reporting bugs is possible here: https://codeberg.org/gozen/gozen/issues"
+settings/crash_handler/message.editor="Please include this when reporting the bug: https://codeberg.org/gozen/gozen/issues"
 file_logging/enable_file_logging=true
 file_logging/log_path="user://logs/gozen.log"
 gdscript/warnings/unused_signal=0
