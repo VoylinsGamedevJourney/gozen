@@ -157,7 +157,10 @@ class Video : public Resource {
 	inline void set_sws_flag_bicubic() { sws_flag = SWS_BICUBIC; }
 
 	inline void set_smart_seek_threshold(int frames) { smart_seek_threshold = frames; }
-	inline void set_cache_size(int size) { max_cache_size = size; }
+	inline void set_cache_size(int size) {
+		max_cache_size = size;
+		_clear_cache();
+	}
 
 	inline Ref<Image> get_y_data() const { return y_data; }
 	inline Ref<Image> get_u_data() const { return u_data; }

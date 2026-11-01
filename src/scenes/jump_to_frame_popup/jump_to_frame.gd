@@ -12,8 +12,8 @@ signal confirmed(new_frame: float)
 func set_data(frame: int, max_frame: int) -> void:
 	spinbox.max_value = max_frame
 	spinbox.value = frame
-	spinbox.grab_focus()
-	spinbox.get_line_edit().text_submitted.connect(_on_apply_button_pressed.unbind(1))
+	spinbox.get_line_edit().grab_focus()
+	spinbox.get_line_edit().text_submitted.connect(_on_enter_pressed.unbind(1))
 
 
 func _input(event: InputEvent) -> void:
@@ -28,8 +28,13 @@ func _gui_input(event: InputEvent) -> void:
 			_on_close_button_pressed()
 
 
+func _on_enter_pressed() -> void:
+	_on_apply_button_pressed.call_deferred()
+
+
 func _on_apply_button_pressed() -> void:
 	EditorCore.set_frame(spinbox.value as int)
+	Timeline.focus_on_playhead()
 	_on_close_button_pressed()
 
 
