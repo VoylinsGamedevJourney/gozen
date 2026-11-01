@@ -42,7 +42,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_klhbv"]
 
-[node name="Welcome" type="PanelContainer" unique_id=248286192 node_paths=PackedStringArray("full_only_buttons", "tab_container", "option_button_language", "option_button_theme", "option_button_video_drag", "grid_modes", "grid_shortcuts", "button_flow_website", "button_flow_manual", "button_flow_tutorials", "button_flow_discord", "button_flow_source_code", "button_flow_support_kofi", "option_button_default_keyframe_type", "button_steam_workshop", "button_gozen_module_repo", "option_button_default_profile", "region_in_line_edit", "region_out_line_edit", "spinbox_resolution_x", "spinbox_resolution_y", "spinbox_framerate", "check_button_auto_save", "option_button_empty_space")]
+[node name="Welcome" type="PanelContainer" unique_id=248286192 node_paths=PackedStringArray("full_only_buttons", "tab_container", "option_button_language", "option_button_theme", "spinbox_gui_scale", "option_button_video_drag", "grid_modes", "grid_shortcuts", "button_flow_website", "button_flow_manual", "button_flow_tutorials", "button_flow_discord", "button_flow_source_code", "button_flow_support_kofi", "option_button_default_keyframe_type", "button_steam_workshop", "button_gozen_module_repo", "option_button_default_profile", "region_in_line_edit", "region_out_line_edit", "spinbox_resolution_x", "spinbox_resolution_y", "spinbox_framerate", "check_button_auto_save", "option_button_empty_space")]
 material = ExtResource("1_hdf7e")
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,7 +54,8 @@ script = ExtResource("1_1s38k")
 full_only_buttons = [NodePath("Margin/Control/PanelContainer/Margin/HBox/Sidebar/ModulesButton")]
 tab_container = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer")
 option_button_language = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox/LanguageOptionButton")
-option_button_theme = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox/ThemeOptionButton")
+option_button_theme = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox/Grid/ThemeOptionButton")
+spinbox_gui_scale = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox/Grid/GUIScaleSpinbox")
 option_button_video_drag = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineSettingsHBox/VideoDraggingBehaviourOptionButton")
 grid_modes = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ModesHBox/ModeGrid")
 grid_shortcuts = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/EditingVBox/ShortcutsGrid")
@@ -186,12 +187,11 @@ text = "Close"
 auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
-current_tab = 5
+current_tab = 0
 tabs_visible = false
 
 [node name="WelcomeVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=143545459]
 auto_translate_mode = 1
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 30
 metadata/_tab_index = 0
@@ -259,19 +259,36 @@ text = "Language"
 [node name="LanguageOptionButton" type="OptionButton" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox" unique_id=672800389]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+size_flags_vertical = 4
 
 [node name="Spacer" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox" unique_id=1879044670]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ThemeLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox" unique_id=1121414701]
+[node name="Grid" type="GridContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox" unique_id=238516421]
+layout_mode = 2
+columns = 2
+
+[node name="ThemeLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox/Grid" unique_id=1121414701]
 layout_mode = 2
 text = "Theme"
 
-[node name="ThemeOptionButton" type="OptionButton" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox" unique_id=537647571]
+[node name="ThemeOptionButton" type="OptionButton" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox/Grid" unique_id=537647571]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
+
+[node name="GUIScaleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox/Grid" unique_id=523908528]
+layout_mode = 2
+text = "GUI Scale"
+
+[node name="GUIScaleSpinbox" type="SpinBox" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/MiddleHBox/Grid" unique_id=1790250910]
+layout_mode = 2
+min_value = 50.0
+max_value = 300.0
+step = 5.0
+value = 100.0
+suffix = "%"
 
 [node name="BottomVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox" unique_id=1109742423]
 layout_mode = 2
@@ -1124,6 +1141,7 @@ autowrap_mode = 3
 
 [node name="ModulesVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=689432311]
 auto_translate_mode = 1
+visible = false
 layout_mode = 2
 metadata/_tab_index = 5
 

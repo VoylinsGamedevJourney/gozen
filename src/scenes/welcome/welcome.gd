@@ -6,6 +6,7 @@ extends PanelContainer
 
 @export var option_button_language: OptionButton
 @export var option_button_theme: OptionButton
+@export var spinbox_gui_scale: SpinBox
 
 @export var option_button_video_drag: OptionButton
 
@@ -150,6 +151,11 @@ func _setup_welcome_tab() -> void:
 	option_button_theme.selected = themes.values().find(Settings.get_theme_path())
 	option_button_theme.item_selected.connect(func(index: int) -> void:
 			Settings.set_theme_path(option_button_theme.get_item_metadata(index) as String))
+
+	# - GUI scale.
+	spinbox_gui_scale.value = Settings.get_display_scale_int()
+	spinbox_gui_scale.value_changed.connect(func(value: float) -> void:
+			Settings.set_display_scale_int(int(value)))
 
 
 func _setup_basics_tab() -> void:
