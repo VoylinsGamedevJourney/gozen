@@ -181,16 +181,17 @@ int Video::open(const String& video_path) {
 
 	// AV1 is a memory lover.
 	if (String(av_codec->name) == "libdav1d") {
-		av_dict_set(&codec_options, "framethreads", "4", 0); // Max concurrent frames.
-		av_dict_set(&codec_options, "tilethreads", "4", 0);	 // Max concurrent tiles.
+		// Max concurrent tiles (Normally square root of thread count).
+		av_dict_set(&codec_options, "max_frame_delay", "2", 0);
 	}
 
 	// Open codec - Video.
-	if (avcodec_open2(av_codec_ctx.get(), av_codec, &codec_options)) {
+	int err = avcodec_open2(av_codec_ctx.get(), av_codec, &codec_options);
+	av_dict_free(&codec_options);
+	if (err) {
 		close();
 		return _log_err("Failed to open codec");
 	}
-	av_dict_free(&codec_options);
 
 	// Adjust resolution according to the aspect ratio.
 	sar = av_q2d(av_stream->codecpar->sample_aspect_ratio);
