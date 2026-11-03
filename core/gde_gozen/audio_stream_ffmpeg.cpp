@@ -9,10 +9,15 @@ int AudioStreamFFmpeg::open(const String& path, int stream_index) {
 	mutex = memnew(Mutex);
 	mutex->lock();
 	AVFormatContext* temp_format_ctx = nullptr;
-	CharString local_path = path.utf8();
 	file_path = path;
 
-	if (path.begins_with("res://") || path.begins_with("user://")) {
+	String actual_path = path;
+	if (actual_path.begins_with("user://")) {
+		actual_path = ProjectSettings::get_singleton()->globalize_path(actual_path);
+	}
+	CharString local_path = actual_path.utf8();
+
+	if (actual_path.begins_with("res://")) {
 		temp_format_ctx = avformat_alloc_context();
 		file_buffer = FileAccess::get_file_as_bytes(path);
 
@@ -416,4 +421,6 @@ void AudioStreamFFmpeg::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("get_audio_codec"), &AudioStreamFFmpeg::get_audio_codec);
 	ClassDB::bind_method(D_METHOD("get_audio_bitrate"), &AudioStreamFFmpeg::get_audio_bitrate);
+
+	ClassDB::bind_method(D_METHOD("get_memory_usage"), &AudioStreamFFmpeg::get_memory_usage);
 }

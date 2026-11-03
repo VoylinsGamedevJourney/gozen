@@ -43,12 +43,17 @@ int Video::open(const String& video_path) {
 	}
 	// Allocate video file context.
 	AVFormatContext* temp_format_ctx = nullptr;
-	CharString local_path = video_path.utf8();
 	path = video_path;
 	resolution = Vector2i(0, 0);
 	last_decoded_frame = -1;
 
-	if (path.begins_with("res://") || path.begins_with("user://")) {
+	String actual_path = path;
+	if (actual_path.begins_with("user://")) {
+		actual_path = ProjectSettings::get_singleton()->globalize_path(actual_path);
+	}
+	CharString local_path = actual_path.utf8();
+
+	if (actual_path.begins_with("res://")) {
 		if (!(temp_format_ctx = avformat_alloc_context())) {
 			return _log_err("Failed to allocate AVFormatContext");
 		}

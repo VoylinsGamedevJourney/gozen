@@ -219,7 +219,12 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 		}
 	}
 
-	if (file_path.begins_with("res://") || file_path.begins_with("user://")) {
+	String actual_path = file_path;
+	if (actual_path.begins_with("user://")) {
+		actual_path = ProjectSettings::get_singleton()->globalize_path(actual_path);
+	}
+
+	if (actual_path.begins_with("res://")) {
 		if (!(format_ctx = avformat_alloc_context())) {
 			_log_err("Failed to allocate AVFormatContext");
 			return data;
@@ -252,7 +257,7 @@ PackedByteArray Audio::get_audio_data(String file_path, int stream_index, double
 			return data;
 		}
 	} else {
-		CharString local_path = file_path.utf8();
+		CharString local_path = actual_path.utf8();
 		if (avformat_open_input(&format_ctx, local_path.get_data(), NULL, NULL)) {
 			_log_err("Couldn't open audio");
 			return data;
@@ -582,7 +587,12 @@ Error Audio::open(String file_path, int stream_index) {
 
 	AVFormatContext* temp_format_ctx = nullptr;
 
-	if (file_path.begins_with("res://") || file_path.begins_with("user://")) {
+	String actual_path = file_path;
+	if (actual_path.begins_with("user://")) {
+		actual_path = ProjectSettings::get_singleton()->globalize_path(actual_path);
+	}
+
+	if (actual_path.begins_with("res://")) {
 		if (!(temp_format_ctx = avformat_alloc_context())) {
 			_log_err("Failed to allocate AVFormatContext");
 			return ERR_CANT_CREATE;
@@ -615,7 +625,7 @@ Error Audio::open(String file_path, int stream_index) {
 			return ERR_CANT_OPEN;
 		}
 	} else {
-		CharString local_path = file_path.utf8();
+		CharString local_path = actual_path.utf8();
 		if (avformat_open_input(&temp_format_ctx, local_path.get_data(), NULL, NULL)) {
 			_log_err("Couldn't open audio");
 			return ERR_CANT_OPEN;
