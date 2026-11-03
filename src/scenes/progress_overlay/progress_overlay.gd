@@ -18,6 +18,7 @@ var start_time: int = 0
 var _tween: Tween
 var _target_value: float = 0.0
 var _progress_history: Array[Vector2] = []
+var _has_estimate: bool = false
 
 
 
@@ -69,8 +70,10 @@ func _update_estimate() -> void:
 	if _target_value > 0:
 		var remaining: float = Approximator.calculate_remaining(_progress_history, _target_value)
 		if remaining == 0.0:
-			estimated_time_label.text = tr("Estimated time") + " - --:--:--"
+			if !_has_estimate:
+				estimated_time_label.text = tr("Estimated time") + " - --:--:--"
 		elif remaining != -2.0:
+			_has_estimate = true
 			estimated_time_label.text = tr("Estimated time") + " - %s" % Format.time_str(remaining, true)
 
 
