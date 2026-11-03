@@ -198,8 +198,8 @@ func start_render(export_path: String, profile: RenderProfile, threads: int, sta
 	print("--------------------")
 
 	# Resetting progress values.
-	progress_frame_increase = 90.0 / maxi(1, end_frame - start_frame)
-	current_progress = 0.0
+	progress_frame_increase = 94.0 / maxi(1, end_frame - start_frame)
+	current_progress = 6.0
 
 	var gozen_icon: Texture2D = load(Library.ICON_GOZEN)
 	var rendering_icon: Texture2D = load(Library.ICON_RENDERING)
@@ -415,6 +415,8 @@ func start_encoder(start_frame: int = 0, end_frame: int = -1) -> void:
 			break
 
 		await get_tree().process_frame
+		#EditorCore._prefetch_upcoming_clips()
+
 		var frame_data: PackedByteArray = PackedByteArray()
 		if use_video:
 			frame_data = _convert_rgba_to_yuv(viewport.get_rid(), current_render_resolution)
@@ -493,6 +495,7 @@ func stop_encoder() -> void:
 		if yuv_input_texture.is_valid():
 			rendering_device.free_rid(yuv_input_texture)
 			yuv_input_texture = RID()
+	FFmpeg.free_memory()
 	is_encoding = false
 
 
