@@ -13,7 +13,7 @@ from typing import Generator
 
 try:
     from .build_deps import (
-        build_aom,
+        build_dav1d,
         build_lib,
         build_mp3lame,
         build_ogg,
@@ -39,7 +39,7 @@ try:
     )
 except ImportError:
     from build_deps import (
-        build_aom,
+        build_dav1d,
         build_lib,
         build_mp3lame,
         build_ogg,
@@ -97,7 +97,7 @@ def compile_ffmpeg(platform: str, arch: str, threads: int):
 
     print("Building FFmpeg dependencies...")
     build_x264(platform, arch, threads, env)
-    build_aom(platform, arch, threads, env)
+    build_dav1d(platform, arch, threads, env)
     build_svt_av1(platform, arch, threads, env)
     build_vpx(platform, arch, threads, env)
     build_opus(platform, arch, threads, env)
@@ -156,7 +156,7 @@ def build_ffmpeg_linux(arch: str, threads: int, env: dict[str, str]):
         f"--extra-ldflags=-L{convert_to_msys2_path(lib_dir)}",
         # Enable codecs
         "--enable-libx264",
-        "--enable-libaom",
+        "--enable-libdav1d",
         "--enable-libvpx",
         "--enable-libmp3lame",
         "--enable-libopus",
@@ -220,7 +220,7 @@ def build_ffmpeg_windows(arch: str, threads: int, env: dict[str, str]):
         f"--extra-ldflags=-L{convert_to_msys2_path(lib_dir)}",
         # Enable codecs
         "--enable-libx264",
-        "--enable-libaom",
+        "--enable-libdav1d",
         "--enable-libvpx",
         "--enable-libmp3lame",
         "--enable-libopus",
@@ -275,7 +275,7 @@ def build_ffmpeg_macos(arch: str, threads: int, env: dict[str, str]):
         f"--extra-cflags=-I{convert_to_msys2_path(ffmpeg_install_dir / 'include')}",
         f"--extra-ldflags=-L{convert_to_msys2_path(lib_dir)}",
         "--enable-libx264",
-        "--enable-libaom",
+        "--enable-dav1d",
         "--enable-libvpx",
         "--enable-libmp3lame",
         "--enable-libopus",

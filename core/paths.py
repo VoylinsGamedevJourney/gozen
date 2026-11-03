@@ -29,11 +29,11 @@ X264_SOURCE_DIR = LIBS_ROOT_DIR / "x264_src"
 X264_INSTALL_DIR_NAME = "x264"
 X264_GIT_OPTIONS: dict[str, Any] = {}
 
-AOM_REPO = "https://aomedia.googlesource.com/aom"
-AOM_SOURCE_DIR = LIBS_ROOT_DIR / "aom_src"
-AOM_INSTALL_DIR_NAME = "aom"
-AOM_BUILD_DIR = AOM_SOURCE_DIR.parent / "aom_build"
-AOM_GIT_OPTIONS: dict[str, Any] = {}
+DAV1D_REPO = "https://code.videolan.org/videolan/dav1d.git"
+DAV1D_SOURCE_DIR = LIBS_ROOT_DIR / "dav1d_src"
+DAV1D_INSTALL_DIR_NAME = "dav1d"
+DAV1D_BUILD_DIR = DAV1D_SOURCE_DIR / "build"
+DAV1D_GIT_OPTIONS: dict[str, Any] = {}
 
 SVT_AV1_REPO = "https://gitlab.com/AOMediaCodec/SVT-AV1.git"
 SVT_AV1_SOURCE_DIR = LIBS_ROOT_DIR / "svtav1_src"

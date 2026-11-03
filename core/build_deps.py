@@ -3,8 +3,8 @@ from typing import Optional, Sequence
 
 try:
     from .paths import (
-        AOM_BUILD_DIR,
-        AOM_SOURCE_DIR,
+        DAV1D_BUILD_DIR,
+        DAV1D_SOURCE_DIR,
         MP3LAME_SOURCE_DIR,
         OGG_SOURCE_DIR,
         OPUS_SOURCE_DIR,
@@ -25,8 +25,8 @@ try:
     )
 except ImportError:
     from paths import (
-        AOM_BUILD_DIR,
-        AOM_SOURCE_DIR,
+        DAV1D_BUILD_DIR,
+        DAV1D_SOURCE_DIR,
         MP3LAME_SOURCE_DIR,
         OGG_SOURCE_DIR,
         OPUS_SOURCE_DIR,
@@ -155,54 +155,42 @@ def build_x264(
     )
 
 
-def build_aom(
+def build_dav1d(
     platform: str, arch: str, threads: int, env: dict[str, str] | None = None
 ):
     install_dir = get_ffmpeg_install_dir(platform)
 
-    if AOM_BUILD_DIR.exists():
-        run_command(
-            ["ninja", "-t", "clean", "-g"],
-            cwd=AOM_BUILD_DIR,
-            use_msys2=CURR_PLATFORM == "windows",
-        )
     os.makedirs(install_dir, exist_ok=True)
-    clear_dir(AOM_BUILD_DIR)
+    clear_dir(DAV1D_BUILD_DIR)
 
     host, _ = get_host_and_sysroot(platform, arch)
-    if not host:
-        toolchain_file = ""
-    elif host == "x86_64-w64-mingw32":
-        toolchain_file = "x86_64-mingw-gcc.cmake"
+
+    cross_file = ""
+    if host == "x86_64-w64-mingw32":
+        cross_file = "package/crossfiles/x86_64-w64-mingw32.meson"
     elif host == "aarch64-linux-gnu":
-        toolchain_file = "arm64-linux-gcc.cmake"
-    else:
-        raise ValueError(f"Toolchain file for host {host} unknown.")
+        cross_file = "package/crossfiles/aarch64-linux.meson"
+
+    setup_cmd = [
+        "meson",
+        "setup",
+        str(convert_to_msys2_path(DAV1D_BUILD_DIR)),
+        f"--prefix={convert_to_msys2_path(install_dir)}",
+        "--libdir=lib",
+        "--default-library=static",
+        "--buildtype=release",
+    ]
+    if cross_file:
+        setup_cmd.extend(["--cross-file", cross_file])
 
     build_lib(
-        "AOM",
-        AOM_BUILD_DIR,
-        configure_cmd=[
-            "cmake",
-            "-G=Ninja",
-            "--fresh",
-            f"-DCMAKE_INSTALL_PREFIX={convert_to_msys2_path(install_dir)}",
-            "-DBUILD_SHARED_LIBS=OFF",
-            "-DENABLE_TESTS=OFF",
-            "-DCONFIG_PIC=1",
-            f"{convert_to_msys2_path(AOM_SOURCE_DIR)}",
-        ]
-        + (
-            [
-                "-DCMAKE_TOOLCHAIN_FILE="
-                + convert_to_msys2_path(
-                    AOM_SOURCE_DIR / "build" / "cmake" / "toolchains" / toolchain_file
-                )
-            ]
-            if toolchain_file
-            else []
-        ),
-        compile_cmd=[["ninja", f"-j{threads}"], ["ninja", "install"]],
+        "dav1d",
+        DAV1D_SOURCE_DIR,
+        configure_cmd=setup_cmd,
+        compile_cmd=[
+            ["ninja", "-C", str(convert_to_msys2_path(DAV1D_BUILD_DIR)), f"-j{threads}"],
+            ["ninja", "-C", str(convert_to_msys2_path(DAV1D_BUILD_DIR)), "install"]
+        ],
         threads=threads,
         env=env,
         use_msys2=CURR_PLATFORM == "windows",

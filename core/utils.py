@@ -30,6 +30,7 @@ MSYS2_REQUIRED_PACKAGES = [
     "mingw-w64-ucrt-x86_64-scons",
     "mingw-w64-ucrt-x86_64-cmake",
     "mingw-w64-ucrt-x86_64-autotools",
+    "mingw-w64-ucrt-x86_64-meson",
 ]
 
 

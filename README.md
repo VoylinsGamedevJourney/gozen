@@ -41,9 +41,9 @@ GoZen is available on following platforms:
 ### Building from source
 Before you start building from source you'll need to ensure you have following dependencies installed on your system (names can vary depending on the distro you're using):
 - **Compiler:** `gcc`/`clang` and `g++`/`clang++`;
-- **Build tools:** `CMake`, `Ninja`, `NASM`, `SCons`, and `Python` (version 3.10+);
+- **Build tools:** `CMake`, `Ninja`, `NASM`, `Meson`, `SCons`, and `Python` (version 3.10+);
 - **Git tools:** `git` and `git-svn`;
-- **System libraries:** `libaom`, `SVT-AV1`, `NUMA`, `VA-API`, `VDPAU`, `X11` and `bzip2`.
+- **System libraries:** `dav1d`, `SVT-AV1`, `NUMA`, `VA-API`, `VDPAU`, `X11` and `bzip2`.
 
 First of all, you'll need to run the python script in the root of the project `build.py`, just follow the instructions and it should compile without issues (on both Linux, Windows, and MacOS). From there you can just open the GoZen project from Godot and you're good to go to use/export the project from there.
 

@@ -6,9 +6,9 @@ from typing import Optional
 
 try:
     from .paths import (
-        AOM_BUILD_DIR,
-        AOM_REPO,
-        AOM_SOURCE_DIR,
+        DAV1D_BUILD_DIR,
+        DAV1D_REPO,
+        DAV1D_SOURCE_DIR,
         MP3LAME_GIT_OPTIONS,
         MP3LAME_REPO,
         MP3LAME_SOURCE_DIR,
@@ -32,9 +32,9 @@ try:
     from .utils import GIT_PATH, run_command
 except ImportError:
     from paths import (
-        AOM_BUILD_DIR,
-        AOM_REPO,
-        AOM_SOURCE_DIR,
+        DAV1D_BUILD_DIR,
+        DAV1D_REPO,
+        DAV1D_SOURCE_DIR,
         MP3LAME_GIT_OPTIONS,
         MP3LAME_REPO,
         MP3LAME_SOURCE_DIR,
@@ -87,7 +87,7 @@ def clone_dep(
 
 def download_ffmpeg_deps() -> None:
     clone_dep_x264()
-    clone_dep_aom()
+    clone_dep_dav1d()
     clone_dep_svt_av1()
     clone_dep_vpx()
     clone_dep_opus()
@@ -100,8 +100,8 @@ def clone_dep_x264() -> None:
     clone_dep(X264_REPO, X264_SOURCE_DIR)
 
 
-def clone_dep_aom() -> None:
-    clone_dep(AOM_REPO, AOM_SOURCE_DIR, build_dir=AOM_BUILD_DIR)
+def clone_dep_dav1d() -> None:
+    clone_dep(DAV1D_REPO, DAV1D_SOURCE_DIR, build_dir=DAV1D_BUILD_DIR)
 
 
 def clone_dep_svt_av1() -> None:

@@ -40,3 +40,4 @@ result-*
 
 # Ignore NixOS interactive test driver history
 **/.nixos-test-history
+/core/dav1d_src

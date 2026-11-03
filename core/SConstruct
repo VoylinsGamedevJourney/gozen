@@ -27,7 +27,7 @@ if "linux" in platform and arch == "arm64":
 env.Append(
     CPPPATH=[
         f"ffmpeg/bin_{platform}/include",
-        f"ffmpeg/bin_{platform}/aom/include",
+        f"ffmpeg/bin_{platform}/dav1d/include",
         f"ffmpeg/bin_{platform}/svtav1/include",
         f"ffmpeg/bin_{platform}/x264/include",
         f"ffmpeg/bin_{platform}/mp3lame/include",
@@ -38,7 +38,7 @@ env.Append(
     ],
     LIBPATH=[
         f"ffmpeg/bin_{platform}/lib",
-        f"ffmpeg/bin_{platform}/aom/lib",
+        f"ffmpeg/bin_{platform}/dav1d/lib",
         f"ffmpeg/bin_{platform}/svtav1/lib",
         f"ffmpeg/bin_{platform}/x264/lib",
         f"ffmpeg/bin_{platform}/mp3lame/lib",
@@ -60,7 +60,7 @@ elif "linux" in platform:
 
     libs = [
         "SvtAv1Enc",
-        "aom",
+        "dav1d",
         "mp3lame",
         "opus",
         "vorbis",
@@ -104,7 +104,7 @@ elif "windows" in platform:
 
         libs = [
             "-lSvtAv1Enc",
-            "-laom",
+            "-ldav1d",
             "-lmp3lame",
             "-lopus",
             "-lvorbisenc",
@@ -157,7 +157,7 @@ elif "windows" in platform:
 elif "macos" in platform:
     libs = [
         "SvtAv1Enc",
-        "aom",
+        "dav1d",
         "mp3lame",
         "opus",
         "vorbisenc",
