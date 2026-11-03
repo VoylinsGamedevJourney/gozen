@@ -275,7 +275,7 @@ def build_ffmpeg_macos(arch: str, threads: int, env: dict[str, str]):
         f"--extra-cflags=-I{convert_to_msys2_path(ffmpeg_install_dir / 'include')}",
         f"--extra-ldflags=-L{convert_to_msys2_path(lib_dir)}",
         "--enable-libx264",
-        "--enable-dav1d",
+        "--enable-libdav1d",
         "--enable-libvpx",
         "--enable-libmp3lame",
         "--enable-libopus",

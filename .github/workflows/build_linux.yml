@@ -5,7 +5,7 @@ on:
       version:
         description: GoZen version number
         type: string
-        default: '0.17-beta'
+        default: '0.19-beta'
       godot_version:
         description: The Godot version to use
         type: string
@@ -40,7 +40,7 @@ jobs:
           sudo apt-get install -y git git-svn bash yasm nasm python3 python3-pip scons gcc diffutils make wget unzip tar \
           cmake autoconf automake libtool ninja-build pkg-config \
           binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu \
-          libnuma-dev fuse libfuse2 desktop-file-utils patchelf
+          libnuma-dev fuse libfuse2 desktop-file-utils patchelf meson
 
       - name: Checkout submodules
         uses: actions/checkout@v5

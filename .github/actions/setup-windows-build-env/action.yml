@@ -8,7 +8,7 @@ runs:
         msystem: UCRT64
         update: true
         install: >-
-          git subversion unzip make diffutils yasm nasm python 
+          git subversion unzip make diffutils yasm nasm python
           mingw-w64-ucrt-x86_64-binutils
           mingw-w64-ucrt-x86_64-crt-git
           mingw-w64-ucrt-x86_64-gcc
@@ -24,3 +24,4 @@ runs:
           mingw-w64-ucrt-x86_64-scons
           mingw-w64-ucrt-x86_64-cmake
           mingw-w64-ucrt-x86_64-autotools
+          mingw-w64-ucrt-x86_64-meson
