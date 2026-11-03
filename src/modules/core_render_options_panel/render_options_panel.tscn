@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://68jlumpok6fc" path="res://assets/icons/save.tres" id="2_ix4f4"]
 [ext_resource type="Texture2D" uid="uid://diadjef0vgd1o" path="res://assets/icons/arrow_down.tres" id="3_bqj0i"]
 
-[node name="RenderOptionsPanel" type="PanelContainer" unique_id=956249024 node_paths=PackedStringArray("button_save_render_profile", "button_set_default_profile", "option_button_render_profiles", "path_line_edit", "video_toggle", "video_grid", "video_codec_option_button", "video_quality_hslider", "video_quality_spin_box", "video_gop_spin_box", "video_bframes_spin_box", "video_speed_label", "video_speed_hslider", "video_speed_spin_box", "audio_toggle", "audio_grid", "audio_codec_option_button", "audio_channels_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
+[node name="RenderOptionsPanel" type="PanelContainer" unique_id=956249024 node_paths=PackedStringArray("button_save_render_profile", "option_button_render_profiles", "path_line_edit", "video_toggle", "video_grid", "video_codec_option_button", "video_quality_hslider", "video_quality_spin_box", "video_gop_spin_box", "video_bframes_spin_box", "video_speed_label", "video_speed_hslider", "video_speed_spin_box", "audio_toggle", "audio_grid", "audio_codec_option_button", "audio_channels_option_button", "threads_spin_box", "render_region_check_button", "region_start_spinbox", "region_end_spinbox")]
 custom_minimum_size = Vector2(200, 100)
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,7 +16,6 @@ size_flags_vertical = 3
 theme_type_variation = &"box"
 script = ExtResource("1_raodm")
 button_save_render_profile = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/SaveProfileButton")
-button_set_default_profile = NodePath("")
 option_button_render_profiles = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox/RenderProfileOptionButton")
 path_line_edit = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox/PathLineEdit")
 video_toggle = NodePath("Margin/Panel/Margin/ScrollContainer/VBox/VideoTitleHBox/VideoCheckButton")
@@ -340,6 +339,7 @@ layout_mode = 2
 [node name="StartRenderButton" type="Button" parent="Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=660434586]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_type_variation = &"main_button"
 text = "Start render"
 
 [node name="ExtraRenderButton" type="Button" parent="Margin/Panel/Margin/ScrollContainer/VBox/HBox" unique_id=15208269]

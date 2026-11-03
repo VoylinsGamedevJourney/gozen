@@ -1,5 +1,7 @@
 #include "ffmpeg.hpp"
 
+int FFmpeg::decoder_thread_count = 0;
+
 void FFmpeg::print_av_error(const char* message, int error) {
 	char error_buffer[AV_ERROR_MAX_STRING_SIZE];
 
@@ -8,12 +10,12 @@ void FFmpeg::print_av_error(const char* message, int error) {
 }
 
 void FFmpeg::enable_multithreading(AVCodecContext* codec_ctx, const AVCodec* codec, int thread_count) {
-	codec_ctx->thread_count = thread_count > 0 ? thread_count : OS::get_singleton()->get_processor_count() - 1;
+	codec_ctx->thread_count = thread_count >= 0 ? thread_count : OS::get_singleton()->get_processor_count() - 1;
 
 	int thread_type = 0;
 	if (codec->capabilities & AV_CODEC_CAP_FRAME_THREADS)
 		thread_type |= FF_THREAD_FRAME;
-	if (codec->capabilities & AV_CODEC_CAP_SLICE_THREADS)
+	if (!av_codec_is_encoder(codec) && (codec->capabilities & AV_CODEC_CAP_SLICE_THREADS))
 		thread_type |= FF_THREAD_SLICE;
 
 	if (thread_type != 0)

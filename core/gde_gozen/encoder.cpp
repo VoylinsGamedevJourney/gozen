@@ -551,10 +551,11 @@ bool Encoder::_finalize_encoding() {
 
 
 void Encoder::close() {
-	if (frame_nr == 0)
-		return;
-	if (!_finalize_encoding())
-		_log_err("_finalize_encoding failed with: " + String::num_int64(response));
+	if (encoder_open && frame_nr > 0) {
+		if (!_finalize_encoding()) {
+			_log_err("_finalize_encoding failed with: " + String::num_int64(response));
+		}
+	}
 
 	// Cleanup contexts.
 	swr_ctx_audio.reset();

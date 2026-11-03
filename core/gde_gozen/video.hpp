@@ -130,6 +130,7 @@ class Video : public Resource {
 
   public:
 	static double get_duration(const String& video_path);
+	static void set_decoder_threads(int count) { FFmpeg::decoder_thread_count = count; };
 
 	Video() {}
 	~Video() { close(); }
@@ -212,6 +213,8 @@ class Video : public Resource {
 
 	inline bool is_full_color_range() const { return full_color_range; }
 	inline bool is_using_sws() const { return using_sws; }
+
+	int64_t get_memory_usage() const;
 
   protected:
 	static void _bind_methods();

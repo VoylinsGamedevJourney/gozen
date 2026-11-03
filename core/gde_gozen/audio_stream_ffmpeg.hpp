@@ -7,6 +7,7 @@
 #include <godot_cpp/classes/audio_stream_playback_resampled.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/mutex.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/variant/packed_byte_array.hpp>
 
 
@@ -66,6 +67,15 @@ class AudioStreamFFmpeg : public AudioStream {
 			return av_format_ctx->bit_rate;
 		}
 		return 0;
+	}
+
+	int64_t get_memory_usage() const {
+		int64_t memory = file_buffer.size();
+		if (avio_ctx && avio_ctx->buffer) {
+			memory += 8 * 1024 * 1024;
+		}
+
+		return memory;
 	}
 
 	Ref<AudioStreamPlayback> _instantiate_playback() const override;

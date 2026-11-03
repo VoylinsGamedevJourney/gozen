@@ -5,6 +5,7 @@ signal on_show_menu_bar_changed(value: bool)
 
 signal on_video_cache_size_changed(value: int)
 signal on_video_smart_seek_threshold(value: int)
+signal on_video_decoder_threads_changed(value: int)
 
 signal on_panel_tabs_position_changed(value: int)
 
@@ -46,6 +47,7 @@ func _ready() -> void:
 	apply_theme()
 	apply_shortcuts()
 	apply_panel_tabs_position()
+	apply_video_decoder_threads()
 
 	load_new_shortcuts()
 
@@ -437,6 +439,29 @@ func set_video_cache_size(value: int) -> void:
 
 func get_video_cache_size() -> int:
 	return data.video_cache_size
+
+
+func set_video_decoder_threads(value: int) -> void:
+	if data.video_decoder_threads != value:
+		data.video_decoder_threads = value
+		apply_video_decoder_threads()
+		on_video_decoder_threads_changed.emit(value)
+
+		# We need to reload all video as setting the thread count happens before
+		# opening the codec. Yey! -_-
+		for video_id: int in EditorCore.active_tasks:
+			if WorkerThreadPool.wait_for_task_completion(EditorCore.active_tasks[video_id] as int):
+				printerr("EditorCore: Something went wrong waiting for task completion!")
+		EditorCore.active_tasks.clear()
+		FileLogic.reload_videos()
+
+
+func get_video_decoder_threads() -> int:
+	return data.video_decoder_threads
+
+
+func apply_video_decoder_threads() -> void:
+	Video.set_decoder_threads(data.video_decoder_threads)
 
 
 func set_use_proxies(value: bool) -> void:

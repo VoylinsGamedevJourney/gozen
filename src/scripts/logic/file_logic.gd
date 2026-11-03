@@ -1337,3 +1337,70 @@ func _find_subfolder_files_async(dropped_paths: Array[String], progress: Progres
 
 		folders = new_folders
 	return result
+
+
+func print_memory_debug() -> void:
+	var total_video_mem: int = 0
+	var total_audio_mem: int = 0
+	var total_video_instances: int = 0
+	var total_audio_instances: int = 0
+
+	var video_stats: Array[Dictionary] = [] # { name: String, instances: int, mem: int }
+
+	_mutex.lock()
+	for file_id: int in video_pools.keys():
+		var file_name: String = "Unknown"
+		if files.has(file_id):
+			file_name = files[file_id].nickname
+
+		var instances: int = 0
+		var memory: int = 0
+
+		# Main instance
+		if data.has(file_id) and data[file_id] is Video:
+			instances += 1
+			memory += (data[file_id] as Video).get_memory_usage()
+
+		# Pool instances
+		for video: Video in video_pools[file_id]:
+			if video != null:
+				instances += 1
+				memory += video.get_memory_usage()
+
+		if instances > 0:
+			total_video_instances += instances
+			total_video_mem += memory
+			video_stats.append({ "name": file_name, "instances": instances, "mem": memory })
+
+	for file_id: int in audio_pools.keys():
+		# Main instance
+		if data.has(file_id) and data[file_id] is AudioStreamFFmpeg:
+			total_audio_instances += 1
+			total_audio_mem += (data[file_id] as AudioStreamFFmpeg).get_memory_usage()
+
+		# Pool instances
+		for audio: AudioStreamFFmpeg in audio_pools[file_id]:
+			if audio != null:
+				total_audio_instances += 1
+				total_audio_mem += audio.get_memory_usage()
+
+	var total_wave_mem: int = 0
+	for file_id: int in audio_wave.keys():
+		for stream_index: Variant in audio_wave[file_id]:
+			for lod: Variant in audio_wave[file_id][stream_index]:
+				total_wave_mem += (audio_wave[file_id][stream_index][lod] as PackedFloat32Array).size() * 4
+	_mutex.unlock()
+
+	video_stats.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.mem > b.mem)
+
+	Print.header("--==  Memory debug info  ==--")
+	if OS.is_debug_build():
+		Print.info("Godot instance", String.humanize_size(OS.get_static_memory_usage())) # NO_TRANSLATE
+	Print.info("Video instances", "%d - %s" % [total_video_instances, String.humanize_size(total_video_mem)]) # NO_TRANSLATE
+	Print.info("Audio instances", "%d - %s" % [total_audio_instances, String.humanize_size(total_audio_mem)]) # NO_TRANSLATE
+	Print.info("Wave cache", String.humanize_size(total_wave_mem)) # NO_TRANSLATE
+	Print.info("Top 5 video memory consumers") # NO_TRANSLATE
+	for i: int in mini(5, video_stats.size()):
+		var video_stat: Dictionary = video_stats[i]
+		print("  %2d. %s: %d instances - %s" % [i + 1, video_stat.name, video_stat.instances, String.humanize_size(video_stat.mem as int)]) # NO_TRANSLATE
+	Print.header("--==--================--==--")

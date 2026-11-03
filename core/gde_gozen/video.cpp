@@ -821,6 +821,41 @@ Dictionary Video::get_chapter_metadata(int chapter_index) {
 }
 
 
+int64_t Video::get_memory_usage() const {
+	int64_t memory = 0;
+	memory += file_buffer.size();
+	if (y_data.is_valid())
+		memory += y_data->get_data().size();
+	if (u_data.is_valid())
+		memory += u_data->get_data().size();
+	if (v_data.is_valid())
+		memory += v_data->get_data().size();
+	if (a_data.is_valid())
+		memory += a_data->get_data().size();
+
+	for (const auto& pair : frame_cache_map) {
+		if (pair.second) {
+			memory += av_image_get_buffer_size(static_cast<AVPixelFormat>(pair.second->format), pair.second->width,
+											   pair.second->height, 1);
+		}
+	}
+	memory += keyframes.capacity() * sizeof(Keyframe);
+
+	if (avio_ctx_buffer) {
+		memory += FFmpeg::AVIO_CTX_BUFFER_SIZE;
+	}
+	if (av_frame && av_frame->width > 0 && av_frame->height > 0) {
+		memory += av_image_get_buffer_size(static_cast<AVPixelFormat>(av_frame->format), av_frame->width,
+										   av_frame->height, 1);
+	}
+	if (using_sws && av_sws_frame && av_sws_frame->width > 0 && av_sws_frame->height > 0) {
+		memory += av_image_get_buffer_size(static_cast<AVPixelFormat>(av_sws_frame->format), av_sws_frame->width,
+										   av_sws_frame->height, 1);
+	}
+	return memory;
+}
+
+
 void Video::_copy_frame_data() {
 	if (av_frame->data[0] == nullptr) {
 		_log_err("Frame is empty");
@@ -946,6 +981,7 @@ void Video::_clear_cache() {
 
 void Video::_bind_methods() {
 	ClassDB::bind_static_method("Video", D_METHOD("get_duration", "video_path"), &Video::get_duration);
+	ClassDB::bind_static_method("Video", D_METHOD("set_decoder_threads", "count"), &Video::set_decoder_threads);
 
 	ClassDB::bind_method(D_METHOD("open", "video_path"), &Video::open);
 	ClassDB::bind_method(D_METHOD("close"), &Video::close);
@@ -1011,4 +1047,6 @@ void Video::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("is_full_color_range"), &Video::is_full_color_range);
 	ClassDB::bind_method(D_METHOD("is_using_sws"), &Video::is_using_sws);
+
+	ClassDB::bind_method(D_METHOD("get_memory_usage"), &Video::get_memory_usage);
 }

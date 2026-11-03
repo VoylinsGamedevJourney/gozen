@@ -295,6 +295,14 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 
 	if not OS.has_feature("lite"):
 		performance_options.append_array([
+			create_label(tr("Decoder Threads")),
+			create_spinbox(
+					Settings.get_video_decoder_threads(),
+					default_settings.video_decoder_threads,
+					0, OS.get_processor_count() - 1, 1, false, true,
+					Settings.set_video_decoder_threads,
+					"",
+					tr("Number of threads to use for video decoding. 0 means automatic, putting this too high makes memory usage too high which can cause your system to crash.")),
 			create_label(tr("Use proxies")),
 			create_check_button(
 				Settings.get_use_proxies(),

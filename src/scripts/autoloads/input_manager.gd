@@ -9,11 +9,14 @@ signal switch_timeline_mode_split
 
 
 
-
-
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("help"):
 		PopupManager.open(PopupManager.CREDITS)
+
+	if event.is_action_pressed("print_debug", false, true):
+		FileLogic.print_memory_debug()
+		get_viewport().set_input_as_handled()
+		return
 
 	if !Project.is_loaded or !PopupManager._open_popups.is_empty():
 		return # EVERYTHING which is only allowed to open after the start screen goes below!

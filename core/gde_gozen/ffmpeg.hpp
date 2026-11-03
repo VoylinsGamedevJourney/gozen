@@ -44,9 +44,12 @@ class FFmpeg {
   public:
 	const static int AVIO_CTX_BUFFER_SIZE = 4 * 1024 * 1024; // 4 MB
 
+	static int decoder_thread_count;
+
 	static void print_av_error(const char* message, int error);
 
-	static void enable_multithreading(AVCodecContext* codec_ctx, const AVCodec* codec, int thread_count = 0);
+	static void enable_multithreading(AVCodecContext* codec_ctx, const AVCodec* codec,
+									  int thread_count = decoder_thread_count);
 	static int get_frame(AVFormatContext* format_ctx, AVCodecContext* codec_ctx, int stream_id, AVFrame* frame,
 						 AVPacket* packet);
 	static enum AVPixelFormat get_hw_format(const enum AVPixelFormat* pix_fmt, enum AVPixelFormat* hw_pix_fmt);
