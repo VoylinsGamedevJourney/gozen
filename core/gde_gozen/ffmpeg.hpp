@@ -27,14 +27,18 @@ extern "C" {
 #include "ffmpeg_helpers.hpp"
 
 #include <godot_cpp/classes/audio_stream_wav.hpp>
+#include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
+
 
 
 using namespace godot;
 
 
-class FFmpeg {
+class FFmpeg : public Object {
+	GDCLASS(FFmpeg, Object);
+
   private:
 	static inline bool _log_err(String message) {
 		UtilityFunctions::printerr("FFmpeg: ", message, "!");
@@ -45,6 +49,8 @@ class FFmpeg {
 	const static int AVIO_CTX_BUFFER_SIZE = 4 * 1024 * 1024; // 4 MB
 
 	static int decoder_thread_count;
+	static void set_decoder_thread_count(int thread_count);
+	static int get_decoder_thread_count();
 
 	static void print_av_error(const char* message, int error);
 
@@ -56,4 +62,9 @@ class FFmpeg {
 
 	static int read_buffer_packet(void* opaque, uint8_t* buffer, int buffer_size);
 	static int64_t seek_buffer(void* opaque, int64_t offset, int where);
+
+	static void free_memory();
+
+  protected:
+	static void _bind_methods();
 };

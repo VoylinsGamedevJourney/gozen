@@ -1,6 +1,20 @@
 #include "ffmpeg.hpp"
 
+#if defined(__GLIBC__)
+#include <malloc.h>
+#elif defined(__APPLE__)
+#include <malloc/malloc.h>
+#elif defined(_WIN32)
+#include <malloc.h>
+#endif
+
+
 int FFmpeg::decoder_thread_count = 0;
+
+
+void FFmpeg::set_decoder_thread_count(int thread_count) { decoder_thread_count = thread_count; }
+int FFmpeg::get_decoder_thread_count() { return decoder_thread_count; }
+
 
 void FFmpeg::print_av_error(const char* message, int error) {
 	char error_buffer[AV_ERROR_MAX_STRING_SIZE];
@@ -107,4 +121,23 @@ int64_t FFmpeg::seek_buffer(void* opaque, int64_t offset, int where) {
 
 	buffer_data->offset = new_offset;
 	return buffer_data->offset;
+}
+
+
+void FFmpeg::free_memory() {
+	UtilityFunctions::print(" - Cleaning up memory! - ");
+#if defined(__GLIBC__)
+	malloc_trim(0);
+#elif defined(__APPLE__)
+	malloc_zone_pressure_relief(NULL, 0);
+#elif defined(_WIN32)
+	_heapmin();
+#endif
+}
+
+void FFmpeg::_bind_methods() {
+	ClassDB::bind_static_method("FFmpeg", D_METHOD("set_decoder_thread_count", "thread_count"),
+								&FFmpeg::set_decoder_thread_count);
+	ClassDB::bind_static_method("FFmpeg", D_METHOD("get_decoder_thread_count"), &FFmpeg::get_decoder_thread_count);
+	ClassDB::bind_static_method("FFmpeg", D_METHOD("free_memory"), &FFmpeg::free_memory);
 }

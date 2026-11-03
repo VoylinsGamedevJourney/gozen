@@ -461,7 +461,7 @@ func get_video_decoder_threads() -> int:
 
 
 func apply_video_decoder_threads() -> void:
-	Video.set_decoder_threads(data.video_decoder_threads)
+	FFmpeg.set_decoder_thread_count(data.video_decoder_threads)
 
 
 func set_use_proxies(value: bool) -> void:

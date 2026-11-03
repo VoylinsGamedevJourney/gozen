@@ -997,7 +997,6 @@ void Video::_clear_cache() {
 
 void Video::_bind_methods() {
 	ClassDB::bind_static_method("Video", D_METHOD("get_duration", "video_path"), &Video::get_duration);
-	ClassDB::bind_static_method("Video", D_METHOD("set_decoder_threads", "count"), &Video::set_decoder_threads);
 
 	ClassDB::bind_method(D_METHOD("open", "video_path"), &Video::open);
 	ClassDB::bind_method(D_METHOD("close"), &Video::close);

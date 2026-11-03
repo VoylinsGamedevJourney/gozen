@@ -14,6 +14,7 @@ func _input(event: InputEvent) -> void:
 		PopupManager.open(PopupManager.CREDITS)
 
 	if event.is_action_pressed("print_debug", false, true):
+		FFmpeg.free_memory()
 		FileLogic.print_memory_debug()
 		get_viewport().set_input_as_handled()
 		return

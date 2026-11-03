@@ -548,6 +548,8 @@ func _load_video(file: FileData) -> void:
 	_mutex.lock()
 	data[file.id] = temp_video
 	if video_pools.has(file.id):
+		for video: Video in video_pools[file.id]:
+			video.close()
 		video_pools.erase(file.id)
 	video_pools[file.id] = []
 	_mutex.unlock()

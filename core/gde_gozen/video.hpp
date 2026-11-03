@@ -130,7 +130,6 @@ class Video : public Resource {
 
   public:
 	static double get_duration(const String& video_path);
-	static void set_decoder_threads(int count) { FFmpeg::decoder_thread_count = count; };
 
 	Video() {}
 	~Video() { close(); }

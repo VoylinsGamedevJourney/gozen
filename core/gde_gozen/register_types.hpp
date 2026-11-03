@@ -3,6 +3,7 @@
 #include "audio.hpp"
 #include "audio_stream_ffmpeg.hpp"
 #include "encoder.hpp"
+#include "ffmpeg.hpp"
 #include "video.hpp"
 
 #include <gdextension_interface.h>
