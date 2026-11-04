@@ -42,7 +42,8 @@ func delete_proxy(file: FileData) -> void:
 
 
 func _generate_proxy_task(file: FileData, output_path: String) -> void:
-	var global_output_path: String = ProjectSettings.globalize_path(output_path)
+	var tmp_path: String = output_path + "_tmp"
+	var global_output_path: String = ProjectSettings.globalize_path(tmp_path)
 	var global_input_path: String = ProjectSettings.globalize_path(file.path)
 	var encoder: Encoder = Encoder.new()
 	var video: Video = Video.new()
@@ -143,6 +144,7 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 			var yuv_data: PackedByteArray = rendering_device.texture_get_data(yuv_output_tex, 0)
 			if !encoder.send_frame(yuv_data):
 				printerr("ProxyHandler: Couldn't send yuv_data frame to encoder!")
+				break
 
 		# We skip decoding since generate_thumbnail_at_frame handles that.
 		if !video.next_frame(true): break
@@ -161,7 +163,11 @@ func _generate_proxy_task(file: FileData, output_path: String) -> void:
 	rendering_device.free_rid(yuv_sampler)
 	rendering_device.free_rid(yuv_params_buffer)
 	rendering_device.free()
-	FileLogic.set_proxy_path(file, output_path)
+
+	if FileAccess.file_exists(tmp_path):
+		DirAccess.rename_absolute(tmp_path, output_path)
+		FileLogic.set_proxy_path(file, output_path)
+	FFmpeg.free_memory()
 
 
 func _create_proxy_name(file_path: String) -> String:
