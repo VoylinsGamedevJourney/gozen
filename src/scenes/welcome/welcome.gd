@@ -96,6 +96,16 @@ func _input(event: InputEvent) -> void:
 			Settings.set_shortcut_event_at_index(listening_action, 0, event)
 			listening_line_edit.text = _get_event_text(event)
 			_stop_listening()
+	elif event.is_action_pressed("ui_cancel", false, true):
+		_on_close_button_pressed()
+		get_viewport().set_input_as_handled()
+
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+		if mouse_event.pressed and mouse_event.button_index == MouseButton.MOUSE_BUTTON_LEFT:
+			_on_close_button_pressed()
 
 
 func _on_show_tab(id: int) -> void:

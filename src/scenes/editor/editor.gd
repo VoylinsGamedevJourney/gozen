@@ -270,7 +270,7 @@ func _create_project_popup_menu() -> void:
 
 	menu.add_separator()
 	menu.add_icon_item(load(Library.ICON_HORIZONTAL) as Icon, "Splash screen", 6)
-	menu.add_icon_item(load(Library.ICON_HORIZONTAL) as Icon, "Welcome screen", 9)
+	menu.add_icon_item(load(Library.ICON_WELCOME) as Icon, "Welcome screen", 9)
 	menu.add_separator()
 	menu.add_icon_item(load(Library.ICON_PROJECT_SETTINGS) as Icon, "Project settings", 7)
 	menu.add_icon_item(load(Library.ICON_CLOSE) as Icon, "Quit", 8)

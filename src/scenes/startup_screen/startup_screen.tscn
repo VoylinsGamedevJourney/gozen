@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://xemajw5h1gsg" path="res://assets/icons/horizontal.tres" id="8_pcyft"]
 [ext_resource type="Texture2D" uid="uid://do34v1pyahi2u" path="res://assets/icons/vertical.tres" id="9_j711k"]
 [ext_resource type="Texture2D" uid="uid://brk03ymljvaym" path="res://assets/icons/link.tres" id="10_pcyft"]
+[ext_resource type="Texture2D" uid="uid://qwme1t1owuly" path="res://assets/icons/welcome.tres" id="11_4kk3e"]
 [ext_resource type="Texture2D" uid="uid://cgetxovfmpffg" path="res://assets/icons/guide.tres" id="11_j711k"]
 [ext_resource type="Texture2D" uid="uid://43v154g7ibyl" path="res://assets/icons/video_guide.tres" id="12_4kk3e"]
 [ext_resource type="Texture2D" uid="uid://kll463gy1ppm" path="res://assets/icons/support.tres" id="13_pcyft"]
@@ -272,6 +273,20 @@ size_flags_vertical = 3
 [node name="HSeparatorBottom3" type="HSeparator" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=455230664]
 layout_mode = 2
 
+[node name="WelcomeButton" type="Button" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=202061525]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "External link to the GoZen website."
+mouse_default_cursor_shape = 2
+text = "Welcome"
+icon = ExtResource("11_4kk3e")
+flat = true
+alignment = 0
+expand_icon = true
+
+[node name="HSeparatorBottom4" type="HSeparator" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=673916590]
+layout_mode = 2
+
 [node name="SiteButton" type="Button" parent="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox" unique_id=1139916015]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -510,6 +525,7 @@ text = "Create new project"
 [connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/HBoxContainer/CreateProjectButton" to="." method="_on_create_project_button_pressed"]
 [connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/HBoxContainer/QuickHorizontalProjectButton" to="." method="_on_create_quick_h_project_button_pressed"]
 [connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/HBoxContainer/QuickVerticalProjectButton" to="." method="_on_create_quick_v_project_button_pressed"]
+[connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/WelcomeButton" to="." method="_on_welcome_button_pressed"]
 [connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/SiteButton" to="." method="_on_site_button_pressed"]
 [connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/ManualButton" to="." method="_on_manual_button_pressed"]
 [connection signal="pressed" from="Margin/Control/Panel/VBox/StartupTabContainer/MainMenu/MenuVBox/TutorialsButton" to="." method="_on_tutorials_button_pressed"]

@@ -618,6 +618,10 @@ func _scan_folder_for_projects(folder_path: String) -> void:
 	popup.call("set_data", added_count)
 
 
+func _on_welcome_button_pressed() -> void:
+	PopupManager.open(PopupManager.WELCOME_SCREEN)
+
+
 
 class RecentProjectData:
 	var path: String
