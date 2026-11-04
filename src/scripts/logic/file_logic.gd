@@ -193,6 +193,7 @@ func _delete(file: FileData) -> void:
 	_mutex.unlock()
 
 	Project.unsaved_changes = true
+	FFmpeg.free_memory()
 	deleted.emit(file.id)
 
 
@@ -593,6 +594,7 @@ func _load_video(file: FileData) -> void:
 		audio_wave[file.id] = { -1: { 1: PackedFloat32Array(), 4: PackedFloat32Array(), 16: PackedFloat32Array() } }
 		_mutex.unlock()
 		_on_wave_ready.call_deferred(file)
+	FFmpeg.free_memory()
 
 
 func _load_audio(file: FileData) -> void:
