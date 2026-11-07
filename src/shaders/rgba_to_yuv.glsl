@@ -30,10 +30,11 @@ void main() {
 
 	// The top-left corner of the 2x2 RGBA block.
 	ivec2 base_id = uv_id * 2;
-	vec4 c00 = texelFetch(input_image, base_id + ivec2(0, 0), 0);
-	vec4 c10 = texelFetch(input_image, base_id + ivec2(1, 0), 0);
-	vec4 c01 = texelFetch(input_image, base_id + ivec2(0, 1), 0);
-	vec4 c11 = texelFetch(input_image, base_id + ivec2(1, 1), 0);
+	vec2 tex_size = vec2(W, H);
+	vec4 c00 = textureLod(input_image, (vec2(base_id) + vec2(0.5, 0.5)) / tex_size, 0.0);
+	vec4 c10 = textureLod(input_image, (vec2(base_id) + vec2(1.5, 0.5)) / tex_size, 0.0);
+	vec4 c01 = textureLod(input_image, (vec2(base_id) + vec2(0.5, 1.5)) / tex_size, 0.0);
+	vec4 c11 = textureLod(input_image, (vec2(base_id) + vec2(1.5, 1.5)) / tex_size, 0.0);
 
 	// Apply color matrix conversion (RGB to YUV).
 	vec3 yuv00 = (params.color_matrix * vec4(c00.rgb, 1.0)).rgb;

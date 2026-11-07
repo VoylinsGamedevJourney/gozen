@@ -125,7 +125,6 @@ int64_t FFmpeg::seek_buffer(void* opaque, int64_t offset, int where) {
 
 
 void FFmpeg::free_memory() {
-	UtilityFunctions::print(" - Cleaning up memory! - ");
 #if defined(__GLIBC__)
 	malloc_trim(0);
 #elif defined(__APPLE__)

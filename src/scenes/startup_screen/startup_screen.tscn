@@ -74,7 +74,7 @@ grow_vertical = 2
 layout_mode = 2
 
 [node name="StartupImage" type="TextureRect" parent="Margin/Control/Panel/VBox" unique_id=1608850633]
-custom_minimum_size = Vector2(0, 260)
+custom_minimum_size = Vector2(0, 280)
 layout_mode = 2
 texture = ExtResource("2_5viva")
 expand_mode = 1
