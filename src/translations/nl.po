@@ -44,11 +44,11 @@ msgstr "Veilige gebieden tonen"
 
 #: modules/core_view_panel/project_view_texture.gd:143
 msgid "Close full screen preview"
-msgstr ""
+msgstr "Volledig preview scherm sluiten"
 
 #: modules/core_view_panel/project_view_texture.gd:145
 msgid "Open full screen preview"
-msgstr ""
+msgstr "Volledig preview scherm openen"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Render settings"
@@ -232,9 +232,8 @@ msgstr "Hernoemen"
 #: modules/core_file_panel/file_panel.gd:139
 #: modules/core_file_panel/file_panel.gd:256
 #: scenes/file_popups/missing_files_popup/missing_files.gd:30
-#, fuzzy
 msgid "Relink file ..."
-msgstr "Bestanden voorbereiden ..."
+msgstr "Bestand opnieuw koppelen ..."
 
 #: modules/core_file_panel/file_panel.gd:140
 msgid "Reload"
@@ -374,14 +373,12 @@ msgid "Delete clip"
 msgstr "Clip verwijderen"
 
 #: modules/core_timeline_panel/timeline_panel.gd:927
-#, fuzzy
 msgid "Split clip on mouse"
-msgstr "Clip splitsen"
+msgstr "Clip splitsen bij cursor"
 
 #: modules/core_timeline_panel/timeline_panel.gd:930
-#, fuzzy
 msgid "Split clip on playhead"
-msgstr "Focus op afspeelkop:"
+msgstr "Clip splitsen bij afspeelkop"
 
 #: modules/core_timeline_panel/timeline_panel.gd:935
 msgid "Hide clip"
@@ -463,7 +460,7 @@ msgstr "Stijl"
 #: modules/core_effects_panel/effects_panel.gd:460
 #: scenes/welcome/welcome.gd:212
 msgid "Smooth"
-msgstr ""
+msgstr "Vloeiend"
 
 #: modules/core_effects_panel/effects_panel.gd:551
 msgid "Audio Track"
@@ -631,9 +628,8 @@ msgid "Audio effects"
 msgstr "Audio-effecten"
 
 #: scenes/file_popups/create_folder_popup/create_folder.tscn
-#, fuzzy
 msgid "Folder name:"
-msgstr "Mapnaam"
+msgstr "Mapnaam:"
 
 #: scenes/file_popups/create_folder_popup/create_folder.tscn
 #: scenes/file_popups/missing_files_popup/missing_files.tscn
@@ -652,9 +648,8 @@ msgid "Close"
 msgstr "Sluiten"
 
 #: scenes/file_popups/create_folder_popup/create_folder.tscn
-#, fuzzy
 msgid "Create"
-msgstr "Proxy aanmaken"
+msgstr "Aanmaken"
 
 #: scenes/file_popups/overwrite_file/overwrite_file.tscn
 msgid "Overwrite file?"
@@ -679,31 +674,30 @@ msgid "Cancel"
 msgstr "Annuleren"
 
 #: scenes/file_popups/overwrite_file/overwrite_file.tscn
-#, fuzzy
 msgid "Overwrite file"
-msgstr "Bestand overschrijven?"
+msgstr "Bestand overschrijven"
 
 #: scenes/file_popups/missing_files_popup/missing_files.tscn
 #: scenes/file_popups/updated_files_popup/updated_files.tscn
-#, fuzzy
 msgid "Missing files"
-msgstr "Bestanden toevoegen"
+msgstr "Ontbrekende bestanden"
 
 #: scenes/file_popups/missing_files_popup/missing_files.tscn
-#, fuzzy
 msgid "The following file(s) are missing and could not be loaded:"
-msgstr "De volgende bestanden zijn extern gewijzigd en opnieuw geladen:"
+msgstr "De volgende bestanden ontbreken en konden niet worden geladen:"
 
 #: scenes/file_popups/missing_files_popup/missing_files.tscn
 msgid ""
 "Files which did not get re-linked will be kept as missing. You can always "
 "right-click those missing files in the file panel to relink."
 msgstr ""
+"Bestanden die niet opnieuw zijn gekoppeld, blijven als ontbrekend "
+"gemarkeerd. Je kunt in het bestandenpaneel altijd met de rechtermuisknop op "
+"deze ontbrekende bestanden klikken om ze opnieuw te koppelen."
 
 #: scenes/file_popups/missing_files_popup/missing_files.gd:23
-#, fuzzy
 msgid "Re-link file"
-msgstr "Bestanden voorbereiden ..."
+msgstr "Bestand opnieuw koppelen"
 
 #: scenes/file_popups/rename_folder_popup/rename_folder.tscn
 #: scenes/file_popups/rename_file_popup/rename_file.tscn
@@ -826,28 +820,26 @@ msgid "Unknown"
 msgstr "Onbekend"
 
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
-#, fuzzy
 msgid "Files Updated & Shortened"
-msgstr "Bestanden bijgewerkt"
+msgstr "Bestanden bijgewerkt en ingekort"
 
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
-#, fuzzy
 msgid "The following files were modified externally and are now shorter:"
-msgstr "De volgende bestanden zijn extern gewijzigd en opnieuw geladen:"
+msgstr "De volgende bestanden zijn extern gewijzigd en zijn nu korter:"
 
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
 msgid ""
 "Some clips on the timeline exceed the new file lengths. Do you want to "
 "automatically shorten these clips to fit?"
 msgstr ""
+"Sommige clips op de tijdlijn overschrijden de nieuwe bestandslengtes. Wil je "
+"deze clips automatisch inkorten zodat ze passen?"
 
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
-#, fuzzy
 msgid "Shorten clips"
-msgstr "Clip dempen"
+msgstr "Clips inkorten"
 
 #: scenes/editor/delete_workspace_popup/delete_workspace_popup.tscn
-#, fuzzy
 msgid "Delete workspace"
 msgstr "Werkruimte verwijderen"
 
@@ -976,9 +968,8 @@ msgid "Move Right"
 msgstr "Naar rechts verplaatsen"
 
 #: scenes/editor/new_workspace_popup/new_workspace_popup.tscn
-#, fuzzy
 msgid "Workspace name:"
-msgstr "Naam van werkruimte"
+msgstr "Naam van werkruimte:"
 
 #: scenes/welcome/welcome.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Welcome"
@@ -1048,7 +1039,7 @@ msgstr "Thema"
 
 #: scenes/welcome/welcome.tscn
 msgid "GUI Scale"
-msgstr ""
+msgstr "GUI-schaal"
 
 #: scenes/welcome/welcome.tscn
 msgid "YouTube tutorials"
@@ -1092,15 +1083,14 @@ msgstr ""
 "wilt."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid ""
 "Some people do prefer to have their videos split into 2 clips, separating "
 "the visuals from the audio. This is possible by holding CTRL/SHIFT when "
 "dragging in video files to the timeline."
 msgstr ""
-"Sommige mensen splitsen hun video's liever in 2 clips, waarbij het beeld van "
-"de audio wordt gescheiden. Dit kan door ctrl/shift ingedrukt te houden "
-"terwijl je videobestanden naar de tijdlijn sleept."
+"Sommige mensen geven er de voorkeur aan om hun video's in 2 clips te splitsen, "
+"waarbij het beeld van de audio wordt gescheiden. Dit is mogelijk door "
+"CTRL/SHIFT ingedrukt te houden wanneer je videobestanden naar de tijdlijn sleept."
 
 #: scenes/welcome/welcome.tscn
 msgid "Audio Clip Example"
@@ -1277,12 +1267,10 @@ msgstr ""
 "de onderste voor visuele fades."
 
 #: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:401
-#, fuzzy
 msgid "Keyframes"
-msgstr "B-frames"
+msgstr "Keyframes"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid ""
 "Keyframing can be done by pressing the diamond next to them, once a property "
 "has a keyframe it will automatically start recording changes which are made "
@@ -1291,12 +1279,12 @@ msgid ""
 msgstr ""
 "Keyframen doe je door op het ruitje ernaast te drukken. Zodra een eigenschap "
 "een keyframe heeft, worden wijzigingen die je aanbrengt op tijdstippen waar "
-"nog geen keyframe is, automatisch opgenomen."
+"nog geen keyframe is, automatisch opgenomen. Door Shift ingedrukt te houden "
+"verandert het keyframetype van Lineair naar Vloeiend."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Default keyframe type:"
-msgstr "Standaard renderprofiel:"
+msgstr "Standaard keyframetype:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Text & Colors"
@@ -1391,12 +1379,11 @@ msgstr ""
 
 #: scenes/welcome/welcome.tscn
 msgid "Coming soon!"
-msgstr ""
+msgstr "Binnenkort beschikbaar!"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "GoZen Modules"
-msgstr "Kernmodules"
+msgstr "GoZen-modules"
 
 #: scenes/welcome/welcome.tscn
 msgid "Steam workshop"
@@ -1407,7 +1394,6 @@ msgid "Custom PCK files"
 msgstr "Aangepaste PCK-bestanden"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid ""
 "Modules change the editor and add functionality to the editor, but there's "
 "another type of modules refered to as pck files. These are Godot scenes "
@@ -1505,7 +1491,7 @@ msgstr "Druk op een toets..."
 
 #: scenes/welcome/welcome.gd:211
 msgid "Linear"
-msgstr ""
+msgstr "Lineair"
 
 #: scenes/welcome/welcome.gd:239
 msgid "Seek Playhead"
@@ -1557,21 +1543,18 @@ msgid "Update existing clips?"
 msgstr "Bestaande clips bijwerken?"
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
-#, fuzzy
 msgid ""
 "This file is currently used by '%d' clip(s).\\nDo you want to apply the "
 "audio replacement to all existing clips?"
 msgstr ""
-"Dit bestand wordt momenteel gebruikt door '%d' clip(s).\n"
-"Wil je de audiovervanging toepassen op alle bestaande clips?"
+"Dit bestand wordt momenteel gebruikt door '%d' clip(s).\\nWil je de "
+"audiovervanging toepassen op alle bestaande clips?"
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
-#, fuzzy
 msgid "Apply to file only"
 msgstr "Alleen op bestand toepassen"
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
-#, fuzzy
 msgid "Apply to all"
 msgstr "Op alles toepassen"
 
@@ -1588,19 +1571,17 @@ msgid "Jump to frame"
 msgstr "Ga naar frame"
 
 #: scenes/jump_to_frame_popup/jump_to_frame.tscn
-#, fuzzy
 msgid "Frame nr:"
-msgstr "Framerate:"
+msgstr "Framenummer:"
 
 #: scenes/jump_to_frame_popup/jump_to_frame.tscn
 #: scenes/change_speed_popup/change_speed.tscn
 msgid "Apply"
-msgstr ""
+msgstr "Toepassen"
 
 #: scenes/change_speed_popup/change_speed.tscn
-#, fuzzy
 msgid "Speed:"
-msgstr "Snelheid"
+msgstr "Snelheid:"
 
 #: scenes/duplication_error_popup/duplication_error.tscn
 msgid "Duplication failed"
@@ -1614,7 +1595,7 @@ msgstr "Kon %d clip(s) niet dupliceren omdat er niet genoeg lege ruimte was."
 #: scenes/progress_overlay/progress_overlay.gd:74
 #: scenes/progress_overlay/progress_overlay.gd:77
 msgid "Estimated time"
-msgstr ""
+msgstr "Geschatte tijd"
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:224
@@ -1770,15 +1751,17 @@ msgstr ""
 "geheugengebruik."
 
 #: scenes/settings_menu/settings_menu.gd:298
-#, fuzzy
 msgid "Decoder Threads"
-msgstr "Threads"
+msgstr "Decoder-threads"
 
 #: scenes/settings_menu/settings_menu.gd:305
 msgid ""
 "Number of threads to use for video decoding. 0 means automatic, putting this "
 "too high makes memory usage too high which can cause your system to crash."
 msgstr ""
+"Het aantal threads dat wordt gebruikt voor videodecodering. 0 betekent "
+"automatisch. Een te hoge waarde zorgt voor een te hoog geheugengebruik, "
+"waardoor je systeem kan crashen."
 
 #: scenes/settings_menu/settings_menu.gd:306
 msgid "Use proxies"
@@ -1800,26 +1783,23 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:320
 msgid "Cache Management"
-msgstr ""
+msgstr "Cachebeheer"
 
 #: scenes/settings_menu/settings_menu.gd:321
-#, fuzzy
 msgid "Waveforms"
-msgstr "Golfvormstijl"
+msgstr "Golfvormen"
 
 #: scenes/settings_menu/settings_menu.gd:323
 msgid "File thumbnails"
-msgstr ""
+msgstr "Bestandsthumbnails"
 
 #: scenes/settings_menu/settings_menu.gd:325
-#, fuzzy
 msgid "Project thumbnails"
-msgstr "Projectinstellingen"
+msgstr "Projectthumbnails"
 
 #: scenes/settings_menu/settings_menu.gd:327
-#, fuzzy
 msgid "Proxies"
-msgstr "Proxies gebruiken"
+msgstr "Proxies"
 
 #: scenes/settings_menu/settings_menu.gd:332
 #: scenes/settings_menu/settings_menu.gd:553
@@ -1896,9 +1876,8 @@ msgid "Vertical framerate"
 msgstr "Verticale framerate"
 
 #: scenes/settings_menu/settings_menu.gd:402
-#, fuzzy
 msgid "Default keyframe type"
-msgstr "Volgende keyframe."
+msgstr "Standaard keyframetype"
 
 #: scenes/settings_menu/settings_menu.gd:411
 msgid "Performance"
@@ -1910,7 +1889,7 @@ msgstr "Automatisch opslaan"
 
 #: scenes/settings_menu/settings_menu.gd:425
 msgid "Cache"
-msgstr ""
+msgstr "Cache"
 
 #: scenes/settings_menu/settings_menu.gd:538
 msgid "Video settings"
@@ -1935,64 +1914,55 @@ msgstr "Terugzetten naar standaard"
 
 #: scenes/settings_menu/settings_menu.gd:830
 msgid "Clear"
-msgstr ""
+msgstr "Wissen"
 
 #: scenes/settings_menu/settings_menu.gd:879
-#, fuzzy
 msgid "Waveforms cache cleared."
-msgstr "Golfvormversterking"
+msgstr "Golfvorm-cache gewist."
 
 #: scenes/settings_menu/settings_menu.gd:884
-#, fuzzy
 msgid "File thumbnails cache cleared."
-msgstr "Golfvormversterking"
+msgstr "Bestandsthumbnail-cache gewist."
 
 #: scenes/settings_menu/settings_menu.gd:889
-#, fuzzy
 msgid "Project thumbnails cache cleared."
-msgstr "Golfvormversterking"
+msgstr "Projectthumbnail-cache gewist."
 
 #: scenes/settings_menu/settings_menu.gd:894
-#, fuzzy
 msgid "Proxies cleared."
-msgstr "Opslagpad voor proxies"
+msgstr "Proxies gewist."
 
 #: scenes/render_popups/render_error_popup/render_error.tscn
 msgid "Error whilst rendering video"
 msgstr "Fout tijdens het renderen van video"
 
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
-#, fuzzy
 msgid "Render finished"
 msgstr "Renderen voltooid"
 
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
-#, fuzzy
 msgid "Render time: "
-msgstr "Renderprofiel"
+msgstr "Rendertijd: "
 
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
-#, fuzzy
 msgid "Path:"
-msgstr "Pad"
+msgstr "Pad:"
 
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
-#, fuzzy
 msgid "Open rendered file"
-msgstr "Standaard renderprofiel:"
+msgstr "Gerenderd bestand openen"
 
 #: scenes/startup_screen/scan_complete_dialog/scan_complete.tscn
-#, fuzzy
 msgid "Scan complete"
-msgstr "Project opslaan"
+msgstr "Scan voltooid"
 
 #: scenes/startup_screen/scan_complete_dialog/scan_complete.tscn
 msgid "Found and added %d new project(s) to the recent projects list."
-msgstr ""
+msgstr "%d nieuw(e) project(en) gevonden en toegevoegd aan de lijst met recente projecten."
 
 #: scenes/startup_screen/scan_complete_dialog/scan_complete.tscn
 msgid "No projects found in the selected folder."
-msgstr ""
+msgstr "Geen projecten gevonden in de geselecteerde map."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "GoZen"
@@ -2031,9 +2001,8 @@ msgid "Open a previously created project through your file explorer."
 msgstr "Open een eerder gemaakt project via je bestandsbeheerder."
 
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Scan for projects"
-msgstr "Project opslaan"
+msgstr "Scannen naar projecten"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Go to the menu to set the settings of your new project."
@@ -2122,14 +2091,12 @@ msgid "Select project save path"
 msgstr "Selecteer projectopslagpad"
 
 #: scenes/startup_screen/startup_screen.gd:550
-#, fuzzy
 msgid "Select folder to scan"
-msgstr "Map verwijderen"
+msgstr "Selecteer map om te scannen"
 
 #: scenes/startup_screen/save_profile_preset/save_profile_preset.tscn
-#, fuzzy
 msgid "Preset name:"
-msgstr "Naam van voorinstelling"
+msgstr "Naam van voorinstelling:"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Update marker"
@@ -2269,25 +2236,21 @@ msgid "Files dropped"
 msgstr "Bestanden neergezet"
 
 #: scripts/logic/file_logic.gd:337
-#, fuzzy
 msgid "Scanning files ..."
-msgstr "Bestanden voorbereiden ..."
+msgstr "Bestanden scannen ..."
 
 #: scripts/logic/file_logic.gd:392
-#, fuzzy
 msgid "Processing file: "
-msgstr "Bestanden toevoegen"
+msgstr "Bestand verwerken: "
 
 #: scripts/logic/file_logic.gd:395
 msgid "Files loading ..."
 msgstr "Bestanden laden ..."
 
 #: scripts/logic/file_logic.gd:442
-#, fuzzy
 msgid "File missing or moved: "
-msgstr "Bestanden laden ..."
+msgstr "Bestand ontbreekt of is verplaatst: "
 
 #: scripts/logic/file_logic.gd:1339
-#, fuzzy
 msgid "Scanning folder: "
-msgstr "Scantype"
+msgstr "Map scannen: "
