@@ -8,7 +8,7 @@ msgstr ""
 
 #: modules/core_effects/visual/ui/mask_clear_button.gd:10
 msgid "Clear Mask Points"
-msgstr "マスクポイントをクリア"
+msgstr "マスクのポイントをクリア"
 
 #: modules/core_view_panel/view_panel.tscn
 msgid "Go to previous chapter marker."
@@ -44,11 +44,11 @@ msgstr "セーフエリアを表示"
 
 #: modules/core_view_panel/project_view_texture.gd:143
 msgid "Close full screen preview"
-msgstr ""
+msgstr "フルスクリーンプレビューを閉じる"
 
 #: modules/core_view_panel/project_view_texture.gd:145
 msgid "Open full screen preview"
-msgstr ""
+msgstr "フルスクリーンプレビューを開く"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Render settings"
@@ -230,13 +230,12 @@ msgstr "名前を変更"
 #: modules/core_file_panel/file_panel.gd:139
 #: modules/core_file_panel/file_panel.gd:256
 #: scenes/file_popups/missing_files_popup/missing_files.gd:30
-#, fuzzy
 msgid "Relink file ..."
-msgstr "ファイルを準備中..."
+msgstr "ファイルを再リンク..."
 
 #: modules/core_file_panel/file_panel.gd:140
 msgid "Reload"
-msgstr "リロード"
+msgstr "再読み込み"
 
 #: modules/core_file_panel/file_panel.gd:141 scenes/editor/editor.gd:533
 msgid "Delete"
@@ -344,7 +343,7 @@ msgstr "トラックオプション"
 
 #: modules/core_timeline_panel/timeline_panel.gd:300
 msgid "Remove empty space"
-msgstr "空白を削除"
+msgstr "空白部分を削除"
 
 #: modules/core_timeline_panel/timeline_panel.gd:305
 msgid "Add track"
@@ -372,14 +371,12 @@ msgid "Delete clip"
 msgstr "クリップを削除"
 
 #: modules/core_timeline_panel/timeline_panel.gd:927
-#, fuzzy
 msgid "Split clip on mouse"
-msgstr "クリップを分割"
+msgstr "マウス位置でクリップを分割"
 
 #: modules/core_timeline_panel/timeline_panel.gd:930
-#, fuzzy
 msgid "Split clip on playhead"
-msgstr "再生ヘッドにフォーカス："
+msgstr "再生ヘッド位置でクリップを分割"
 
 #: modules/core_timeline_panel/timeline_panel.gd:935
 msgid "Hide clip"
@@ -460,7 +457,7 @@ msgstr "スタイル"
 #: modules/core_effects_panel/effects_panel.gd:460
 #: scenes/welcome/welcome.gd:212
 msgid "Smooth"
-msgstr ""
+msgstr "スムーズ"
 
 #: modules/core_effects_panel/effects_panel.gd:551
 msgid "Audio Track"
@@ -575,7 +572,7 @@ msgstr "ブラック"
 
 #: modules/core_effects_panel/effects_panel.gd:1226
 msgid "Link X and Y."
-msgstr "XとYをリンク"
+msgstr "XとYを連動"
 
 #: modules/core_effects_panel/effects_panel.gd:1541
 msgid "Add effects."
@@ -628,9 +625,8 @@ msgid "Audio effects"
 msgstr "オーディオエフェクト"
 
 #: scenes/file_popups/create_folder_popup/create_folder.tscn
-#, fuzzy
 msgid "Folder name:"
-msgstr "フォルダ名"
+msgstr "フォルダ名:"
 
 #: scenes/file_popups/create_folder_popup/create_folder.tscn
 #: scenes/file_popups/missing_files_popup/missing_files.tscn
@@ -649,9 +645,8 @@ msgid "Close"
 msgstr "閉じる"
 
 #: scenes/file_popups/create_folder_popup/create_folder.tscn
-#, fuzzy
 msgid "Create"
-msgstr "プロキシを作成"
+msgstr "作成"
 
 #: scenes/file_popups/overwrite_file/overwrite_file.tscn
 msgid "Overwrite file?"
@@ -675,31 +670,30 @@ msgid "Cancel"
 msgstr "キャンセル"
 
 #: scenes/file_popups/overwrite_file/overwrite_file.tscn
-#, fuzzy
 msgid "Overwrite file"
-msgstr "ファイルを上書きしますか？"
+msgstr "ファイルを上書き"
 
 #: scenes/file_popups/missing_files_popup/missing_files.tscn
 #: scenes/file_popups/updated_files_popup/updated_files.tscn
-#, fuzzy
 msgid "Missing files"
-msgstr "ファイルの追加"
+msgstr "見つからないファイル"
 
 #: scenes/file_popups/missing_files_popup/missing_files.tscn
-#, fuzzy
 msgid "The following file(s) are missing and could not be loaded:"
-msgstr "次のファイルが外部で変更されたため、再読み込みされました："
+msgstr "以下のファイルが見つからないため、読み込めませんでした:"
 
 #: scenes/file_popups/missing_files_popup/missing_files.tscn
 msgid ""
 "Files which did not get re-linked will be kept as missing. You can always "
 "right-click those missing files in the file panel to relink."
 msgstr ""
+"再リンクされなかったファイルは未リンク状態のまま保持されます。ファイルパネ"
+"ルでこれらの見つからないファイルを右クリックすれば、いつでも再リンクできま"
+"す。"
 
 #: scenes/file_popups/missing_files_popup/missing_files.gd:23
-#, fuzzy
 msgid "Re-link file"
-msgstr "ファイルを準備中..."
+msgstr "ファイルを再リンク"
 
 #: scenes/file_popups/rename_folder_popup/rename_folder.tscn
 #: scenes/file_popups/rename_file_popup/rename_file.tscn
@@ -822,28 +816,26 @@ msgid "Unknown"
 msgstr "不明"
 
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
-#, fuzzy
 msgid "Files Updated & Shortened"
-msgstr "ファイルが更新されました"
+msgstr "ファイルが更新・短縮されました"
 
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
-#, fuzzy
 msgid "The following files were modified externally and are now shorter:"
-msgstr "次のファイルが外部で変更されたため、再読み込みされました："
+msgstr "以下のファイルが外部で変更され、短くなりました:"
 
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
 msgid ""
 "Some clips on the timeline exceed the new file lengths. Do you want to "
 "automatically shorten these clips to fit?"
 msgstr ""
+"タイムライン上の一部のクリップが新しいファイルの長さを超えています。これらの"
+"クリップを自動的に短縮して合わせますか？"
 
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
-#, fuzzy
 msgid "Shorten clips"
-msgstr "クリップをミュート"
+msgstr "クリップを短縮"
 
 #: scenes/editor/delete_workspace_popup/delete_workspace_popup.tscn
-#, fuzzy
 msgid "Delete workspace"
 msgstr "ワークスペースを削除"
 
@@ -972,9 +964,8 @@ msgid "Move Right"
 msgstr "右へ移動"
 
 #: scenes/editor/new_workspace_popup/new_workspace_popup.tscn
-#, fuzzy
 msgid "Workspace name:"
-msgstr "ワークスペース名"
+msgstr "ワークスペース名:"
 
 #: scenes/welcome/welcome.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Welcome"
@@ -1044,7 +1035,7 @@ msgstr "テーマ"
 
 #: scenes/welcome/welcome.tscn
 msgid "GUI Scale"
-msgstr ""
+msgstr "GUIスケール"
 
 #: scenes/welcome/welcome.tscn
 msgid "YouTube tutorials"
@@ -1086,15 +1077,13 @@ msgstr ""
 "トになり、クリップを好きな場所に自由に配置できます。"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid ""
 "Some people do prefer to have their videos split into 2 clips, separating "
 "the visuals from the audio. This is possible by holding CTRL/SHIFT when "
 "dragging in video files to the timeline."
 msgstr ""
-"ビデオを映像と音声の2つのクリップに分けたい方もいます。これは、ビデオファイル"
-"をタイムラインにドラッグするときに Ctrl/Shift を押しながら行うことで可能で"
-"す。"
+"映像と音声を別々の2つのクリップに分けて配置したい場合は、Ctrl/Shiftキーを押し"
+"ながらビデオファイルをタイムラインにドラッグします。"
 
 #: scenes/welcome/welcome.tscn
 msgid "Audio Clip Example"
@@ -1205,11 +1194,11 @@ msgstr "リップル削除："
 
 #: scenes/welcome/welcome.tscn
 msgid "Remove empty space on cursor position."
-msgstr "カーソル位置の空白を削除します。"
+msgstr "カーソル位置の空白部分を削除します。"
 
 #: scenes/welcome/welcome.tscn
 msgid "Remove empty space:"
-msgstr "空白を削除："
+msgstr "空白部分を削除："
 
 #: scenes/welcome/welcome.tscn
 msgid "Open marker popup:"
@@ -1266,26 +1255,24 @@ msgstr ""
 "め、ハンドルは2組あります。上側が音声用、下側が映像のフェード用です。"
 
 #: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:401
-#, fuzzy
 msgid "Keyframes"
-msgstr "Bフレーム"
+msgstr "キーフレーム"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid ""
 "Keyframing can be done by pressing the diamond next to them, once a property "
 "has a keyframe it will automatically start recording changes which are made "
 "on time stamps where no keyframe has been made yet. Holding shift changes "
 "the keyframe type from Linear to Smooth."
 msgstr ""
-"キーフレームは、横にあるひし形を押して設定できます。プロパティにキーフレーム"
-"が一度設定されると、まだキーフレームのないタイムスタンプで行った変更が自動的"
-"に記録されるようになります。"
+"キーフレームは、プロパティの横にあるひし形アイコンを押して設定できます。プロ"
+"パティに一度キーフレームが設定されると、まだキーフレームのないタイムスタンプ"
+"で行った変更が自動的に記録されるようになります。Shiftキーを押しながら操作する"
+"と、キーフレームのタイプをリニアからスムーズに変更できます。"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Default keyframe type:"
-msgstr "デフォルトの書き出しプロファイル："
+msgstr "デフォルトのキーフレームタイプ:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Text & Colors"
@@ -1379,12 +1366,11 @@ msgstr ""
 
 #: scenes/welcome/welcome.tscn
 msgid "Coming soon!"
-msgstr ""
+msgstr "近日公開！"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "GoZen Modules"
-msgstr "コアモジュール"
+msgstr "GoZenモジュール"
 
 #: scenes/welcome/welcome.tscn
 msgid "Steam workshop"
@@ -1395,7 +1381,6 @@ msgid "Custom PCK files"
 msgstr "カスタムPCKファイル"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid ""
 "Modules change the editor and add functionality to the editor, but there's "
 "another type of modules refered to as pck files. These are Godot scenes "
@@ -1446,7 +1431,7 @@ msgstr "自動保存："
 
 #: scenes/welcome/welcome.tscn
 msgid "Empty space click action:"
-msgstr "空白をクリックしたときの動作："
+msgstr "空白部分をクリックしたときの動作："
 
 #: scenes/welcome/welcome.tscn
 msgid "Default project settings"
@@ -1490,7 +1475,7 @@ msgstr "キーを押してください..."
 
 #: scenes/welcome/welcome.gd:211
 msgid "Linear"
-msgstr ""
+msgstr "リニア"
 
 #: scenes/welcome/welcome.gd:239
 msgid "Seek Playhead"
@@ -1542,7 +1527,6 @@ msgid "Update existing clips?"
 msgstr "既存のクリップを更新しますか？"
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
-#, fuzzy
 msgid ""
 "This file is currently used by '%d' clip(s).\\nDo you want to apply the "
 "audio replacement to all existing clips?"
@@ -1551,12 +1535,10 @@ msgstr ""
 "既存のすべてのクリップに音声の置き換えを適用しますか？"
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
-#, fuzzy
 msgid "Apply to file only"
 msgstr "ファイルのみに適用"
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
-#, fuzzy
 msgid "Apply to all"
 msgstr "すべてに適用"
 
@@ -1573,19 +1555,17 @@ msgid "Jump to frame"
 msgstr "フレームに移動"
 
 #: scenes/jump_to_frame_popup/jump_to_frame.tscn
-#, fuzzy
 msgid "Frame nr:"
-msgstr "フレームレート："
+msgstr "フレーム番号:"
 
 #: scenes/jump_to_frame_popup/jump_to_frame.tscn
 #: scenes/change_speed_popup/change_speed.tscn
 msgid "Apply"
-msgstr ""
+msgstr "適用"
 
 #: scenes/change_speed_popup/change_speed.tscn
-#, fuzzy
 msgid "Speed:"
-msgstr "速度"
+msgstr "速度:"
 
 #: scenes/duplication_error_popup/duplication_error.tscn
 msgid "Duplication failed"
@@ -1599,7 +1579,7 @@ msgstr "十分な空きスペースがないため、%d 個のクリップを複
 #: scenes/progress_overlay/progress_overlay.gd:74
 #: scenes/progress_overlay/progress_overlay.gd:77
 msgid "Estimated time"
-msgstr ""
+msgstr "推定残り時間"
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:224
@@ -1754,15 +1734,16 @@ msgstr ""
 "スムーズになりますが、メモリ使用量が増加します。"
 
 #: scenes/settings_menu/settings_menu.gd:298
-#, fuzzy
 msgid "Decoder Threads"
-msgstr "スレッド"
+msgstr "デコーダースレッド"
 
 #: scenes/settings_menu/settings_menu.gd:305
 msgid ""
 "Number of threads to use for video decoding. 0 means automatic, putting this "
 "too high makes memory usage too high which can cause your system to crash."
 msgstr ""
+"ビデオデコードに使用するスレッド数。0 は自動を意味します。この値を高く設定"
+"しすぎるとメモリ使用量が多くなり、システムがクラッシュする原因になります。"
 
 #: scenes/settings_menu/settings_menu.gd:306
 msgid "Use proxies"
@@ -1784,26 +1765,23 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:320
 msgid "Cache Management"
-msgstr ""
+msgstr "キャッシュ管理"
 
 #: scenes/settings_menu/settings_menu.gd:321
-#, fuzzy
 msgid "Waveforms"
-msgstr "波形スタイル"
+msgstr "波形"
 
 #: scenes/settings_menu/settings_menu.gd:323
 msgid "File thumbnails"
-msgstr ""
+msgstr "ファイルサムネイル"
 
 #: scenes/settings_menu/settings_menu.gd:325
-#, fuzzy
 msgid "Project thumbnails"
-msgstr "プロジェクト設定"
+msgstr "プロジェクトサムネイル"
 
 #: scenes/settings_menu/settings_menu.gd:327
-#, fuzzy
 msgid "Proxies"
-msgstr "プロキシを使用"
+msgstr "プロキシ"
 
 #: scenes/settings_menu/settings_menu.gd:332
 #: scenes/settings_menu/settings_menu.gd:553
@@ -1880,9 +1858,8 @@ msgid "Vertical framerate"
 msgstr "縦方向のフレームレート"
 
 #: scenes/settings_menu/settings_menu.gd:402
-#, fuzzy
 msgid "Default keyframe type"
-msgstr "次のキーフレーム。"
+msgstr "デフォルトのキーフレームタイプ"
 
 #: scenes/settings_menu/settings_menu.gd:411
 msgid "Performance"
@@ -1894,7 +1871,7 @@ msgstr "自動保存"
 
 #: scenes/settings_menu/settings_menu.gd:425
 msgid "Cache"
-msgstr ""
+msgstr "キャッシュ"
 
 #: scenes/settings_menu/settings_menu.gd:538
 msgid "Video settings"
@@ -1919,64 +1896,55 @@ msgstr "デフォルトにリセット"
 
 #: scenes/settings_menu/settings_menu.gd:830
 msgid "Clear"
-msgstr ""
+msgstr "クリア"
 
 #: scenes/settings_menu/settings_menu.gd:879
-#, fuzzy
 msgid "Waveforms cache cleared."
-msgstr "波形増幅"
+msgstr "波形キャッシュをクリアしました。"
 
 #: scenes/settings_menu/settings_menu.gd:884
-#, fuzzy
 msgid "File thumbnails cache cleared."
-msgstr "波形増幅"
+msgstr "ファイルサムネイルのキャッシュをクリアしました。"
 
 #: scenes/settings_menu/settings_menu.gd:889
-#, fuzzy
 msgid "Project thumbnails cache cleared."
-msgstr "波形増幅"
+msgstr "プロジェクトサムネイルのキャッシュをクリアしました。"
 
 #: scenes/settings_menu/settings_menu.gd:894
-#, fuzzy
 msgid "Proxies cleared."
-msgstr "プロキシ保存パス"
+msgstr "プロキシをクリアしました。"
 
 #: scenes/render_popups/render_error_popup/render_error.tscn
 msgid "Error whilst rendering video"
 msgstr "ビデオ書き出し中にエラーが発生しました"
 
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
-#, fuzzy
 msgid "Render finished"
 msgstr "書き出し完了"
 
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
-#, fuzzy
 msgid "Render time: "
-msgstr "書き出しプロファイル"
+msgstr "書き出し時間: "
 
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
-#, fuzzy
 msgid "Path:"
-msgstr "パス"
+msgstr "パス:"
 
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
-#, fuzzy
 msgid "Open rendered file"
-msgstr "デフォルトの書き出しプロファイル："
+msgstr "書き出したファイルを開く"
 
 #: scenes/startup_screen/scan_complete_dialog/scan_complete.tscn
-#, fuzzy
 msgid "Scan complete"
-msgstr "プロジェクトを保存"
+msgstr "スキャン完了"
 
 #: scenes/startup_screen/scan_complete_dialog/scan_complete.tscn
 msgid "Found and added %d new project(s) to the recent projects list."
-msgstr ""
+msgstr "%d 件の新しいプロジェクトが見つかり、最近のプロジェクト一覧に追加されました。"
 
 #: scenes/startup_screen/scan_complete_dialog/scan_complete.tscn
 msgid "No projects found in the selected folder."
-msgstr ""
+msgstr "選択したフォルダ内にプロジェクトが見つかりませんでした。"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "GoZen"
@@ -2015,9 +1983,8 @@ msgid "Open a previously created project through your file explorer."
 msgstr "ファイルエクスプローラーから以前に作成したプロジェクトを開きます。"
 
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Scan for projects"
-msgstr "プロジェクトを保存"
+msgstr "プロジェクトをスキャン"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Go to the menu to set the settings of your new project."
@@ -2105,14 +2072,12 @@ msgid "Select project save path"
 msgstr "プロジェクト保存パスを選択"
 
 #: scenes/startup_screen/startup_screen.gd:550
-#, fuzzy
 msgid "Select folder to scan"
-msgstr "フォルダを削除"
+msgstr "スキャンするフォルダを選択"
 
 #: scenes/startup_screen/save_profile_preset/save_profile_preset.tscn
-#, fuzzy
 msgid "Preset name:"
-msgstr "プリセット名"
+msgstr "プリセット名:"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Update marker"
@@ -2250,25 +2215,21 @@ msgid "Files dropped"
 msgstr "ファイルがドロップされました"
 
 #: scripts/logic/file_logic.gd:337
-#, fuzzy
 msgid "Scanning files ..."
-msgstr "ファイルを準備中..."
+msgstr "ファイルをスキャン中..."
 
 #: scripts/logic/file_logic.gd:392
-#, fuzzy
 msgid "Processing file: "
-msgstr "ファイルの追加"
+msgstr "ファイルを処理中: "
 
 #: scripts/logic/file_logic.gd:395
 msgid "Files loading ..."
 msgstr "ファイルを読み込み中..."
 
 #: scripts/logic/file_logic.gd:442
-#, fuzzy
 msgid "File missing or moved: "
-msgstr "ファイルを読み込み中..."
+msgstr "ファイルが見つからないか移動されました: "
 
 #: scripts/logic/file_logic.gd:1339
-#, fuzzy
 msgid "Scanning folder: "
-msgstr "スキャン方式"
+msgstr "フォルダをスキャン中: "
