@@ -26,21 +26,29 @@ msgstr "Project afspelen pauzeren."
 msgid "Go to next chapter marker."
 msgstr "Ga naar de volgende hoofdstukmarkering."
 
-#: modules/core_view_panel/view_panel.gd:85
+#: modules/core_view_panel/view_panel.gd:84
 msgid "Frame"
 msgstr "Frame"
 
-#: modules/core_view_panel/project_view_texture.gd:131
+#: modules/core_view_panel/project_view_texture.gd:135
 msgid "Save screenshot ..."
 msgstr "Screenshot opslaan ..."
 
-#: modules/core_view_panel/project_view_texture.gd:132
+#: modules/core_view_panel/project_view_texture.gd:136
 msgid "Save screenshot to project ..."
 msgstr "Screenshot opslaan in project ..."
 
-#: modules/core_view_panel/project_view_texture.gd:134
+#: modules/core_view_panel/project_view_texture.gd:138
 msgid "Show safe areas"
 msgstr "Veilige gebieden tonen"
+
+#: modules/core_view_panel/project_view_texture.gd:143
+msgid "Close full screen preview"
+msgstr ""
+
+#: modules/core_view_panel/project_view_texture.gd:145
+msgid "Open full screen preview"
+msgstr ""
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Render settings"
@@ -53,18 +61,6 @@ msgstr "Renderprofiel"
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Save current presets as a custom render profile."
 msgstr "Sla huidige voorinstellingen op als een aangepast renderprofiel."
-
-#: modules/core_render_options_panel/render_options_panel.tscn
-msgid "Save profile"
-msgstr "Profiel opslaan"
-
-#: modules/core_render_options_panel/render_options_panel.tscn
-msgid "Set selected profile as the default render profile."
-msgstr "Stel het geselecteerde profiel in als standaard renderprofiel."
-
-#: modules/core_render_options_panel/render_options_panel.tscn
-msgid "Set default"
-msgstr "Als standaard instellen"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Export path"
@@ -188,23 +184,23 @@ msgstr "Renderregio"
 msgid "Start render"
 msgstr "Renderen starten"
 
-#: modules/core_render_options_panel/render_options_panel.gd:91
+#: modules/core_render_options_panel/render_options_panel.gd:89
 msgid "Custom render profiles"
 msgstr "Aangepaste renderprofielen"
 
-#: modules/core_render_options_panel/render_options_panel.gd:213
+#: modules/core_render_options_panel/render_options_panel.gd:215
 msgid "Stereo"
 msgstr "Stereo"
 
-#: modules/core_render_options_panel/render_options_panel.gd:214
+#: modules/core_render_options_panel/render_options_panel.gd:216
 msgid "Mono"
 msgstr "Mono"
 
-#: modules/core_render_options_panel/render_options_panel.gd:313
+#: modules/core_render_options_panel/render_options_panel.gd:306
 msgid "Select export path"
 msgstr "Selecteer exportpad"
 
-#: modules/core_render_options_panel/render_options_panel.gd:517
+#: modules/core_render_options_panel/render_options_panel.gd:510
 msgid "Draft"
 msgstr "Concept"
 
@@ -212,20 +208,20 @@ msgstr "Concept"
 msgid "Search files ..."
 msgstr "Bestanden zoeken ..."
 
-#: modules/core_file_panel/file_panel.tscn
+#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:342
 msgid "Add files"
 msgstr "Bestanden toevoegen"
 
-#: modules/core_file_panel/file_panel.tscn
+#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:343
 msgid "Add text"
 msgstr "Tekst toevoegen"
 
-#: modules/core_file_panel/file_panel.tscn
+#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:344
 msgid "Add color"
 msgstr "Kleur toevoegen"
 
 #: modules/core_file_panel/file_panel.gd:114
-#: modules/core_file_panel/file_panel.gd:182
+#: modules/core_file_panel/file_panel.gd:182 scenes/editor/editor.gd:355
 msgid "Add files ..."
 msgstr "Bestanden toevoegen ..."
 
@@ -235,7 +231,7 @@ msgstr "Hernoemen"
 
 #: modules/core_file_panel/file_panel.gd:139
 #: modules/core_file_panel/file_panel.gd:256
-#: scenes/file_popups/missing_files_popup/missing_files.gd:25
+#: scenes/file_popups/missing_files_popup/missing_files.gd:30
 #, fuzzy
 msgid "Relink file ..."
 msgstr "Bestanden voorbereiden ..."
@@ -244,7 +240,7 @@ msgstr "Bestanden voorbereiden ..."
 msgid "Reload"
 msgstr "Herladen"
 
-#: modules/core_file_panel/file_panel.gd:141 scenes/editor/editor.gd:521
+#: modules/core_file_panel/file_panel.gd:141 scenes/editor/editor.gd:533
 msgid "Delete"
 msgstr "Verwijderen"
 
@@ -257,7 +253,7 @@ msgid "Save image as ..."
 msgstr "Afbeelding opslaan als ..."
 
 #: modules/core_file_panel/file_panel.gd:148
-#: modules/core_timeline_panel/timeline_panel.gd:941
+#: modules/core_timeline_panel/timeline_panel.gd:951
 msgid "Video options"
 msgstr "Video-opties"
 
@@ -302,7 +298,7 @@ msgid "Folder options"
 msgstr "Mapopties"
 
 #: modules/core_file_panel/file_panel.gd:168
-#: scenes/startup_screen/startup_screen.gd:251
+#: scenes/startup_screen/startup_screen.gd:253
 msgid "Open in file manager"
 msgstr "Openen in bestandsbeheer"
 
@@ -339,7 +335,7 @@ msgstr "(Thumbnail laden...)"
 
 #: modules/core_markers_panel/markers_panel.tscn
 #: scenes/settings_menu/settings_menu.gd:192
-#: scenes/settings_menu/settings_menu.gd:395
+#: scenes/settings_menu/settings_menu.gd:413
 msgid "Markers"
 msgstr "Markeringen"
 
@@ -373,40 +369,46 @@ msgstr "Track dempen"
 msgid "Lock track"
 msgstr "Track vergrendelen"
 
-#: modules/core_timeline_panel/timeline_panel.gd:920
+#: modules/core_timeline_panel/timeline_panel.gd:924
 msgid "Delete clip"
 msgstr "Clip verwijderen"
 
-#: modules/core_timeline_panel/timeline_panel.gd:921
-msgid "Split clip"
+#: modules/core_timeline_panel/timeline_panel.gd:927
+#, fuzzy
+msgid "Split clip on mouse"
 msgstr "Clip splitsen"
 
-#: modules/core_timeline_panel/timeline_panel.gd:925
+#: modules/core_timeline_panel/timeline_panel.gd:930
+#, fuzzy
+msgid "Split clip on playhead"
+msgstr "Focus op afspeelkop:"
+
+#: modules/core_timeline_panel/timeline_panel.gd:935
 msgid "Hide clip"
 msgstr "Clip verbergen"
 
-#: modules/core_timeline_panel/timeline_panel.gd:928
+#: modules/core_timeline_panel/timeline_panel.gd:938
 msgid "Mute clip"
 msgstr "Clip dempen"
 
-#: modules/core_timeline_panel/timeline_panel.gd:932
+#: modules/core_timeline_panel/timeline_panel.gd:942
 #: scenes/change_speed_popup/change_speed.tscn
 msgid "Change speed"
 msgstr "Snelheid wijzigen"
 
-#: modules/core_timeline_panel/timeline_panel.gd:934
+#: modules/core_timeline_panel/timeline_panel.gd:944
 msgid "Reset speed"
 msgstr "Snelheid herstellen"
 
-#: modules/core_timeline_panel/timeline_panel.gd:944
+#: modules/core_timeline_panel/timeline_panel.gd:954
 msgid "Clip replace audio"
 msgstr "Audio van clip vervangen"
 
-#: modules/core_timeline_panel/timeline_panel.gd:946
+#: modules/core_timeline_panel/timeline_panel.gd:956
 msgid "Auto-cut silence"
 msgstr "Stilte automatisch knippen"
 
-#: modules/core_timeline_panel/timeline_panel.gd:958
+#: modules/core_timeline_panel/timeline_panel.gd:968
 msgid "Select Audio Track"
 msgstr "Audiotrack selecteren"
 
@@ -446,159 +448,164 @@ msgstr "Beeld van clip inschakelen."
 msgid "Reset"
 msgstr "Resetten"
 
-#: modules/core_effects_panel/effects_panel.gd:346
+#: modules/core_effects_panel/effects_panel.gd:347
 msgid "Left Transition"
 msgstr "Linkerovergang"
 
-#: modules/core_effects_panel/effects_panel.gd:365
+#: modules/core_effects_panel/effects_panel.gd:366
 msgid "Right Transition"
 msgstr "Rechterovergang"
 
-#: modules/core_effects_panel/effects_panel.gd:424
+#: modules/core_effects_panel/effects_panel.gd:425
 msgid "Style"
 msgstr "Stijl"
 
-#: modules/core_effects_panel/effects_panel.gd:528
+#: modules/core_effects_panel/effects_panel.gd:460
+#: scenes/welcome/welcome.gd:212
+msgid "Smooth"
+msgstr ""
+
+#: modules/core_effects_panel/effects_panel.gd:551
 msgid "Audio Track"
 msgstr "Audiotrack"
 
-#: modules/core_effects_panel/effects_panel.gd:617
+#: modules/core_effects_panel/effects_panel.gd:642
 msgid "Presets & Options."
 msgstr "Voorinstellingen en opties."
 
-#: modules/core_effects_panel/effects_panel.gd:622
-#: modules/core_effects_panel/effects_panel.gd:642
+#: modules/core_effects_panel/effects_panel.gd:648
+#: modules/core_effects_panel/effects_panel.gd:670
 msgid "Keyframe all parameters."
 msgstr "Keyframes voor alle parameters instellen."
 
-#: modules/core_effects_panel/effects_panel.gd:655
+#: modules/core_effects_panel/effects_panel.gd:685
 msgid "Reset to default."
 msgstr "Terugzetten naar standaard."
 
-#: modules/core_effects_panel/effects_panel.gd:729
+#: modules/core_effects_panel/effects_panel.gd:763
 msgid "Previous keyframe."
 msgstr "Vorige keyframe."
 
-#: modules/core_effects_panel/effects_panel.gd:738
+#: modules/core_effects_panel/effects_panel.gd:773
 msgid "Next keyframe."
 msgstr "Volgende keyframe."
 
-#: modules/core_effects_panel/effects_panel.gd:992
-#: modules/core_effects_panel/effects_panel.gd:1720
+#: modules/core_effects_panel/effects_panel.gd:1005
+#: modules/core_effects_panel/effects_panel.gd:1736
 msgid "Default"
 msgstr "Standaard"
 
-#: modules/core_effects_panel/effects_panel.gd:1007
+#: modules/core_effects_panel/effects_panel.gd:1020
 msgid "Text ..."
 msgstr "Tekst ..."
 
-#: modules/core_effects_panel/effects_panel.gd:1029
+#: modules/core_effects_panel/effects_panel.gd:1042
 msgid "Left"
 msgstr "Links"
 
-#: modules/core_effects_panel/effects_panel.gd:1030
-#: modules/core_effects_panel/effects_panel.gd:1034
+#: modules/core_effects_panel/effects_panel.gd:1043
+#: modules/core_effects_panel/effects_panel.gd:1047
 msgid "Center"
 msgstr "Midden"
 
-#: modules/core_effects_panel/effects_panel.gd:1031
+#: modules/core_effects_panel/effects_panel.gd:1044
 msgid "Right"
 msgstr "Rechts"
 
-#: modules/core_effects_panel/effects_panel.gd:1033
+#: modules/core_effects_panel/effects_panel.gd:1046
 msgid "Top"
 msgstr "Boven"
 
-#: modules/core_effects_panel/effects_panel.gd:1035
+#: modules/core_effects_panel/effects_panel.gd:1048
 msgid "Bottom"
 msgstr "Onder"
 
-#: modules/core_effects_panel/effects_panel.gd:1037
+#: modules/core_effects_panel/effects_panel.gd:1050
 msgid "Mix (Normal)"
 msgstr "Mix (Normaal)"
 
-#: modules/core_effects_panel/effects_panel.gd:1038
+#: modules/core_effects_panel/effects_panel.gd:1051
 msgid "Add"
 msgstr "Optellen"
 
-#: modules/core_effects_panel/effects_panel.gd:1039
+#: modules/core_effects_panel/effects_panel.gd:1052
 msgid "Subtract"
 msgstr "Aftrekken"
 
-#: modules/core_effects_panel/effects_panel.gd:1040
+#: modules/core_effects_panel/effects_panel.gd:1053
 msgid "Multiply"
 msgstr "Vermenigvuldigen"
 
-#: modules/core_effects_panel/effects_panel.gd:1041
+#: modules/core_effects_panel/effects_panel.gd:1054
 msgid "Premultiplied Alpha"
 msgstr "Premultiplied Alpha"
 
-#: modules/core_effects_panel/effects_panel.gd:1043
+#: modules/core_effects_panel/effects_panel.gd:1056
 msgid "Thin"
 msgstr "Dun"
 
-#: modules/core_effects_panel/effects_panel.gd:1044
+#: modules/core_effects_panel/effects_panel.gd:1057
 msgid "Extra Light"
 msgstr "Extra licht"
 
-#: modules/core_effects_panel/effects_panel.gd:1045
+#: modules/core_effects_panel/effects_panel.gd:1058
 msgid "Light"
 msgstr "Licht"
 
-#: modules/core_effects_panel/effects_panel.gd:1046
+#: modules/core_effects_panel/effects_panel.gd:1059
 msgid "Regular"
 msgstr "Normaal"
 
-#: modules/core_effects_panel/effects_panel.gd:1047
+#: modules/core_effects_panel/effects_panel.gd:1060
 msgid "Medium"
 msgstr "Medium"
 
-#: modules/core_effects_panel/effects_panel.gd:1048
+#: modules/core_effects_panel/effects_panel.gd:1061
 msgid "Semi Bold"
 msgstr "Halfvet"
 
-#: modules/core_effects_panel/effects_panel.gd:1049
+#: modules/core_effects_panel/effects_panel.gd:1062
 msgid "Bold"
 msgstr "Vet"
 
-#: modules/core_effects_panel/effects_panel.gd:1050
+#: modules/core_effects_panel/effects_panel.gd:1063
 msgid "Extra Bold"
 msgstr "Extra vet"
 
-#: modules/core_effects_panel/effects_panel.gd:1051
+#: modules/core_effects_panel/effects_panel.gd:1064
 msgid "Black"
 msgstr "Zwart"
 
-#: modules/core_effects_panel/effects_panel.gd:1212
+#: modules/core_effects_panel/effects_panel.gd:1226
 msgid "Link X and Y."
 msgstr "X en Y koppelen."
 
-#: modules/core_effects_panel/effects_panel.gd:1515
+#: modules/core_effects_panel/effects_panel.gd:1541
 msgid "Add effects."
 msgstr "Effecten toevoegen."
 
-#: modules/core_effects_panel/effects_panel.gd:1661
+#: modules/core_effects_panel/effects_panel.gd:1676
 msgid "Presets"
 msgstr "Voorinstellingen"
 
-#: modules/core_effects_panel/effects_panel.gd:1679
+#: modules/core_effects_panel/effects_panel.gd:1695
 msgid "Reset effect"
 msgstr "Effect resetten"
 
-#: modules/core_effects_panel/effects_panel.gd:1691
+#: modules/core_effects_panel/effects_panel.gd:1707
 msgid "Delete effect"
 msgstr "Effect verwijderen"
 
-#: modules/core_effects_panel/effects_panel.gd:1704
+#: modules/core_effects_panel/effects_panel.gd:1720
 msgid "Save as preset..."
 msgstr "Opslaan als voorinstelling..."
 
-#: modules/core_effects_panel/effects_panel.gd:1773
+#: modules/core_effects_panel/effects_panel.gd:1793
 #: scenes/startup_screen/save_profile_preset/save_profile_preset.tscn
 msgid "Save preset"
 msgstr "Voorinstelling opslaan"
 
-#: modules/core_effects_panel/effects_panel.gd:1774
+#: modules/core_effects_panel/effects_panel.gd:1794
 msgid "Preset name"
 msgstr "Naam van voorinstelling"
 
@@ -667,7 +674,7 @@ msgstr ""
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
 #: scenes/marker_popup/marker_popup.tscn
-#: scenes/auto_cut_popup/auto_cut_popup.tscn scripts/autoloads/project.gd:368
+#: scenes/auto_cut_popup/auto_cut_popup.tscn scripts/autoloads/project.gd:370
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -693,7 +700,7 @@ msgid ""
 "right-click those missing files in the file panel to relink."
 msgstr ""
 
-#: scenes/file_popups/missing_files_popup/missing_files.gd:18
+#: scenes/file_popups/missing_files_popup/missing_files.gd:23
 #, fuzzy
 msgid "Re-link file"
 msgstr "Bestanden voorbereiden ..."
@@ -743,7 +750,7 @@ msgstr "Duur"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/file_popups/file_info_popup/file_info.gd:50
-#: scenes/settings_menu/settings_menu.gd:519
+#: scenes/settings_menu/settings_menu.gd:537
 msgid "Video"
 msgstr "Video"
 
@@ -813,8 +820,8 @@ msgstr "In geheugen"
 
 #: scenes/file_popups/file_info_popup/file_info.gd:91
 #: scenes/file_popups/file_info_popup/file_info.gd:106
-#: scenes/file_popups/file_info_popup/file_info.gd:123
-#: scenes/file_popups/file_info_popup/file_info.gd:133
+#: scenes/file_popups/file_info_popup/file_info.gd:122
+#: scenes/file_popups/file_info_popup/file_info.gd:132
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -857,7 +864,7 @@ msgstr "Nieuw project"
 msgid "Save project"
 msgstr "Project opslaan"
 
-#: scenes/editor/editor.gd:259 scripts/autoloads/project.gd:123
+#: scenes/editor/editor.gd:259 scripts/autoloads/project.gd:124
 msgid "Save project as ..."
 msgstr "Project opslaan als ..."
 
@@ -866,7 +873,7 @@ msgid "Archive project ..."
 msgstr "Project archiveren ..."
 
 #: scenes/editor/editor.gd:263 scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:371 scripts/autoloads/project.gd:288
+#: scenes/startup_screen/startup_screen.gd:371 scripts/autoloads/project.gd:290
 msgid "Open project"
 msgstr "Project openen"
 
@@ -890,87 +897,81 @@ msgstr "Projectinstellingen"
 msgid "Quit"
 msgstr "Afsluiten"
 
-#: scenes/editor/editor.gd:339
+#: scenes/editor/editor.gd:338
 msgid "Undo"
 msgstr "Ongedaan maken"
 
-#: scenes/editor/editor.gd:340
+#: scenes/editor/editor.gd:339
 msgid "Redo"
 msgstr "Opnieuw uitvoeren"
 
-#: scenes/editor/editor.gd:359
+#: scenes/editor/editor.gd:373
 #: scenes/editor/new_workspace_popup/new_workspace_popup.tscn
 msgid "Save workspace"
 msgstr "Werkruimte opslaan"
 
-#: scenes/editor/editor.gd:360
+#: scenes/editor/editor.gd:374
 #: scenes/editor/new_workspace_popup/new_workspace_popup.tscn
 msgid "New workspace"
 msgstr "Nieuwe werkruimte"
 
-#: scenes/editor/editor.gd:362 scenes/editor/editor.gd:380
+#: scenes/editor/editor.gd:376 scenes/editor/editor.gd:394
 msgid "Show panel titles"
 msgstr "Paneeltitels weergeven"
 
-#: scenes/editor/editor.gd:363
+#: scenes/editor/editor.gd:377
 msgid "Panels"
 msgstr "Panelen"
 
-#: scenes/editor/editor.gd:378
+#: scenes/editor/editor.gd:392
 msgid "Hide panel titles"
 msgstr "Paneeltitels verbergen"
 
-#: scenes/editor/editor.gd:412 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:426 scenes/startup_screen/startup_screen.tscn
 msgid "Editor settings"
 msgstr "Editorinstellingen"
 
-#: scenes/editor/editor.gd:414
+#: scenes/editor/editor.gd:428
 msgid "Module manager"
 msgstr "Modulebeheer"
 
-#: scenes/editor/editor.gd:416
+#: scenes/editor/editor.gd:430
 msgid "Command bar"
 msgstr "Opdrachtbalk"
 
-#: scenes/editor/editor.gd:437
+#: scenes/editor/editor.gd:451
 msgid "Report bug"
 msgstr "Probleem melden"
 
-#: scenes/editor/editor.gd:438 scenes/welcome/welcome.tscn
+#: scenes/editor/editor.gd:452 scenes/welcome/welcome.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
 msgstr "Handleiding"
 
-#: scenes/editor/editor.gd:439 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:453 scenes/startup_screen/startup_screen.tscn
 msgid "Tutorials"
 msgstr "Tutorials"
 
-#: scenes/editor/editor.gd:440 scenes/welcome/welcome.tscn
+#: scenes/editor/editor.gd:454 scenes/welcome/welcome.tscn
 #: scenes/about_gozen_popup/about_gozen.tscn
-#: scenes/startup_screen/startup_screen.tscn
 msgid "Discord"
 msgstr "Discord"
 
-#: scenes/editor/editor.gd:442 scenes/welcome/welcome.tscn
+#: scenes/editor/editor.gd:456 scenes/welcome/welcome.tscn
 #: scenes/about_gozen_popup/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr "Website"
 
-#: scenes/editor/editor.gd:443 scenes/welcome/welcome.tscn
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Support GoZen"
-msgstr "Steun GoZen"
-
-#: scenes/editor/editor.gd:444 scenes/about_gozen_popup/about_gozen.tscn
+#: scenes/editor/editor.gd:457 scenes/about_gozen_popup/about_gozen.tscn
 msgid "About GoZen"
 msgstr "Over GoZen"
 
-#: scenes/editor/editor.gd:515
+#: scenes/editor/editor.gd:527
 msgid "Move Left"
 msgstr "Naar links verplaatsen"
 
-#: scenes/editor/editor.gd:518
+#: scenes/editor/editor.gd:530
 msgid "Move Right"
 msgstr "Naar rechts verplaatsen"
 
@@ -979,7 +980,7 @@ msgstr "Naar rechts verplaatsen"
 msgid "Workspace name:"
 msgstr "Naam van werkruimte"
 
-#: scenes/welcome/welcome.tscn
+#: scenes/welcome/welcome.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Welcome"
 msgstr "Welkom"
 
@@ -1004,8 +1005,9 @@ msgstr "Renderen"
 msgid "Modules"
 msgstr "Modules"
 
-#: scenes/welcome/welcome.tscn
-msgid "Extra's"
+#: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:415
+#: scenes/settings_menu/settings_menu.gd:416
+msgid "Extras"
 msgstr "Extra's"
 
 #: scenes/welcome/welcome.tscn
@@ -1045,16 +1047,16 @@ msgid "Theme"
 msgstr "Thema"
 
 #: scenes/welcome/welcome.tscn
+msgid "GUI Scale"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
 msgid "YouTube tutorials"
 msgstr "YouTube-tutorials"
 
 #: scenes/welcome/welcome.tscn
 msgid "Source Code"
 msgstr "Broncode"
-
-#: scenes/welcome/welcome.tscn
-msgid "Support GoZen on Ko-fi!"
-msgstr "Steun GoZen op Ko-fi!"
 
 #: scenes/welcome/welcome.tscn
 msgid "Adding files"
@@ -1090,9 +1092,10 @@ msgstr ""
 "wilt."
 
 #: scenes/welcome/welcome.tscn
+#, fuzzy
 msgid ""
-"Some people do prefer to have their video's split into 2 clips, separating "
-"the visuals from the audio. This is possible by holding ctrl/shift when "
+"Some people do prefer to have their videos split into 2 clips, separating "
+"the visuals from the audio. This is possible by holding CTRL/SHIFT when "
 "dragging in video files to the timeline."
 msgstr ""
 "Sommige mensen splitsen hun video's liever in 2 clips, waarbij het beeld van "
@@ -1273,15 +1276,27 @@ msgstr ""
 "kunnen bevatten, zijn er 2 sets handvatten: de bovenste zijn voor audio en "
 "de onderste voor visuele fades."
 
+#: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:401
+#, fuzzy
+msgid "Keyframes"
+msgstr "B-frames"
+
 #: scenes/welcome/welcome.tscn
+#, fuzzy
 msgid ""
 "Keyframing can be done by pressing the diamond next to them, once a property "
 "has a keyframe it will automatically start recording changes which are made "
-"on time stamps where no keyframe has been made yet."
+"on time stamps where no keyframe has been made yet. Holding shift changes "
+"the keyframe type from Linear to Smooth."
 msgstr ""
 "Keyframen doe je door op het ruitje ernaast te drukken. Zodra een eigenschap "
 "een keyframe heeft, worden wijzigingen die je aanbrengt op tijdstippen waar "
 "nog geen keyframe is, automatisch opgenomen."
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "Default keyframe type:"
+msgstr "Standaard renderprofiel:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Text & Colors"
@@ -1375,8 +1390,13 @@ msgstr ""
 "vervolgens op \"Modulebeheer\"."
 
 #: scenes/welcome/welcome.tscn
-msgid "Itch.io modules"
-msgstr "Itch.io-modules"
+msgid "Coming soon!"
+msgstr ""
+
+#: scenes/welcome/welcome.tscn
+#, fuzzy
+msgid "GoZen Modules"
+msgstr "Kernmodules"
 
 #: scenes/welcome/welcome.tscn
 msgid "Steam workshop"
@@ -1387,9 +1407,10 @@ msgid "Custom PCK files"
 msgstr "Aangepaste PCK-bestanden"
 
 #: scenes/welcome/welcome.tscn
+#, fuzzy
 msgid ""
 "Modules change the editor and add functionality to the editor, but there's "
-"another type of modules refered to as pck files. These are Godot scene's "
+"another type of modules refered to as pck files. These are Godot scenes "
 "which can be used directly in the timeline for visuals. For the creation of "
 "these files a bit of development is needed inside of custom Godot project."
 msgstr ""
@@ -1466,27 +1487,31 @@ msgstr "Resolutie:"
 msgid "Framerate:"
 msgstr "Framerate:"
 
-#: scenes/welcome/welcome.gd:54
+#: scenes/welcome/welcome.gd:56
 msgid "Full version only!"
 msgstr "Alleen in de volledige versie!"
 
-#: scenes/welcome/welcome.gd:154
+#: scenes/welcome/welcome.gd:170
 msgid "Keep Audio & Video linked"
 msgstr "Audio en video gekoppeld houden"
 
-#: scenes/welcome/welcome.gd:156
+#: scenes/welcome/welcome.gd:172
 msgid "Always split Audio to a new track"
 msgstr "Audio altijd naar een nieuwe track splitsen"
 
-#: scenes/welcome/welcome.gd:173 scenes/settings_menu/settings_menu.gd:882
+#: scenes/welcome/welcome.gd:189 scenes/settings_menu/settings_menu.gd:907
 msgid "Press any key..."
 msgstr "Druk op een toets..."
 
-#: scenes/welcome/welcome.gd:215
+#: scenes/welcome/welcome.gd:211
+msgid "Linear"
+msgstr ""
+
+#: scenes/welcome/welcome.gd:239
 msgid "Seek Playhead"
 msgstr "Afspeelkop verplaatsen"
 
-#: scenes/welcome/welcome.gd:217
+#: scenes/welcome/welcome.gd:241
 msgid "Clear Selection"
 msgstr "Selectie wissen"
 
@@ -1586,18 +1611,23 @@ msgid ""
 "Could not duplicate %d clip(s) because there was not enough empty space."
 msgstr "Kon %d clip(s) niet dupliceren omdat er niet genoeg lege ruimte was."
 
+#: scenes/progress_overlay/progress_overlay.gd:74
+#: scenes/progress_overlay/progress_overlay.gd:77
+msgid "Estimated time"
+msgstr ""
+
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:223
+#: scripts/autoloads/project.gd:224
 msgid "Loading project"
 msgstr "Project laden"
 
 #: scenes/progress_overlay/progress_overlay.tscn
-#: scripts/autoloads/project.gd:224
+#: scripts/autoloads/project.gd:225
 msgid "Initializing ..."
 msgstr "Initialiseren ..."
 
 #: scenes/about_gozen_popup/about_gozen.tscn
-#: scenes/startup_screen/startup_screen.gd:290
+#: scenes/startup_screen/startup_screen.gd:292
 msgid "Version"
 msgstr "Versie"
 
@@ -1609,11 +1639,7 @@ msgstr "Broncode"
 msgid "YouTube"
 msgstr "YouTube"
 
-#: scenes/about_gozen_popup/about_gozen.tscn
-msgid "Support the project"
-msgstr "Het project steunen"
-
-#: scenes/about_gozen_popup/about_gozen.gd:30
+#: scenes/about_gozen_popup/about_gozen.gd:28
 msgid "License"
 msgstr "Licentie"
 
@@ -1660,7 +1686,7 @@ msgid "Marker five"
 msgstr "Markering vijf"
 
 #: scenes/settings_menu/settings_menu.gd:202
-#: scenes/settings_menu/settings_menu.gd:406
+#: scenes/settings_menu/settings_menu.gd:424
 msgid "Shortcuts"
 msgstr "Sneltoetsen"
 
@@ -1744,14 +1770,25 @@ msgstr ""
 "geheugengebruik."
 
 #: scenes/settings_menu/settings_menu.gd:298
+#, fuzzy
+msgid "Decoder Threads"
+msgstr "Threads"
+
+#: scenes/settings_menu/settings_menu.gd:305
+msgid ""
+"Number of threads to use for video decoding. 0 means automatic, putting this "
+"too high makes memory usage too high which can cause your system to crash."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:306
 msgid "Use proxies"
 msgstr "Proxies gebruiken"
 
-#: scenes/settings_menu/settings_menu.gd:303
+#: scenes/settings_menu/settings_menu.gd:311
 msgid "Proxies save path"
 msgstr "Opslagpad voor proxies"
 
-#: scenes/settings_menu/settings_menu.gd:308
+#: scenes/settings_menu/settings_menu.gd:316
 msgid ""
 "Changing this setting should be done with a path which points to an already "
 "existing folder. All previously made proxy clips will need to be generated "
@@ -1761,150 +1798,161 @@ msgstr ""
 "eerder gemaakte proxyclips moeten opnieuw worden gegenereerd en handmatig "
 "uit de vorige map worden verwijderd."
 
-#: scenes/settings_menu/settings_menu.gd:312
+#: scenes/settings_menu/settings_menu.gd:320
 msgid "Cache Management"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:313
+#: scenes/settings_menu/settings_menu.gd:321
 #, fuzzy
 msgid "Waveforms"
 msgstr "Golfvormstijl"
 
-#: scenes/settings_menu/settings_menu.gd:315
-msgid "Thumbnails"
+#: scenes/settings_menu/settings_menu.gd:323
+msgid "File thumbnails"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:317
+#: scenes/settings_menu/settings_menu.gd:325
+#, fuzzy
+msgid "Project thumbnails"
+msgstr "Projectinstellingen"
+
+#: scenes/settings_menu/settings_menu.gd:327
 #, fuzzy
 msgid "Proxies"
 msgstr "Proxies gebruiken"
 
-#: scenes/settings_menu/settings_menu.gd:322
-#: scenes/settings_menu/settings_menu.gd:535
-#: scenes/settings_menu/settings_menu.gd:536
+#: scenes/settings_menu/settings_menu.gd:332
+#: scenes/settings_menu/settings_menu.gd:553
+#: scenes/settings_menu/settings_menu.gd:554
 msgid "Appearance"
 msgstr "Uiterlijk"
 
-#: scenes/settings_menu/settings_menu.gd:324
+#: scenes/settings_menu/settings_menu.gd:334
 msgid "Defaults"
 msgstr "Standaardwaarden"
 
-#: scenes/settings_menu/settings_menu.gd:325
+#: scenes/settings_menu/settings_menu.gd:335
 msgid "Paths"
 msgstr "Paden"
 
-#: scenes/settings_menu/settings_menu.gd:326
+#: scenes/settings_menu/settings_menu.gd:336
 msgid "Default project path"
 msgstr "Standaardpad voor projecten"
 
-#: scenes/settings_menu/settings_menu.gd:331
+#: scenes/settings_menu/settings_menu.gd:341
 msgid "The default directory where new projects are created."
 msgstr "De standaardmap waarin nieuwe projecten worden aangemaakt."
 
-#: scenes/settings_menu/settings_menu.gd:332
+#: scenes/settings_menu/settings_menu.gd:342
 msgid "Default durations"
 msgstr "Standaardduren"
 
-#: scenes/settings_menu/settings_menu.gd:333
+#: scenes/settings_menu/settings_menu.gd:343
 msgid "Default image duration"
 msgstr "Standaardduur afbeeldingen"
 
-#: scenes/settings_menu/settings_menu.gd:340
-#: scenes/settings_menu/settings_menu.gd:348
-#: scenes/settings_menu/settings_menu.gd:356
+#: scenes/settings_menu/settings_menu.gd:350
+#: scenes/settings_menu/settings_menu.gd:358
+#: scenes/settings_menu/settings_menu.gd:366
 msgid "Duration in frames per second."
 msgstr "Duur in frames per seconde."
 
-#: scenes/settings_menu/settings_menu.gd:341
+#: scenes/settings_menu/settings_menu.gd:351
 msgid "Default color duration"
 msgstr "Standaardduur kleuren"
 
-#: scenes/settings_menu/settings_menu.gd:349
+#: scenes/settings_menu/settings_menu.gd:359
 msgid "Default text duration"
 msgstr "Standaardduur tekst"
 
-#: scenes/settings_menu/settings_menu.gd:357
-#: scenes/settings_menu/settings_menu.gd:521
+#: scenes/settings_menu/settings_menu.gd:367
+#: scenes/settings_menu/settings_menu.gd:539
 msgid "Project resolution"
 msgstr "Projectresolutie"
 
-#: scenes/settings_menu/settings_menu.gd:362
-#: scenes/settings_menu/settings_menu.gd:526
+#: scenes/settings_menu/settings_menu.gd:372
+#: scenes/settings_menu/settings_menu.gd:544
 msgid "Project frame-rate"
 msgstr "Projectframerate"
 
-#: scenes/settings_menu/settings_menu.gd:368
+#: scenes/settings_menu/settings_menu.gd:378
 msgid "Quick create project options"
 msgstr "Opties voor snel aanmaken van projecten"
 
-#: scenes/settings_menu/settings_menu.gd:369
+#: scenes/settings_menu/settings_menu.gd:379
 msgid "Horizontal resolution"
 msgstr "Horizontale resolutie"
 
-#: scenes/settings_menu/settings_menu.gd:374
+#: scenes/settings_menu/settings_menu.gd:384
 msgid "Horizontal framerate"
 msgstr "Horizontale framerate"
 
-#: scenes/settings_menu/settings_menu.gd:380
+#: scenes/settings_menu/settings_menu.gd:390
 msgid "Vertical resolution"
 msgstr "Verticale resolutie"
 
-#: scenes/settings_menu/settings_menu.gd:385
+#: scenes/settings_menu/settings_menu.gd:395
 msgid "Vertical framerate"
 msgstr "Verticale framerate"
 
-#: scenes/settings_menu/settings_menu.gd:393
+#: scenes/settings_menu/settings_menu.gd:402
+#, fuzzy
+msgid "Default keyframe type"
+msgstr "Volgende keyframe."
+
+#: scenes/settings_menu/settings_menu.gd:411
 msgid "Performance"
 msgstr "Prestaties"
 
-#: scenes/settings_menu/settings_menu.gd:397
-#: scenes/settings_menu/settings_menu.gd:398
-msgid "Extras"
-msgstr "Extra's"
-
-#: scenes/settings_menu/settings_menu.gd:399
+#: scenes/settings_menu/settings_menu.gd:417
 msgid "Auto save"
 msgstr "Automatisch opslaan"
 
-#: scenes/settings_menu/settings_menu.gd:407
+#: scenes/settings_menu/settings_menu.gd:425
 msgid "Cache"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:520
+#: scenes/settings_menu/settings_menu.gd:538
 msgid "Video settings"
 msgstr "Video-instellingen"
 
-#: scenes/settings_menu/settings_menu.gd:533
+#: scenes/settings_menu/settings_menu.gd:551
 msgid "Project framerate (fps)."
 msgstr "Projectframerate (fps)."
 
-#: scenes/settings_menu/settings_menu.gd:537
+#: scenes/settings_menu/settings_menu.gd:555
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Background color"
 msgstr "Achtergrondkleur"
 
-#: scenes/settings_menu/settings_menu.gd:542
+#: scenes/settings_menu/settings_menu.gd:560
 msgid "The background color when no clips are displayed."
 msgstr "De achtergrondkleur wanneer er geen clips worden weergegeven."
 
-#: scenes/settings_menu/settings_menu.gd:569
+#: scenes/settings_menu/settings_menu.gd:587
 msgid "Reset to default"
 msgstr "Terugzetten naar standaard"
 
-#: scenes/settings_menu/settings_menu.gd:809
+#: scenes/settings_menu/settings_menu.gd:830
 msgid "Clear"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:858
+#: scenes/settings_menu/settings_menu.gd:879
 #, fuzzy
 msgid "Waveforms cache cleared."
 msgstr "Golfvormversterking"
 
-#: scenes/settings_menu/settings_menu.gd:864
-msgid "Thumbnails cache cleared."
-msgstr ""
+#: scenes/settings_menu/settings_menu.gd:884
+#, fuzzy
+msgid "File thumbnails cache cleared."
+msgstr "Golfvormversterking"
 
-#: scenes/settings_menu/settings_menu.gd:869
+#: scenes/settings_menu/settings_menu.gd:889
+#, fuzzy
+msgid "Project thumbnails cache cleared."
+msgstr "Golfvormversterking"
+
+#: scenes/settings_menu/settings_menu.gd:894
 #, fuzzy
 msgid "Proxies cleared."
 msgstr "Opslagpad voor proxies"
@@ -2025,14 +2073,6 @@ msgid "External link to GoZen tutorials."
 msgstr "Externe link naar GoZen-tutorials."
 
 #: scenes/startup_screen/startup_screen.tscn
-msgid "External link to the Discord server."
-msgstr "Externe link naar de Discord-server."
-
-#: scenes/startup_screen/startup_screen.tscn
-msgid "External link to the Ko-fi page."
-msgstr "Externe link naar de Ko-fi-pagina."
-
-#: scenes/startup_screen/startup_screen.tscn
 msgid "The video width."
 msgstr "De videobreedte."
 
@@ -2064,16 +2104,16 @@ msgstr "Terug"
 msgid "Image by"
 msgstr "Afbeelding door"
 
-#: scenes/startup_screen/startup_screen.gd:252
+#: scenes/startup_screen/startup_screen.gd:254
 msgid "Remove from list"
 msgstr "Uit lijst verwijderen"
 
-#: scenes/startup_screen/startup_screen.gd:317
+#: scenes/startup_screen/startup_screen.gd:319
 msgid "User presets"
 msgstr "Gebruikersvoorinstellingen"
 
 #: scenes/startup_screen/startup_screen.gd:373
-#: scenes/startup_screen/startup_screen.gd:451 scripts/autoloads/project.gd:125
+#: scenes/startup_screen/startup_screen.gd:451 scripts/autoloads/project.gd:126
 msgid "GoZen project file"
 msgstr "GoZen-projectbestand"
 
@@ -2143,54 +2183,54 @@ msgstr "Nieuw project initialiseren ..."
 msgid "Setting up playback ..."
 msgstr "Afspelen instellen ..."
 
-#: scripts/autoloads/project.gd:65 scripts/autoloads/project.gd:270
+#: scripts/autoloads/project.gd:65 scripts/autoloads/project.gd:271
 msgid "Finalizing ..."
 msgstr "Afronden ..."
 
-#: scripts/autoloads/project.gd:135
+#: scripts/autoloads/project.gd:136
 msgid "Archive project as ..."
 msgstr "Project archiveren als ..."
 
-#: scripts/autoloads/project.gd:137
+#: scripts/autoloads/project.gd:138
 msgid "ZIP Archive"
 msgstr "ZIP-archief"
 
-#: scripts/autoloads/project.gd:150
+#: scripts/autoloads/project.gd:151
 msgid "Archiving project"
 msgstr "Project archiveren"
 
-#: scripts/autoloads/project.gd:151
+#: scripts/autoloads/project.gd:152
 msgid "Preparing files ..."
 msgstr "Bestanden voorbereiden ..."
 
-#: scripts/autoloads/project.gd:238
+#: scripts/autoloads/project.gd:239
 msgid "Setting up timeline ..."
 msgstr "Tijdlijn opzetten ..."
 
-#: scripts/autoloads/project.gd:243
+#: scripts/autoloads/project.gd:244
 msgid "Loading project files ..."
 msgstr "Projectbestanden laden ..."
 
-#: scripts/autoloads/project.gd:289
+#: scripts/autoloads/project.gd:291
 msgid "GoZen project files"
 msgstr "GoZen-projectbestanden"
 
-#: scripts/autoloads/project.gd:367
+#: scripts/autoloads/project.gd:369
 msgid "Don't save"
 msgstr "Niet opslaan"
 
-#: scripts/autoloads/project.gd:372
+#: scripts/autoloads/project.gd:374
 msgid "Unsaved changes"
 msgstr "Niet-opgeslagen wijzigingen"
 
-#: scripts/autoloads/project.gd:373
+#: scripts/autoloads/project.gd:375
 msgid ""
 "You have unsaved changes in your current project. Save before proceeding?"
 msgstr ""
 "Er zijn niet-opgeslagen wijzigingen in je huidige project. Wil je opslaan "
 "voordat je doorgaat?"
 
-#: scripts/autoloads/project.gd:374
+#: scripts/autoloads/project.gd:376
 msgid "Save"
 msgstr "Opslaan"
 
@@ -2224,21 +2264,30 @@ msgstr "Gegevens verzenden ..."
 msgid "Sending final frame ..."
 msgstr "Laatste frame verzenden ..."
 
-#: scripts/logic/file_logic.gd:362
+#: scripts/logic/file_logic.gd:336
 msgid "Files dropped"
 msgstr "Bestanden neergezet"
 
-#: scripts/logic/file_logic.gd:377
+#: scripts/logic/file_logic.gd:337
+#, fuzzy
+msgid "Scanning files ..."
+msgstr "Bestanden voorbereiden ..."
+
+#: scripts/logic/file_logic.gd:392
+#, fuzzy
+msgid "Processing file: "
+msgstr "Bestanden toevoegen"
+
+#: scripts/logic/file_logic.gd:395
 msgid "Files loading ..."
 msgstr "Bestanden laden ..."
 
-#: scripts/logic/file_logic.gd:424
+#: scripts/logic/file_logic.gd:442
 #, fuzzy
 msgid "File missing or moved: "
 msgstr "Bestanden laden ..."
 
-#~ msgid "Made by [url=%s]Voylin's Gamedev Journey[/url]!"
-#~ msgstr "Gemaakt door [url=%s]Voylin's Gamedev Journey[/url]!"
-
-#~ msgid "Files Updated"
-#~ msgstr "Bestanden bijgewerkt"
+#: scripts/logic/file_logic.gd:1339
+#, fuzzy
+msgid "Scanning folder: "
+msgstr "Scantype"
