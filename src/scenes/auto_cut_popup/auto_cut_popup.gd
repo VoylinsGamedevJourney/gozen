@@ -155,6 +155,11 @@ func _calculate_silences() -> void:
 		var padded_start: int = silence.x + padding_frames
 		var padded_end: int = silence.y - padding_frames
 
+		if silence.x == start_frame:
+			padded_start = silence.x
+		if silence.y == end_frame:
+			padded_end = silence.y
+
 		if padded_end - padded_start > 0:
 			var silence_start_sec: float = float(padded_start) / framerate
 			var silence_end_sec: float = float(padded_end) / framerate
