@@ -107,17 +107,6 @@ size_flags_horizontal = 3
 bbcode_enabled = true
 fit_content = true
 
-[node name="SupportLabel" type="Label" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=359865526]
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Support the project"
-
-[node name="SupportRichTextLabel" type="RichTextLabel" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer" unique_id=297009490]
-layout_mode = 2
-size_flags_horizontal = 3
-bbcode_enabled = true
-fit_content = true
-
 [node name="Control" type="Control" parent="Panel/Margin/VBox/AboutPanel/Margin/AboutVBox" unique_id=614948309]
 custom_minimum_size = Vector2(0, 15)
 layout_mode = 2

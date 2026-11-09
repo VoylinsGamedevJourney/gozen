@@ -103,6 +103,8 @@ size_flags_horizontal = 3
 [node name="PathLineEdit" type="LineEdit" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox" unique_id=1501875208]
 layout_mode = 2
 size_flags_horizontal = 3
+emoji_menu_enabled = false
+caret_blink = true
 
 [node name="SelectPathButton" type="TextureButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderPathHBox" unique_id=822680023]
 custom_minimum_size = Vector2(21, 0)

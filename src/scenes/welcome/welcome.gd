@@ -19,7 +19,6 @@ extends PanelContainer
 @export var button_flow_tutorials: Button
 @export var button_flow_discord: Button
 @export var button_flow_source_code: Button
-@export var button_flow_support_kofi: Button
 
 @export_group("Effects related buttons")
 @export var option_button_default_keyframe_type: OptionButton
@@ -61,7 +60,6 @@ func _ready() -> void:
 	button_flow_tutorials.pressed.connect(func() -> void: URL.open("tutorials"))
 	button_flow_discord.pressed.connect(func() -> void: URL.open("discord"))
 	button_flow_source_code.pressed.connect(func() -> void: URL.open("source_code"))
-	button_flow_support_kofi.pressed.connect(func() -> void: URL.open("support"))
 
 	button_steam_workshop.pressed.connect(func() -> void: URL.open("steam_workshop"))
 

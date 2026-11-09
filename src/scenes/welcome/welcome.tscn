@@ -8,7 +8,6 @@
 [ext_resource type="Texture2D" uid="uid://cy0wf25emij1j" path="res://assets/profiles/youtube.tres" id="5_e3rrl"]
 [ext_resource type="Texture2D" uid="uid://brk03ymljvaym" path="res://assets/icons/link.tres" id="6_prgn0"]
 [ext_resource type="Texture2D" uid="uid://c01qwrnswdp6m" path="res://assets/icons/terminal.tres" id="7_vp31h"]
-[ext_resource type="Texture2D" uid="uid://kll463gy1ppm" path="res://assets/icons/support.tres" id="8_w7j6j"]
 [ext_resource type="Texture2D" uid="uid://17gcpvhkgkjl" path="res://assets/icons/open.tres" id="10_2fqae"]
 [ext_resource type="Texture2D" uid="uid://bnvorhj215l2c" path="res://assets/icons/files/text_file.tres" id="10_8fxic"]
 [ext_resource type="Texture2D" uid="uid://jn48bgcs5jf8" path="res://assets/icons/files/audio_file.tres" id="11_20rhv"]
@@ -64,7 +63,7 @@ button_flow_manual = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabCont
 button_flow_tutorials = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow/YTtutorialsButton")
 button_flow_discord = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow/DiscordButton")
 button_flow_source_code = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow/SourceCodeButton")
-button_flow_support_kofi = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow/SupportKofiButton")
+button_flow_support_kofi = NodePath("")
 option_button_default_keyframe_type = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsScroll/EffectsVBox/DefaultHBox/DefaultKeyframeTypeOptionButton")
 button_steam_workshop = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2/VBoxContainer/SteamWorkshopButton")
 button_gozen_module_repo = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer/PCKModuleRepoButton")
@@ -342,15 +341,6 @@ layout_mode = 2
 size_flags_vertical = 4
 text = "Source Code"
 icon = ExtResource("7_vp31h")
-expand_icon = true
-
-[node name="SupportKofiButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/WelcomeVBox/BottomVBox/ButtonsHFlow" unique_id=1201746772]
-custom_minimum_size = Vector2(153, 40)
-layout_mode = 2
-size_flags_vertical = 4
-tooltip_text = "Support GoZen on Ko-fi!"
-text = "Support GoZen"
-icon = ExtResource("8_w7j6j")
 expand_icon = true
 
 [node name="BasicsVBox" type="VBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer" unique_id=2071702579]

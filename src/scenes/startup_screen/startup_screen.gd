@@ -356,7 +356,6 @@ func _on_editor_settings_button_pressed() -> void:
 func _on_image_author_meta_clicked(meta: Variant) -> void:  URL.open(str(meta))
 
 
-func _on_support_project_button_pressed() -> void: URL.open("support")
 func _on_gozen_logo_button_pressed() -> void:	   URL.open("site")
 func _on_site_button_pressed() -> void: 		   URL.open("site")
 func _on_manual_button_pressed() -> void: 		   URL.open("manual")

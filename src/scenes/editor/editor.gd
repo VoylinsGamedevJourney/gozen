@@ -454,22 +454,20 @@ func _create_info_popup_menu() -> void:
 	menu.add_icon_item(load(Library.ICON_LINK) as Icon, "Discord", 3)
 	menu.add_separator()
 	menu.add_icon_item(load(Library.ICON_LINK) as Icon, "Website", 4)
-	menu.add_icon_item(load(Library.ICON_SUPPORT) as Icon, "Support GoZen", 5)
-	menu.add_icon_item(load(Library.ICON_HELP) as Icon, "About GoZen", 6)
+	menu.add_icon_item(load(Library.ICON_HELP) as Icon, "About GoZen", 5)
 
 	menu.id_pressed.connect(_on_info_popup_menu_id_pressed)
 
 
 func _on_info_popup_menu_id_pressed(id: int) -> void:
 	match id:
-		0: URL.open("support")
+		0: URL.open("report_bugs")
 		1: URL.open("manual")
 		2: URL.open("tutorials")
 		3: URL.open("discord")
 		# -------------
 		4: URL.open("site")
-		5: URL.open("support")
-		6: PopupManager.open(PopupManager.CREDITS)
+		5: PopupManager.open(PopupManager.CREDITS)
 
 
 func _create_new_workspace() -> void:

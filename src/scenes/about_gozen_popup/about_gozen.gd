@@ -9,7 +9,6 @@ const PROJECT_SETTING_VERSION: String = "application/config/version"
 @export var label_source_code: RichTextLabel
 @export var label_discord: RichTextLabel
 @export var label_youtube: RichTextLabel
-@export var label_support: RichTextLabel
 
 @export var label_made_by: RichTextLabel
 @export var label_license: RichTextLabel
@@ -24,7 +23,6 @@ func _ready() -> void:
 	label_website.text = "[url=URL]URL".replace("URL", ProjectSettings.get_setting("urls/site") as String)
 	label_source_code.text = "[url=URL]URL".replace("URL", ProjectSettings.get_setting("urls/source_code") as String)
 	label_discord.text = "[url=URL]URL".replace("URL", ProjectSettings.get_setting("urls/discord") as String)
-	label_support.text = "[url=URL]URL".replace("URL", ProjectSettings.get_setting("urls/support") as String)
 	label_youtube.text = "[url=URL]URL".replace("URL", ProjectSettings.get_setting("urls/youtube_channel") as String)
 
 	label_license.text = "[center]" + tr("License") + ": [url=%s]GPLv3" % ProjectSettings.get_setting("urls/license")
