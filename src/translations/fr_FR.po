@@ -8,25 +8,23 @@ msgstr ""
 
 #: modules/core_effects/visual/ui/mask_clear_button.gd:10
 msgid "Clear Mask Points"
-msgstr ""
+msgstr "Effacer les points du masque"
 
 #: modules/core_view_panel/view_panel.tscn
 msgid "Go to previous chapter marker."
-msgstr ""
+msgstr "Aller au marqueur de chapitre précédent."
 
 #: modules/core_view_panel/view_panel.tscn
-#, fuzzy
 msgid "Start project playback."
-msgstr "Configuration de la lecture..."
+msgstr "Démarrer la lecture du projet."
 
 #: modules/core_view_panel/view_panel.tscn
-#, fuzzy
 msgid "Pause project playback."
-msgstr "Enregistrer le projet sous..."
+msgstr "Mettre en pause la lecture du projet."
 
 #: modules/core_view_panel/view_panel.tscn
 msgid "Go to next chapter marker."
-msgstr ""
+msgstr "Aller au marqueur de chapitre suivant."
 
 #: modules/core_view_panel/view_panel.gd:84
 msgid "Frame"
@@ -41,17 +39,16 @@ msgid "Save screenshot to project ..."
 msgstr "Enregistrer la capture dans le projet..."
 
 #: modules/core_view_panel/project_view_texture.gd:138
-#, fuzzy
 msgid "Show safe areas"
-msgstr "Afficher la barre de menu"
+msgstr "Afficher les zones de sécurité"
 
 #: modules/core_view_panel/project_view_texture.gd:143
 msgid "Close full screen preview"
-msgstr ""
+msgstr "Fermer l'aperçu plein écran"
 
 #: modules/core_view_panel/project_view_texture.gd:145
 msgid "Open full screen preview"
-msgstr ""
+msgstr "Ouvrir l'aperçu plein écran"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Render settings"
@@ -78,7 +75,6 @@ msgid "Video codec"
 msgstr "Codec vidéo"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid ""
 "Adjusts the CRF (Constant Rate Factor), lowest quality setting is 50, and "
 "highest quality setting is 15.\n"
@@ -86,11 +82,11 @@ msgid ""
 "has an impact on quality and size. Value 0 gives the best,\n"
 "51 worst quality, 18 not really noticable."
 msgstr ""
-"Ajuste le CRF (Facteur de taux constant), le réglage de qualité la plus "
-"basse est 50 et la qualité la plus élevée est 15. Par défaut, il est réglé "
-"sur 18. Utilisé pour ajuster le débit qui a un impact sur la qualité et la "
-"taille. La valeur 0 donne la meilleure, 51 la pire qualité, 18 n'est pas "
-"vraiment perceptible."
+"Ajuste le CRF (Facteur de taux constant), le réglage de qualité le plus "
+"bas est de 50 et la qualité la plus élevée est 15.\n"
+"Par défaut, il est réglé sur 18. Utilisé pour ajuster le débit qui\n"
+"a un impact sur la qualité et la taille. La valeur 0 donne la meilleure,\n"
+"51 la pire qualité, 18 n'est pas vraiment perceptible."
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Quality"
@@ -103,8 +99,8 @@ msgid ""
 "bitrate which has an impact on quality and size. Value 0 gives the best, 51 "
 "worst quality, 18 not really noticable."
 msgstr ""
-"Ajuste le CRF (Facteur de taux constant), le réglage de qualité la plus "
-"basse est 50 et la qualité la plus élevée est 15. Par défaut, il est réglé "
+"Ajuste le CRF (Facteur de taux constant), le réglage de qualité le plus "
+"bas est de 50 et la qualité la plus élevée est 15. Par défaut, il est réglé "
 "sur 18. Utilisé pour ajuster le débit qui a un impact sur la qualité et la "
 "taille. La valeur 0 donne la meilleure, 51 la pire qualité, 18 n'est pas "
 "vraiment perceptible."
@@ -114,17 +110,16 @@ msgid ""
 "Adjusts the speed for encoding H264. Setting the speed too high might have a "
 "negative impact on the final video quality."
 msgstr ""
-"Ajuste la vitesse d'encodage H264. Régler la vitesse trop élevée pourrait "
-"avoir un impact négatif sur la qualité finale de la vidéo."
+"Ajuste la vitesse d'encodage H264. Une vitesse d'encodage trop élevée "
+"peut avoir un impact négatif sur la qualité finale de la vidéo."
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Speed"
 msgstr "Vitesse"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "Advanced video settings"
-msgstr "Paramètres de rendu vidéo"
+msgstr "Paramètres vidéo avancés"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Gop size"
@@ -137,7 +132,7 @@ msgid ""
 "seeking and scrubbing through the video playback. Put to a low value if you "
 "intend to use the rendered video for editing."
 msgstr ""
-"Group Of Pictures. Une valeur plus élevée est meilleure pour la compression, "
+"Groupe d'images (GOP). Une valeur plus élevée est meilleure pour la compression, "
 "mais rendra la navigation dans la vidéo moins précise. Mettez une valeur "
 "basse si vous avez l'intention d'utiliser la vidéo rendue pour le montage."
 
@@ -148,11 +143,15 @@ msgid ""
 "file size but increase encoding time and player decoding requirements. "
 "Values between 2 and 4 are generally recommended."
 msgstr ""
+"Les images B (images prédictives bidirectionnelles) améliorent la compression "
+"et la qualité visuelle en faisant référence aux images passées et futures. "
+"Des valeurs plus élevées réduisent la taille du fichier mais augmentent le "
+"temps d'encodage et les exigences de décodage du lecteur. Des valeurs "
+"comprises entre 2 et 4 sont généralement recommandées."
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "B frames"
-msgstr "Images clés"
+msgstr "Images B"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Render audio settings"
@@ -163,9 +162,8 @@ msgid "Audio codec"
 msgstr "Codec audio"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "Audio channels"
-msgstr "Codec audio"
+msgstr "Canaux audio"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Multi-threading"
@@ -236,9 +234,8 @@ msgstr "Renommer"
 #: modules/core_file_panel/file_panel.gd:139
 #: modules/core_file_panel/file_panel.gd:256
 #: scenes/file_popups/missing_files_popup/missing_files.gd:30
-#, fuzzy
 msgid "Relink file ..."
-msgstr "Rechercher des fichiers..."
+msgstr "Relier le fichier..."
 
 #: modules/core_file_panel/file_panel.gd:140
 msgid "Reload"
@@ -275,7 +272,7 @@ msgstr "Supprimer le proxy"
 
 #: modules/core_file_panel/file_panel.gd:157
 msgid "Replace audio"
-msgstr ""
+msgstr "Remplacer l'audio"
 
 #: modules/core_file_panel/file_panel.gd:158
 msgid "Extract audio to file ..."
@@ -290,13 +287,12 @@ msgid "Duplicate"
 msgstr "Dupliquer"
 
 #: modules/core_file_panel/file_panel.gd:163
-#, fuzzy
 msgid "Extra"
 msgstr "Extras"
 
 #: modules/core_file_panel/file_panel.gd:164
 msgid "File Info"
-msgstr ""
+msgstr "Infos sur le fichier"
 
 #: modules/core_file_panel/file_panel.gd:166
 msgid "Folder options"
@@ -362,9 +358,8 @@ msgid "Remove track"
 msgstr "Supprimer la piste"
 
 #: modules/core_timeline_panel/timeline_panel.gd:311
-#, fuzzy
 msgid "Hide track"
-msgstr "Ajouter une piste"
+msgstr "Masquer la piste"
 
 #: modules/core_timeline_panel/timeline_panel.gd:314
 #: modules/core_timeline_panel/track_controls.gd:85
@@ -372,33 +367,28 @@ msgid "Mute track"
 msgstr "Rendre la piste muette"
 
 #: modules/core_timeline_panel/timeline_panel.gd:318
-#, fuzzy
 msgid "Lock track"
-msgstr "Supprimer la piste"
+msgstr "Verrouiller la piste"
 
 #: modules/core_timeline_panel/timeline_panel.gd:924
 msgid "Delete clip"
 msgstr "Supprimer le clip"
 
 #: modules/core_timeline_panel/timeline_panel.gd:927
-#, fuzzy
 msgid "Split clip on mouse"
-msgstr "Diviser le clip"
+msgstr "Diviser le clip au curseur de la souris"
 
 #: modules/core_timeline_panel/timeline_panel.gd:930
-#, fuzzy
 msgid "Split clip on playhead"
-msgstr "Diviser le clip"
+msgstr "Diviser le clip à la tête de lecture"
 
 #: modules/core_timeline_panel/timeline_panel.gd:935
-#, fuzzy
 msgid "Hide clip"
-msgstr "Diviser le clip"
+msgstr "Masquer le clip"
 
 #: modules/core_timeline_panel/timeline_panel.gd:938
-#, fuzzy
 msgid "Mute clip"
-msgstr "Supprimer le clip"
+msgstr "Couper le son du clip"
 
 #: modules/core_timeline_panel/timeline_panel.gd:942
 #: scenes/change_speed_popup/change_speed.tscn
@@ -411,103 +401,94 @@ msgstr "Réinitialiser la vitesse"
 
 #: modules/core_timeline_panel/timeline_panel.gd:954
 msgid "Clip replace audio"
-msgstr ""
+msgstr "Remplacer l'audio du clip"
 
 #: modules/core_timeline_panel/timeline_panel.gd:956
 msgid "Auto-cut silence"
-msgstr ""
+msgstr "Couper automatiquement les silences"
 
 #: modules/core_timeline_panel/timeline_panel.gd:968
 msgid "Select Audio Track"
-msgstr ""
+msgstr "Sélectionner la piste audio"
 
 #: modules/core_timeline_panel/timeline.tscn
 msgid "Select mode: Used for selecting clips on the timeline."
-msgstr ""
+msgstr "Mode sélection: utilisé pour sélectionner des clips sur la ligne de montage."
 
 #: modules/core_timeline_panel/timeline.tscn
 msgid ""
 "Cut mode: Lets you cut clips on the position of your mouse cursor by "
 "clicking."
 msgstr ""
+"Mode découpe: permet de couper les clips à la position du curseur de la "
+"souris en cliquant."
 
 #: modules/core_timeline_panel/timeline.tscn
-#, fuzzy
 msgid "Turn group selection on/off for clips in the timeline."
-msgstr "Activer ou désactiver l'alignement magnétique."
+msgstr ""
+"Activer/désactiver la sélection groupée pour les clips sur la ligne de montage."
 
 #: modules/core_timeline_panel/timeline.tscn
-#, fuzzy
 msgid "Turn clip snapping on/off when moving clips."
-msgstr "Activer ou désactiver l'alignement magnétique."
+msgstr "Activer/désactiver le magnétisme lors du déplacement des clips."
 
 #: modules/core_timeline_panel/track_controls.gd:66
 msgid "Toggle track visibility"
 msgstr "Basculer la visibilité de la piste"
 
 #: modules/core_effects_panel/effects_panel.gd:54
-#, fuzzy
 msgid "Enable clip audio."
-msgstr "Couper l'audio du clip."
+msgstr "Activer l'audio du clip."
 
 #: modules/core_effects_panel/effects_panel.gd:55
-#, fuzzy
 msgid "Enable clip visuals."
-msgstr "Couper l'audio du clip."
+msgstr "Activer la vidéo du clip."
 
 #: modules/core_effects_panel/effects_panel.gd:61
-#, fuzzy
 msgid "Reset"
-msgstr "Préréglages"
+msgstr "Réinitialiser"
 
 #: modules/core_effects_panel/effects_panel.gd:347
-#, fuzzy
 msgid "Left Transition"
-msgstr "Options de la piste"
+msgstr "Transition gauche"
 
 #: modules/core_effects_panel/effects_panel.gd:366
-#, fuzzy
 msgid "Right Transition"
-msgstr "Options de la piste"
+msgstr "Transition droite"
 
 #: modules/core_effects_panel/effects_panel.gd:425
 msgid "Style"
-msgstr ""
+msgstr "Style"
 
 #: modules/core_effects_panel/effects_panel.gd:460
 #: scenes/welcome/welcome.gd:212
 msgid "Smooth"
-msgstr ""
+msgstr "Lissé"
 
 #: modules/core_effects_panel/effects_panel.gd:551
-#, fuzzy
 msgid "Audio Track"
-msgstr "Ajouter une piste"
+msgstr "Piste audio"
 
 #: modules/core_effects_panel/effects_panel.gd:642
-#, fuzzy
 msgid "Presets & Options."
-msgstr "Options de texte"
+msgstr "Préréglages et options."
 
 #: modules/core_effects_panel/effects_panel.gd:648
 #: modules/core_effects_panel/effects_panel.gd:670
-#, fuzzy
 msgid "Keyframe all parameters."
-msgstr "Réinitialiser le paramètre"
+msgstr "Créer des images clés pour tous les paramètres."
 
 #: modules/core_effects_panel/effects_panel.gd:685
-#, fuzzy
 msgid "Reset to default."
-msgstr "Réinitialiser par défaut"
+msgstr "Réinitialiser aux valeurs par défaut."
 
 #: modules/core_effects_panel/effects_panel.gd:763
 msgid "Previous keyframe."
-msgstr ""
+msgstr "Image clé précédente."
 
 #: modules/core_effects_panel/effects_panel.gd:773
-#, fuzzy
 msgid "Next keyframe."
-msgstr "Images clés"
+msgstr "Image clé suivante."
 
 #: modules/core_effects_panel/effects_panel.gd:1005
 #: modules/core_effects_panel/effects_panel.gd:1736
@@ -516,7 +497,7 @@ msgstr "Par défaut"
 
 #: modules/core_effects_panel/effects_panel.gd:1020
 msgid "Text ..."
-msgstr ""
+msgstr "Texte..."
 
 #: modules/core_effects_panel/effects_panel.gd:1042
 msgid "Left"
@@ -561,97 +542,85 @@ msgstr "Alpha prémultiplié"
 
 #: modules/core_effects_panel/effects_panel.gd:1056
 msgid "Thin"
-msgstr ""
+msgstr "Très fin"
 
 #: modules/core_effects_panel/effects_panel.gd:1057
-#, fuzzy
 msgid "Extra Light"
-msgstr "Hauteur de piste"
+msgstr "Très léger"
 
 #: modules/core_effects_panel/effects_panel.gd:1058
-#, fuzzy
 msgid "Light"
-msgstr "Droite"
+msgstr "Léger"
 
 #: modules/core_effects_panel/effects_panel.gd:1059
 msgid "Regular"
-msgstr ""
+msgstr "Normal"
 
 #: modules/core_effects_panel/effects_panel.gd:1060
 msgid "Medium"
-msgstr ""
+msgstr "Moyen"
 
 #: modules/core_effects_panel/effects_panel.gd:1061
 msgid "Semi Bold"
-msgstr ""
+msgstr "Semi-gras"
 
 #: modules/core_effects_panel/effects_panel.gd:1062
 msgid "Bold"
-msgstr ""
+msgstr "Gras"
 
 #: modules/core_effects_panel/effects_panel.gd:1063
-#, fuzzy
 msgid "Extra Bold"
-msgstr "Extras"
+msgstr "Extra gras"
 
 #: modules/core_effects_panel/effects_panel.gd:1064
 msgid "Black"
-msgstr ""
+msgstr "Noir"
 
 #: modules/core_effects_panel/effects_panel.gd:1226
-#, fuzzy
 msgid "Link X and Y."
-msgstr "Lier X et Y"
+msgstr "Lier X et Y."
 
 #: modules/core_effects_panel/effects_panel.gd:1541
-#, fuzzy
 msgid "Add effects."
-msgstr "Ajouter des effets"
+msgstr "Ajouter des effets."
 
 #: modules/core_effects_panel/effects_panel.gd:1676
 msgid "Presets"
 msgstr "Préréglages"
 
 #: modules/core_effects_panel/effects_panel.gd:1695
-#, fuzzy
 msgid "Reset effect"
-msgstr "Réinitialiser la vitesse"
+msgstr "Réinitialiser l'effet"
 
 #: modules/core_effects_panel/effects_panel.gd:1707
-#, fuzzy
 msgid "Delete effect"
-msgstr "Supprimer le dossier"
+msgstr "Supprimer l'effet"
 
 #: modules/core_effects_panel/effects_panel.gd:1720
-#, fuzzy
 msgid "Save as preset..."
-msgstr "Enregistrer la capture d'écran..."
+msgstr "Enregistrer comme préréglage..."
 
 #: modules/core_effects_panel/effects_panel.gd:1793
 #: scenes/startup_screen/save_profile_preset/save_profile_preset.tscn
-#, fuzzy
 msgid "Save preset"
-msgstr "Enregistrer le projet"
+msgstr "Enregistrer le préréglage"
 
 #: modules/core_effects_panel/effects_panel.gd:1794
-#, fuzzy
 msgid "Preset name"
-msgstr "Réinitialiser le paramètre"
+msgstr "Nom du préréglage"
 
 #: modules/core_effects_panel/effects_panel.tscn
 #: scenes/file_popups/file_info_popup/file_info.gd:53
 msgid "Text"
-msgstr ""
+msgstr "Texte"
 
 #: modules/core_effects_panel/effects_panel.tscn
-#, fuzzy
 msgid "Module"
-msgstr "Gestionnaire de modules"
+msgstr "Module"
 
 #: modules/core_effects_panel/effects_panel.tscn scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Transitions"
-msgstr "Options de la piste"
+msgstr "Transitions"
 
 #: modules/core_effects_panel/effects_panel.tscn
 msgid "Visual effects"
@@ -662,9 +631,8 @@ msgid "Audio effects"
 msgstr "Effets audio"
 
 #: scenes/file_popups/create_folder_popup/create_folder.tscn
-#, fuzzy
 msgid "Folder name:"
-msgstr "Nom du dossier"
+msgstr "Nom du dossier:"
 
 #: scenes/file_popups/create_folder_popup/create_folder.tscn
 #: scenes/file_popups/missing_files_popup/missing_files.tscn
@@ -679,14 +647,12 @@ msgstr "Nom du dossier"
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
 #: scenes/startup_screen/scan_complete_dialog/scan_complete.tscn
 #: scenes/startup_screen/save_profile_preset/save_profile_preset.tscn
-#, fuzzy
 msgid "Close"
 msgstr "Fermer"
 
 #: scenes/file_popups/create_folder_popup/create_folder.tscn
-#, fuzzy
 msgid "Create"
-msgstr "Créer un proxy"
+msgstr "Créer"
 
 #: scenes/file_popups/overwrite_file/overwrite_file.tscn
 msgid "Overwrite file?"
@@ -712,30 +678,31 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: scenes/file_popups/overwrite_file/overwrite_file.tscn
-#, fuzzy
 msgid "Overwrite file"
-msgstr "Écraser le fichier ?"
+msgstr "Écraser le fichier"
 
 #: scenes/file_popups/missing_files_popup/missing_files.tscn
 #: scenes/file_popups/updated_files_popup/updated_files.tscn
-#, fuzzy
 msgid "Missing files"
-msgstr "Ajouter des fichiers"
+msgstr "Fichiers manquants"
 
 #: scenes/file_popups/missing_files_popup/missing_files.tscn
 msgid "The following file(s) are missing and could not be loaded:"
 msgstr ""
+"Les fichiers suivants sont manquants et n'ont pas pu être chargés:"
 
 #: scenes/file_popups/missing_files_popup/missing_files.tscn
 msgid ""
 "Files which did not get re-linked will be kept as missing. You can always "
 "right-click those missing files in the file panel to relink."
 msgstr ""
+"Les fichiers qui n'ont pas été reliés resteront marqués comme manquants. "
+"Vous pouvez toujours faire un clic droit sur ces fichiers dans le panneau des "
+"fichiers pour les associer à nouveau."
 
 #: scenes/file_popups/missing_files_popup/missing_files.gd:23
-#, fuzzy
 msgid "Re-link file"
-msgstr "Rechercher des fichiers..."
+msgstr "Relier le fichier"
 
 #: scenes/file_popups/rename_folder_popup/rename_folder.tscn
 #: scenes/file_popups/rename_file_popup/rename_file.tscn
@@ -747,6 +714,7 @@ msgstr "Confirmer"
 #: scenes/file_popups/updated_files_popup/updated_files.tscn
 msgid "The following files were modified externally and have been reloaded:"
 msgstr ""
+"Les fichiers suivants ont été modifiés en externe et ont été rechargés:"
 
 #: scenes/file_popups/rename_file_popup/rename_file.tscn
 msgid "Rename file"
@@ -764,7 +732,7 @@ msgstr "Type"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Size"
-msgstr ""
+msgstr "Taille"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/startup_screen/startup_screen.tscn
@@ -777,60 +745,55 @@ msgid "Framerate"
 msgstr "Fréquence d'images"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
-#, fuzzy
 msgid "Duration"
-msgstr "Durées par défaut"
+msgstr "Durée"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/file_popups/file_info_popup/file_info.gd:50
 #: scenes/settings_menu/settings_menu.gd:537
-#, fuzzy
 msgid "Video"
-msgstr "Codec vidéo"
+msgstr "Vidéo"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Codec"
-msgstr ""
+msgstr "Codec"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Color space"
-msgstr ""
+msgstr "Espace colorimétrique"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Format"
-msgstr ""
+msgstr "Format"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Aspect ratio"
-msgstr ""
+msgstr "Proportions"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Bitrate"
-msgstr ""
+msgstr "Débit binaire"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
-#, fuzzy
 msgid "B-frames"
-msgstr "Images clés"
+msgstr "Images B"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Scanning"
-msgstr ""
+msgstr "Balayage"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/file_popups/file_info_popup/file_info.gd:51
-#, fuzzy
 msgid "Audio"
-msgstr "Codec audio"
+msgstr "Audio"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Streams"
-msgstr ""
+msgstr "Flux"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
-#, fuzzy
 msgid "Match project to file"
-msgstr "Fichier de projet GoZen"
+msgstr "Adapter le projet au fichier"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/add_effects_popup/add_effects_popup.tscn
@@ -841,55 +804,56 @@ msgstr "Fermer"
 
 #: scenes/file_popups/file_info_popup/file_info.gd:52
 msgid "Image"
-msgstr ""
+msgstr "Image"
 
 #: scenes/file_popups/file_info_popup/file_info.gd:54
 msgid "Color"
-msgstr ""
+msgstr "Couleur"
 
 #: scenes/file_popups/file_info_popup/file_info.gd:55
 msgid "PCK"
-msgstr ""
+msgstr "PCK"
 
 #: scenes/file_popups/file_info_popup/file_info.gd:61
 msgid "In memory"
-msgstr ""
+msgstr "En mémoire"
 
 #: scenes/file_popups/file_info_popup/file_info.gd:91
 #: scenes/file_popups/file_info_popup/file_info.gd:106
 #: scenes/file_popups/file_info_popup/file_info.gd:122
 #: scenes/file_popups/file_info_popup/file_info.gd:132
 msgid "Unknown"
-msgstr ""
+msgstr "Inconnu"
 
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
-#, fuzzy
 msgid "Files Updated & Shortened"
-msgstr "Fichiers déposés"
+msgstr "Fichiers mis à jour et raccourcis"
 
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
 msgid "The following files were modified externally and are now shorter:"
 msgstr ""
+"Les fichiers suivants ont été modifiés en externe et sont maintenant plus "
+"courts:"
 
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
 msgid ""
 "Some clips on the timeline exceed the new file lengths. Do you want to "
 "automatically shorten these clips to fit?"
 msgstr ""
+"Certains clips sur la ligne de montage dépassent la nouvelle durée des fichiers. "
+"Voulez-vous raccourcir automatiquement ces clips pour les ajuster ?"
 
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
-#, fuzzy
 msgid "Shorten clips"
-msgstr "Supprimer le clip"
+msgstr "Raccourcir les clips"
 
 #: scenes/editor/delete_workspace_popup/delete_workspace_popup.tscn
-#, fuzzy
 msgid "Delete workspace"
-msgstr "Supprimer le dossier"
+msgstr "Supprimer l'espace de travail"
 
 #: scenes/editor/delete_workspace_popup/delete_workspace_popup.tscn
 msgid "Are you sure you want to delete the workspace '%s'?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer l'espace de travail « %s » ?"
 
 #: scenes/editor/editor.gd:256 scenes/startup_screen/startup_screen.tscn
 #: scripts/autoloads/project.gd:52
@@ -905,9 +869,8 @@ msgid "Save project as ..."
 msgstr "Enregistrer le projet sous..."
 
 #: scenes/editor/editor.gd:261
-#, fuzzy
 msgid "Archive project ..."
-msgstr "Enregistrer le projet sous..."
+msgstr "Archiver le projet..."
 
 #: scenes/editor/editor.gd:263 scenes/startup_screen/startup_screen.tscn
 #: scenes/startup_screen/startup_screen.gd:371 scripts/autoloads/project.gd:290
@@ -920,11 +883,11 @@ msgstr "Projets récents"
 
 #: scenes/editor/editor.gd:272
 msgid "Splash screen"
-msgstr ""
+msgstr "Écran de démarrage"
 
 #: scenes/editor/editor.gd:273
 msgid "Welcome screen"
-msgstr ""
+msgstr "Écran d'accueil"
 
 #: scenes/editor/editor.gd:275 scenes/settings_menu/settings_menu.gd:114
 msgid "Project settings"
@@ -950,15 +913,15 @@ msgstr "Enregistrer l'espace de travail"
 #: scenes/editor/editor.gd:374
 #: scenes/editor/new_workspace_popup/new_workspace_popup.tscn
 msgid "New workspace"
-msgstr "Nouvelle espace de travail"
+msgstr "Nouvel espace de travail"
 
 #: scenes/editor/editor.gd:376 scenes/editor/editor.gd:394
 msgid "Show panel titles"
-msgstr "Afficher les titres des paneaux"
+msgstr "Afficher les titres des panneaux"
 
 #: scenes/editor/editor.gd:377
 msgid "Panels"
-msgstr "Paneaux"
+msgstr "Panneaux"
 
 #: scenes/editor/editor.gd:392
 msgid "Hide panel titles"
@@ -1005,37 +968,32 @@ msgid "About GoZen"
 msgstr "À propos de GoZen"
 
 #: scenes/editor/editor.gd:527
-#, fuzzy
 msgid "Move Left"
-msgstr "Gauche"
+msgstr "Déplacer vers la gauche"
 
 #: scenes/editor/editor.gd:530
-#, fuzzy
 msgid "Move Right"
-msgstr "Droite"
+msgstr "Déplacer vers la droite"
 
 #: scenes/editor/new_workspace_popup/new_workspace_popup.tscn
-#, fuzzy
 msgid "Workspace name:"
-msgstr "Nom de l'espace de travail"
+msgstr "Nom de l'espace de travail:"
 
 #: scenes/welcome/welcome.tscn scenes/startup_screen/startup_screen.tscn
 msgid "Welcome"
-msgstr ""
+msgstr "Bienvenue"
 
 #: scenes/welcome/welcome.tscn
 msgid "Basics"
-msgstr ""
+msgstr "Bases"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Editing"
-msgstr "Paramètres de l'éditeur"
+msgstr "Montage"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Effects"
-msgstr "Ajouter des effets"
+msgstr "Effets"
 
 #: scenes/welcome/welcome.tscn scripts/autoloads/render_manager.gd:210
 #: scripts/autoloads/render_manager.gd:217
@@ -1044,7 +1002,7 @@ msgstr "Rendu en cours"
 
 #: scenes/welcome/welcome.tscn
 msgid "Modules"
-msgstr ""
+msgstr "Modules"
 
 #: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:415
 #: scenes/settings_menu/settings_menu.gd:416
@@ -1053,7 +1011,7 @@ msgstr "Extras"
 
 #: scenes/welcome/welcome.tscn
 msgid "Welcome to GoZen!"
-msgstr ""
+msgstr "Bienvenue dans GoZen !"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1062,6 +1020,10 @@ msgid ""
 "beginners and semi-professionals designed to make editing simple, fast, and "
 "stress-free."
 msgstr ""
+"Merci d'utiliser GoZen et d'essayer cet éditeur vidéo. GoZen est un éditeur "
+"vidéo minimaliste, moderne, open-source, personnalisable et modulaire pour "
+"débutants et semi-professionnels, conçu pour rendre le montage simple, "
+"rapide et sans stress."
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1070,6 +1032,10 @@ msgid ""
 "don't. Use the buttons on the left of the screen to navigate the "
 "introduction to using this video editor."
 msgstr ""
+"GoZen ne cherche pas à rivaliser avec les plus grands éditeurs vidéo: notre "
+"objectif est de fournir un éditeur vidéo de base solide avec tout ce dont "
+"vous avez besoin et rien de superflu. Utilisez les boutons situés à gauche "
+"de l'écran pour parcourir la présentation de l'éditeur."
 
 #: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:212
 msgid "Language"
@@ -1077,25 +1043,23 @@ msgstr "Langue"
 
 #: scenes/welcome/welcome.tscn
 msgid "Theme"
-msgstr ""
+msgstr "Thème"
 
 #: scenes/welcome/welcome.tscn
 msgid "GUI Scale"
-msgstr ""
+msgstr "Échelle de l'interface"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "YouTube tutorials"
-msgstr "Tutoriels"
+msgstr "Tutoriels YouTube"
 
 #: scenes/welcome/welcome.tscn
 msgid "Source Code"
-msgstr ""
+msgstr "Code source"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Adding files"
-msgstr "Ajouter des fichiers"
+msgstr "Ajout de fichiers"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1104,10 +1068,15 @@ msgid ""
 "option to add files. Besides that, on top of the file panel there's a button "
 "which you can press to add files."
 msgstr ""
+"Vous pouvez ajouter des fichiers en les glissant-déposant depuis votre "
+"gestionnaire de fichiers dans l'éditeur. Faire un clic droit dans un espace "
+"vide ou sur un dossier du panneau des fichiers offre également l'option "
+"d'ajouter des fichiers. De plus, un bouton situé en haut du panneau des "
+"fichiers vous permet également d'en ajouter."
 
 #: scenes/welcome/welcome.tscn
 msgid "The timeline"
-msgstr ""
+msgstr "La ligne de montage"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1116,6 +1085,10 @@ msgid ""
 "timeline more compact and gives your more freedom to place your clips "
 "wherever you want."
 msgstr ""
+"La ligne de montage de GoZen est assez différente de celle des autres éditeurs "
+"vidéo, dans le sens où les clips audio et visuels peuvent être placés sur "
+"les mêmes pistes. Cela permet de garder une ligne de montage plus compacte et vous "
+"offre davantage de liberté pour placer vos clips où vous le souhaitez."
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1123,34 +1096,37 @@ msgid ""
 "the visuals from the audio. This is possible by holding CTRL/SHIFT when "
 "dragging in video files to the timeline."
 msgstr ""
+"Certaines personnes préfèrent séparer leurs vidéos en 2 clips, en isolant "
+"la vidéo de l'audio. Cela est possible en maintenant CTRL/MAJ enfoncé lors "
+"du glissement de fichiers vidéo sur la ligne de montage."
 
 #: scenes/welcome/welcome.tscn
 msgid "Audio Clip Example"
-msgstr ""
+msgstr "Exemple de clip audio"
 
 #: scenes/welcome/welcome.tscn
 msgid "Color Clip Example"
-msgstr ""
+msgstr "Exemple de clip de couleur"
 
 #: scenes/welcome/welcome.tscn
 msgid "Image Clip Example"
-msgstr ""
+msgstr "Exemple de clip d'image"
 
 #: scenes/welcome/welcome.tscn
 msgid "PCK Clip Example"
-msgstr ""
+msgstr "Exemple de clip PCK"
 
 #: scenes/welcome/welcome.tscn
 msgid "Text Clip Example"
-msgstr ""
+msgstr "Exemple de clip de texte"
 
 #: scenes/welcome/welcome.tscn
 msgid "Video Clip Example"
-msgstr ""
+msgstr "Exemple de clip vidéo"
 
 #: scenes/welcome/welcome.tscn
 msgid "Default video dragging behaviour:"
-msgstr ""
+msgstr "Comportement par défaut lors du glissement de vidéo:"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1159,11 +1135,14 @@ msgid ""
 "be done by holding CTRL and making the tracks bigger/smaller can be done "
 "with CTRL+SHIFT. "
 msgstr ""
+"Le déplacement sur la ligne de montage s'effectue avec la molette de la souris, et "
+"le défilement entre les pistes en maintenant MAJ. Pour zoomer sur la "
+"ligne de montage, maintenez CTRL ; vous pouvez agrandir ou réduire la taille des "
+"pistes avec CTRL+MAJ. "
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Editing in GoZen"
-msgstr "À propos de GoZen"
+msgstr "Le montage dans GoZen"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1173,10 +1152,15 @@ msgid ""
 "possible to keep your left hand on your keyboard and right hand on your "
 "mouse. Ergonomics are important."
 msgstr ""
+"Le montage est intuitif grâce à une interface et des fonctionnalités "
+"minimalistes. Il existe quelques raccourcis utiles pour un "
+"montage plus confortable, et la disposition par défaut de ces raccourcis "
+"vous permet de garder la main gauche sur le clavier et la main droite sur "
+"la souris. L'ergonomie est essentielle."
 
 #: scenes/welcome/welcome.tscn
 msgid "Timeline mode shortcuts"
-msgstr ""
+msgstr "Raccourcis des modes de la ligne de montage"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1184,82 +1168,83 @@ msgid ""
 "clips, the other mode cut clips where you clip. These modes can be toggled "
 "with shortcuts and is a fast way to edit your videos."
 msgstr ""
+"GoZen propose 2 modes de ligne de montage. Le mode par défaut sert à sélectionner/"
+"déplacer/... les clips, l'autre mode coupe les clips là où vous cliquez. Vous "
+"pouvez basculer entre ces modes à l'aide de raccourcis, ce qui permet un "
+"montage rapide de vos vidéos."
 
 #: scenes/welcome/welcome.tscn
 msgid "Select mode:"
-msgstr ""
+msgstr "Mode sélection:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Cut mode:"
-msgstr ""
+msgstr "Mode découpe:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Timeline shortcuts"
-msgstr ""
+msgstr "Raccourcis de la ligne de montage"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
 "Everybody has their own editing style and shortcuts, feel free to adjust the "
 "shortcuts here. You can always change these later on in the settings menu."
 msgstr ""
+"Chacun a son propre style de montage et ses raccourcis, n'hésitez pas à les "
+"ajuster ici. Vous pourrez toujours les modifier plus tard dans le menu des "
+"paramètres."
 
 #: scenes/welcome/welcome.tscn
 msgid "Cut at playhead:"
-msgstr ""
+msgstr "Couper à la tête de lecture:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Delete:"
-msgstr "Supprimer"
+msgstr "Supprimer:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Cut at cursor:"
-msgstr ""
+msgstr "Couper au curseur:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Ripple delete:"
-msgstr "Supprimer"
+msgstr "Suppression avec décalage:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Remove empty space on cursor position."
-msgstr "Supprimer l'espace vide"
+msgstr "Supprimer l'espace vide à la position du curseur."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Remove empty space:"
-msgstr "Supprimer l'espace vide"
+msgstr "Supprimer l'espace vide:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Open marker popup:"
-msgstr ""
+msgstr "Ouvrir la fenêtre des marqueurs:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Duplicate clip:"
-msgstr "Dupliquer"
+msgstr "Dupliquer le clip:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Add effects popup:"
-msgstr "Ajouter des effets"
+msgstr "Fenêtre d'ajout d'effets:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Trim to start:"
-msgstr ""
+msgstr "Ajuster le début:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Focus on playhead:"
-msgstr ""
+msgstr "Centrer sur la tête de lecture:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Trim to end:"
-msgstr ""
+msgstr "Ajuster à la fin:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Focus on timeline:"
-msgstr ""
+msgstr "Activer la ligne de montage:"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1270,6 +1255,12 @@ msgid ""
 "button to add effects, or use the shortcut CTRL+A to show the popup for "
 "adding effects."
 msgstr ""
+"Les effets et les transitions dans GoZen sont très similaires et leurs "
+"paramètres sont accessibles depuis le panneau des effets. Il en va de même "
+"pour les réglages des clips de texte et de couleur. Sélectionner un clip sur "
+"la ligne de montage affiche ses effets dans le panneau des effets, d'où vous pouvez "
+"cliquer sur le bouton d'ajout d'effets ou utiliser le raccourci CTRL+A pour "
+"ouvrir la fenêtre correspondante."
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1278,9 +1269,12 @@ msgid ""
 "audio, we have 2 sets of handles: Top ones are for audio and the bottom ones "
 "are for visual fades."
 msgstr ""
+"Les transitions peuvent être créées en survolant les coins des clips, ce qui "
+"fait apparaître les poignées de fondu. Comme les clips peuvent contenir à la "
+"fois de l'image et du son, il existe 2 paires de poignées: celles du haut pour "
+"l'audio et celles du bas pour les fondus visuels."
 
 #: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:401
-#, fuzzy
 msgid "Keyframes"
 msgstr "Images clés"
 
@@ -1291,16 +1285,19 @@ msgid ""
 "on time stamps where no keyframe has been made yet. Holding shift changes "
 "the keyframe type from Linear to Smooth."
 msgstr ""
+"L'ajout d'images clés s'effectue en cliquant sur le losange à côté d'une "
+"propriété. Une fois qu'une propriété possède une image clé, elle enregistre "
+"automatiquement les modifications apportées aux positions temporelles où "
+"aucune image clé n'a encore été créée. Maintenir Maj fait passer le type "
+"d'image clé de Linéaire à Lissé."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Default keyframe type:"
-msgstr "Profils de rendu personnalisés"
+msgstr "Type d'image clé par défaut:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Text & Colors"
-msgstr "Options de texte"
+msgstr "Texte et couleurs"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1309,11 +1306,14 @@ msgid ""
 "have to be created inside of the editor by pressing the file icon in the top "
 "right corner of the file panel."
 msgstr ""
+"Nous gérons les fichiers vidéo, pck, audio et image. Ce sont les fichiers "
+"que vous pouvez glisser-déposer dans l'éditeur. Pour le texte et les couleurs, "
+"ce sont également des fichiers, mais ils doivent être créés dans l'éditeur "
+"en cliquant sur l'icône de fichier en haut à droite du panneau des fichiers."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Rendering your videos"
-msgstr "Paramètres de rendu vidéo"
+msgstr "Rendu de vos vidéos"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1321,29 +1321,33 @@ msgid ""
 "rendering them. There are pre-made render profiles to choose from, but you "
 "can of course make your own as well."
 msgstr ""
+"L'aspect le plus important, au-delà du montage des vidéos, est sans doute "
+"leur rendu. Des profils de rendu prédéfinis sont disponibles, mais vous "
+"pouvez bien entendu créer les vôtres."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Default render profile:"
-msgstr "Profils de rendu personnalisés"
+msgstr "Profil de rendu par défaut:"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
 "Want to just render out a region? Use the region shortcuts to easily define "
 "which part of your project which you want to export."
 msgstr ""
+"Vous souhaitez exporter seulement une zone ? Utilisez les raccourcis de "
+"région pour définir facilement la partie de votre projet à exporter."
 
 #: scenes/welcome/welcome.tscn
 msgid "Region in:"
-msgstr ""
+msgstr "Début de région:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Region out:"
-msgstr ""
+msgstr "Fin de région:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Quick note for rendering with custom settings"
-msgstr ""
+msgstr "Remarque sur le rendu avec des paramètres personnalisés"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1353,11 +1357,15 @@ msgid ""
 "stick with the default render profiles to avoid long rendering times and/or "
 "giant file sizes."
 msgstr ""
+"La vitesse de rendu peut varier considérablement selon les paramètres "
+"sélectionnés. Nous vous donnons accès aux paramètres de rendu pour exporter la "
+"vidéo comme vous le souhaitez, mais si vous n'êtes pas certain de l'impact de "
+"ces valeurs, il est recommandé de conserver les profils par défaut afin "
+"d'éviter des durées de rendu excessives et/ou des fichiers très volumineux."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Modularity in GoZen"
-msgstr "À propos de GoZen"
+msgstr "Modularité dans GoZen"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1366,31 +1374,33 @@ msgid ""
 "there's a specific transition you want for your project? You can do that "
 "with modules."
 msgstr ""
+"Les modules permettent d'étendre l'éditeur. Vous souhaitez des panneaux "
+"supplémentaires pour ajouter des fonctionnalités, de superbes effets ou une "
+"transition spécifique pour votre projet ? C'est possible avec les modules."
 
 #: scenes/welcome/welcome.tscn
 msgid ""
 "To add modules you can click \"Preferences\" in the menu bar and click on "
 "\"Module manager\"."
 msgstr ""
+"Pour ajouter des modules, vous pouvez cliquer sur « Préférences » dans la "
+"barre de menu, puis sur « Gestionnaire de modules »."
 
 #: scenes/welcome/welcome.tscn
 msgid "Coming soon!"
-msgstr ""
+msgstr "Bientôt disponible !"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "GoZen Modules"
-msgstr "Gestionnaire de modules"
+msgstr "Modules GoZen"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Steam workshop"
-msgstr "Enregistrer l'espace de travail"
+msgstr "Steam Workshop"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Custom PCK files"
-msgstr "Profils de rendu personnalisés"
+msgstr "Fichiers PCK personnalisés"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1399,15 +1409,19 @@ msgid ""
 "which can be used directly in the timeline for visuals. For the creation of "
 "these files a bit of development is needed inside of custom Godot project."
 msgstr ""
+"Les modules modifient l'éditeur et lui ajoutent des fonctionnalités, mais il "
+"existe un autre type de module appelé fichiers pck. Il s'agit de scènes Godot "
+"qui peuvent être utilisées directement sur la ligne de montage pour le contenu "
+"visuel. La création de ces fichiers nécessite un travail de développement au "
+"sein d'un projet Godot personnalisé."
 
 #: scenes/welcome/welcome.tscn
 msgid "PCK Module Project"
-msgstr ""
+msgstr "Projet de module PCK"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Workspaces"
-msgstr "Nom de l'espace de travail"
+msgstr "Espaces de travail"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1419,26 +1433,35 @@ msgid ""
 "To quickly switch between workspaces you can use CTRL+Enter, this will move "
 "you to the next workspace."
 msgstr ""
+"Les espaces de travail dans GoZen correspondent aux différents onglets "
+"accessibles dans le coin supérieur droit. Ceux par défaut sont « Montage » "
+"et « Rendu ». Vous pouvez en créer d'autres et, via l'onglet « Affichage » de "
+"la barre de menu, choisir les panneaux visibles dans chaque onglet et créer "
+"de nouveaux espaces de travail.\n"
+"\n"
+"Pour basculer rapidement d'un espace de travail à l'autre, vous pouvez "
+"utiliser CTRL+Entrée, ce qui vous amènera au suivant."
 
 #: scenes/welcome/welcome.tscn
 msgid ""
 "Here are a few common settings you might want to adjust before you get "
 "started. You can always change these later in Preferences -> Editor Settings."
 msgstr ""
+"Voici quelques paramètres courants que vous souhaiterez peut-être ajuster "
+"avant de commencer. Vous pourrez toujours les modifier ultérieurement dans "
+"Préférences -> Paramètres de l'éditeur."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Auto save:"
-msgstr "Sauvegarde automatique"
+msgstr "Sauvegarde automatique:"
 
 #: scenes/welcome/welcome.tscn
 msgid "Empty space click action:"
-msgstr ""
+msgstr "Action lors du clic dans l'espace vide:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Default project settings"
-msgstr "Paramètres du projet"
+msgstr "Paramètres de projet par défaut"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1447,28 +1470,30 @@ msgid ""
 "outside of the start screen or by clicking the 2 icons next to the \"Create "
 "project\" button on the start screen."
 msgstr ""
+"GoZen offre la possibilité de créer rapidement de nouveaux projets qui "
+"utiliseront les paramètres suivants. La création rapide de projets peut se "
+"faire en cliquant en dehors de l'écran d'accueil ou en cliquant sur les 2 "
+"icônes à côté du bouton « Créer un projet » sur l'écran d'accueil."
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Resolution:"
-msgstr "Résolution"
+msgstr "Résolution:"
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Framerate:"
-msgstr "Fréquence d'images"
+msgstr "Fréquence d'images:"
 
 #: scenes/welcome/welcome.gd:56
 msgid "Full version only!"
-msgstr ""
+msgstr "Version complète uniquement !"
 
 #: scenes/welcome/welcome.gd:170
 msgid "Keep Audio & Video linked"
-msgstr ""
+msgstr "Garder l'audio et la vidéo liés"
 
 #: scenes/welcome/welcome.gd:172
 msgid "Always split Audio to a new track"
-msgstr ""
+msgstr "Toujours séparer l'audio sur une nouvelle piste"
 
 #: scenes/welcome/welcome.gd:189 scenes/settings_menu/settings_menu.gd:907
 msgid "Press any key..."
@@ -1476,15 +1501,15 @@ msgstr "Appuyez sur une touche..."
 
 #: scenes/welcome/welcome.gd:211
 msgid "Linear"
-msgstr ""
+msgstr "Linéaire"
 
 #: scenes/welcome/welcome.gd:239
 msgid "Seek Playhead"
-msgstr ""
+msgstr "Déplacer la tête de lecture"
 
 #: scenes/welcome/welcome.gd:241
 msgid "Clear Selection"
-msgstr ""
+msgstr "Effacer la sélection"
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Add effect"
@@ -1492,7 +1517,7 @@ msgstr "Ajouter un effet"
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Enter effect name ..."
-msgstr ""
+msgstr "Saisir le nom de l'effet..."
 
 #: scenes/color_popup/color_popup.tscn
 msgid "Add color file"
@@ -1508,74 +1533,65 @@ msgstr "Aucun"
 
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 msgid "Replace Audio"
-msgstr ""
+msgstr "Remplacer l'audio"
 
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Waveform modifier"
-msgstr "Amplificateur d'onde"
+msgstr "Modificateur de forme d'onde"
 
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 msgid "Audio offset"
 msgstr "Décalage audio"
 
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
-#, fuzzy
 msgid "Auto align"
-msgstr "Sauvegarde automatique"
+msgstr "Alignement automatique"
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
 msgid "Update existing clips?"
 msgstr "Mettre à jour les clips existants ?"
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
-#, fuzzy
 msgid ""
 "This file is currently used by '%d' clip(s).\\nDo you want to apply the "
 "audio replacement to all existing clips?"
 msgstr ""
 "Ce fichier est actuellement utilisé par '%d' clip(s).\n"
-"Voulez-vous appliquer les modifications de remplacement audio à tous les "
-"clips existants ?"
+"Voulez-vous appliquer le remplacement audio à tous les clips existants ?"
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
-#, fuzzy
 msgid "Apply to file only"
-msgstr "Appliquer uniquement au fichier"
+msgstr "Appliquer au fichier uniquement"
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
-#, fuzzy
 msgid "Apply to all"
 msgstr "Appliquer à tous"
 
 #: scenes/module_manager/module_manager.tscn
-#, fuzzy
 msgid "Module Manager"
 msgstr "Gestionnaire de modules"
 
 #: scenes/module_manager/module_manager.tscn
 msgid "Install Module"
-msgstr ""
+msgstr "Installer le module"
 
 #: scenes/jump_to_frame_popup/jump_to_frame.tscn
 msgid "Jump to frame"
 msgstr "Aller à l'image"
 
 #: scenes/jump_to_frame_popup/jump_to_frame.tscn
-#, fuzzy
 msgid "Frame nr:"
-msgstr "Fréquence d'images"
+msgstr "N° d'image:"
 
 #: scenes/jump_to_frame_popup/jump_to_frame.tscn
 #: scenes/change_speed_popup/change_speed.tscn
 msgid "Apply"
-msgstr ""
+msgstr "Appliquer"
 
 #: scenes/change_speed_popup/change_speed.tscn
-#, fuzzy
 msgid "Speed:"
-msgstr "Vitesse"
+msgstr "Vitesse:"
 
 #: scenes/duplication_error_popup/duplication_error.tscn
 msgid "Duplication failed"
@@ -1589,7 +1605,7 @@ msgstr "Impossible de dupliquer %d clip(s) en raison d'un manque d'espace."
 #: scenes/progress_overlay/progress_overlay.gd:74
 #: scenes/progress_overlay/progress_overlay.gd:77
 msgid "Estimated time"
-msgstr ""
+msgstr "Temps estimé"
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:224
@@ -1608,15 +1624,15 @@ msgstr "Version"
 
 #: scenes/about_gozen_popup/about_gozen.tscn
 msgid "Source code"
-msgstr ""
+msgstr "Code source"
 
 #: scenes/about_gozen_popup/about_gozen.tscn
 msgid "YouTube"
-msgstr ""
+msgstr "YouTube"
 
 #: scenes/about_gozen_popup/about_gozen.gd:28
 msgid "License"
-msgstr ""
+msgstr "Licence"
 
 #: scenes/settings_menu/settings_menu.gd:47
 #: scenes/settings_menu/settings_menu.tscn
@@ -1629,17 +1645,16 @@ msgid "Close settings"
 msgstr "Fermer les paramètres"
 
 #: scenes/settings_menu/settings_menu.gd:112
-#, fuzzy
 msgid "Editor"
-msgstr "Thème de l'éditeur"
+msgstr "Éditeur"
 
 #: scenes/settings_menu/settings_menu.gd:118
 msgid "Core modules"
-msgstr ""
+msgstr "Modules principaux"
 
 #: scenes/settings_menu/settings_menu.gd:121
 msgid "User modules"
-msgstr ""
+msgstr "Modules utilisateur"
 
 #: scenes/settings_menu/settings_menu.gd:190
 msgid "Marker one"
@@ -1684,7 +1699,7 @@ msgstr "Afficher la barre de menu"
 
 #: scenes/settings_menu/settings_menu.gd:245
 msgid "Show safe areas on startup"
-msgstr ""
+msgstr "Afficher les zones de sécurité au démarrage"
 
 #: scenes/settings_menu/settings_menu.gd:250
 msgid "Audio waveforms"
@@ -1730,7 +1745,7 @@ msgid ""
 msgstr ""
 "Définit le nombre d'images que le décodeur lira séquentiellement à l'avance "
 "au lieu d'effectuer une recherche complète. Des valeurs plus élevées "
-"empêchent les lags lors des sauts courts mais utilisent plus de CPU."
+"empêchent les ralentissements lors des sauts courts mais utilisent plus de CPU."
 
 #: scenes/settings_menu/settings_menu.gd:286
 msgid "Video Cache Size"
@@ -1746,15 +1761,17 @@ msgstr ""
 "augmentent l'utilisation de la mémoire."
 
 #: scenes/settings_menu/settings_menu.gd:298
-#, fuzzy
 msgid "Decoder Threads"
-msgstr "Threads"
+msgstr "Threads de décodage"
 
 #: scenes/settings_menu/settings_menu.gd:305
 msgid ""
 "Number of threads to use for video decoding. 0 means automatic, putting this "
 "too high makes memory usage too high which can cause your system to crash."
 msgstr ""
+"Nombre de threads à utiliser pour le décodage vidéo. 0 correspond à "
+"automatique ; une valeur trop élevée augmentera excessivement l'utilisation "
+"de la mémoire, ce qui peut provoquer un plantage du système."
 
 #: scenes/settings_menu/settings_menu.gd:306
 msgid "Use proxies"
@@ -1776,26 +1793,23 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:320
 msgid "Cache Management"
-msgstr ""
+msgstr "Gestion du cache"
 
 #: scenes/settings_menu/settings_menu.gd:321
-#, fuzzy
 msgid "Waveforms"
-msgstr "Style d'onde"
+msgstr "Formes d'onde"
 
 #: scenes/settings_menu/settings_menu.gd:323
 msgid "File thumbnails"
-msgstr ""
+msgstr "Miniatures des fichiers"
 
 #: scenes/settings_menu/settings_menu.gd:325
-#, fuzzy
 msgid "Project thumbnails"
-msgstr "Paramètres du projet"
+msgstr "Miniatures des projets"
 
 #: scenes/settings_menu/settings_menu.gd:327
-#, fuzzy
 msgid "Proxies"
-msgstr "Utiliser des proxys"
+msgstr "Proxys"
 
 #: scenes/settings_menu/settings_menu.gd:332
 #: scenes/settings_menu/settings_menu.gd:553
@@ -1808,18 +1822,16 @@ msgid "Defaults"
 msgstr "Valeurs par défaut"
 
 #: scenes/settings_menu/settings_menu.gd:335
-#, fuzzy
 msgid "Paths"
-msgstr "Chemin"
+msgstr "Chemins"
 
 #: scenes/settings_menu/settings_menu.gd:336
-#, fuzzy
 msgid "Default project path"
-msgstr "Sélectionner le chemin de sauvegarde du projet"
+msgstr "Chemin de projet par défaut"
 
 #: scenes/settings_menu/settings_menu.gd:341
 msgid "The default directory where new projects are created."
-msgstr ""
+msgstr "Le répertoire par défaut où les nouveaux projets sont créés."
 
 #: scenes/settings_menu/settings_menu.gd:342
 msgid "Default durations"
@@ -1855,32 +1867,27 @@ msgstr "Fréquence d'images du projet"
 
 #: scenes/settings_menu/settings_menu.gd:378
 msgid "Quick create project options"
-msgstr ""
+msgstr "Options de création rapide de projet"
 
 #: scenes/settings_menu/settings_menu.gd:379
-#, fuzzy
 msgid "Horizontal resolution"
-msgstr "Résolution du projet"
+msgstr "Résolution horizontale"
 
 #: scenes/settings_menu/settings_menu.gd:384
-#, fuzzy
 msgid "Horizontal framerate"
-msgstr "Fréquence d'images du projet"
+msgstr "Fréquence d'images horizontale"
 
 #: scenes/settings_menu/settings_menu.gd:390
-#, fuzzy
 msgid "Vertical resolution"
-msgstr "Résolution du projet"
+msgstr "Résolution verticale"
 
 #: scenes/settings_menu/settings_menu.gd:395
-#, fuzzy
 msgid "Vertical framerate"
-msgstr "Fréquence d'images du projet"
+msgstr "Fréquence d'images verticale"
 
 #: scenes/settings_menu/settings_menu.gd:402
-#, fuzzy
 msgid "Default keyframe type"
-msgstr "Images clés"
+msgstr "Type d'image clé par défaut"
 
 #: scenes/settings_menu/settings_menu.gd:411
 msgid "Performance"
@@ -1892,17 +1899,15 @@ msgstr "Sauvegarde automatique"
 
 #: scenes/settings_menu/settings_menu.gd:425
 msgid "Cache"
-msgstr ""
+msgstr "Cache"
 
 #: scenes/settings_menu/settings_menu.gd:538
-#, fuzzy
 msgid "Video settings"
-msgstr "Paramètres de rendu"
+msgstr "Paramètres vidéo"
 
 #: scenes/settings_menu/settings_menu.gd:551
-#, fuzzy
 msgid "Project framerate (fps)."
-msgstr "Fréquence d'images du projet"
+msgstr "Fréquence d'images du projet (ips)."
 
 #: scenes/settings_menu/settings_menu.gd:555
 #: scenes/startup_screen/startup_screen.tscn
@@ -1919,92 +1924,83 @@ msgstr "Réinitialiser par défaut"
 
 #: scenes/settings_menu/settings_menu.gd:830
 msgid "Clear"
-msgstr ""
+msgstr "Effacer"
 
 #: scenes/settings_menu/settings_menu.gd:879
-#, fuzzy
 msgid "Waveforms cache cleared."
-msgstr "Amplificateur d'onde"
+msgstr "Cache des formes d'onde effacé."
 
 #: scenes/settings_menu/settings_menu.gd:884
-#, fuzzy
 msgid "File thumbnails cache cleared."
-msgstr "Amplificateur d'onde"
+msgstr "Cache des miniatures de fichiers effacé."
 
 #: scenes/settings_menu/settings_menu.gd:889
-#, fuzzy
 msgid "Project thumbnails cache cleared."
-msgstr "Amplificateur d'onde"
+msgstr "Cache des miniatures de projets effacé."
 
 #: scenes/settings_menu/settings_menu.gd:894
-#, fuzzy
 msgid "Proxies cleared."
-msgstr "Chemin de sauvegarde des proxys"
+msgstr "Proxys effacés."
 
 #: scenes/render_popups/render_error_popup/render_error.tscn
 msgid "Error whilst rendering video"
 msgstr "Erreur lors du rendu de la vidéo"
 
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
-#, fuzzy
 msgid "Render finished"
 msgstr "Rendu terminé"
 
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
-#, fuzzy
-msgid "Render time: "
-msgstr "Profil de rendu"
+msgid "Render time:"
+msgstr "Temps de rendu:"
 
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
-#, fuzzy
 msgid "Path:"
-msgstr "Chemin"
+msgstr "Chemin:"
 
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
-#, fuzzy
 msgid "Open rendered file"
-msgstr "Profils de rendu personnalisés"
+msgstr "Ouvrir le fichier rendu"
 
 #: scenes/startup_screen/scan_complete_dialog/scan_complete.tscn
-#, fuzzy
 msgid "Scan complete"
-msgstr "Enregistrer le projet"
+msgstr "Analyse terminée"
 
 #: scenes/startup_screen/scan_complete_dialog/scan_complete.tscn
 msgid "Found and added %d new project(s) to the recent projects list."
-msgstr ""
+msgstr "%d nouveau(x) projet(s) trouvé(s) et ajouté(s) à la liste des projets récents."
 
 #: scenes/startup_screen/scan_complete_dialog/scan_complete.tscn
 msgid "No projects found in the selected folder."
-msgstr ""
+msgstr "Aucun projet trouvé dans le dossier sélectionné."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "GoZen"
 msgstr "GoZen"
 
 #: scenes/startup_screen/startup_screen.tscn
-msgid "Version: "
-msgstr "Version : "
+msgid "Version:"
+msgstr "Version:"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "The creator of the startup picture you're seeing right now."
-msgstr ""
+msgstr "L'auteur de l'image de démarrage affichée actuellement."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Latest"
-msgstr ""
+msgstr "Plus récents"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Oldest"
-msgstr ""
+msgstr "Plus anciens"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Name (A...Z)"
-msgstr ""
+msgstr "Nom (A...Z)"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Name (Z...A)"
-msgstr ""
+msgstr "Nom (Z...A)"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Getting started"
@@ -2012,16 +2008,15 @@ msgstr "Mise en route"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Open a previously created project through your file explorer."
-msgstr ""
+msgstr "Ouvrir un projet créé précédemment via votre explorateur de fichiers."
 
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Scan for projects"
-msgstr "Enregistrer le projet"
+msgstr "Rechercher des projets"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Go to the menu to set the settings of your new project."
-msgstr ""
+msgstr "Allez dans le menu pour définir les paramètres de votre nouveau projet."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Create new project"
@@ -2032,24 +2027,28 @@ msgid ""
 "Quick option to create a horizontal project with settings defined in the "
 "editor settings menu."
 msgstr ""
+"Option rapide pour créer un projet horizontal avec les paramètres définis "
+"dans le menu des paramètres de l'éditeur."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid ""
 "Quick option to create a vertical project with settings defined in the "
 "editor settings menu."
 msgstr ""
+"Option rapide pour créer un projet vertical avec les paramètres définis dans "
+"le menu des paramètres de l'éditeur."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "External link to the GoZen website."
-msgstr ""
+msgstr "Lien externe vers le site web de GoZen."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "External link to the GoZen manual."
-msgstr ""
+msgstr "Lien externe vers le manuel de GoZen."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "External link to GoZen tutorials."
-msgstr ""
+msgstr "Lien externe vers les tutoriels de GoZen."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "The video width."
@@ -2061,16 +2060,15 @@ msgstr "La hauteur de la vidéo."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "The video framerate (fps)."
-msgstr "La fréquence d'images de la vidéo (fps)."
+msgstr "La fréquence d'images de la vidéo (ips)."
 
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Track amount"
-msgstr "Nombre de pistes par défaut"
+msgstr "Nombre de pistes"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Amount of tracks in the timeline."
-msgstr ""
+msgstr "Nombre de pistes dans la ligne de montage."
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Advanced options"
@@ -2082,17 +2080,15 @@ msgstr "Retour"
 
 #: scenes/startup_screen/startup_screen.gd:76
 msgid "Image by"
-msgstr ""
+msgstr "Image par"
 
 #: scenes/startup_screen/startup_screen.gd:254
-#, fuzzy
 msgid "Remove from list"
-msgstr "Supprimer le proxy"
+msgstr "Supprimer de la liste"
 
 #: scenes/startup_screen/startup_screen.gd:319
-#, fuzzy
 msgid "User presets"
-msgstr "Enregistrer le projet"
+msgstr "Préréglages utilisateur"
 
 #: scenes/startup_screen/startup_screen.gd:373
 #: scenes/startup_screen/startup_screen.gd:451 scripts/autoloads/project.gd:126
@@ -2104,14 +2100,12 @@ msgid "Select project save path"
 msgstr "Sélectionner le chemin de sauvegarde du projet"
 
 #: scenes/startup_screen/startup_screen.gd:550
-#, fuzzy
 msgid "Select folder to scan"
-msgstr "Supprimer le dossier"
+msgstr "Sélectionner le dossier à analyser"
 
 #: scenes/startup_screen/save_profile_preset/save_profile_preset.tscn
-#, fuzzy
 msgid "Preset name:"
-msgstr "Réinitialiser le paramètre"
+msgstr "Nom du préréglage:"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Update marker"
@@ -2131,36 +2125,31 @@ msgstr "Supprimer le marqueur sélectionné."
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
 msgid "Auto-Cut Silence"
-msgstr ""
+msgstr "Découpage automatique des silences"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Silence Threshold (dB)"
-msgstr "Seuil de recherche intelligente"
+msgstr "Seuil de silence (dB)"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
 msgid "Minimum Silence Duration (s)"
-msgstr ""
+msgstr "Durée minimale de silence (s)"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Cut Padding (frames)"
-msgstr "Formes d'onde audio"
+msgstr "Marge de découpe (images)"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Apply to Grouped Clips"
-msgstr "Appliquer uniquement au fichier"
+msgstr "Appliquer aux clips groupés"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Ripple Delete"
-msgstr "Supprimer"
+msgstr "Suppression avec décalage"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Confirm Auto-Cut"
-msgstr "Confirmer"
+msgstr "Confirmer le découpage automatique"
 
 #: scripts/autoloads/project.gd:53
 msgid "Initialize new project ..."
@@ -2175,27 +2164,24 @@ msgid "Finalizing ..."
 msgstr "Finalisation..."
 
 #: scripts/autoloads/project.gd:136
-#, fuzzy
 msgid "Archive project as ..."
-msgstr "Enregistrer le projet sous..."
+msgstr "Archiver le projet sous..."
 
 #: scripts/autoloads/project.gd:138
 msgid "ZIP Archive"
-msgstr ""
+msgstr "Archive ZIP"
 
 #: scripts/autoloads/project.gd:151
-#, fuzzy
 msgid "Archiving project"
-msgstr "Chargement du projet"
+msgstr "Archivage du projet"
 
 #: scripts/autoloads/project.gd:152
-#, fuzzy
 msgid "Preparing files ..."
-msgstr "Rechercher des fichiers..."
+msgstr "Préparation des fichiers..."
 
 #: scripts/autoloads/project.gd:239
 msgid "Setting up timeline ..."
-msgstr "Configuration de la timeline..."
+msgstr "Configuration de la ligne de montage..."
 
 #: scripts/autoloads/project.gd:244
 msgid "Loading project files ..."
@@ -2211,12 +2197,14 @@ msgstr "Ne pas enregistrer"
 
 #: scripts/autoloads/project.gd:374
 msgid "Unsaved changes"
-msgstr ""
+msgstr "Modifications non enregistrées"
 
 #: scripts/autoloads/project.gd:375
 msgid ""
 "You have unsaved changes in your current project. Save before proceeding?"
 msgstr ""
+"Vous avez des modifications non enregistrées dans votre projet actuel. "
+"Enregistrer avant de continuer ?"
 
 #: scripts/autoloads/project.gd:376
 msgid "Save"
@@ -2257,24 +2245,21 @@ msgid "Files dropped"
 msgstr "Fichiers déposés"
 
 #: scripts/logic/file_logic.gd:337
-#, fuzzy
 msgid "Scanning files ..."
-msgstr "Rechercher des fichiers..."
+msgstr "Analyse des fichiers..."
 
 #: scripts/logic/file_logic.gd:392
-#, fuzzy
-msgid "Processing file: "
-msgstr "Ajouter des fichiers"
+msgid "Processing file:"
+msgstr "Traitement du fichier:"
 
 #: scripts/logic/file_logic.gd:395
 msgid "Files loading ..."
 msgstr "Chargement des fichiers..."
 
 #: scripts/logic/file_logic.gd:442
-#, fuzzy
-msgid "File missing or moved: "
-msgstr "Chargement des fichiers..."
+msgid "File missing or moved:"
+msgstr "Fichier manquant ou déplacé:"
 
 #: scripts/logic/file_logic.gd:1339
-msgid "Scanning folder: "
-msgstr ""
+msgid "Scanning folder:"
+msgstr "Analyse du dossier:"
