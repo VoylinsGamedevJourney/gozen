@@ -158,12 +158,26 @@ int Video::open(const String& video_path) {
 		audio_stream.unref();
 	}
 
+	// WebM stores VP9 alpha as BlockAdditional data. The libvpx VP9 decoder consumes that side data and outputs YUVA420P; the generic VP9 decoder does not expose the alpha.
+	AVDictionaryEntry* alpha_mode = av_dict_get(av_stream->metadata, "alpha_mode", nullptr, 0);
+	bool vp9_has_alpha = av_stream->codecpar->codec_id == AV_CODEC_ID_VP9 && alpha_mode && atoi(alpha_mode->value) != 0;
+
 	// Setup Decoder codec context.
-	const AVCodec* av_codec = avcodec_find_decoder(av_stream->codecpar->codec_id);
+	const AVCodec* av_codec = nullptr;
+	if (vp9_has_alpha) {
+		av_codec = avcodec_find_decoder_by_name("libvpx-vp9");
+	} else {
+		av_codec = avcodec_find_decoder(av_stream->codecpar->codec_id);
+	}
+
 	if (av_codec == NULL) {
 		close();
+		if (vp9_has_alpha) {
+			return _log_err("Transparent VP9 requires the libvpx-vp9 decoder");
+		}
 		return _log_err("Couldn't find decoder");
 	}
+
 	// Allocate codec context for decoder.
 	av_codec_ctx = make_unique_ffmpeg<AVCodecContext, AVCodecCtxDeleter>(avcodec_alloc_context3(av_codec));
 	if (!av_codec_ctx) {
@@ -303,9 +317,8 @@ int Video::open(const String& video_path) {
 	stream_time_base_video = av_q2d(av_stream->time_base) * 1000.0 * 10000.0; // Converting timebase to ticks.
 
 	// Check for alpha layer.
-	has_alpha = (av_frame->format == AV_PIX_FMT_YUVA420P || av_frame->format == AV_PIX_FMT_YUVA444P ||
-				 av_frame->format == AV_PIX_FMT_ARGB || av_frame->format == AV_PIX_FMT_BGRA ||
-				 av_frame->format == AV_PIX_FMT_ABGR || av_frame->format == AV_PIX_FMT_RGBA);
+	const AVPixFmtDescriptor* pixel_format_descriptor = av_pix_fmt_desc_get((AVPixelFormat)av_frame->format);
+	has_alpha = pixel_format_descriptor && (pixel_format_descriptor->flags & AV_PIX_FMT_FLAG_ALPHA);
 	pixel_format = av_get_pix_fmt_name((AVPixelFormat)av_frame->format);
 
 	// Preparing the data images.
