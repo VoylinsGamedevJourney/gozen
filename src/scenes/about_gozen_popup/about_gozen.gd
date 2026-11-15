@@ -16,9 +16,9 @@ const PROJECT_SETTING_VERSION: String = "application/config/version"
 
 
 func _ready() -> void:
-	line_edit_version.text = "%s%s" % [
-			ProjectSettings.get_setting(PROJECT_SETTING_VERSION),
-			"-debug" if OS.is_debug_build() else "-debug"]
+	line_edit_version.text = ProjectSettings.get_setting(PROJECT_SETTING_VERSION)
+    if OS.is_debug_build():
+    	line_edit_version.text += "-debug"
 
 	label_website.text = "[url=URL]URL".replace("URL", ProjectSettings.get_setting("urls/site") as String)
 	label_source_code.text = "[url=URL]URL".replace("URL", ProjectSettings.get_setting("urls/source_code") as String)
