@@ -30,11 +30,11 @@ func undo() -> bool:
 #--- REDO ---
 
 func has_redo() -> bool:
-	return _data.has_undo()
+	return _data.has_redo()
 
 
 func redo() -> bool:
-	return _data.undo()
+	return _data.redo()
 
 
 #--- Handling ---
