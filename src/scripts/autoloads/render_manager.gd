@@ -226,10 +226,6 @@ func start_render(export_path: String, profile: RenderProfile, threads: int, sta
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	status_hbox.add_child(button)
 
-	if OS.get_name().to_lower() == "windows":
-		DisplayServer.set_icon(gozen_icon.get_image())
-		DisplayServer.delete_status_indicator(status_indicator_id)
-
 	encoder = Encoder.new()
 	encoder.set_resolution(render_resolution)
 	encoder.set_framerate(project_data.framerate)
@@ -293,7 +289,7 @@ func _cancel_render() -> void:
 
 
 func show_error(message: String) -> void:
-	var popup: Control = PopupManager.get_popup(PopupManager.SCAN_COMPLETE)
+	var popup: Control = PopupManager.get_popup(PopupManager.RENDER_FAILED)
 	popup.call("set_data", message)
 	PopupManager.close(PopupManager.PROGRESS)
 	progress_overlay = null
@@ -491,6 +487,10 @@ func stop_encoder() -> void:
 			yuv_params_buffer = RID()
 	FFmpeg.free_memory()
 	is_encoding = false
+
+    if OS.get_name().to_lower() == "windows":
+		DisplayServer.set_icon(gozen_icon.get_image())
+		DisplayServer.delete_status_indicator(status_indicator_id)
 
 
 func _encoding_loop(use_audio: bool, use_video: bool) -> void:
