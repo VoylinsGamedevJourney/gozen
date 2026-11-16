@@ -8,6 +8,7 @@ extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
 #include <libavformat/avio.h>
+#include <libavutil/audio_fifo.h>
 #include <libavutil/frame.h>
 #include <libswresample/swresample.h>
 #include <libswscale/swscale.h>
@@ -97,6 +98,16 @@ struct SwsCtxDeleter {
 	}
 };
 using UniqueSwsCtx = std::unique_ptr<SwsContext, SwsCtxDeleter>;
+
+
+// Audio FIFO helper.
+struct AVAudioFifoDeleter {
+	void operator()(AVAudioFifo* fifo) const {
+		if (fifo)
+			av_audio_fifo_free(fifo);
+	}
+};
+using UniqueAVAudioFifo = std::unique_ptr<AVAudioFifo, AVAudioFifoDeleter>;
 
 
 template <typename T_FFmpeg, typename T_Deleter>

@@ -33,6 +33,7 @@ class Encoder : public Resource {
 	AVStream* av_stream_audio = nullptr;
 
 	UniqueSwrCtx swr_ctx_audio;
+	UniqueAVAudioFifo audio_fifo;
 
 	AVCodecID video_codec_id = AV_CODEC_ID_NONE;
 	AVCodecID audio_codec_id = AV_CODEC_ID_NONE;
@@ -70,6 +71,9 @@ class Encoder : public Resource {
 	bool _add_audio_stream();
 	bool _open_output_file();
 	bool _write_header();
+	bool _push_audio_to_fifo(const uint8_t** in_data, int in_samples);
+	bool _encode_audio_frame(AVFrame* frame);
+	bool _drain_audio_fifo(bool flush);
 	bool _finalize_encoding();
 
 	int64_t audio_pts = 0;
