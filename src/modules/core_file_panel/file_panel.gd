@@ -30,6 +30,7 @@ const IMAGE_FORMATS: Array[String] = ["*.png", "*.jpg", "*.webp"]
 
 @export var tree: Tree
 @export var file_menu_button: MenuButton
+@export var search_line_edit: LineEdit
 
 
 var folder_items: Dictionary[String, TreeItem] = {} ## { folder_path: tree_item }
@@ -64,9 +65,15 @@ func _ready() -> void:
 	tree.empty_clicked.connect(_tree_item_clicked.bind(true))
 
 	file_menu_button.get_popup().id_pressed.connect(_file_menu_pressed)
+	search_line_edit.text_changed.connect(_on_search_text_changed)
 
 
 func _input(event: InputEvent) -> void:
+	if search_line_edit.has_focus() and event.is_action_pressed("ui_cancel", false, true):
+		search_line_edit.release_focus()
+		accept_event()
+		return
+
 	if get_global_rect().has_point(get_global_mouse_position()):
 		if event.is_action_pressed("ui_cancel", false, true):
 			tree.deselect_all()
@@ -469,6 +476,7 @@ func _on_added(file: FileData) -> void:
 	# There's a possibility that the file was too large
 	# and that it did not get added.
 	_add_file_to_tree(file)
+	_apply_search_filter(search_line_edit.text)
 
 
 func _on_deleted(file_id: int) -> void:
@@ -484,6 +492,7 @@ func _on_moved(file: FileData) -> void:
 	if file_items.has(file.id):
 		_on_deleted(file.id)
 		_add_file_to_tree(file)
+		_apply_search_filter(search_line_edit.text)
 
 
 func _on_path_updated(file: FileData) -> void:
@@ -502,11 +511,13 @@ func _on_nickname_changed(file: FileData) -> void:
 
 	file_items[file.id].set_text(0, file_nickname)
 	_sort_folder(file.folder)
+	_apply_search_filter(search_line_edit.text)
 
 
 func _on_folder_added(path: String) -> void:
 	if !folder_items.has(path):
 		_add_folder_to_tree(path)
+		_apply_search_filter(search_line_edit.text)
 
 
 func _on_folder_deleted(path: String) -> void:
@@ -562,6 +573,55 @@ func _rebuild_tree() -> void:
 		else:
 			if file_items.has(selected_metadata) and is_instance_valid(file_items[selected_metadata]):
 				file_items[selected_metadata].select(0)
+
+	_apply_search_filter(search_line_edit.text)
+
+
+func _on_search_text_changed(new_text: String) -> void:
+	_apply_search_filter(new_text)
+
+
+func _apply_search_filter(search_query: String) -> void:
+	var root_item: TreeItem = folder_items.get("/")
+	if not is_instance_valid(root_item):
+		return
+
+	var normalized_query: String = search_query.strip_edges().to_lower()
+	var child_item: TreeItem = root_item.get_first_child()
+	while child_item:
+		_filter_tree_item(child_item, normalized_query, false)
+		child_item = child_item.get_next()
+
+
+func _filter_tree_item(tree_item: TreeItem, normalized_query: String, force_show: bool) -> bool:
+	if normalized_query.is_empty() or force_show:
+		tree_item.visible = true
+		var child_item: TreeItem = tree_item.get_first_child()
+		while child_item:
+			_filter_tree_item(child_item, normalized_query, force_show)
+			child_item = child_item.get_next()
+		return true
+
+	var metadata: Variant = tree_item.get_metadata(0)
+	if str(metadata).is_valid_int():
+		var file_data: FileData = FileLogic.get_data(metadata as int)
+		var is_match: bool = file_data != null and file_data.nickname.to_lower().contains(normalized_query)
+		tree_item.visible = is_match
+		return is_match
+
+	var folder_matches: bool = tree_item.get_text(0).to_lower().contains(normalized_query)
+	var has_visible_child: bool = false
+	var child_item: TreeItem = tree_item.get_first_child()
+	while child_item:
+		if _filter_tree_item(child_item, normalized_query, folder_matches):
+			has_visible_child = true
+		child_item = child_item.get_next()
+
+	var should_show: bool = folder_matches or has_visible_child
+	tree_item.visible = should_show
+	if has_visible_child:
+		tree_item.collapsed = false
+	return should_show
 
 
 func _get_recursive_ids(item: TreeItem) -> Array[int]:

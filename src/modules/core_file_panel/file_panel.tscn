@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://b5qoasswrl8pv" path="res://assets/icons/files/color_file.tres" id="5_0p7hj"]
 [ext_resource type="Script" uid="uid://cb5766jdntcrh" path="res://modules/core_file_panel/file_tree_progress.gd" id="6_4eim5"]
 
-[node name="FilePanel" type="PanelContainer" unique_id=611161492 node_paths=PackedStringArray("tree", "file_menu_button")]
+[node name="FilePanel" type="PanelContainer" unique_id=611161492 node_paths=PackedStringArray("tree", "file_menu_button", "search_line_edit")]
 custom_minimum_size = Vector2(260, 0)
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,6 +18,7 @@ theme_type_variation = &"box"
 script = ExtResource("1_b4ee2")
 tree = NodePath("Margin/VBox/FileTree")
 file_menu_button = NodePath("Margin/VBox/HBox/AddFileButton")
+search_line_edit = NodePath("Margin/VBox/HBox/SearchLineEdit")
 
 [node name="Margin" type="MarginContainer" parent="." unique_id=212783385]
 layout_mode = 2
