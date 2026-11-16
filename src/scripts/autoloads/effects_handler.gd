@@ -144,6 +144,7 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 						new_effect.params.append(param.duplicate(true))
 
 				new_effect.keyframes = old_effect.keyframes.duplicate(true)
+                new_effect.keyframe_transitions = Effect.duplicate_keyframes(old_effect.keyframe_transitions)
 				new_effect.is_enabled = old_effect.is_enabled
 				new_effect.set_default_keyframe()
 				clip.effects.video[i] = new_effect
@@ -152,6 +153,7 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 				_apply_param_exceptions(new_effect)
 
 				new_effect.keyframes = Effect.duplicate_keyframes(old_effect.keyframes)
+                new_effect.keyframe_transitions = Effect.duplicate_keyframes(old_effect.keyframe_transitions)
 				new_effect.is_enabled = old_effect.is_enabled
 				new_effect.set_default_keyframe()
 				clip.effects.video[i] = new_effect
@@ -163,6 +165,7 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 				_apply_param_exceptions(new_effect)
 
 				new_effect.keyframes = Effect.duplicate_keyframes(old_effect.keyframes)
+                new_effect.keyframe_transitions = Effect.duplicate_keyframes(old_effect.keyframe_transitions)
 				new_effect.is_enabled = old_effect.is_enabled
 				new_effect.set_default_keyframe()
 				clip.effects.audio[i] = new_effect
@@ -174,7 +177,6 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 			var new_effect: Effect = base_text_effect.deep_copy()
 			_apply_param_exceptions(new_effect)
 
-			new_effect.keyframes = Effect.duplicate_keyframes(old_effect.keyframes)
 			new_effect.is_enabled = old_effect.is_enabled
 			new_effect.set_default_keyframe()
 			file.temp_file.text_effect = new_effect
