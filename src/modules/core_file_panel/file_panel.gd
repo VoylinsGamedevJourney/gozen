@@ -594,9 +594,10 @@ func _apply_search_filter(search_query: String) -> void:
 
 
 func _filter_tree_item(tree_item: TreeItem, normalized_query: String, force_show: bool) -> bool:
+	var child_item: TreeItem
 	if normalized_query.is_empty() or force_show:
 		tree_item.visible = true
-		var child_item: TreeItem = tree_item.get_first_child()
+		child_item = tree_item.get_first_child()
 		while child_item:
 			_filter_tree_item(child_item, normalized_query, force_show)
 			child_item = child_item.get_next()
@@ -611,7 +612,7 @@ func _filter_tree_item(tree_item: TreeItem, normalized_query: String, force_show
 
 	var folder_matches: bool = tree_item.get_text(0).to_lower().contains(normalized_query)
 	var has_visible_child: bool = false
-	var child_item: TreeItem = tree_item.get_first_child()
+	child_item = tree_item.get_first_child()
 	while child_item:
 		if _filter_tree_item(child_item, normalized_query, folder_matches):
 			has_visible_child = true

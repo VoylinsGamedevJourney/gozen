@@ -1148,9 +1148,9 @@ func _set_text_param(file: FileData, param_id: String, value: Variant) -> void:
 
 		if file.nickname != text_str:
 			file.nickname = "Text: " + text_str
-			Project.unsaved_changes = true
 			ClipLogic.updated.emit()
 			nickname_changed.emit(file)
+	Project.unsaved_changes = true
 	EffectsHandler.effects_updated.emit()
 
 
