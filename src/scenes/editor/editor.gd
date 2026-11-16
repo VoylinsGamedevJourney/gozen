@@ -99,6 +99,7 @@ func _ready() -> void:
 
 	var is_clean_cache: bool = false
 	var is_clean_settings: bool = false
+	var is_reset_layout: bool = false
 
 	var create_new_horizontal: bool = false
 	var create_new_vertical: bool = false
@@ -124,10 +125,9 @@ func _ready() -> void:
 		elif clean_arg == "--clean-all":
 			is_clean_cache = true
 			is_clean_settings = true
-		elif arg == "--reset-layout":
-			_delete_dir_contents(WorkspaceManager.get_workspaces_dir())
-			WorkspaceManager.available_workspaces.clear()
-		# Different modes.
+		elif clean_arg == "--reset-layout":
+			is_reset_layout = true
+# --- DIFFERENT MODES ---
 		elif clean_arg == "--view":
 			is_view_mode = true
 		elif clean_arg in ["--render", "--render-quick"]:
@@ -157,6 +157,11 @@ func _ready() -> void:
 		Settings.data = SettingsData.new()
 		Settings.save()
 
+	if is_reset_layout:
+		_delete_dir_contents(WorkspaceManager.get_workspaces_dir())
+		WorkspaceManager.reset_workspaces()
+		_rebuild_workspace_tabs()
+
 	if !open_project_path.is_empty():
 		await Project.open(open_project_path)
 	elif !open_media_path.is_empty():
@@ -176,10 +181,11 @@ func _ready() -> void:
 		if Settings.get_is_first_time():
 			PopupManager.open(PopupManager.WELCOME_SCREEN)
 
-	if is_view_mode and is_render_mode:
+	if is_view_mode or is_render_mode:
 		menu_bar.visible = false
 		workspace_buttons_hbox.visible = false
 
+		workspaces.current_tab = 0
 		WorkspaceManager.workspace_root = workspaces.get_child(0)
 
 		var layout: WorkspaceLayout = WorkspaceLayout.new()
@@ -198,19 +204,33 @@ func _ready() -> void:
 		WorkspaceManager.workspace_root.add_child(root)
 		root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
-		if is_view_mode:
+		if is_render_mode:
+			await get_tree().process_frame
+			RenderManager.update_encoder_status.connect(_on_cli_render_status_check.bind(is_quick_render_mode))
+			await RenderManager.start_cli_render(render_output_path, render_profile_name, is_video_only, is_audio_only, is_render_draft)
+		elif is_view_mode:
 			# TODO: Create a better view mode screen with playback controls.
 			EditorCore.play_changed.connect(func(playing: bool) -> void:
 					if not playing and EditorCore.frame_nr >= Project.data.timeline_end:
 						EditorCore.set_frame(0)
 						EditorCore.on_play_pressed())
 			EditorCore.on_play_pressed()
-		elif is_render_mode:
-			await get_tree().process_frame
-			RenderManager.update_encoder_status.connect(_on_cli_render_status_check.bind(is_quick_render_mode))
-			await RenderManager.start_cli_render(render_output_path, render_profile_name, is_video_only, is_audio_only, is_render_draft)
 	else:
 		switch_workspace(0)
+
+
+func _rebuild_workspace_tabs() -> void:
+	for workspace_button: Button in workspace_buttons:
+		workspace_buttons_hbox.remove_child(workspace_button)
+		workspace_button.queue_free()
+	workspace_buttons.clear()
+
+	for workspace_tab: Node in workspaces.get_children():
+		workspaces.remove_child(workspace_tab)
+		workspace_tab.queue_free()
+
+	for workspace_name: String in WorkspaceManager.available_workspaces:
+		_add_workspace_tab(workspace_name)
 
 
 func _delete_dir_contents(path: String) -> void:
@@ -218,6 +238,10 @@ func _delete_dir_contents(path: String) -> void:
 		return
 
 	var dir: DirAccess = DirAccess.open(path)
+	if not dir:
+		return
+
+	dir.list_dir_begin()
 	var file_name: String = dir.get_next()
 	while file_name != "":
 		if file_name not in [".", ".."]:
@@ -227,11 +251,12 @@ func _delete_dir_contents(path: String) -> void:
 				dir.remove(file_name)
 			else:
 				dir.remove(file_name)
-			file_name = dir.get_next()
+		file_name = dir.get_next()
+	dir.list_dir_end()
 
 
 func _on_cli_render_status_check(status: int, is_quick_render: bool) -> void:
-	if status in [RenderManager.Status.FINISHED, RenderManager.Status.ERROR_CANCELED]:
+	if status < 0 or status == RenderManager.Status.FINISHED:
 		if is_quick_render:
 			get_tree().quit()
 			return

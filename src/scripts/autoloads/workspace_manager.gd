@@ -57,6 +57,28 @@ func get_workspaces_dir() -> String:
 	return Utils.get_config_dir().path_join("workspaces")
 
 
+func reset_workspaces() -> void:
+	available_workspaces.clear()
+	current_workspace_layout = null
+
+	if OS.has_feature("lite"):
+		available_workspaces.append("Edit")
+		available_workspaces.append("Render")
+		return
+
+	var workspaces_dir: String = get_workspaces_dir()
+	if !DirAccess.dir_exists_absolute(workspaces_dir):
+		DirAccess.make_dir_recursive_absolute(workspaces_dir)
+
+	var edit_workspace: WorkspaceLayout = _create_default_edit_workspace()
+	var render_workspace: WorkspaceLayout = _create_default_render_workspace()
+	if ResourceSaver.save(edit_workspace, workspaces_dir.path_join("edit.tres")) != OK:
+		printerr("WorkspaceManager: Something went wrong saving the default 'edit' workspace!")
+	if ResourceSaver.save(render_workspace, workspaces_dir.path_join("render.tres")) != OK:
+		printerr("WorkspaceManager: Something went wrong saving the default 'render' workspace!")
+	_load_available_workspaces()
+
+
 func _load_available_workspaces() -> void:
 	for file_name: String in DirAccess.get_files_at(get_workspaces_dir()):
 		if file_name.ends_with(".tres"):
