@@ -111,6 +111,13 @@ func _strict_input_check(event: InputEvent) -> bool:
 	elif event.is_action_pressed("slip_clip_right", true, true):
 		ClipLogic.slip_selected_clips(1)
 		return true
+	elif event.is_action_pressed("go_to_first_frame", true, true):
+		EditorCore.frame_nr = 0
+		Timeline.focus_on_playhead()
+	elif event.is_action_pressed("go_to_last_frame", true, true):
+		EditorCore.frame_nr = Project.data.timeline_end
+		Timeline.focus_on_playhead()
+
 	return false
 
 
