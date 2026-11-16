@@ -144,7 +144,7 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 						new_effect.params.append(param.duplicate(true))
 
 				new_effect.keyframes = old_effect.keyframes.duplicate(true)
-                new_effect.keyframe_transitions = Effect.duplicate_keyframes(old_effect.keyframe_transitions)
+				new_effect.keyframe_transitions = Effect.duplicate_keyframes(old_effect.keyframe_transitions)
 				new_effect.is_enabled = old_effect.is_enabled
 				new_effect.set_default_keyframe()
 				clip.effects.video[i] = new_effect
@@ -153,7 +153,9 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 				_apply_param_exceptions(new_effect)
 
 				new_effect.keyframes = Effect.duplicate_keyframes(old_effect.keyframes)
-                new_effect.keyframe_transitions = Effect.duplicate_keyframes(old_effect.keyframe_transitions)
+				new_effect.keyframe_transitions = Effect.duplicate_keyframes(old_effect.keyframe_transitions)
+				if "velocities" in old_effect and "velocities" in new_effect:
+					new_effect.set("velocities", (old_effect.get("velocities") as Dictionary).duplicate(true))
 				new_effect.is_enabled = old_effect.is_enabled
 				new_effect.set_default_keyframe()
 				clip.effects.video[i] = new_effect
@@ -165,10 +167,26 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 				_apply_param_exceptions(new_effect)
 
 				new_effect.keyframes = Effect.duplicate_keyframes(old_effect.keyframes)
-                new_effect.keyframe_transitions = Effect.duplicate_keyframes(old_effect.keyframe_transitions)
+				new_effect.keyframe_transitions = Effect.duplicate_keyframes(old_effect.keyframe_transitions)
 				new_effect.is_enabled = old_effect.is_enabled
 				new_effect.set_default_keyframe()
 				clip.effects.audio[i] = new_effect
+
+		if clip.effects.transition_left and transition_instances.has(clip.effects.transition_left.id):
+			var old_left: Effect = clip.effects.transition_left
+			var new_left: Effect = transition_instances[old_left.id].deep_copy()
+			new_left.keyframes = Effect.duplicate_keyframes(old_left.keyframes)
+			new_left.keyframe_transitions = Effect.duplicate_keyframes(old_left.keyframe_transitions)
+			new_left.set_default_keyframe()
+			clip.effects.transition_left = new_left
+
+		if clip.effects.transition_right and transition_instances.has(clip.effects.transition_right.id):
+			var old_right: Effect = clip.effects.transition_right
+			var new_right: Effect = transition_instances[old_right.id].deep_copy()
+			new_right.keyframes = Effect.duplicate_keyframes(old_right.keyframes)
+			new_right.keyframe_transitions = Effect.duplicate_keyframes(old_right.keyframe_transitions)
+			new_right.set_default_keyframe()
+			clip.effects.transition_right = new_right
 
 	var base_text_effect: Effect = load(Library.EFFECT_TEXT)
 	for file: FileData in files.values():

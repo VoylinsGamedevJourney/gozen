@@ -469,7 +469,7 @@ func update_data(track: int) -> void:
 		var text_label_settings: LabelSettings = text_label.label_settings
 
 		if text_viewport.get_child_count() > 1:
-			(text_viewport.get_child(1) as Control).visible = false # Hiding the loaded pck if exists.
+			(text_viewport.get_child(1) as Control).visible = false # Hide the PCK.
 		(text_viewport.get_child(0) as Control).visible = true # Showing the label.
 
 		text_label.text = text_data
@@ -492,15 +492,18 @@ func update_data(track: int) -> void:
 		var pck_viewport: SubViewport = track_viewports[track]
 
 		(pck_viewport.get_child(0) as Control).visible = false # Hiding the label.
-		if pck_viewport.get_child_count() > 1:
-			(pck_viewport.get_child(1) as Control).visible = true # Showing the label.
 
 		# Re-instantiate if clip has changed.
 		if pck_viewport.has_meta("file_id") and pck_viewport.get_meta("file_id") != clip.file:
-			for child: Node in pck_viewport.get_children():
-				child.call("cleanup")
-				child.queue_free()
+			while pck_viewport.get_child_count() > 1:
+				var pck_child: Node = pck_viewport.get_child(1)
+				pck_child.call("cleanup")
+				pck_viewport.remove_child(pck_child)
+				pck_child.queue_free()
 			pck_viewport.remove_meta("file_id")
+
+		if pck_viewport.get_child_count() > 1:
+			(pck_viewport.get_child(1) as Control).visible = true
 
 		# First time scene loading.
 		if pck_viewport.get_child_count() == 1 and not pck_viewport.has_meta("file_id"):

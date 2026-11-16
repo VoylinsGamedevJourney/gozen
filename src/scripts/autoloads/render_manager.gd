@@ -201,9 +201,7 @@ func start_render(export_path: String, profile: RenderProfile, threads: int, sta
 	progress_frame_increase = 94.0 / maxi(1, end_frame - start_frame)
 	current_progress = 6.0
 
-	var gozen_icon: Texture2D = load(Library.ICON_GOZEN)
 	var rendering_icon: Texture2D = load(Library.ICON_RENDERING)
-
 	if OS.get_name().to_lower() == "windows":
 		DisplayServer.set_icon(rendering_icon.get_image())
 		status_indicator_id = DisplayServer.create_status_indicator(
@@ -488,7 +486,8 @@ func stop_encoder() -> void:
 	FFmpeg.free_memory()
 	is_encoding = false
 
-    if OS.get_name().to_lower() == "windows":
+	var gozen_icon: Texture2D = load(Library.ICON_GOZEN)
+	if OS.get_name().to_lower() == "windows":
 		DisplayServer.set_icon(gozen_icon.get_image())
 		DisplayServer.delete_status_indicator(status_indicator_id)
 

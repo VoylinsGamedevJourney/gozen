@@ -146,6 +146,6 @@ func deserialize(dict: Dictionary) -> void:
 
 
 func deep_copy() -> Effect:
-	var copy: AdvancedTransformEffect = deep_copy() as AdvancedTransformEffect
+	var copy: AdvancedTransformEffect = super.deep_copy() as AdvancedTransformEffect
 	copy.velocities = velocities.duplicate()
 	return copy
