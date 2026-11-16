@@ -46,6 +46,7 @@ func _ready() -> void:
 	register(Command.new("Paste clips", InputManager.clipboard_paste, "ui_paste"))
 	register(Command.new("Delete selected clips", ClipLogic.delete_selected_clips, "delete_clips"))
 	register(Command.new("Ripple delete selected clips", ClipLogic.ripple_delete_selected_clips, "ripple_delete_clips"))
+	register(Command.new("Ripple delete selected clips (all tracks)", ClipLogic.ripple_delete_selected_clips_all_tracks, "ripple_delete_clips_all_tracks"))
 	register(Command.new("Duplicate selected clips", ClipLogic.duplicate_selected_clips, "duplicate_selected_clips"))
 	register(Command.new("Group selected clips", ClipLogic.group_selected_clips, "group_clips"))
 	register(Command.new("Ungroup selected clips", ClipLogic.ungroup_selected_clips, "ungroup_clips"))

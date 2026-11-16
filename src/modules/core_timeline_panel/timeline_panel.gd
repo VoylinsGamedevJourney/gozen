@@ -3,11 +3,12 @@ extends PanelContainer
 
 enum PopupAction {
 	# Clip options.
-	CLIP_DELETE, CLIP_SPLIT, CLIP_SPLIT_AT_PLAYHEAD, CLIP_REPLACE_AUDIO, CLIP_AUTO_CUT,
+	CLIP_DELETE, CLIP_RIPPLE_DELETE, CLIP_RIPPLE_DELETE_ALL_TRACKS,
+	CLIP_SPLIT, CLIP_SPLIT_AT_PLAYHEAD, CLIP_REPLACE_AUDIO, CLIP_AUTO_CUT,
 	CLIP_CHANGE_SPEED, CLIP_RESET_SPEED,
 	CLIP_TOGGLE_VISIBLE, CLIP_TOGGLE_MUTE,
 	# Track options.
-	REMOVE_EMPTY_SPACE, TRACK_ADD, TRACK_REMOVE, TRACK_TOGGLE_VISIBLE,
+	REMOVE_EMPTY_SPACE, REMOVE_EMPTY_SPACE_ALL_TRACKS, TRACK_ADD, TRACK_REMOVE, TRACK_TOGGLE_VISIBLE,
 	TRACK_TOGGLE_MUTE, TRACK_TOGGLE_LOCK }
 
 
@@ -153,6 +154,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.is_action_pressed("ui_cut", false, true):
 			ClipLogic.cut_selected_clips()
 			accept_event()
+		elif event.is_action_pressed("ripple_delete_clips_all_tracks", false, true):
+			ClipLogic.ripple_delete_all_tracks(ClipLogic.active_clips)
+			accept_event()
 		elif event.is_action_pressed("ripple_delete_clips", false, true):
 			ClipLogic.ripple_delete(ClipLogic.active_clips)
 		elif event.is_action_pressed("delete_clips", false, true):
@@ -170,11 +174,18 @@ func _unhandled_input(event: InputEvent) -> void:
 			Timeline.trim_clips_to_start()
 		elif event.is_action_pressed("trim_to_clip_end", false, true):
 			Timeline.trim_clips_to_end()
-		elif event.is_action_pressed("remove_empty_space"):
-			var track: int = get_track_from_mouse()
+		elif event.is_action_pressed("remove_empty_space_all_tracks", false, true):
+			var track_index: int = get_track_from_mouse()
 			var frame_nr: int = get_frame_from_mouse()
-			if !TrackLogic.get_clip_at_overlap(track, frame_nr):
-				remove_empty_space_at(track, frame_nr)
+			if !TrackLogic.get_clip_at_overlap(track_index, frame_nr):
+				remove_empty_space_all_tracks_at(track_index, frame_nr)
+				accept_event()
+		elif event.is_action_pressed("remove_empty_space", false, true):
+			var track_index: int = get_track_from_mouse()
+			var frame_nr: int = get_frame_from_mouse()
+			if !TrackLogic.get_clip_at_overlap(track_index, frame_nr):
+				remove_empty_space_at(track_index, frame_nr)
+				accept_event()
 		elif event.is_action_pressed("group_clips", false, true):
 			ClipLogic.group_clips(ClipLogic.active_clips)
 			accept_event()
@@ -298,6 +309,11 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			track_submenu.id_pressed.connect(_on_popup_menu_id_pressed)
 		else:
 			popup.add_item(tr("Remove empty space"), PopupAction.REMOVE_EMPTY_SPACE)
+			_set_popup_shortcut(popup, PopupAction.REMOVE_EMPTY_SPACE, "remove_empty_space")
+			popup.add_item(tr("Remove empty space (all tracks)"), PopupAction.REMOVE_EMPTY_SPACE_ALL_TRACKS)
+			_set_popup_shortcut(popup, PopupAction.REMOVE_EMPTY_SPACE_ALL_TRACKS, "remove_empty_space_all_tracks")
+			if _get_global_free_region(right_click_frame) == Vector2i(-1, -1) or TrackLogic.tracks[right_click_track].is_locked:
+				popup.set_item_disabled(popup.get_item_index(PopupAction.REMOVE_EMPTY_SPACE_ALL_TRACKS), true)
 			popup.add_separator(tr("Track options"))
 
 		var track_data: TrackData = TrackLogic.tracks[right_click_track]
@@ -924,6 +940,12 @@ func _add_popup_menu_items_clip(popup: PopupMenu) -> void:
 	popup.add_icon_item(load(Library.ICON_DELETE) as Icon, tr("Delete clip"), PopupAction.CLIP_DELETE)
 	_set_popup_shortcut(popup, PopupAction.CLIP_DELETE, "delete_clips")
 
+	popup.add_icon_item(load(Library.ICON_DELETE) as Icon, tr("Ripple delete clip"), PopupAction.CLIP_RIPPLE_DELETE)
+	_set_popup_shortcut(popup, PopupAction.CLIP_RIPPLE_DELETE, "ripple_delete_clips")
+
+	popup.add_icon_item(load(Library.ICON_DELETE) as Icon, tr("Ripple delete clip (all tracks)"), PopupAction.CLIP_RIPPLE_DELETE_ALL_TRACKS)
+	_set_popup_shortcut(popup, PopupAction.CLIP_RIPPLE_DELETE_ALL_TRACKS, "ripple_delete_clips_all_tracks")
+
 	popup.add_icon_item(load(Library.ICON_TIMELINE_MODE_SPLIT) as Icon, tr("Split clip on mouse"), PopupAction.CLIP_SPLIT)
 	_set_popup_shortcut(popup, PopupAction.CLIP_SPLIT, "split_clips_at_mouse")
 
@@ -985,6 +1007,8 @@ func _set_popup_shortcut(popup: PopupMenu, action_id: int, action_name: String) 
 func _on_popup_menu_id_pressed(id: PopupAction) -> void:
 	match id:
 		PopupAction.CLIP_DELETE: _on_popup_action_clip_delete()
+		PopupAction.CLIP_RIPPLE_DELETE: _on_popup_action_clip_ripple_delete()
+		PopupAction.CLIP_RIPPLE_DELETE_ALL_TRACKS: _on_popup_action_clip_ripple_delete_all_tracks()
 		PopupAction.CLIP_SPLIT: _on_popup_action_clip_split()
 		PopupAction.CLIP_SPLIT_AT_PLAYHEAD: _on_popup_action_clip_split_at_playhead()
 		PopupAction.CLIP_REPLACE_AUDIO: _on_popup_action_clip_ato()
@@ -996,6 +1020,7 @@ func _on_popup_menu_id_pressed(id: PopupAction) -> void:
 		PopupAction.CLIP_TOGGLE_MUTE:
 			ClipLogic.toggle_clip_mute(right_click_clip, not right_click_clip.effects.is_muted)
 		PopupAction.REMOVE_EMPTY_SPACE: _on_popup_action_remove_empty_space()
+		PopupAction.REMOVE_EMPTY_SPACE_ALL_TRACKS: _on_popup_action_remove_empty_space_all_tracks()
 		PopupAction.TRACK_ADD: _on_popup_action_track_add()
 		PopupAction.TRACK_REMOVE: _on_popup_action_track_remove()
 		PopupAction.TRACK_TOGGLE_VISIBLE: _on_popup_action_track_toggle("is_visible")
@@ -1008,6 +1033,14 @@ func _on_popup_action_clip_delete() -> void:
 	ClipLogic.delete(ClipLogic.active_clips)
 
 
+func _on_popup_action_clip_ripple_delete() -> void:
+	ClipLogic.ripple_delete(ClipLogic.active_clips)
+
+
+func _on_popup_action_clip_ripple_delete_all_tracks() -> void:
+	ClipLogic.ripple_delete_all_tracks(ClipLogic.active_clips)
+
+
 func _on_popup_action_clip_split() -> void:
 	Timeline.split_clips_at(right_click_frame)
 
@@ -1018,6 +1051,10 @@ func _on_popup_action_clip_split_at_playhead() -> void:
 
 func _on_popup_action_remove_empty_space() -> void:
 	remove_empty_space_at(right_click_track, right_click_frame)
+
+
+func _on_popup_action_remove_empty_space_all_tracks() -> void:
+	remove_empty_space_all_tracks_at(right_click_track, right_click_frame)
 
 
 func _on_popup_action_clip_ato() -> void:
@@ -1195,16 +1232,16 @@ func remove_empty_space_at(track: int, frame_nr: int) -> void:
 		var region: Vector2i = TrackLogic.get_free_region(track, frame_nr)
 		var empty_size: int = region.y - region.x
 		var move_requests: Array[RequestClipMove] = []
-
 		var clips_to_move: Array[ClipData] = []
 		for clip: ClipData in clips:
-			if clip in clips_to_move: continue
+			if clip in clips_to_move:
+				continue
 			clips_to_move.append(clip)
 
-			if !Timeline.group_enabled: continue
-			for group_clip: ClipData in ClipLogic.get_group_clips(clip):
-				if not group_clip in clips_to_move:
-					clips_to_move.append(group_clip)
+			if Timeline.group_enabled:
+				for group_clip: ClipData in ClipLogic.get_group_clips(clip):
+					if not group_clip in clips_to_move:
+						clips_to_move.append(group_clip)
 
 		for clip: ClipData in clips_to_move:
 			var request: RequestClipMove = RequestClipMove.new()
@@ -1212,6 +1249,61 @@ func remove_empty_space_at(track: int, frame_nr: int) -> void:
 			request.offset_frame = -empty_size
 			move_requests.append(request)
 		ClipLogic.move(move_requests)
+
+
+func remove_empty_space_all_tracks_at(track_index: int, frame_nr: int) -> void:
+	if TrackLogic.tracks[track_index].is_locked:
+		return
+
+	var global_free_region: Vector2i = _get_global_free_region(frame_nr)
+	if global_free_region == Vector2i(-1, -1):
+		return
+
+	var empty_space_size: int = global_free_region.y - global_free_region.x
+	if empty_space_size <= 0:
+		return
+
+	var clips_to_move: Array[ClipData] = []
+	for current_track_index: int in TrackLogic.tracks.size():
+		if TrackLogic.tracks[current_track_index].is_locked:
+			continue
+		clips_to_move.append_array(TrackLogic.get_clips_after(current_track_index, global_free_region.y))
+
+	var markers_to_move: Array[MarkerData] = []
+	for marker: MarkerData in MarkerLogic.markers:
+		if marker.frame_nr >= global_free_region.y:
+			markers_to_move.append(marker)
+
+	if clips_to_move.is_empty() and markers_to_move.is_empty():
+		return
+
+	UndoManager.create_action("Remove empty space (all tracks)")
+	for clip: ClipData in clips_to_move:
+		UndoManager.add_do(ClipLogic._move.bind(clip, clip.track, clip.start - empty_space_size))
+		UndoManager.add_undo(ClipLogic._move.bind(clip, clip.track, clip.start))
+
+	for marker: MarkerData in markers_to_move:
+		UndoManager.add_do(MarkerLogic._update.bind(
+				marker.frame_nr - empty_space_size, marker.text, marker.type, marker))
+		UndoManager.add_undo(MarkerLogic._update.bind(
+				marker.frame_nr, marker.text, marker.type, marker))
+	UndoManager.commit_action()
+
+
+func _get_global_free_region(frame_nr: int) -> Vector2i:
+	var global_region_start: int = 0
+	var global_region_end: int = Utils.INT_32_MAX
+	for current_track_index: int in TrackLogic.tracks.size():
+		if !TrackLogic.tracks[current_track_index].is_locked:
+			var track_free_region: Vector2i = TrackLogic.get_free_region(current_track_index, frame_nr)
+			if track_free_region.x == -1:
+				return Vector2i(-1, -1)
+			global_region_start = maxi(global_region_start, track_free_region.x)
+			global_region_end = mini(global_region_end, track_free_region.y)
+
+	if global_region_end == Utils.INT_32_MAX or global_region_end <= global_region_start:
+		return Vector2i(-1, -1)
+	return Vector2i(global_region_start, global_region_end)
 
 
 func _on_request_drop_folder(screen_pos: Vector2) -> void:

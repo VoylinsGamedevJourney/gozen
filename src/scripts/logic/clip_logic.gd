@@ -143,6 +143,69 @@ func ripple_delete(clips_to_delete: Array[ClipData]) -> void:
 	UndoManager.commit_action()
 
 
+func ripple_delete_selected_clips_all_tracks() -> void: ripple_delete_all_tracks(active_clips)
+func ripple_delete_all_tracks(clips_to_delete: Array[ClipData]) -> void:
+	if clips_to_delete.is_empty():
+		return
+
+	var valid_clips: Array[ClipData] = []
+	for clip: ClipData in clips_to_delete:
+		if not TrackLogic.tracks[clip.track].is_locked:
+			valid_clips.append(clip)
+	if valid_clips.is_empty():
+		return
+
+	var gap_start: int = Utils.INT_32_MAX
+	var gap_end: int = 0
+	for clip: ClipData in valid_clips:
+		gap_start = mini(gap_start, clip.start)
+		gap_end = maxi(gap_end, clip.end)
+
+	var shift_amount: int = gap_end - gap_start
+	var clips_to_move: Array[ClipData] = []
+	for track_index: int in TrackLogic.tracks.size():
+		if TrackLogic.tracks[track_index].is_locked:
+			continue
+
+		var left_bound: int = 0
+		var right_bound: int = Utils.INT_32_MAX
+		for clip: ClipData in TrackLogic.track_clips[track_index].clips:
+			if clip in valid_clips:
+				continue
+			if clip.start < gap_start:
+				left_bound = maxi(left_bound, clip.end)
+			else:
+				right_bound = mini(right_bound, clip.start)
+				clips_to_move.append(clip)
+		shift_amount = mini(shift_amount, right_bound - left_bound)
+
+	UndoManager.create_action("Ripple delete clip_data(s) (all tracks)")
+	for clip: ClipData in valid_clips:
+		UndoManager.add_do(_delete.bind(clip))
+		UndoManager.add_undo(_restore_clip.bind(clip))
+
+	if shift_amount > 0:
+		for move_clip: ClipData in clips_to_move:
+			UndoManager.add_do(_move.bind(
+					move_clip, move_clip.track, move_clip.start - shift_amount))
+			UndoManager.add_undo(_move.bind(
+					move_clip, move_clip.track, move_clip.start))
+
+		for marker: MarkerData in MarkerLogic.markers:
+			if marker.frame_nr >= gap_end:
+				UndoManager.add_do(MarkerLogic._update.bind(
+						marker.frame_nr - shift_amount, marker.text, marker.type, marker))
+				UndoManager.add_undo(MarkerLogic._update.bind(
+						marker.frame_nr, marker.text, marker.type, marker))
+
+	if !EditorCore.is_playing:
+		UndoManager.add_do(
+				EditorCore.scrub_to_frame.bind(gap_start))
+		UndoManager.add_undo(
+				EditorCore.scrub_to_frame.bind(EditorCore.visual_frame_nr))
+	UndoManager.commit_action()
+
+
 func move(requests: Array[RequestClipMove]) -> void:
 	if requests.is_empty(): return
 
