@@ -171,6 +171,9 @@ func update_effects() -> void:
 		elif effect.id == "retro_filter":
 			var bit_depth: float = effect.get_value(effect.params[0], relative_frame_nr)
 			effect_instance.set("drive", 1.0 - ((bit_depth - 1.0) / 15.0))
+		elif effect.id == "stereo_to_mono":
+			var mono_active: bool = effect.get_value(effect.params[0], relative_frame_nr)
+			effect_instance.set("pan_pullout", 0.0 if mono_active else 1.0)
 		else:
 			for effect_param: EffectParam in effect.params:
 				var value: Variant = effect.get_value(effect_param, relative_frame_nr)
