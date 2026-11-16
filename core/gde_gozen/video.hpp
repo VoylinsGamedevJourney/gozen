@@ -62,7 +62,7 @@ class Video : public Resource {
 	int last_decoded_frame = -1;
 	int padding = 0;
 
-	int8_t rotation = 0;
+	int rotation = 0;
 	int8_t interlaced = 0; // 0 = no interlacing, 1 = interlaced top first, 2 interlaced bottom first
 
 	int64_t duration = 0;

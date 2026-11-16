@@ -272,7 +272,7 @@ func apply_replace_audio(file: FileData, audio_file: FileData, offset: float) ->
 	var popup: Control = PopupManager.get_popup(PopupManager.APPLY_REPLACE_AUDIO)
 	(popup.get("confirm_clips") as Signal).connect(
 			_commit_ato.bind(file, active, audio_file.id, offset, true, affected_clips))
-	(popup.get("confirm_file") as Signal).connect(func() -> void:
+	(popup.get("confirm_file") as Signal).connect(
 			_commit_ato.bind(file, active, audio_file.id, offset, false, []))
 	popup.call("set_data", affected_clips.size())
 

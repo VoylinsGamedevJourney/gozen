@@ -24,6 +24,7 @@ layout(set = 0, binding = 5, std140) uniform Params {
 	int uv_width;
 	int source_width;
 	int source_height;
+	int rotation;
 } params; // Ends at byte 96 (/16 = 6 blocks)
 
 
@@ -32,9 +33,12 @@ void main() {
 
 	if (id.x >= params.resolution.x || id.y >= params.resolution.y) {
 		return; // Checking boundary.
-}
+	}
 
-	float aspect = float(params.source_width) / float(params.source_height);
+	bool swap_dimensions = (params.rotation == 90 || params.rotation == 270);
+	float display_width = swap_dimensions ? float(params.source_height) : float(params.source_width);
+	float display_height = swap_dimensions ? float(params.source_width) : float(params.source_height);
+	float aspect = display_width / display_height;
 	float target_aspect = float(params.resolution.x) / float(params.resolution.y);
 	vec2 scale = vec2(1.0);
 	vec2 offset = vec2(0.0);
@@ -53,13 +57,21 @@ void main() {
 		return;
 	}
 
-	float source_x = normalized_uv.x * float(params.source_width);
-	float source_y = normalized_uv.y * float(params.source_height);
+	vec2 rotated_uv = normalized_uv;
+	if (params.rotation == 90) {
+		rotated_uv = vec2(normalized_uv.y, 1.0 - normalized_uv.x);
+	} else if (params.rotation == 180) {
+		rotated_uv = vec2(1.0 - normalized_uv.x, 1.0 - normalized_uv.y);
+	} else if (params.rotation == 270) {
+		rotated_uv = vec2(1.0 - normalized_uv.y, normalized_uv.x);
+	}
+
+	float source_x = rotated_uv.x * float(params.source_width);
+	float source_y = rotated_uv.y * float(params.source_height);
 
 	vec2 y_uv = vec2(
 			source_x / float(params.y_width),
 			source_y / float(params.source_height));
-
 	vec2 uv_uv = vec2(
 			(source_x * 0.5) / float(params.uv_width),
 			source_y / float(params.source_height));

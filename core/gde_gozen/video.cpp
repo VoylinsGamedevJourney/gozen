@@ -114,16 +114,21 @@ int Video::open(const String& video_path) {
 			color_profile = av_codec_params->color_primaries;
 
 			AVDictionaryEntry* rotate_tag = av_dict_get(av_stream->metadata, "rotate", nullptr, 0);
-			rotation = rotate_tag ? atoi(rotate_tag->value) : 0;
-			if (rotation == 0) { // Check modern rotation detecting.
+			int raw_rotation = rotate_tag ? atoi(rotate_tag->value) : 0;
+			if (raw_rotation == 0) { // Check modern rotation detecting.
 				for (int i = 0; i < av_stream->codecpar->nb_coded_side_data; ++i) {
 					const AVPacketSideData* side_data = &av_stream->codecpar->coded_side_data[i];
-
-					if (side_data->type == AV_PKT_DATA_DISPLAYMATRIX && side_data->size == sizeof(int32_t) * 9)
-						rotation = av_display_rotation_get(reinterpret_cast<const int32_t*>(side_data->data));
+					if (side_data->type == AV_PKT_DATA_DISPLAYMATRIX && side_data->size == sizeof(int32_t) * 9) {
+						double display_rotation =
+							av_display_rotation_get(reinterpret_cast<const int32_t*>(side_data->data));
+						if (!std::isnan(display_rotation)) {
+							raw_rotation = static_cast<int>(std::round(-display_rotation));
+						}
+						break;
+					}
 				}
 			}
-
+			rotation = ((raw_rotation % 360) + 360) % 360;
 			continue;
 		}
 		av_format_ctx->streams[i]->discard = AVDISCARD_ALL;
@@ -158,7 +163,8 @@ int Video::open(const String& video_path) {
 		audio_stream.unref();
 	}
 
-	// WebM stores VP9 alpha as BlockAdditional data. The libvpx VP9 decoder consumes that side data and outputs YUVA420P; the generic VP9 decoder does not expose the alpha.
+	// WebM stores VP9 alpha as BlockAdditional data. The libvpx VP9 decoder consumes that side data and outputs
+	// YUVA420P; the generic VP9 decoder does not expose the alpha.
 	AVDictionaryEntry* alpha_mode = av_dict_get(av_stream->metadata, "alpha_mode", nullptr, 0);
 	bool vp9_has_alpha = av_stream->codecpar->codec_id == AV_CODEC_ID_VP9 && alpha_mode && atoi(alpha_mode->value) != 0;
 
