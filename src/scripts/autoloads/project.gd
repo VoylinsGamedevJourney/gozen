@@ -365,30 +365,11 @@ func check_unsaved_and_perform(callback: Callable) -> void:
 		callback.call()
 		return
 
-	var popup: AcceptDialog = AcceptDialog.new()
-	var dont_save_button: Button = popup.add_button(tr("Don't save"))
-	var cancel_button: Button = popup.add_cancel_button(tr("Cancel"))
-
 	if auto_save_timer != null:
 		auto_save_timer.paused = true
-	popup.title = tr("Unsaved changes")
-	popup.dialog_text = tr("You have unsaved changes in your current project. Save before proceeding?")
-	popup.ok_button_text = tr("Save")
 
-	popup.confirmed.connect(func() -> void:
-			save()
-			callback.call()
-			popup.queue_free.call_deferred())
-	dont_save_button.pressed.connect(func() -> void:
-			callback.call()
-			popup.queue_free.call_deferred())
-	cancel_button.pressed.connect(func() -> void:
-			if Settings.get_auto_save() and auto_save_timer != null:
-				auto_save_timer.paused = false
-			popup.queue_free.call_deferred())
-
-	get_tree().root.add_child(popup)
-	popup.popup_centered()
+	var popup: Control = PopupManager.get_popup(PopupManager.SAVE_ON_EXIT)
+	popup.call("set_data", callback)
 
 
 func _cleanup() -> void:

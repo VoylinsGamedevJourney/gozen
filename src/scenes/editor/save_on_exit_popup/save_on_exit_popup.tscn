@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://rlb3fkoeyc6s"]
+
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_7nc7b"]
+[ext_resource type="Script" uid="uid://ct377osytv5rl" path="res://scenes/editor/save_on_exit_popup/save_on_exit_popup.gd" id="2_h88ym"]
+
+[node name="NewWorkspace" type="PanelContainer" unique_id=830041705]
+material = ExtResource("1_7nc7b")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("2_h88ym")
+metadata/_edit_lock_ = true
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1213813620]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=229609296]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="Panel/Margin" unique_id=399454871]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/Panel" unique_id=251620140]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/Panel/Margin" unique_id=306206666]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=944685048]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Unsaved changes"
+
+[node name="Label" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1949958164]
+layout_mode = 2
+text = "You have unsaved changes in your current project. Save before proceeding?"
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1214426114]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonsHBox" unique_id=499159915]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Cancel"
+
+[node name="DontSaveButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonsHBox" unique_id=29668074]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Don't save"
+
+[node name="SaveProjectButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonsHBox" unique_id=2147131319]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_type_variation = &"main_button"
+text = "Save project
+"
+
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/CloseButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/DontSaveButton" to="." method="_on_dont_save_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/SaveProjectButton" to="." method="_on_save_project_button_pressed"]
