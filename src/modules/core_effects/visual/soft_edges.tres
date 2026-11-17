@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://ys250rxbmow"]
+
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_oirjb"]
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="2_tj7sl"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="3_8i2fv"]
+
+[sub_resource type="Resource" id="Resource_oirjb"]
+script = ExtResource("2_tj7sl")
+id = "amount"
+nickname = "Amount"
+default_value = 50.0
+min_value = 0.0
+max_value = 500.0
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("3_8i2fv")
+id = "soft_edges"
+nickname = "Soft edges (feathering)"
+tooltip = "Feather the edges\\."
+params = Array[ExtResource("2_tj7sl")]([SubResource("Resource_oirjb")])
+shader_path = "uid://chvn2vgfcjrr"
+metadata/_custom_type_script = "uid://jveevg12khsa"

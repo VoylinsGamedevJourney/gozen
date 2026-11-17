@@ -39,7 +39,6 @@ nickname = "Invert Mask"
 default_value = false
 min_value = null
 max_value = null
-step = 0.0
 has_slider = false
 
 [sub_resource type="Resource" id="Resource_vp8uj"]

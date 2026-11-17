@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://chvn2vgfcjrr"
+path="res://.godot/imported/soft_edges.glsl-ad1257e7cb82e5c4e1aeb8f336b4b38f.res"
+
+[deps]
+
+source_file="res://modules/core_effects/visual/soft_edges.glsl"
+dest_files=["res://.godot/imported/soft_edges.glsl-ad1257e7cb82e5c4e1aeb8f336b4b38f.res"]
+
+[params]
+
