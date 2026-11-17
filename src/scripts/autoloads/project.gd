@@ -620,13 +620,19 @@ func set_render_region_in(new_in: int = EditorCore.frame_nr) -> void:
 
 
 func set_render_region_out(new_out: int = EditorCore.frame_nr) -> void:
-	var region: Vector2i = data.render_region
-	region.y = new_out
-	set_render_region(region)
+	if new_out == data.render_region.x:
+		data.render_region = Vector2i.ZERO
+		data.use_render_region = false
+		unsaved_changes = true
+		render_region_updated.emit()
+	else:
+		var region: Vector2i = data.render_region
+		region.y = new_out
+		set_render_region(region)
 
 
 func set_render_region(region: Vector2i) -> void:
-	if region.x >= region.y: # Invalid region.
+	if region != Vector2i.ZERO and region.x >= region.y: # Invalid region.
 		region.y = region.x + int(data.framerate)
 	data.render_region = region
 	unsaved_changes = true

@@ -96,14 +96,10 @@ func _strict_input_check(event: InputEvent) -> bool:
 		EditorCore.frame_nr = clampi(EditorCore.frame_nr - 1, 0, Project.data.timeline_end)
 		return true
 	elif event.is_action_pressed("render_region_in", false, true):
-		var region: Vector2i = Project.data.render_region
-		region.x = EditorCore.frame_nr
-		Project.set_render_region(region)
+		Project.set_render_region_in(EditorCore.frame_nr)
 		return true
 	elif event.is_action_pressed("render_region_out", false, true):
-		var region: Vector2i = Project.data.render_region
-		region.y = EditorCore.frame_nr
-		Project.set_render_region(region)
+		Project.set_render_region_out(EditorCore.frame_nr)
 		return true
 	elif event.is_action_pressed("slip_clip_left", true, true):
 		ClipLogic.slip_selected_clips(-1)

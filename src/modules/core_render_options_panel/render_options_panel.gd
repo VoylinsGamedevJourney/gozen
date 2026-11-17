@@ -135,6 +135,8 @@ func _on_render_region_updated() -> void:
 	render_region_check_button.set_pressed_no_signal(Project.data.use_render_region)
 	region_start_spinbox.set_value_no_signal(Project.data.render_region.x)
 	region_end_spinbox.set_value_no_signal(Project.data.render_region.y)
+	region_start_spinbox.visible = Project.data.use_render_region
+	region_end_spinbox.visible = Project.data.use_render_region
 
 
 func _on_render_region_toggled(toggled_on: bool) -> void:
