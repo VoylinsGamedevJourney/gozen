@@ -383,6 +383,9 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 
 
 func _on_start_render_button_pressed(draft: bool = false) -> void:
+	if Project.data.timeline_end == 0:
+		return RenderManager.show_error("RenderOptionsPanel: Nothing to render! (Empty timeline)")
+
 	var video_only: bool = not audio_toggle.button_pressed
 	var audio_only: bool = not video_toggle.button_pressed
 
@@ -405,6 +408,9 @@ func _on_start_render_button_pressed(draft: bool = false) -> void:
 		end_frame = int(region_end_spinbox.value)
 		if start_frame > end_frame:
 			return RenderManager.show_error("Render region start frame cannot be after the end frame.")
+		elif start_frame == end_frame:
+			return RenderManager.show_error("RenderOptionsPanel: Nothing to render!")
+
 
 	var is_quick_render: bool = OS.get_cmdline_args().has("--render-quick")
 
