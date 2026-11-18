@@ -69,7 +69,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 8
 theme_type_variation = &"main_button"
-text = "Apply"
+text = "Confirm"
 
 [connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/CloseButton" to="." method="_on_close_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/ApplyButton" to="." method="_on_apply_button_pressed"]

@@ -29,6 +29,7 @@ enum {
 	AUTO_CUT,
 	ADD_EFFECTS,
 	JUMP_TO_FRAME,
+	JUMP_TO_TIME,
 	CHANGE_CLIP_SPEED,
 	DUPLICATION_ERROR,
 
@@ -82,6 +83,7 @@ var _popup_uids: Dictionary [int, String] = {
 	AUTO_CUT: "uid://td87gbksxsi3",
 	ADD_EFFECTS: "uid://dqsbn4yb7nd0",
 	JUMP_TO_FRAME: "uid://cfu334o2qox1a",
+	JUMP_TO_TIME: "uid://dxs5mo8xiwo5i",
 	CHANGE_CLIP_SPEED: "uid://cbbu6mhc0c3kj",
 	DUPLICATION_ERROR: "uid://dvjs0g0dsgqxd",
 

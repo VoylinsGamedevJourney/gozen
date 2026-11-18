@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://dxs5mo8xiwo5i"]
+
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_law85"]
+[ext_resource type="Script" uid="uid://c0pee0kspha3m" path="res://scenes/jump_to_time_popup/jump_to_time.gd" id="2_pq2hk"]
+
+[node name="JumpToFrame" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("line_edit")]
+material = ExtResource("1_law85")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("2_pq2hk")
+line_edit = NodePath("Panel/Margin/Panel/Margin/VBox/HBox/TimeLineEdit")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1213813620]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=229609296]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="Panel/Margin" unique_id=399454871]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/Panel" unique_id=251620140]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/Panel/Margin" unique_id=306206666]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=944685048]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Jump to time stamp"
+
+[node name="HBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=104979764]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/Margin/Panel/Margin/VBox/HBox" unique_id=1217185594]
+layout_mode = 2
+text = "Time stamp:"
+
+[node name="TimeLineEdit" type="LineEdit" parent="Panel/Margin/Panel/Margin/VBox/HBox" unique_id=794515092]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+placeholder_text = "00:00:00.00"
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=550264097]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonsHBox" unique_id=2147131319]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Close"
+
+[node name="ApplyButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonsHBox" unique_id=233490143]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_type_variation = &"main_button"
+text = "Confirm"
+
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/ApplyButton" to="." method="_on_apply_button_pressed"]

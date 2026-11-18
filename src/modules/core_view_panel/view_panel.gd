@@ -17,8 +17,11 @@ extends PanelContainer
 func _ready() -> void:
 	frame_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	frame_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	frame_label.gui_input.connect(_on_frame_label_gui_input)
 
-	frame_label.gui_input.connect(_on_label_gui_input)
+	time_label.mouse_filter = Control.MOUSE_FILTER_STOP
+	time_label.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	time_label.gui_input.connect(_on_time_label_gui_input)
 
 	EditorCore.visual_frame_changed.connect(_on_frame_changed)
 	EditorCore.play_changed.connect(_on_play_changed)
@@ -46,15 +49,20 @@ func _gui_input_mouse_button(event: InputEventMouseButton) -> void:
 		accept_event()
 
 
-func _on_label_gui_input(event: InputEvent) -> void:
+func _on_frame_label_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		_on_label_gui_input_mouse_button(event as InputEventMouseButton)
+		var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+		if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			var popup: Control = PopupManager.get_popup(PopupManager.JUMP_TO_FRAME)
+			popup.call("set_data")
 
 
-func _on_label_gui_input_mouse_button(event: InputEventMouseButton) -> void:
-	if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		var popup: Control = PopupManager.get_popup(PopupManager.JUMP_TO_FRAME)
-		popup.call("set_data", EditorCore.frame_nr, Project.data.timeline_end)
+func _on_time_label_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+		if mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			var popup: Control = PopupManager.get_popup(PopupManager.JUMP_TO_TIME)
+			popup.call("set_data")
 
 
 func _on_play_changed(value: bool) -> void:

@@ -281,7 +281,7 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 				default_settings.video_smart_seek_threshold,
 				4, 500, 1, false, true,
 				Settings.set_video_smart_seek_threshold,
-				"",
+				"frames",
 				tr("Defines how many frames the decoder will sequentially read ahead instead of performing a full seek operation. Higher values prevent lag during short jumps but use more CPU.")),
 		create_label(tr("Video Cache Size")),
 		create_spinbox(
@@ -289,7 +289,7 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 				default_settings.video_cache_size,
 				4, 1000, 1, false, true,
 				Settings.set_video_cache_size,
-				"",
+				"frames",
 				tr("The maximum number of decoded frames to keep in RAM. Higher values enable smoother backward seeking and scrubbing but increase memory usage.")),
 	]
 

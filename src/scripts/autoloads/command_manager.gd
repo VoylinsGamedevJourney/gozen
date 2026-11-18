@@ -40,6 +40,9 @@ func _ready() -> void:
 	register(Command.new("Set render region in", Project.set_render_region_in, "render_region_in"))
 	register(Command.new("Set render region out", Project.set_render_region_out, "render_region_out"))
 
+	register(Command.new("Jump to frame", PopupManager.open.bind(PopupManager.JUMP_TO_FRAME), ""))
+	register(Command.new("Jump to time", PopupManager.open.bind(PopupManager.JUMP_TO_TIME), ""))
+
 	register(Command.new("Split clips at playhead", Timeline.split_clips_at, "split_clips_at_playhead"))
 	register(Command.new("Copy selected clips", ClipLogic.copy_selected_clips, "ui_copy"))
 	register(Command.new("Cut selected clips", ClipLogic.cut_selected_clips, "ui_cut"))

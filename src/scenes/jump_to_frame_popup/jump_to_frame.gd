@@ -9,7 +9,7 @@ signal confirmed(new_frame: float)
 
 
 ## This is basically our _ready() for the popup.
-func set_data(frame: int, max_frame: int) -> void:
+func set_data(frame: int = EditorCore.frame_nr, max_frame: int = Project.data.timeline_end) -> void:
 	spinbox.max_value = max_frame
 	spinbox.value = frame
 	spinbox.get_line_edit().grab_focus()
