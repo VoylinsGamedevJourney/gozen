@@ -74,7 +74,7 @@ _data = {
 &"loading": SubResource("Animation_lodf8")
 }
 
-[node name="ViewPanel" type="PanelContainer" unique_id=1409299652 node_paths=PackedStringArray("project_view", "button_play", "button_pause", "button_playback_speed", "frame_label", "time_label", "prefetch_waiting_screen")]
+[node name="ViewPanel" type="PanelContainer" unique_id=1409299652 node_paths=PackedStringArray("project_view", "frame_label", "time_label", "button_play", "button_pause", "button_playback_speed", "zoom_spinbox", "prefetch_waiting_screen")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -83,11 +83,12 @@ grow_vertical = 2
 size_flags_horizontal = 3
 script = ExtResource("1_f3tql")
 project_view = NodePath("Margin/VBox/EffectOverlay/ProjectViewTextureRect")
+frame_label = NodePath("Margin/VBox/ButtonsHBox/TimeDataVBox/FrameLabel")
+time_label = NodePath("Margin/VBox/ButtonsHBox/TimeDataVBox/TimeLabel")
 button_play = NodePath("Margin/VBox/ButtonsHBox/PlaybackControlsContainer/PlayButton")
 button_pause = NodePath("Margin/VBox/ButtonsHBox/PlaybackControlsContainer/PauseButton")
 button_playback_speed = NodePath("Margin/VBox/ButtonsHBox/GuidelinesHBox/PlaybackSpeedButton")
-frame_label = NodePath("Margin/VBox/ButtonsHBox/TimeDataVBox/FrameLabel")
-time_label = NodePath("Margin/VBox/ButtonsHBox/TimeDataVBox/TimeLabel")
+zoom_spinbox = NodePath("Margin/VBox/ButtonsHBox/GuidelinesHBox/ZoomSpinBox")
 prefetch_waiting_screen = NodePath("Margin/PrefetchingInProgress")
 
 [node name="Margin" type="MarginContainer" parent="." unique_id=1234861630]
@@ -187,14 +188,31 @@ alignment = 2
 
 [node name="PlaybackSpeedButton" type="Button" parent="Margin/VBox/ButtonsHBox/GuidelinesHBox" unique_id=1006123480]
 auto_translate_mode = 2
+modulate = Color(1, 1, 1, 0.78431374)
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 tooltip_text = "This button loops between the available project playback speed modifiers.
 - Left click: Increases speed;
 - Shift+Left click: Decreases speed;"
-theme_override_colors/font_color = Color(0.5019608, 0.5019608, 0.5019608, 1)
 text = "x1"
 flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Margin/VBox/ButtonsHBox/GuidelinesHBox" unique_id=708513147]
+modulate = Color(1, 1, 1, 0.78431374)
+layout_mode = 2
+
+[node name="ZoomSpinBox" type="SpinBox" parent="Margin/VBox/ButtonsHBox/GuidelinesHBox" unique_id=1569426921]
+modulate = Color(1, 1, 1, 0.78431374)
+layout_mode = 2
+tooltip_text = "Preview zoom.
+Double click to reset to 100%."
+min_value = 10.0
+max_value = 1000.0
+value = 100.0
+alignment = 2
+suffix = "%"
+custom_arrow_step = 10.0
+select_all_on_focus = true
 
 [node name="PrefetchingInProgress" type="ColorRect" parent="Margin" unique_id=546247977]
 visible = false
