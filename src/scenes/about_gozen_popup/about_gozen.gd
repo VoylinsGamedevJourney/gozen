@@ -2,6 +2,7 @@ extends PanelContainer
 
 
 const PROJECT_SETTING_VERSION: String = "application/config/version"
+const BASE: String = "[url=URL]URL"
 
 
 @export var line_edit_version: LineEdit
@@ -17,14 +18,13 @@ const PROJECT_SETTING_VERSION: String = "application/config/version"
 
 func _ready() -> void:
 	line_edit_version.text = ProjectSettings.get_setting(PROJECT_SETTING_VERSION)
-    if OS.is_debug_build():
-    	line_edit_version.text += "-debug"
+	if OS.is_debug_build():
+		line_edit_version.text += "-debug"
 
-	label_website.text = "[url=URL]URL".replace("URL", ProjectSettings.get_setting("urls/site") as String)
-	label_source_code.text = "[url=URL]URL".replace("URL", ProjectSettings.get_setting("urls/source_code") as String)
-	label_discord.text = "[url=URL]URL".replace("URL", ProjectSettings.get_setting("urls/discord") as String)
-	label_youtube.text = "[url=URL]URL".replace("URL", ProjectSettings.get_setting("urls/youtube_channel") as String)
-
+	label_website.text = BASE.replace("URL", ProjectSettings.get_setting("urls/site") as String)
+	label_source_code.text = BASE.replace("URL", ProjectSettings.get_setting("urls/source_code") as String)
+	label_discord.text = BASE.replace("URL", ProjectSettings.get_setting("urls/discord") as String)
+	label_youtube.text = BASE.replace("URL", ProjectSettings.get_setting("urls/youtube_channel") as String)
 	label_license.text = "[center]" + tr("License") + ": [url=%s]GPLv3" % ProjectSettings.get_setting("urls/license")
 
 

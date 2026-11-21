@@ -6,7 +6,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_prxut"]
 shader = ExtResource("1_ae4wk")
 
-[node name="AboutGoZen" type="PanelContainer" unique_id=890807878 node_paths=PackedStringArray("line_edit_version")]
+[node name="AboutGoZen" type="PanelContainer" unique_id=890807878 node_paths=PackedStringArray("line_edit_version", "label_website", "label_source_code", "label_discord", "label_youtube", "label_made_by", "label_license")]
 material = SubResource("ShaderMaterial_prxut")
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,6 +16,12 @@ grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_ecejt")
 line_edit_version = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer/VersionLineEdit")
+label_website = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer/WebsiteRichTextLabel")
+label_source_code = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer/SourceCodeRichTextLabel")
+label_discord = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer/DiscordRichTextLabel")
+label_youtube = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/GridContainer/YouTubeRichTextLabel")
+label_made_by = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/MadeByLineEdit")
+label_license = NodePath("Panel/Margin/VBox/AboutPanel/Margin/AboutVBox/LicenseLineEdit")
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=1266970552]
 custom_minimum_size = Vector2(700, 0)
