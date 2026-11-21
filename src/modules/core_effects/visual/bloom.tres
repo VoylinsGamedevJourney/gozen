@@ -1,0 +1,62 @@
+[gd_resource type="Resource" script_class="Effect" format=3 uid="uid://cfyb3wg3f1uo6"]
+
+[ext_resource type="Script" uid="uid://d25iocjdybfbl" path="res://scripts/classes/effect_ui.gd" id="1_g420h"]
+[ext_resource type="Script" uid="uid://c68tgvx8rgvd4" path="res://scripts/classes/effect_param.gd" id="2_h0kry"]
+[ext_resource type="Script" uid="uid://jveevg12khsa" path="res://scripts/classes/effect.gd" id="3_dymnx"]
+
+[sub_resource type="Resource" id="Resource_peqso"]
+script = ExtResource("2_h0kry")
+id = "threshold"
+nickname = "Threshold"
+default_value = 0.5
+min_value = 0.0
+max_value = 1.0
+step = 0.01
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_h8kds"]
+script = ExtResource("2_h0kry")
+id = "smoothness"
+nickname = "Smoothness"
+default_value = 0.2
+min_value = 0.0
+max_value = 1.0
+step = 0.01
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_hs4wd"]
+script = ExtResource("2_h0kry")
+id = "radius"
+nickname = "Radius"
+default_value = 20.0
+min_value = 0.0
+max_value = 200.0
+step = 0.5
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_h3rye"]
+script = ExtResource("2_h0kry")
+id = "intensity"
+nickname = "Intensity"
+default_value = 1.0
+min_value = 0.0
+max_value = 10.0
+step = 0.05
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[sub_resource type="Resource" id="Resource_lnq4m"]
+script = ExtResource("2_h0kry")
+id = "tint"
+nickname = "Tint"
+default_value = Color(1, 1, 1, 1)
+min_value = null
+max_value = null
+metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
+
+[resource]
+script = ExtResource("3_dymnx")
+id = "bloom"
+nickname = "Bloom"
+params = Array[ExtResource("2_h0kry")]([SubResource("Resource_peqso"), SubResource("Resource_h8kds"), SubResource("Resource_hs4wd"), SubResource("Resource_h3rye"), SubResource("Resource_lnq4m")])
+shader_path = "uid://cwdkc1w5260ua"
+metadata/_custom_type_script = "uid://jveevg12khsa"
