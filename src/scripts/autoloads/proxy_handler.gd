@@ -18,7 +18,7 @@ func _ready() -> void:
 
 
 func request_generation(file: FileData) -> void:
-	if !OS.has_feature("lite") or file.type != Type.VIDEO or file.id in active_generations:
+	if OS.has_feature("lite") or file.type != Type.VIDEO or file.id in active_generations:
 		return # Only proxies for videos possible, and avoid duplicate generation tasks.
 	elif FileAccess.file_exists(file.path):
 		var proxy_path: String = Settings.get_proxies_path()

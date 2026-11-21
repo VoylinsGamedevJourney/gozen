@@ -595,7 +595,7 @@ func update_timeline_end() -> void:
 			var clip: ClipData = TrackLogic.track_clips[track].clips[-1]
 			if clip:
 				end = max(end, clip.end)
-	data.timeline_end = end - 1
+	data.timeline_end = maxi(end - 1, 0)
 	unsaved_changes = true
 	timeline_end_update.emit(end)
 

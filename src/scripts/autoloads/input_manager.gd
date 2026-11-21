@@ -38,7 +38,7 @@ func _input(event: InputEvent) -> void:
 
 	if event.is_action_pressed("breakpoint", true):
 		breakpoint
-	elif event.is_action_pressed("ui_paste"):
+	elif event.is_action_pressed("ui_paste") and Project.is_loaded:
 		var focus_owner: Control = get_viewport().gui_get_focus_owner()
 		if focus_owner is LineEdit or focus_owner is TextEdit:
 			return
@@ -130,15 +130,10 @@ func switch_workspace() -> void:
 
 
 func clipboard_paste() -> void:
-	if !Project.is_loaded:
-		return
-
 	# Check for clip(s).
 	if !ClipLogic.copied_clips.is_empty() and WorkspaceManager.is_panel_mouse_focused("Timeline"):
 		ClipLogic.paste_copied_clips()
-		return
-
-	if WorkspaceManager.is_panel_mouse_focused("FilePanel") or WorkspaceManager.is_panel_mouse_focused("Timeline"):
+	elif WorkspaceManager.is_panel_mouse_focused("FilePanel") or WorkspaceManager.is_panel_mouse_focused("Timeline"):
 		await clipboard_try_paste_file()
 
 

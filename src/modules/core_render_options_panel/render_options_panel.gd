@@ -229,7 +229,7 @@ func apply_profile_by_name(profile_name: String) -> void:
 		option_button_render_profiles.select(found_index)
 		_on_render_profile_option_button_item_selected(found_index)
 	else:
-		printerr("RenderOptionsPanel: Profile '%s' not found, using default." % profile_name)
+		RenderManager.show_error("RenderOptionsPanel: Profile '%s' not found, using default." % profile_name)
 
 
 func _delete_custom_profile(index: int) -> void:
@@ -385,7 +385,7 @@ func _on_video_codec_option_button_item_selected(index: int) -> void:
 
 
 func _on_start_render_button_pressed(draft: bool = false) -> void:
-	if Project.data.timeline_end == 0:
+	if Project.data.timeline_end <= 0:
 		return RenderManager.show_error("RenderOptionsPanel: Nothing to render! (Empty timeline)")
 
 	var video_only: bool = not audio_toggle.button_pressed

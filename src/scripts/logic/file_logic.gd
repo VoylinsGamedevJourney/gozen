@@ -1206,7 +1206,7 @@ func relink_file(file: FileData, new_path: String) -> void:
 							requests.append(request)
 					if not requests.is_empty():
 						ClipLogic.resize(requests))
-			popup.call("set_data", file.nickname)
+			popup.call("set_data", [file])
 
 
 func _relink_file(file: FileData, new_path: String) -> void:

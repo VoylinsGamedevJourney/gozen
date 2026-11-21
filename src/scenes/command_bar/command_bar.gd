@@ -41,13 +41,11 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		PopupManager.close(PopupManager.COMMAND_BAR)
-
-	if event.is_action_pressed("ui_up"):
+	elif event.is_action_pressed("ui_up"):
 		selected_button = clampi(
 				selected_button - 1, 0, mini(shown_buttons.size() - 1, MAX_COMMANDS))
 		shown_buttons[selected_button].button_pressed = true
-
-	if event.is_action_pressed("ui_down"):
+	elif event.is_action_pressed("ui_down"):
 		selected_button = clampi(
 				selected_button + 1, 0, mini(shown_buttons.size() - 1, MAX_COMMANDS))
 		shown_buttons[selected_button].button_pressed = true
@@ -78,9 +76,9 @@ func _on_command_line_edit_text_submitted(_command_text: String) -> void:
 		if button.visible:
 			if selected_button != 0:
 				selected_button -= 1
-			else:
-				button.pressed.emit()
-				return
+				continue
+			button.pressed.emit()
+			return
 	_close()
 
 

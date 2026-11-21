@@ -75,7 +75,7 @@ func get_buffer_data(effect: Effect, frame_nr: int, resolution: Vector2i, pass_i
 				stream.put_float(value.a as float)
 			TYPE_PACKED_VECTOR2_ARRAY: # Mainly used for roto-scoping effect right now.
 				_pad_stream(stream, 16)
-				var array_size: int = (value as Array[Vector2]).size()
+				var array_size: int = (value as PackedVector2Array).size()
 				stream.put_32(array_size) # point_count parameter.
 				_pad_stream(stream, 16) # Pad to next 16 for the array layout.
 				for i: int in 64: # Max 64 points.

@@ -3,7 +3,7 @@
 [ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_i6i3m"]
 [ext_resource type="Script" uid="uid://d0b561bhlv8jn" path="res://scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.gd" id="1_y8flh"]
 
-[node name="UpdateAudioFiles" type="PanelContainer" unique_id=830041705]
+[node name="UpdateAudioFiles" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("label")]
 material = ExtResource("1_i6i3m")
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,6 +12,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"overlay_background"
 script = ExtResource("1_y8flh")
+label = NodePath("Panel/Margin/Panel/Margin/VBox/Label")
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=1213813620]
 custom_minimum_size = Vector2(900, 0)
@@ -40,7 +41,8 @@ text = "Update existing clips?"
 
 [node name="Label" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1949958164]
 layout_mode = 2
-text = "This file is currently used by '%d' clip(s).\\nDo you want to apply the audio replacement to all existing clips?"
+text = "This file is currently used by '%d' clip(s).
+Do you want to apply the audio replacement to all existing clips?"
 
 [node name="ButtonHBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1214426114]
 layout_mode = 2

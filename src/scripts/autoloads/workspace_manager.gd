@@ -454,13 +454,11 @@ func _get_hovered_tab(global_pos: Vector2) -> DockableTab:
 	return null
 
 
-func _is_panel_mouse_focused(panel_id: String) -> bool:
+func is_panel_mouse_focused(panel_id: String) -> bool:
 	var panel: Control = active_panels.get(panel_id)
-	if panel != null:
-		var mouse_pos: Vector2 = EditorUI.instance.get_global_mouse_position()
-		var visible: bool = panel.is_visible_in_tree()
-		var mouse_over_it: bool = panel.get_global_rect().has_point(mouse_pos)
-		return visible and mouse_over_it
+	if panel != null and EditorUI.instance != null:
+		var mouse_position: Vector2 = EditorUI.instance.get_global_mouse_position()
+		return panel.is_visible_in_tree() and panel.get_global_rect().has_point(mouse_position)
 	return false
 
 
@@ -468,7 +466,6 @@ func _on_drag_overlay_draw() -> void:
 	if preview_zone != DockableTab.DropZone.NONE:
 		var rect: Rect2
 		var threshold: float
-
 		if preview_is_root:
 			rect = workspace_root.get_global_rect()
 			threshold = 0.25
@@ -479,7 +476,6 @@ func _on_drag_overlay_draw() -> void:
 
 		var draw_rect: Rect2
 		var color: Color = drag_overlay.get_theme_color("overlay_color", "DockableTab")
-
 		if preview_zone == DockableTab.DropZone.CENTER:
 			draw_rect = Rect2(Vector2.ZERO, rect.size)
 		elif preview_zone == DockableTab.DropZone.LEFT:
