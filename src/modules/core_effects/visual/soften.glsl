@@ -12,6 +12,7 @@ layout(rgba8, set = 0, binding = 1) uniform writeonly image2D output_image;
 // --- PARAMS ---
 layout(set = 0, binding = 2, std140) uniform Params {
 	float amount;
+	int pass_index;
 } params;
 
 
@@ -22,23 +23,29 @@ void main() {
 		return; // Boundary check.
 	}
 
+	vec4 center_color = texelFetch(source_image, id, 0);
 	if (params.amount <= 0.0) {
-		imageStore(output_image, id, texelFetch(source_image, id, 0));
+		imageStore(output_image, id, center_color);
 		return;
 	}
 
 	float sigma = params.amount * 10.0;
 	int radius = clamp(int(ceil(sigma * 3.0)), 1, 20);
-	vec4 color_sum = vec4(0.0);
-	float weight_sum = 0.0;
-	float two_sigma_sq = 2.0 * sigma * sigma;
-	for (int x = -radius; x <= radius; x++) {
-		for (int y = -radius; y <= radius; y++) {
-			float weight = exp(-float(x * x + y * y) / two_sigma_sq);
-			ivec2 coord = clamp(id + ivec2(x, y), ivec2(0), out_size - ivec2(1));
-			color_sum += texelFetch(source_image, coord, 0) * weight;
-			weight_sum += weight;
-		}
+	float inv_two_sigma_sq = 1.0 / (2.0 * sigma * sigma);
+
+	vec4 color_sum = center_color;
+	float weight_sum = 1.0;
+	ivec2 step_direction = (params.pass_index == 0) ? ivec2(1, 0) : ivec2(0, 1);
+	ivec2 max_coord = out_size - ivec2(1);
+
+	for (int offset = 1; offset <= radius; offset++) {
+		float weight = exp(-float(offset * offset) * inv_two_sigma_sq);
+		ivec2 positive_coord = clamp(id + step_direction * offset, ivec2(0), max_coord);
+		ivec2 negative_coord = clamp(id - step_direction * offset, ivec2(0), max_coord);
+
+		color_sum += (texelFetch(source_image, positive_coord, 0) + texelFetch(source_image, negative_coord, 0)) * weight;
+		weight_sum += 2.0 * weight;
 	}
+
 	imageStore(output_image, id, color_sum / weight_sum);
 }

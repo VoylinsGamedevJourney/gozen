@@ -26,17 +26,27 @@ void main() {
 		return;
 	}
 
-	float dist = 1.0 - progress.value;
+	if (progress.value <= 0.0) {
+		imageStore(output_image, id, vec4(0.0));
+		return;
+	}
+
+	float remaining_progress = 1.0 - progress.value;
 	float angle_rad = radians(params.angle);
-	vec2 dir = vec2(-sin(angle_rad), cos(angle_rad));
+	vec2 direction = vec2(-sin(angle_rad), cos(angle_rad));
+	vec2 size_float = vec2(size);
 
-	float displacement = abs(dir.x) * float(size.x) + abs(dir.y) * float(size.y);
-	vec2 offset = dist * dir * displacement;
+	float abs_dir_x = abs(direction.x);
+	float abs_dir_y = abs(direction.y);
+	float exit_x = (abs_dir_x > 0.0001) ? (size_float.x / abs_dir_x) : 1e9;
+	float exit_y = (abs_dir_y > 0.0001) ? (size_float.y / abs_dir_y) : 1e9;
 
-	ivec2 src_id = id + ivec2(offset);
+	vec2 source_uv = (vec2(id) + 0.5 + (remaining_progress * direction * min(exit_x, exit_y))) / size_float;
+
 	vec4 color = vec4(0.0);
-	if (src_id.x >= 0 && src_id.x < size.x && src_id.y >= 0 && src_id.y < size.y) {
-		color = texelFetch(input_image, src_id, 0);
+	if (source_uv.x >= 0.0 && source_uv.x <= 1.0 && source_uv.y >= 0.0 && source_uv.y <= 1.0) {
+		vec2 half_texel = 0.5 / size_float;
+		color = textureLod(input_image, clamp(source_uv, half_texel, 1.0 - half_texel), 0.0);
 	}
 
 	imageStore(output_image, id, color);

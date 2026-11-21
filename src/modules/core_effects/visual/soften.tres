@@ -19,3 +19,4 @@ id = "soften"
 nickname = "Soften"
 params = Array[ExtResource("1_param")]([SubResource("Resource_s6v24")])
 shader_path = "uid://da8ffh07cspxj"
+shader_passes = 2
