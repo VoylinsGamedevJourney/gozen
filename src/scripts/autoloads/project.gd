@@ -80,8 +80,7 @@ func new_project(request: RequestProjectNew) -> void:
 
 func save(auto_saved: bool = false) -> void:
 	if data.project_path.is_empty():
-		save_as()
-		return
+		return save_as()
 
 	data.playhead = EditorCore.frame_nr
 
