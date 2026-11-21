@@ -36,6 +36,7 @@ const IMAGE_FORMATS: Array[String] = ["*.png", "*.jpg", "*.webp"]
 var folder_items: Dictionary[String, TreeItem] = {} ## { folder_path: tree_item }
 var file_items: Dictionary[int, TreeItem] = {} ## { file: tree_item }
 var _tree_rebuild_pending: bool = false
+var _file_info_cache: Dictionary[int, Dictionary] = {}
 
 
 
@@ -49,6 +50,7 @@ func _ready() -> void:
 		file_menu_button.get_popup().set_item_icon_max_width(i, 21)
 
 	Project.project_ready.connect(_on_project_ready)
+	Project.framerate_changed.connect(_update_all_tooltips)
 	Thumbnailer.thumb_generated.connect(_on_update_thumb)
 
 	FileLogic.added.connect(_on_added)
@@ -56,6 +58,10 @@ func _ready() -> void:
 	FileLogic.moved.connect(_on_moved)
 	FileLogic.path_updated.connect(_on_path_updated)
 	FileLogic.nickname_changed.connect(_on_nickname_changed)
+	FileLogic.video_loaded.connect(_update_file_tooltip)
+	FileLogic.audio_loaded.connect(_update_file_tooltip)
+	FileLogic.reloaded.connect(_on_file_reloaded)
+	FileLogic.ato_changed.connect(_update_file_tooltip)
 	FileLogic.request_drop_folder.connect(_on_request_drop_folder)
 	FolderLogic.added.connect(_on_folder_added)
 	FolderLogic.deleted.connect(_on_folder_deleted)
@@ -78,13 +84,8 @@ func _input(event: InputEvent) -> void:
 		if event.is_action_pressed("ui_cancel", false, true):
 			tree.deselect_all()
 			accept_event()
-		elif tree.get_selected() and event.is_action_pressed("delete_file", false, true):
-			var selected_item: TreeItem = tree.get_selected()
-			var metadata: Variant = selected_item.get_metadata(0)
-			if str(metadata).is_valid_int():
-				_on_popup_option_pressed(PopupAction.DELETE)
-			elif str(metadata) != "/":
-				_on_popup_option_pressed(PopupAction.FOLDER_DELETE)
+		elif not _get_selected_items().is_empty() and event.is_action_pressed("delete_file", false, true):
+			_delete_selected()
 			accept_event()
 
 
@@ -131,14 +132,22 @@ func _file_menu_pressed(id: int) -> void:
 func _tree_item_clicked(_mouse_pos: Vector2, button_index: int, empty: bool = false) -> void:
 	if button_index == MOUSE_BUTTON_LEFT and empty:
 		return tree.deselect_all()
+	elif button_index != MOUSE_BUTTON_RIGHT:
+		return
 
-	if button_index != MOUSE_BUTTON_RIGHT:
+	var selected_items: Array[TreeItem] = _get_selected_items() if not empty else []
+	if not empty and selected_items.size() > 1:
+		var multi_popup: PopupMenu = PopupManager.create_menu()
+		multi_popup.add_item(tr("Delete (%d)") % selected_items.size(), PopupAction.DELETE)
+		multi_popup.add_separator(tr("Folder options"))
+		multi_popup.add_item(tr("Create folder"), PopupAction.FOLDER_CREATE)
+		multi_popup.id_pressed.connect(_on_popup_option_pressed)
+		PopupManager.show_menu(multi_popup)
 		return
 
 	var file_item: TreeItem = folder_items["/"] if empty else tree.get_selected()
 	var metadata: Variant = file_item.get_metadata(0)
 	var popup: PopupMenu = PopupManager.create_menu()
-
 	if str(metadata).is_valid_int(): # File.
 		var file: FileData = FileLogic.get_data(metadata as int)
 		popup.add_item(tr("Rename"), PopupAction.RENAME)
@@ -241,7 +250,7 @@ func _on_popup_action_folder_rename() -> void:
 
 
 func _on_popup_action_folder_delete() -> void:
-	FolderLogic.delete(str(tree.get_selected().get_metadata(0)))
+	_delete_selected()
 
 
 func _on_popup_action_file_rename() -> void:
@@ -250,7 +259,7 @@ func _on_popup_action_file_rename() -> void:
 
 
 func _on_popup_action_file_delete() -> void:
-	FileLogic.delete([tree.get_selected().get_metadata(0) as int])
+	_delete_selected()
 
 
 func _on_popup_action_file_reload() -> void:
@@ -415,14 +424,13 @@ func _add_file_to_tree(file: FileData) -> void:
 
 	file_items[file.id] = tree.create_item(folder_items[file.folder])
 	file_items[file.id].set_text(0, file_nickname)
-	file_items[file.id].set_tooltip_text(0, file.path)
 	file_items[file.id].set_metadata(0, file.id)
 	file_items[file.id].set_icon(0, Thumbnailer.get_thumb(file))
 	file_items[file.id].set_icon_max_width(0, 70)
 
 	if not Thumbnailer.data.has(file.path) and file.type != Type.AUDIO and not file.path.begins_with("temp://"):
 		file_items[file.id].set_icon_modulate(0, Color(1, 1, 1, 0.4))
-		file_items[file.id].set_tooltip_text(0, file.path + "\n" + tr("(Loading thumbnail...)"))
+	_update_file_tooltip(file)
 	_sort_folder(file.folder)
 
 
@@ -432,7 +440,7 @@ func _on_update_thumb(file: FileData) -> void:
 
 	file_items[file.id].set_icon(0, Thumbnailer.get_thumb(file))
 	file_items[file.id].set_icon_modulate(0, Color.WHITE)
-	file_items[file.id].set_tooltip_text(0, file.path)
+	_update_file_tooltip(file)
 
 
 func _sort_folder(folder: String) -> void:
@@ -480,10 +488,11 @@ func _on_added(file: FileData) -> void:
 
 
 func _on_deleted(file_id: int) -> void:
+	_file_info_cache.erase(file_id)
 	if file_items.has(file_id):
 		var item: TreeItem = file_items[file_id]
-		if is_instance_valid(item) and is_instance_valid(item.get_parent()):
-			item.get_parent().remove_child(item)
+		if is_instance_valid(item):
+			item.free()
 		if !file_items.erase(file_id):
 			printerr("FilePanel: Couldn't erase '%s' from file_items!" % file_id)
 
@@ -496,8 +505,13 @@ func _on_moved(file: FileData) -> void:
 
 
 func _on_path_updated(file: FileData) -> void:
-	if file_items.has(file.id):
-		file_items[file.id].set_tooltip_text(0, file.path)
+	_file_info_cache.erase(file.id)
+	_update_file_tooltip(file)
+
+
+func _on_file_reloaded(file: FileData) -> void:
+	_file_info_cache.erase(file.id)
+	_update_file_tooltip(file)
 
 
 func _on_nickname_changed(file: FileData) -> void:
@@ -510,6 +524,7 @@ func _on_nickname_changed(file: FileData) -> void:
 			file_nickname += " [P]"
 
 	file_items[file.id].set_text(0, file_nickname)
+	_update_file_tooltip(file)
 	_sort_folder(file.folder)
 	_apply_search_filter(search_line_edit.text)
 
@@ -680,11 +695,11 @@ func _can_drop_list_data(at_position: Vector2, data: Variant) -> bool:
 func _drop_list_data(at_position: Vector2, data: Variant) -> void:
 	if not data is Draggable:
 		return
+
 	var draggable: Draggable = data
 	var item: TreeItem = tree.get_item_at_position(at_position)
 	var section: int = tree.get_drop_section_at_position(at_position)
 	var target_folder: String = "/"
-
 	if item:
 		var metadata: Variant = item.get_metadata(0)
 		if section == 0:
@@ -723,3 +738,144 @@ func _drop_list_data(at_position: Vector2, data: Variant) -> void:
 		var new_path: String = target_folder + folder_name + "/"
 		if not target_folder.begins_with(folder_path) and folder_path != new_path:
 			FolderLogic.rename(folder_path, new_path)
+
+
+func _get_selected_items() -> Array[TreeItem]:
+	var selected_items: Array[TreeItem] = []
+	var current: TreeItem = tree.get_next_selected(null)
+	while current:
+		selected_items.append(current)
+		current = tree.get_next_selected(current)
+	return selected_items
+
+
+func _delete_selected() -> void:
+	var selected_items: Array[TreeItem] = _get_selected_items()
+	if selected_items.is_empty():
+		return
+
+	var selected_folders: Array[String] = []
+	var selected_file_ids: Array[int] = []
+	for item: TreeItem in selected_items:
+		var metadata: Variant = item.get_metadata(0)
+		if str(metadata).is_valid_int(): # File.
+			var file_id: int = metadata as int
+			if file_id not in selected_file_ids:
+				selected_file_ids.append(file_id)
+		else: # Folder.
+			var folder_path: String = str(metadata)
+			if folder_path != "/" and folder_path not in selected_folders:
+				selected_folders.append(folder_path)
+
+	var top_folders: Array[String] = []
+	for folder_path: String in selected_folders:
+		var is_subfolder: bool = false
+		for other_folder: String in selected_folders:
+			if folder_path != other_folder and folder_path.begins_with(other_folder):
+				is_subfolder = true
+				break
+		if not is_subfolder:
+			top_folders.append(folder_path)
+
+	var standalone_file_ids: Array[int] = []
+	for file_id: int in selected_file_ids:
+		var file: FileData = FileLogic.get_data(file_id)
+		if not file:
+			continue
+
+		var in_deleted_folder: bool = false
+		for folder_path: String in top_folders:
+			if file.folder.begins_with(folder_path):
+				in_deleted_folder = true
+				break
+		if not in_deleted_folder:
+			standalone_file_ids.append(file_id)
+	if not standalone_file_ids.is_empty():
+		FileLogic.delete(standalone_file_ids)
+	for folder_path: String in top_folders:
+		FolderLogic.delete(folder_path)
+
+
+func _update_all_tooltips() -> void:
+	for file: FileData in FileLogic.files.values():
+		_update_file_tooltip(file)
+
+
+func _update_file_tooltip(file: FileData) -> void:
+	if not file or not file_items.has(file.id) or not is_instance_valid(file_items[file.id]):
+		return
+
+	var lines: PackedStringArray = [file.nickname]
+	var type_name: String = tr("Unknown")
+	match file.type:
+		Type.VIDEO: type_name = tr("Video")
+		Type.AUDIO: type_name = tr("Audio")
+		Type.IMAGE: type_name = tr("Image")
+		Type.TEXT: type_name = tr("Text")
+		Type.COLOR: type_name = tr("Color")
+		Type.PCK: type_name = tr("PCK")
+
+	var is_temp: bool = file.path.begins_with("temp://")
+	var is_missing: bool = not is_temp and not FileAccess.file_exists(file.path)
+	if is_missing:
+		lines.append("%s: %s (%s)" % [tr("Type"), type_name, tr("Missing")])
+	else:
+		lines.append("%s: %s" % [tr("Type"), type_name])
+
+	if file.duration > 0:
+		var duration_str: String = Format.time_str_from_frame(file.duration, Project.data.framerate, false)
+		lines.append("%s: %s (%d %s)" % [tr("Duration"), duration_str, file.duration, tr("frames")])
+
+	var raw_data: Variant = FileLogic.data.get(file.id)
+	if file.type == Type.VIDEO and raw_data is Video:
+		var video: Video = raw_data as Video
+		if not EditorCore.active_tasks.has(video.get_instance_id()):
+			_file_info_cache[file.id] = {
+				"resolution": video.get_resolution(),
+				"framerate": video.get_framerate(),
+				"codec": video.get_video_codec().to_upper(),
+			}
+
+		if _file_info_cache.has(file.id):
+			var info: Dictionary = _file_info_cache[file.id]
+			var resolution: Vector2i = info["resolution"] as Vector2i
+			var framerate: float = info["framerate"] as float
+			var codec: String = info["codec"] as String
+			if resolution != Vector2i.ZERO:
+				lines.append("%s: %dx%d (%.2f framerate)" % [tr("Resolution"), resolution.x, resolution.y, framerate])
+
+			var details: PackedStringArray = []
+			if not codec.is_empty():
+				details.append("%s: %s" % [tr("Codec"), codec])
+			details.append("%s: %d" % [tr("Audio streams"), file.audio_streams.size()])
+			lines.append(" | ".join(details))
+	elif file.type == Type.AUDIO and raw_data is AudioStreamFFmpeg:
+		var audio_stream: AudioStreamFFmpeg = raw_data as AudioStreamFFmpeg
+		var codec: String = audio_stream.get_audio_codec().to_upper()
+		var bitrate: int = audio_stream.get_audio_bitrate()
+		var details: PackedStringArray = []
+		if not codec.is_empty():
+			details.append("%s: %s" % [tr("Codec"), codec])
+		if bitrate > 0:
+			details.append("%s: %s/s" % [tr("Bitrate"), String.humanize_size(bitrate)])
+		if not details.is_empty():
+			lines.append(" | ".join(details))
+	elif file.type == Type.COLOR and file.temp_file:
+		lines.append("%s: #%s" % [tr("Color"), file.temp_file.color.to_html().to_upper()])
+
+	if file.type == Type.VIDEO and not file.proxy_path.is_empty() and FileAccess.file_exists(file.proxy_path):
+		lines.append("%s: %s" % [tr("Proxy"), tr("Active") if Settings.get_use_proxies() else tr("Generated")])
+
+	if file.ato_active and file.ato_file != -1 and FileLogic.has(file.ato_file):
+		lines.append("%s: %s" % [tr("Replaced audio"), FileLogic.get_data(file.ato_file).nickname])
+
+	if not is_temp:
+		if not is_missing:
+			var file_size: int = FileAccess.get_size(ProjectSettings.globalize_path(file.path))
+			if file_size >= 0:
+				lines.append("%s: %s" % [tr("Size"), String.humanize_size(file_size)])
+		lines.append("%s: %s" % [tr("Path"), file.path])
+
+	if not Thumbnailer.data.has(file.path) and file.type != Type.AUDIO and not is_temp:
+		lines.append(tr("(Loading thumbnail...)"))
+	file_items[file.id].set_tooltip_text(0, "\n".join(lines))
