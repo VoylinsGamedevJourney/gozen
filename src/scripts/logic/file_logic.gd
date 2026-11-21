@@ -1253,6 +1253,10 @@ func _on_video_loaded_from_queue(file: FileData) -> void:
 	video_loaded.emit(file)
 	_active_video_loads -= 1
 	_process_video_load_queue()
+	if Settings.get_auto_generate_proxies() and not RenderManager.is_encoding:
+		if has(file.id) and data.get(file.id) != null:
+			if file.proxy_path.is_empty() or not FileAccess.file_exists(file.proxy_path):
+				ProxyHandler.request_generation(file)
 
 
 func _update_video_cache_size(value: int) -> void:

@@ -44,6 +44,7 @@ var video_smart_seek_threshold: int = 30
 var video_cache_size: int = 15 ## This is a ram eater, we should NOT set this too high.
 var video_decoder_threads: int = 0
 var use_proxies: bool = false
+var auto_generate_proxies: bool = false
 var proxies_path: String = "user://proxies"
 
 # Markers

@@ -23,7 +23,6 @@ var available_system_fonts: PackedStringArray = []
 var custom_themes: Dictionary = {} ## { Name: Path }
 
 
-
 func _ready() -> void:
 	if !FileAccess.file_exists(get_settings_path()):
 		data.is_first_time = true
@@ -37,7 +36,6 @@ func _ready() -> void:
 
 	if !DirAccess.dir_exists_absolute(get_themes_path()) and DirAccess.make_dir_absolute(get_themes_path()):
 		printerr("Settings: Couldn't create directory at '%s'!" % get_themes_path())
-
 
 	load_system_fonts()
 	load_custom_themes()
@@ -475,6 +473,16 @@ func set_use_proxies(value: bool) -> void:
 
 func get_use_proxies() -> bool:
 	return data.use_proxies
+
+
+func set_auto_generate_proxies(value: bool) -> void:
+	data.auto_generate_proxies = value
+	if value and Project.is_loaded:
+		ProxyHandler.generate_missing_proxies()
+
+
+func get_auto_generate_proxies() -> bool:
+	return data.auto_generate_proxies
 
 
 func set_proxies_path(new_path: String) -> void:

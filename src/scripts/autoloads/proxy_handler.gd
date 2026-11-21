@@ -7,6 +7,9 @@ signal proxy_loading(file: FileData, progress: int) ## Progess is 0/100.
 const PROXY_HEIGHT: int = 540
 
 
+var active_generations: Array[int] = []
+
+
 
 func _ready() -> void:
 	var proxy_path: String = Settings.get_proxies_path()
@@ -15,23 +18,44 @@ func _ready() -> void:
 
 
 func request_generation(file: FileData) -> void:
-	if OS.has_feature("lite"):
-		return
+	if !OS.has_feature("lite") or file.type != Type.VIDEO or file.id in active_generations:
+		return # Only proxies for videos possible, and avoid duplicate generation tasks.
+	elif FileAccess.file_exists(file.path):
+		var proxy_path: String = Settings.get_proxies_path()
+		if !DirAccess.dir_exists_absolute(proxy_path) and DirAccess.make_dir_recursive_absolute(proxy_path):
+			printerr("ProxyHandler: Couldn't create directory at '%s'!" % proxy_path)
 
-	var proxy_path: String = Settings.get_proxies_path()
-	if file.type != Type.VIDEO:
-		return # Only proxies for videos possible.
-	var new_path: String = proxy_path.path_join(_create_proxy_name(file.path))
+		# Check if already exists, if yes, we link.
+		var new_path: String = proxy_path.path_join(_create_proxy_name(file.path))
+		if !FileAccess.file_exists(new_path):
+			active_generations.append(file.id)
+			Threader.add_task( _generate_proxy_task.bind(file, new_path), _on_proxy_finished.bind(file))
+		else:
+			FileLogic.set_proxy_path(file, new_path)
+			if Settings.get_use_proxies():
+				FileLogic.reload(file)
 
-	# Check if already exists, if yes, we link.
-	if !FileAccess.file_exists(new_path):
-		return Threader.add_task(
-				_generate_proxy_task.bind(file, new_path),
-				_on_proxy_finished.bind(file))
 
-	FileLogic.set_proxy_path(file, new_path)
-	if Settings.get_use_proxies():
-		FileLogic.reload(file)
+func generate_missing_proxies() -> void:
+	if !OS.has_feature("lite") and !RenderManager.is_encoding:
+		for file: FileData in FileLogic.get_all_video_files():
+			if file.proxy_path.is_empty() or not FileAccess.file_exists(file.proxy_path):
+				request_generation(file)
+
+
+func find_existing_proxy(file_path: String) -> String:
+	var proxies_dir: String = Settings.get_proxies_path()
+	if DirAccess.dir_exists_absolute(proxies_dir):
+		var expected_suffix: String = "_" + file_path.get_file().get_basename() + "_proxy.mp4"
+		var directory: DirAccess = DirAccess.open(proxies_dir)
+		directory.list_dir_begin()
+
+		var file_name: String = directory.get_next()
+		while file_name != "":
+			if file_name.ends_with(expected_suffix):
+				return proxies_dir.path_join(file_name)
+			file_name = directory.get_next()
+	return ""
 
 
 func delete_proxy(file: FileData) -> void:
@@ -41,30 +65,29 @@ func delete_proxy(file: FileData) -> void:
 		FileLogic.set_proxy_path(file, "")
 
 
+#--- Helper functions ---
+
 func _generate_proxy_task(file: FileData, output_path: String) -> void:
-	var tmp_path: String = output_path + "_tmp"
-	var global_output_path: String = ProjectSettings.globalize_path(tmp_path)
-	var global_input_path: String = ProjectSettings.globalize_path(file.path)
-	var encoder: Encoder = Encoder.new()
 	var video: Video = Video.new()
-	if video.open(global_input_path) != OK:
+	var encoder: Encoder = Encoder.new()
+	var tmp_path: String = output_path + "_tmp"
+	if video.open(ProjectSettings.globalize_path(file.path)) != OK:
 		return printerr("ProxyHandler: Failed to open source!")
 
 	var original_resolution: Vector2i = video.get_resolution()
 	var scale: float = float(PROXY_HEIGHT) / float(original_resolution.y)
 	var target_resolution: Vector2i = Vector2i(int(original_resolution.x * scale), PROXY_HEIGHT)
 	if target_resolution.x % 2 != 0:
-		target_resolution.x += 1 # Width needs to be equal
+		target_resolution.x += 1 # Width needs to be equal.
 
-	# Encoder setup
-	encoder.set_file_path(global_output_path)
+	# Encoder setup.
+	encoder.set_file_path(ProjectSettings.globalize_path(tmp_path))
 	encoder.set_resolution(target_resolution)
 	encoder.set_framerate(video.get_framerate())
-	encoder.set_audio_codec_id(Encoder.AudioCodec.A_NONE) # Only visual is needed
+	encoder.set_audio_codec_id(Encoder.AudioCodec.A_NONE) # Only visual is needed.
 	encoder.set_video_codec_id(Encoder.VideoCodec.V_H264)
 	encoder.set_h264_preset(Encoder.H264Presets.H264_PRESET_ULTRAFAST)
 	encoder.set_crf(32)
-
 	if !encoder.open(true):
 		printerr("ProxyHandler: Failed to open encoder!")
 		return video.close()
@@ -174,22 +197,8 @@ func _create_proxy_name(file_path: String) -> String:
 	return  "%s_%s_proxy.mp4" % [FileAccess.get_md5(file_path).left(6), file_path.get_file().get_basename()]
 
 
-func find_existing_proxy(file_path: String) -> String:
-	var proxies_dir: String = Settings.get_proxies_path()
-	if DirAccess.dir_exists_absolute(proxies_dir):
-		var expected_suffix: String = "_" + file_path.get_file().get_basename() + "_proxy.mp4"
-		var directory: DirAccess = DirAccess.open(proxies_dir)
-		directory.list_dir_begin()
-
-		var file_name: String = directory.get_next()
-		while file_name != "":
-			if file_name.ends_with(expected_suffix):
-				return proxies_dir.path_join(file_name)
-			file_name = directory.get_next()
-	return ""
-
-
 func _on_proxy_finished(file: FileData) -> void:
+	active_generations.erase(file.id)
 	if not FileLogic.has(file.id): return
 	if Settings.get_use_proxies():
 		FileLogic.reload(file)

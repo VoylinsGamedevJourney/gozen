@@ -308,6 +308,12 @@ func get_settings_menu_options() -> Dictionary: ## { String: Array }
 				Settings.get_use_proxies(),
 				default_settings.use_proxies,
 				Settings.set_use_proxies),
+			create_label(tr("Automatically generate proxies")),
+			create_check_button(
+				Settings.get_auto_generate_proxies(),
+				default_settings.auto_generate_proxies,
+				Settings.set_auto_generate_proxies,
+				tr("Automatically generate proxy files for all video's when they are loaded.")),
 			create_label(tr("Proxies save path")),
 			create_line_edit(
 				Settings.get_proxies_path(),
