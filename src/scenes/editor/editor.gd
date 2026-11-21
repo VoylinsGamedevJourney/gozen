@@ -127,7 +127,7 @@ func _ready() -> void:
 			is_clean_settings = true
 		elif clean_arg == "--reset-layout":
 			is_reset_layout = true
-# --- DIFFERENT MODES ---
+#--- DIFFERENT MODES ---
 		elif clean_arg == "--view":
 			is_view_mode = true
 		elif clean_arg in ["--render", "--render-quick"]:
@@ -343,12 +343,12 @@ func _on_project_popup_menu_id_pressed(id: int) -> void:
 		1: Project.save()
 		2: Project.save_as()
 		3: Project.archive_as()
-		# -------------
+		#-------------
 		4: Project.open_project()
 		# 5 is Recent projects
 		6: PopupManager.open(PopupManager.STARTUP_SCREEN)
 		9: PopupManager.open(PopupManager.WELCOME_SCREEN)
-		# -------------
+		#-------------
 		7: PopupManager.open(PopupManager.PROJECT_SETTINGS)
 		8: get_tree().quit()
 
@@ -490,7 +490,7 @@ func _on_info_popup_menu_id_pressed(id: int) -> void:
 		1: URL.open("manual")
 		2: URL.open("tutorials")
 		3: URL.open("discord")
-		# -------------
+		#-------------
 		4: URL.open("site")
 		5: PopupManager.open(PopupManager.CREDITS)
 

@@ -3,6 +3,7 @@ extends Node
 signal frame_changed
 signal visual_frame_changed
 signal play_changed(value: bool)
+signal playback_speed_changed
 signal is_prefetching_before_play
 signal done_prefetching_before_play
 
@@ -659,6 +660,7 @@ func set_playback_speed(value: float) -> void:
 	for player: AudioPlayer in audio_players:
 		if player.clip: player.player.pitch_scale = playback_speed * player.clip.speed
 	pitch_shift_effect.pitch_scale = 1.0 / playback_speed
+	playback_speed_changed.emit()
 
 
 func set_background_color(color: Color) -> void:

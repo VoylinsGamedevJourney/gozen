@@ -40,20 +40,6 @@ func _ready() -> void:
 		_save_data()
 
 
-func _process(_delta: float) -> void:
-	if thumbs_todo.size():
-		# We only do one at the time to avoid issues.
-		var file: FileData = thumbs_todo[0]
-		Threader.add_task(_gen_thumb.bind(file), thumb_generated.emit.bind(file))
-		thumbs_todo.remove_at(0)
-
-
-func _save_data() -> void:
-	var file: FileAccess = FileAccess.open(folder_files.path_join(DATA_NAME), FileAccess.WRITE)
-	if !file.store_var(data) or file.get_error():
-		printerr("Thumbnailer: Error happened when storing empty thumb data!")
-
-
 func save_project_thumb(project_path: String, image: Image) -> void:
 	if image and !image.is_empty():
 		var scaled: Image = scale_thumbnail(image.duplicate() as Image)
@@ -114,6 +100,22 @@ func get_thumb(file: FileData) -> Texture2D:
 	return ImageTexture.create_from_image(image)
 
 
+#--- Helper functions ---
+
+func _process(_delta: float) -> void:
+	if thumbs_todo.size():
+		# We only do one at the time to avoid issues.
+		var file: FileData = thumbs_todo[0]
+		Threader.add_task(_generate_thumb.bind(file), thumb_generated.emit.bind(file))
+		thumbs_todo.remove_at(0)
+
+
+func _save_data() -> void:
+	var file: FileAccess = FileAccess.open(folder_files.path_join(DATA_NAME), FileAccess.WRITE)
+	if !file.store_var(data) or file.get_error():
+		printerr("Thumbnailer: Error happened when storing empty thumb data!")
+
+
 func _get_default_thumb(icon_uid: String) -> Texture2D:
 	var image_tex: Texture2D = load(icon_uid)
 	var image: Image = scale_thumbnail(image_tex.get_image())
@@ -145,7 +147,7 @@ func _get_video_thumb(file: FileData) -> Image:
 ## This function is for generating thumbnails, should only be called from the
 ## _process function and in a thread through Threader.
 ## NOTE: PCK files only use a placeholder for now!
-func _gen_thumb(file: FileData, try: int = 0) -> void:
+func _generate_thumb(file: FileData, try: int = 0) -> void:
 	var image: Image
 
 	match file.type:
@@ -156,55 +158,50 @@ func _gen_thumb(file: FileData, try: int = 0) -> void:
 
 	if !image:
 		if try < 2:
-			_gen_thumb.call_deferred(file, try + 1)
-		return
+			_generate_thumb.call_deferred(file, try + 1)
+	else: # Resizing the image with correct aspect ratio for non-audio thumbs.
+		if file.type != Type.AUDIO:
+			image = scale_thumbnail(image)
+		if image.save_webp(folder_files.path_join(FILE_NAME % file.id)):
+			return printerr("Thumbnailer: Something went wrong saving thumb!")
 
-	# Resizing the image with correct aspect ratio for non-audio thumbs.
-	if file.type != Type.AUDIO:
-		image = scale_thumbnail(image)
-	if image.save_webp(folder_files.path_join(FILE_NAME % file.id)):
-		return printerr("Thumbnailer: Something went wrong saving thumb!")
-
-	Threader.mutex.lock()
-	data[file.path] = file.id
-	_save_data()
-	Threader.mutex.unlock()
+		Threader.mutex.lock()
+		data[file.path] = file.id
+		_save_data()
+		Threader.mutex.unlock()
 
 
 func _on_audio_wave_generated(file: FileData) -> void:
-	if file.type != Type.AUDIO:
-		return
+	if file.type == Type.AUDIO:
+		# Remove the potentially flat/empty cached thumbnail data.
+		Threader.mutex.lock()
+		if data.has(file.path):
+			if !data.erase(file.path):
+				printerr("Thumbnailer: Couldn't erase '%s' from data!" % file.path)
+			_save_data()
+		Threader.mutex.unlock()
 
-	# Remove the potentially flat/empty cached thumbnail data.
-	Threader.mutex.lock()
-	if data.has(file.path):
-		if !data.erase(file.path):
-			printerr("Thumbnailer: Couldn't erase '%s' from data!" % file.path)
-		_save_data()
-	Threader.mutex.unlock()
-
-	# Queue this file for immediate thumbnail regeneration.
-	if not thumbs_todo.has(file):
-		thumbs_todo.insert(0, file)
+		# Queue this file for immediate thumbnail regeneration.
+		if not thumbs_todo.has(file):
+			thumbs_todo.insert(0, file)
 
 
 func scale_thumbnail(image: Image) -> Image:
-	if !image or image.is_empty():
-		return null
+	if image and !image.is_empty():
+		var image_scale: float = min(107 / float(image.get_width()), 60 / float(image.get_height()))
+		image.resize(
+				int(image.get_width() * image_scale),
+				int(image.get_height() * image_scale),
+				Image.INTERPOLATE_BILINEAR)
 
-	var image_scale: float = min(107 / float(image.get_width()), 60 / float(image.get_height()))
-	image.resize(
-			int(image.get_width() * image_scale),
-			int(image.get_height() * image_scale),
-			Image.INTERPOLATE_BILINEAR)
-
-	var border_extra: int = int(float(107 - image.get_width()) / 2.0)
-	if border_extra != 0:
-		image.flip_x()
-		image.crop(image.get_width() + border_extra, 60)
-		image.flip_x()
-		image.crop(107, 60)
-	return image
+		var border_extra: int = int(float(107 - image.get_width()) / 2.0)
+		if border_extra != 0:
+			image.flip_x()
+			image.crop(image.get_width() + border_extra, 60)
+			image.flip_x()
+			image.crop(107, 60)
+		return image
+	return null
 
 
 func _on_file_reloaded(file: FileData) -> void:

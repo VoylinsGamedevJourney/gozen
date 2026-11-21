@@ -76,29 +76,26 @@ func set_scroll_y(value: float) -> void:
 #--- Logic ---
 
 func find_snap_offset(edges: Array[int], threshold: int, ignores: Array[int] = []) -> int:
-	if not snap_enabled:
-		return 0
+	if snap_enabled:
+		var snap_points: Array[int] = [EditorCore.frame_nr]
+		for marker: MarkerData in MarkerLogic.markers:
+			snap_points.append(marker.frame_nr)
+		for track_data: TrackLogic.TrackClips in TrackLogic.track_clips:
+			for clip: ClipData in track_data.clips:
+				if clip.id not in ignores:
+					snap_points.append(clip.start)
+					snap_points.append(clip.end)
 
-	var snap_points: Array[int] = [EditorCore.frame_nr]
-	for marker: MarkerData in MarkerLogic.markers:
-		snap_points.append(marker.frame_nr)
-	for track_data: TrackLogic.TrackClips in TrackLogic.track_clips:
-		for clip: ClipData in track_data.clips:
-			if clip.id not in ignores:
-				snap_points.append(clip.start)
-				snap_points.append(clip.end)
-
-	var best_delta: int = 0
-	var min_distance: int = threshold + 1
-	for edge: int in edges:
-		for snap_point: int in snap_points:
-			var distance: int = abs(snap_point - edge)
-			if distance < min_distance:
-				min_distance = distance
-				best_delta = snap_point - edge
-
-	if min_distance <= threshold:
-		return best_delta
+		var best_delta: int = 0
+		var min_distance: int = threshold + 1
+		for edge: int in edges:
+			for snap_point: int in snap_points:
+				var distance: int = abs(snap_point - edge)
+				if distance < min_distance:
+					min_distance = distance
+					best_delta = snap_point - edge
+		if min_distance <= threshold:
+			return best_delta
 	return 0
 
 
@@ -119,7 +116,6 @@ func can_drop_new_clips(track: int, frame: int, safe_zone: int, split_audio: boo
 
 	var target_frame: int = frame - draggable.mouse_offset
 	var target_end: int = target_frame + draggable.duration
-
 	var snap_delta: int = find_snap_offset([target_frame, target_end], maxi(1, int(10.0 / zoom)))
 	target_frame += snap_delta
 	target_end += snap_delta
@@ -280,9 +276,7 @@ func split_clips_at(frame_pos: int = EditorCore.frame_nr) -> void:
 	# if there are selected clips present, we only split the selected ones
 	var requests: Array[RequestClipSplit] = []
 	var new_clips: Array[ClipData]
-
-	# Checking if we only want selected clips to be split.
-	for clip: ClipData in ClipLogic.active_clips:
+	for clip: ClipData in ClipLogic.active_clips: # Checking if we only want selected clips to be split.
 		if clip.start < frame_pos and clip.end > frame_pos:
 			var request: RequestClipSplit = RequestClipSplit.new()
 			request.clip = clip
@@ -295,27 +289,22 @@ func split_clips_at(frame_pos: int = EditorCore.frame_nr) -> void:
 			ClipLogic.active_clips = new_clips
 			ClipLogic.selected.emit(ClipLogic.active_clips[-1])
 		draw_requested.emit()
-		return
+	elif ClipLogic.active_clips.is_empty(): # No selected clips present so splitting all possible clips.
+		for track: int in TrackLogic.tracks.size():
+			if !TrackLogic.tracks[track].is_locked:
+				var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_pos)
+				if clip and clip.start < frame_pos and clip.end > frame_pos:
+					var request: RequestClipSplit = RequestClipSplit.new()
+					request.clip = clip
+					request.frame = frame_pos - clip.start
+					requests.append(request)
 
-	if not ClipLogic.active_clips.is_empty(): return
-
-	# No selected clips present so splitting all possible clips.
-	for track: int in TrackLogic.tracks.size():
-		if TrackLogic.tracks[track].is_locked: continue
-
-		var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_pos)
-		if clip and clip.start < frame_pos and clip.end > frame_pos:
-			var request: RequestClipSplit = RequestClipSplit.new()
-			request.clip = clip
-			request.frame = frame_pos - clip.start
-			requests.append(request)
-
-	if !requests.is_empty():
-		new_clips = ClipLogic.split(requests)
-		if new_clips.size() > 0:
-			ClipLogic.active_clips = new_clips
-			ClipLogic.selected.emit(ClipLogic.active_clips[-1])
-		draw_requested.emit()
+		if !requests.is_empty():
+			new_clips = ClipLogic.split(requests)
+			if new_clips.size() > 0:
+				ClipLogic.active_clips = new_clips
+				ClipLogic.selected.emit(ClipLogic.active_clips[-1])
+			draw_requested.emit()
 
 
 func trim_clips_to_start(frame_pos: int = EditorCore.frame_nr) -> void: trim_clips_at(frame_pos, false)
