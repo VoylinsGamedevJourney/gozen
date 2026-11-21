@@ -18,4 +18,3 @@ script = ExtResource("2_effect")
 id = "blend_mode"
 nickname = "Blend Mode"
 params = Array[ExtResource("1_param")]([SubResource("Resource_t34ue")])
-shader_path = "uid://cqy0pix4fcocp"

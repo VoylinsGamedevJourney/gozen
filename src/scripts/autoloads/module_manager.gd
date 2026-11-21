@@ -101,12 +101,15 @@ func register_effects() -> void:
 
 func _register_effect(module_effect: GoZenModuleEffect) -> void:
 	var effect: Effect = module_effect.effect
-	if !effect.shader_path.is_empty(): # Visual.
+	if !effect.audio_effect: # Visual.
 		if not EffectsHandler.visual_effect_instances.has(effect.id):
 			EffectsHandler.visual_effects[effect.nickname] = effect.id
 			EffectsHandler.visual_effect_instances[effect.id] = effect
-			EffectsHandler.shader_cache[effect.shader_path] = load(effect.shader_path)
-	elif effect.audio_effect:
+			if effect.shader_path.is_empty():
+				EffectsHandler.shader_cache[effect.shader_path] = null
+			else:
+				EffectsHandler.shader_cache[effect.shader_path] = load(effect.shader_path)
+	else: # Audio.
 		if not EffectsHandler.audio_effect_instances.has(effect.id):
 			EffectsHandler.audio_effects[effect.nickname] = effect.id
 			EffectsHandler.audio_effect_instances[effect.id] = effect
