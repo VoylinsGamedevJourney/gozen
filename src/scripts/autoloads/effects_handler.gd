@@ -347,7 +347,7 @@ func update_param(clip: ClipData, effect_index: int, is_visual: bool, param_id: 
 	else:
 		target_frame = clampi(EditorCore.frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
 
-	var action_name: String = "Update %s_%s_c%d" % [effect.nickname, param_id, clip.id]
+	var action_name: String = "Update %s_%s_c%d_f%d" % [effect.nickname, param_id, clip.id, target_frame]
 	UndoManager.create_action(action_name, UndoRedo.MERGE_ENDS)
 
 	if target_frame == 0 and ((!new_keyframe and param_keyframes.size() == 1) or !is_keyframeable):
@@ -543,10 +543,11 @@ func remove_effect_keyframe_at_frame(clip: ClipData, effect_index: int, is_visua
 			var keyframes: Dictionary = effect.keyframes[param_id]
 			if keyframes.has(frame_nr):
 				var old_value: Variant = effect.keyframes[param_id][frame_nr]
+				var old_transition: int = (effect.keyframe_transitions.get(param_id, {}) as Dictionary).get(frame_nr, 0)
 				UndoManager.add_do(_remove_keyframe.bind(
 						clip, effect_index, is_visual, param_id, frame_nr))
 				UndoManager.add_undo(_set_keyframe.bind(
-						clip, effect_index, is_visual, param_id, frame_nr, old_value))
+						clip, effect_index, is_visual, param_id, frame_nr, old_value, old_transition))
 	UndoManager.commit_action()
 	effects_updated.emit()
 
@@ -557,7 +558,7 @@ func switch_enabled(clip: ClipData, index: int, is_visual: bool) -> void:
 	var effect: Effect = _get_effect(clip, index, is_visual)
 	if not effect: return
 
-	UndoManager.create_action("Move effect: %s" % effect.nickname)
+	UndoManager.create_action("Toggle effect: %s" % effect.nickname)
 	UndoManager.add_do(_switch_enabled.bind(clip, index, is_visual, !effect.is_enabled))
 	UndoManager.add_undo(_switch_enabled.bind(clip, index, is_visual, effect.is_enabled))
 	UndoManager.commit_action()

@@ -1170,9 +1170,11 @@ func _toggle_ato(file: FileData, value: bool) -> void:
 
 
 func relink_file(file: FileData, new_path: String) -> void:
+	var previous_path: String = file.path
+	var previous_nickname: String = file.nickname
 	UndoManager.create_action("Relink file")
-	UndoManager.add_do(_relink_file.bind(file, new_path))
-	UndoManager.add_undo(_relink_file.bind(file, file.path))
+	UndoManager.add_do(_relink_file.bind(file, new_path, new_path.get_file()))
+	UndoManager.add_undo(_relink_file.bind(file, previous_path, previous_nickname))
 	UndoManager.commit_action()
 
 	var new_duration: int = file.duration
@@ -1209,9 +1211,9 @@ func relink_file(file: FileData, new_path: String) -> void:
 			popup.call("set_data", [file])
 
 
-func _relink_file(file: FileData, new_path: String) -> void:
+func _relink_file(file: FileData, new_path: String, new_nickname: String) -> void:
 	file.path = new_path
-	file.nickname = new_path.get_file()
+	file.nickname = new_nickname
 	file.modified_time = FileAccess.get_modified_time(new_path)
 
 	var extension: String = file.path.get_extension().to_lower()

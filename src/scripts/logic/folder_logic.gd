@@ -104,6 +104,7 @@ func _rename(old_path: String, new_path: String) -> void:
 	var folder_index: int = folders.find(old_path)
 	if folder_index != -1:
 		folders[folder_index] = new_path
+	Project.unsaved_changes = true
 	path_changed.emit(old_path, new_path)
 
 	for file: FileData in FileLogic.files.values():
