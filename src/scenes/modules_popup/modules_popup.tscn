@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bcu0coqxgk2do"]
 
 [ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_5ya5u"]
-[ext_resource type="Script" uid="uid://castly6xxjrtk" path="res://scenes/module_manager/module_manager.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://castly6xxjrtk" path="res://scenes/modules_popup/modules_popup.gd" id="1_script"]
 
 [node name="ModuleManager" type="PanelContainer" unique_id=982388180 node_paths=PackedStringArray("tree", "install_button", "close_button")]
 material = ExtResource("1_5ya5u")

@@ -1,5 +1,6 @@
 extends PanelContainer
 
+
 const DEFAULT_PROFILES_PATH: String = "res://profiles/project/"
 
 
@@ -31,8 +32,6 @@ const DEFAULT_PROFILES_PATH: String = "res://profiles/project/"
 @export var startup_image: TextureRect
 @export var startup_image_credit_label: RichTextLabel
 
-
-var http_request: HTTPRequest ## For version checking.
 
 var startup_images_data: Array[PackedStringArray] = [ ## [ Image UID, unsplash image id ]
 	["uid://sh8txndv1wtu", "u27Rrbs9Dwc"],

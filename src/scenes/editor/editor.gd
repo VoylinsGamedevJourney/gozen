@@ -443,9 +443,11 @@ func _on_view_popup_menu_id_pressed(id: int) -> void:
 
 func _create_preferences_popup_menu() -> void:
 	var menu: PopupMenu = PopupMenu.new()
+	var is_macos_global_menu: bool = menu_bar.is_native_menu() and NativeMenu.has_system_menu(NativeMenu.APPLICATION_MENU_ID)
 	menu.name = "Preferences"
 	menu.title = "Preferences"
-	menu_bar.add_child(menu)
+	if is_macos_global_menu:
+		menu.system_menu_id = NativeMenu.APPLICATION_MENU_ID
 
 	menu.add_theme_constant_override("icon_max_width", 20)
 	menu.add_icon_item(load(Library.ICON_EDITOR_SETTINGS) as Icon, "Editor settings", 0)
@@ -454,7 +456,11 @@ func _create_preferences_popup_menu() -> void:
 		menu.add_separator()
 		menu.add_icon_item(load(Library.ICON_COMMAND_PROMPT) as Icon, "Command bar", 2)
 
+	if is_macos_global_menu:
+		menu.add_separator()
+
 	menu.id_pressed.connect(_on_preferences_popup_menu_id_pressed)
+	menu_bar.add_child(menu)
 
 
 func _on_preferences_popup_menu_id_pressed(id: int) -> void:

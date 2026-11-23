@@ -61,12 +61,6 @@ var shortcuts: Dictionary = {} # { action_name: [InputEvent, InputEvent] }
 var module_settings: Dictionary = {}
 
 
-# HIDDEN SETTINGS
-var tab_edit_hsplit_offsets: PackedInt32Array = [260, 1608]
-var tab_render_hsplit_offsets: PackedInt32Array = [260, 1608]
-var tab_vsplit_offsets: PackedInt32Array = [0]
-
-
 
 func check_version() -> void:
 	if version == VERSION:
