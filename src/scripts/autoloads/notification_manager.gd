@@ -19,7 +19,7 @@ func warning(text: String) -> void:	_send("Warn", text, LINUX_ICON_WARN)
 
 
 func _send(type: String, text: String, linux_icon: String) -> void:
-	if DisplayServer.window_is_focused() or DisplayServer.window_is_focused(1):
+	if DisplayServer.window_is_focused() or (DisplayServer.get_window_list().size() > 1 and DisplayServer.window_is_focused(1)):
 		return # No sending of notifications if inside of the editor.
 
 	var title: String = "GoZen " + type # NO_TRANSLATE
