@@ -5,7 +5,7 @@ on:
       version:
         description: GoZen version number
         type: string
-        default: '0.19-beta'
+        default: '0.20-beta'
       godot_version:
         description: The Godot version to use
         type: string
@@ -139,11 +139,32 @@ jobs:
           Godot --import project.godot --headless --quit || true
           Godot --headless --export-release "macOS" ../${{ env.PATH_EXPORT }}/GoZen${{ inputs.lite && '_lite' || '' }}.dmg
 
+      # This entire part is only here because of MacOS's ~~money hungry~~ "security" system.
+      - name: Create MacOS README
+        run: |
+          cat > "${{ env.PATH_EXPORT }}/README_MACOS.txt" <<'EOF'
+          GoZen for macOS
+          ================
+          GoZen is currently an unsigned application and MacOS may prevent it
+          from opening because it cannot verify the developer.
+
+          If MacOS blocks GoZen, extract the application and run this command
+          in the Terminal, replacing the path with the location of `GoZen.app`:
+
+          xattr -dr com.apple.quarantine "/path/to/GoZen.app"
+
+          Alternatively, right-click GoZen.app and select Open.
+          Only do this if you downloaded GoZen from an official source
+          and trust the application of course.
+          EOF
+
       - name: Upload raw MacOS export
         uses: actions/upload-artifact@v6
         with:
           name: GoZen_MacOS
-          path: ${{ env.PATH_EXPORT }}/GoZen.dmg
+          path: |
+            ${{ env.PATH_EXPORT }}/GoZen.dmg
+            ${{ env.PATH_EXPORT }}/README_MACOS.txt
 # End full build
 
 # Start lite build
@@ -184,9 +205,30 @@ jobs:
           Godot --import project.godot --headless --quit || true
           Godot --headless --export-release "macOS_LITE" ../${{ env.PATH_EXPORT }}/GoZen_lite.dmg
 
+      # This entire part is only here because of MacOS's ~~money hungry~~ "security" system.
+      - name: Create MacOS README
+        run: |
+          cat > "${{ env.PATH_EXPORT }}/README_MACOS.txt" <<'EOF'
+          GoZen for macOS
+          ================
+          GoZen is currently an unsigned application and MacOS may prevent it
+          from opening because it cannot verify the developer.
+
+          If MacOS blocks GoZen, extract the application and run this command
+          in the Terminal, replacing the path with the location of `GoZen.app`:
+
+          xattr -dr com.apple.quarantine "/path/to/GoZen.app"
+
+          Alternatively, right-click GoZen.app and select Open.
+          Only do this if you downloaded GoZen from an official source
+          and trust the application of course.
+          EOF
+
       - name: Upload raw MacOS export
         uses: actions/upload-artifact@v6
         with:
           name: GoZen_MacOS_lite
-          path: ${{ env.PATH_EXPORT }}/GoZen_lite.dmg
+          path: |
+            ${{ env.PATH_EXPORT }}/GoZen_lite.dmg
+            ${{ env.PATH_EXPORT }}/README_MACOS.txt
 # End lite build
