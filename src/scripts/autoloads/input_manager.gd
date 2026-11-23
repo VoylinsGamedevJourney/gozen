@@ -82,6 +82,14 @@ func _strict_input_check(event: InputEvent) -> bool:
 	elif event.is_action_pressed("focus_on_playhead", false, true):
 		Timeline.focus_on_playhead()
 		return true
+	elif event.is_action_pressed("timeline_zoom_in", false, true):
+		if event is InputEventMouseButton: return false
+		Timeline.set_zoom(Timeline.zoom * 1.2)
+		return true
+	elif event.is_action_pressed("timeline_zoom_out", false, true):
+		if event is InputEventMouseButton: return false
+		Timeline.set_zoom(Timeline.zoom / 1.2)
+		return true
 	elif event.is_action_pressed("timeline_zoom_full", false, true):
 		Timeline.zoom_to_fit()
 		return true
