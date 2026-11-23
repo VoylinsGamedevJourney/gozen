@@ -248,10 +248,11 @@ func reset_effect(clip: ClipData, index: int, is_visual: bool) -> void:
 	if not effect: return
 
 	var old_keyframes: Dictionary = Effect.duplicate_keyframes(effect.keyframes)
+	var old_transitions: Dictionary = Effect.duplicate_keyframes(effect.keyframe_transitions)
 
 	UndoManager.create_action("Reset effect: %s" % effect.nickname)
 	UndoManager.add_do(_reset_effect.bind(clip, index, is_visual))
-	UndoManager.add_undo(_restore_effect_keyframes.bind(clip, index, is_visual, old_keyframes))
+	UndoManager.add_undo(_restore_effect_keyframes.bind(clip, index, is_visual, old_keyframes, old_transitions))
 	UndoManager.commit_action()
 
 
@@ -260,17 +261,19 @@ func _reset_effect(clip: ClipData, index: int, is_visual: bool) -> void:
 	if not effect: return
 
 	effect.keyframes.clear()
+	effect.keyframe_transitions.clear()
 	_apply_param_exceptions(effect)
 
 	effect.set_default_keyframe()
 	effects_updated.emit()
 
 
-func _restore_effect_keyframes(clip: ClipData, index: int, is_visual: bool, old_keyframes: Dictionary) -> void:
+func _restore_effect_keyframes(clip: ClipData, index: int, is_visual: bool, old_keyframes: Dictionary, old_transitions: Dictionary) -> void:
 	var effect: Effect = _get_effect(clip, index, is_visual)
 	if not effect: return
 
 	effect.keyframes = Effect.duplicate_keyframes(old_keyframes)
+	effect.keyframe_transitions = Effect.duplicate_keyframes(old_transitions)
 	effect._cache_dirty = true
 	effects_updated.emit()
 

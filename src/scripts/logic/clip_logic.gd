@@ -83,13 +83,16 @@ func _restore_clip(snapshot: ClipData) -> void:
 
 func delete_selected_clips() -> void: delete(active_clips)
 func delete(clips_to_delete: Array[ClipData]) -> void:
-	if clips_to_delete.is_empty(): return
-
-	UndoManager.create_action("Delete clip_data(s)")
+	var unlocked_clips: Array[ClipData] = []
 	for clip: ClipData in clips_to_delete:
-		UndoManager.add_do(_delete.bind(clip))
-		UndoManager.add_undo(_restore_clip.bind(clip))
-	UndoManager.commit_action()
+		if clip and not TrackLogic.tracks[clip.track].is_locked:
+			unlocked_clips.append(clip)
+	if !unlocked_clips.is_empty():
+		UndoManager.create_action("Delete clip_data(s)")
+		for clip: ClipData in unlocked_clips:
+			UndoManager.add_do(_delete.bind(clip))
+			UndoManager.add_undo(_restore_clip.bind(clip))
+		UndoManager.commit_action()
 
 
 func _delete(clip: ClipData) -> void:
@@ -677,6 +680,7 @@ func _copy_effects(effects: Array, split_pos: int) -> Array:
 	for effect: Effect in effects:
 		var new_effect: Effect = effect.deep_copy()
 		new_effect.keyframes = {}
+		new_effect.keyframe_transitions = {}
 		new_effect._cache_dirty = true
 
 		for param: EffectParam in new_effect.params:
@@ -686,6 +690,26 @@ func _copy_effects(effects: Array, split_pos: int) -> Array:
 			if not new_effect.keyframes.has(param_id):
 				new_effect.keyframes[param_id] = {}
 			new_effect.keyframes[param_id][0] = value_at_split
+
+			if effect.keyframe_transitions.has(param_id):
+				var old_transitions: Dictionary = effect.keyframe_transitions[param_id]
+				var new_transitions: Dictionary[int, int] = {}
+				var sorted_keys: PackedInt64Array = effect._validate_cache(param_id)
+				var prev_frame: int = 0
+				for key: int in sorted_keys:
+					if key <= split_pos:
+						prev_frame = key
+					else:
+						break
+				if old_transitions.has(prev_frame):
+					new_transitions[0] = old_transitions[prev_frame] as int
+
+				for frame: int in old_transitions:
+					if frame > split_pos:
+						new_transitions[frame - split_pos] = old_transitions[frame] as int
+
+				if not new_transitions.is_empty():
+					new_effect.keyframe_transitions[param_id] = new_transitions
 
 			# Shift existing keyframes that appear after the split.
 			if !effect.keyframes.has(param_id): continue

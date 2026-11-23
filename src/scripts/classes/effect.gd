@@ -120,6 +120,13 @@ func set_default_keyframe() -> void:
 		var param_keyframe: Dictionary = keyframes[param_id]
 		if not param_keyframe.has(0):
 			keyframes[param_id][0] = effect_param.default_value
+			if effect_param.keyframeable:
+				if not keyframe_transitions.has(param_id):
+					var typed_transitions: Dictionary[int, int] = {}
+					keyframe_transitions[param_id] = typed_transitions
+				var param_transitions: Dictionary = keyframe_transitions[param_id]
+				if not param_transitions.has(0):
+					param_transitions[0] = Settings.get_default_keyframe_type()
 	_cache_dirty = true
 
 
