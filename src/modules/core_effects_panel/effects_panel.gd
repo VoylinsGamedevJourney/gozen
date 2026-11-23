@@ -464,7 +464,7 @@ func _create_transition_style_ui(parent: Control, is_left: bool, transition: Eff
 	var smooth_check: CheckButton = CheckButton.new()
 	var is_smooth: bool = transition and (transition.keyframe_transitions.get("fade", {}) as Dictionary).get(0, 0) == 1
 	smooth_check.set_pressed_no_signal(is_smooth)
-	smooth_check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	smooth_check.size_flags_horizontal = Control.SIZE_SHRINK_END
 	smooth_check.toggled.connect(func(toggled: bool) -> void:
 			EffectsHandler.set_transition_smoothing(active_clip, is_left, toggled))
 
@@ -2020,10 +2020,9 @@ func _on_fade_value_changed(value: float, is_visual: bool, is_left: bool, spinbo
 	if spinbox.get_parent().has_node("TitleHBox/ResetButton"):
 		(spinbox.get_parent().get_node("TitleHBox/ResetButton") as Control).visible = (value != 0)
 
-	if spinbox.get_line_edit().has_focus():
-		var current_fade: Vector2i = active_clip.effects.fade_visual if is_visual else active_clip.effects.fade_audio
-		var new_fade: Vector2i = Vector2i(int(value), current_fade.y) if is_left else Vector2i(current_fade.x, int(value))
-		EffectsHandler.set_fade(active_clip, is_visual, new_fade)
+	var current_fade: Vector2i = active_clip.effects.fade_visual if is_visual else active_clip.effects.fade_audio
+	var new_fade: Vector2i = Vector2i(int(value), current_fade.y) if is_left else Vector2i(current_fade.x, int(value))
+	EffectsHandler.set_fade(active_clip, is_visual, new_fade)
 
 
 func _on_transition_style_item_selected(index: int, option_button: OptionButton, is_left: bool) -> void:

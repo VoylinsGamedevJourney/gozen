@@ -835,9 +835,8 @@ func auto_cut_silence(target_clip: ClipData, local_ranges: Array[Vector2i], appl
 			snapshot.effects.audio_stream_index = clip.effects.audio_stream_index
 			snapshot.effects.video.assign(_copy_effects(clip.effects.video, offset))
 			snapshot.effects.audio.assign(_copy_effects(clip.effects.audio, offset))
-
-			snapshot.effects.transition_left = clip.effects.transition_left.deep_copy() if (clip.effects.transition_left and i == 0) else null
-			snapshot.effects.transition_right = clip.effects.transition_right.deep_copy() if (clip.effects.transition_right and i == kept_ranges.size() - 1) else null
+			snapshot.effects.transition_left = clip.effects.transition_left.deep_copy() if clip.effects.transition_left else null
+			snapshot.effects.transition_right = clip.effects.transition_right.deep_copy() if clip.effects.transition_right else null
 
 			if ripple:
 				var shift: int = 0
