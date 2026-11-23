@@ -15,6 +15,9 @@ var drag_mode: DragMode = DragMode.NONE
 var drag_start: Vector3
 var drag_start_mouse: Vector2
 
+var drag_had_keyframe: Vector3i = Vector3i.ZERO # 0 = false, 1 = true.
+var drag_has_moved: bool = false
+
 var drag_prev_angle: float = 0.0
 var drag_accumulated_rot: float = 0.0
 
@@ -33,7 +36,7 @@ func input(event: InputEvent, control: Control) -> void:
 
 
 func _input_mouse_button(event: InputEventMouseButton, control: Control) -> void:
-	var frame: int = clampi(EditorCore.visual_frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
+	var frame: int = clampi(EditorCore.frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
 	var x_param: EffectParam = _get_param("x_rotation")
 	var y_param: EffectParam = _get_param("y_rotation")
 	var z_param: EffectParam = _get_param("z_rotation")
@@ -48,12 +51,19 @@ func _input_mouse_button(event: InputEventMouseButton, control: Control) -> void
 	if event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			var dist: float = event.position.distance_to(control_center)
+			drag_has_moved = false
 			if dist <= RADIUS_INNER:
+				var x_keyframes: Dictionary = effect.keyframes.get("x_rotation", {})
+				var y_keyframes: Dictionary = effect.keyframes.get("y_rotation", {})
+				drag_had_keyframe.x = 1 if (x_keyframes.size() <= 1 or x_keyframes.has(frame)) else 0
+				drag_had_keyframe.y = 1 if (y_keyframes.size() <= 1 or y_keyframes.has(frame)) else 0
 				drag_mode = DragMode.XY
 				drag_start = Vector3(current_x, current_y, 0.0)
 				drag_start_mouse = event.position
 				control.accept_event()
 			elif dist > RADIUS_INNER and dist <= RADIUS_OUTER + 15.0:
+				var z_keyframes: Dictionary = effect.keyframes.get("z_rotation", {})
+				drag_had_keyframe.z = 1 if (z_keyframes.size() <= 1 or z_keyframes.has(frame)) else 0
 				drag_mode = DragMode.Z
 				drag_start = Vector3(0.0, 0.0, current_z)
 				drag_prev_angle = control_center.angle_to_point(event.position)
@@ -61,27 +71,38 @@ func _input_mouse_button(event: InputEventMouseButton, control: Control) -> void
 				control.accept_event()
 	else:
 		if drag_mode != DragMode.NONE and event.button_index == MOUSE_BUTTON_LEFT:
-			var effect_index: int = clip.effects.video.find(effect)
+			if drag_has_moved:
+				var effect_index: int = clip.effects.video.find(effect)
 
-			if drag_mode == DragMode.XY:
-				var final_x: float = effect.get_value(x_param, frame)
-				var final_y: float = effect.get_value(y_param, frame)
-				_set_keyframe_raw(frame, "x_rotation", drag_start.x)
-				_set_keyframe_raw(frame, "y_rotation", drag_start.y)
+				if drag_mode == DragMode.XY:
+					var final_x: float = effect.get_value(x_param, frame)
+					var final_y: float = effect.get_value(y_param, frame)
+					if drag_had_keyframe.x == 1:
+						_set_keyframe_raw(frame, "x_rotation", drag_start.x)
+					else:
+						_erase_keyframe_raw(frame, "x_rotation")
+					if drag_had_keyframe.y == 1:
+						_set_keyframe_raw(frame, "y_rotation", drag_start.y)
+					else:
+						_erase_keyframe_raw(frame, "y_rotation")
 
-				EffectsHandler.update_param(clip, effect_index, true, "x_rotation", final_x, false)
-				EffectsHandler.update_param(clip, effect_index, true, "y_rotation", final_y, false)
-			elif drag_mode == DragMode.Z:
-				var final_val_z: float = effect.get_value(z_param, frame)
-				_set_keyframe_raw(frame, "z_rotation", drag_start.z)
-				EffectsHandler.update_param(clip, effect_index, true, "z_rotation", final_val_z, false)
+					EffectsHandler.update_param(clip, effect_index, true, "x_rotation", final_x, false)
+					EffectsHandler.update_param(clip, effect_index, true, "y_rotation", final_y, false)
+				elif drag_mode == DragMode.Z:
+					var final_val_z: float = effect.get_value(z_param, frame)
+					if drag_had_keyframe.z == 1:
+						_set_keyframe_raw(frame, "z_rotation", drag_start.z)
+					else:
+						_erase_keyframe_raw(frame, "z_rotation")
+					EffectsHandler.update_param(clip, effect_index, true, "z_rotation", final_val_z, false)
 			drag_mode = DragMode.NONE
+			drag_has_moved = false
 			control.accept_event()
 
 
 func _input_mouse_motion(event: InputEventMouseMotion, control: Control) -> void:
-	var frame: int = clampi(EditorCore.visual_frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
-
+	var frame: int = clampi(EditorCore.frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
+	drag_has_moved = true
 	if drag_mode == DragMode.XY:
 		var delta: Vector2 = event.position - drag_start_mouse
 		var new_x: float = drag_start.x - delta.y * 0.5
@@ -153,6 +174,13 @@ func _set_keyframe_raw(frame: int, param_id: String, value: Variant) -> void:
 	effect.keyframes[param_id][target_frame] = value
 	effect._cache_dirty = true
 	EffectsHandler.effects_updated.emit()
+
+
+func _erase_keyframe_raw(frame: int, param_id: String) -> void:
+	if effect.keyframes.has(param_id):
+		(effect.keyframes[param_id] as Dictionary).erase(frame)
+		effect._cache_dirty = true
+		EffectsHandler.effects_updated.emit()
 
 
 func _get_param(id: String) -> EffectParam:

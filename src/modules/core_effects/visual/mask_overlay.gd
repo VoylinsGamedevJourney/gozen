@@ -8,6 +8,10 @@ var hovered_index: int = -1
 var drag_start_val: PackedVector2Array
 
 
+var drag_had_keyframe: bool = false
+var drag_has_moved: bool = false
+
+
 
 func initialize(clip_data: ClipData, effect_visual: Effect) -> void:
 	clip = clip_data
@@ -20,12 +24,13 @@ func _get_points(frame: int) -> PackedVector2Array:
 
 
 func input(event: InputEvent, control: Control) -> void:
-	var frame: int = clampi(EditorCore.visual_frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
+	var frame: int = clampi(EditorCore.frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
 	var points: PackedVector2Array = _get_points(frame)
 
 	if event is InputEventMouseMotion:
 		var mouse_pos: Vector2 = (event as InputEventMouseMotion).position
 		if drag_index != -1:
+			drag_has_moved = true
 			var new_points: PackedVector2Array = points.duplicate()
 			var normalized_pos: Vector2 = _control_to_project(mouse_pos, control) / Vector2(Project.data.resolution)
 			new_points[drag_index] = normalized_pos
@@ -49,10 +54,13 @@ func input(event: InputEvent, control: Control) -> void:
 		if mouse_event.pressed:
 			if mouse_event.button_index == MOUSE_BUTTON_LEFT:
 				if hovered_index != -1:
+					var points_keyframes: Dictionary = effect.keyframes.get("points", {})
+					drag_had_keyframe = points_keyframes.size() <= 1 or points_keyframes.has(frame)
+					drag_has_moved = false
 					drag_index = hovered_index
 					drag_start_val = points.duplicate()
 					control.accept_event()
-				elif points.size() < 64: # Maximum 64 points supported by uniform array
+				elif points.size() < 64: # Maximum 64 points supported by uniform array.
 					var normalized_pos: Vector2 = _control_to_project(mouse_pos, control) / Vector2(Project.data.resolution)
 					var insert_idx: int = points.size()
 					if points.size() >= 3:
@@ -100,8 +108,10 @@ func input(event: InputEvent, control: Control) -> void:
 					UndoManager.add_undo(_apply_keyframes.bind("points", old_keyframes))
 					UndoManager.commit_action()
 
-					drag_index = insert_idx
+					drag_index = mini(insert_idx, maxi(0, _get_points(frame).size() - 1))
 					drag_start_val = _get_points(frame).duplicate()
+					drag_had_keyframe = true
+					drag_has_moved = false
 					control.queue_redraw()
 					control.accept_event()
 			elif mouse_event.button_index == MOUSE_BUTTON_RIGHT:
@@ -129,14 +139,18 @@ func input(event: InputEvent, control: Control) -> void:
 					hovered_index = -1
 					control.queue_redraw()
 					control.accept_event()
-		else:
-			if drag_index != -1 and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+		elif drag_index != -1 and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+			if drag_has_moved:
 				var effect_index: int = clip.effects.video.find(effect)
 				var final_val: PackedVector2Array = _get_points(frame)
-				_set_keyframe_raw(frame, "points", drag_start_val)
+				if drag_had_keyframe:
+					_set_keyframe_raw(frame, "points", drag_start_val)
+				else:
+					_erase_keyframe_raw(frame, "points")
 				EffectsHandler.update_param(clip, effect_index, true, "points", final_val, false)
-				drag_index = -1
-				control.accept_event()
+			drag_index = -1
+			drag_has_moved = false
+			control.accept_event()
 
 
 func draw(control: Control) -> void:
@@ -174,6 +188,13 @@ func _set_keyframe_raw(frame: int, param_id: String, value: Variant) -> void:
 	effect.keyframes[param_id][target_frame] = value
 	effect._cache_dirty = true
 	EffectsHandler.effects_updated.emit()
+
+
+func _erase_keyframe_raw(frame: int, param_id: String) -> void:
+	if effect.keyframes.has(param_id):
+		(effect.keyframes[param_id] as Dictionary).erase(frame)
+		effect._cache_dirty = true
+		EffectsHandler.effects_updated.emit()
 
 
 func _apply_keyframes(param_id: String, keyframes: Dictionary) -> void:

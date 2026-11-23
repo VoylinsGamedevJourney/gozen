@@ -11,6 +11,9 @@ var drag_mode: DragMode = DragMode.NONE
 var drag_start_val: Variant
 var drag_start_mouse: Vector2
 
+var drag_had_keyframe: bool = false
+var drag_has_moved: bool = false
+
 # Variables for unbounded rotation tracking.
 var drag_prev_angle: float = 0.0
 var drag_accumulated_rot: float = 0.0
@@ -32,7 +35,7 @@ func input(event: InputEvent, control: Control) -> void:
 
 
 func _input_mouse_button(event: InputEventMouseButton, control: Control) -> void:
-	var frame: int = clampi(EditorCore.visual_frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
+	var frame: int = clampi(EditorCore.frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
 	var position_param: EffectParam = _get_param("position")
 	var current_pos: Vector2 = effect.get_value(position_param, frame) if position_param else Vector2.ZERO
 	var rotation_param: EffectParam = _get_param("rotation")
@@ -44,13 +47,18 @@ func _input_mouse_button(event: InputEventMouseButton, control: Control) -> void
 	if event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			var rotation_distance: float = event.position.distance_to(rot_handle_pos)
+			drag_has_moved = false
 			if rotation_distance <= 10.0 and rotation_param:
+				var rotation_keyframes: Dictionary = effect.keyframes.get("rotation", {})
+				drag_had_keyframe = rotation_keyframes.size() <= 1 or rotation_keyframes.has(frame)
 				drag_mode = DragMode.ROTATION
 				drag_start_val = current_rot
 				drag_prev_angle = control_center.angle_to_point(event.position)
 				drag_accumulated_rot = current_rot
 				control.accept_event()
 			else:
+				var position_keyframes: Dictionary = effect.keyframes.get("position", {})
+				drag_had_keyframe = position_keyframes.size() <= 1 or position_keyframes.has(frame)
 				drag_mode = DragMode.POSITION
 				drag_start_val = current_pos
 				drag_start_mouse = event.position
@@ -60,7 +68,6 @@ func _input_mouse_button(event: InputEventMouseButton, control: Control) -> void
 			if pivot_param:
 				var project_mouse: Vector2 = _control_to_project(event.position, control)
 				var new_pivot: Vector2 = project_mouse - current_pos
-				_set_keyframe_raw(frame, "pivot", Vector2i(new_pivot))
 				var effect_index: int = clip.effects.video.find(effect)
 				EffectsHandler.update_param(clip, effect_index, true, "pivot", Vector2i(new_pivot), false)
 				control.queue_redraw()
@@ -76,25 +83,30 @@ func _input_mouse_button(event: InputEventMouseButton, control: Control) -> void
 				new_scale.x = maxf(0.01, new_scale.x) if new_scale.x >= 0 else minf(-0.01, new_scale.x)
 				new_scale.y = maxf(0.01, new_scale.y) if new_scale.y >= 0 else minf(-0.01, new_scale.y)
 
-				_set_keyframe_raw(frame, "scale", new_scale)
 				var effect_index: int = clip.effects.video.find(effect)
 				EffectsHandler.update_param(clip, effect_index, true, "scale", new_scale, false)
 				control.queue_redraw()
 				control.accept_event()
 	else: # Button released.
 		if drag_mode != DragMode.NONE and event.button_index == MOUSE_BUTTON_LEFT:
-			var param_name: String = "position" if drag_mode == DragMode.POSITION else "rotation"
-			var effect_index: int = clip.effects.video.find(effect)
-			var final_val: Variant = effect.get_value(_get_param(param_name), frame)
-			_set_keyframe_raw(frame, param_name, drag_start_val)
-			EffectsHandler.update_param(clip, effect_index, true, param_name, final_val, false)
+			if drag_has_moved:
+				var param_name: String = "position" if drag_mode == DragMode.POSITION else "rotation"
+				var effect_index: int = clip.effects.video.find(effect)
+				var final_val: Variant = effect.get_value(_get_param(param_name), frame)
+				if drag_had_keyframe:
+					_set_keyframe_raw(frame, param_name, drag_start_val)
+				else:
+					_erase_keyframe_raw(frame, param_name)
+				EffectsHandler.update_param(clip, effect_index, true, param_name, final_val, false)
 
 			drag_mode = DragMode.NONE
+			drag_has_moved = false
 			control.accept_event()
 
 
 func _input_mouse_motion(event: InputEventMouseMotion, control: Control) -> void:
-	var frame: int = clampi(EditorCore.visual_frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
+	var frame: int = clampi(EditorCore.frame_nr - clip.start, 0, maxi(0, clip.duration - 1))
+	drag_has_moved = true
 	if drag_mode == DragMode.POSITION:
 		var project_delta: Vector2 = _control_to_project(event.position - drag_start_mouse, control)
 		var new_position: Vector2 = (drag_start_val as Vector2) + project_delta
@@ -134,6 +146,13 @@ func _set_keyframe_raw(frame: int, param_id: String, value: Variant) -> void:
 	effect.keyframes[param_id][target_frame] = value
 	effect._cache_dirty = true
 	EffectsHandler.effects_updated.emit()
+
+
+func _erase_keyframe_raw(frame: int, param_id: String) -> void:
+	if effect.keyframes.has(param_id):
+		(effect.keyframes[param_id] as Dictionary).erase(frame)
+		effect._cache_dirty = true
+		EffectsHandler.effects_updated.emit()
 
 
 func draw(control: Control) -> void:
