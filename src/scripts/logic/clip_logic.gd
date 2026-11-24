@@ -254,10 +254,18 @@ func split(requests: Array[RequestClipSplit]) -> Array[ClipData]:
 		var v_fade_out: int = clip.effects.fade_visual.y
 		var a_fade_in: int = clip.effects.fade_audio.x
 		var a_fade_out: int = clip.effects.fade_audio.y
+		var old_transition_left: Effect = clip.effects.transition_left
+		var old_transition_right: Effect = clip.effects.transition_right
+		var left_transition_left: Effect = old_transition_left if v_fade_in > 0 else _create_default_transition()
+		var left_transition_right: Effect = _create_default_transition()
 		UndoManager.add_do(_resize_and_fade.bind(
 				clip, -duration_right, true, v_fade_in, 0, a_fade_in, 0))
+		UndoManager.add_do(_set_transitions.bind(
+				clip, left_transition_left, left_transition_right))
 		UndoManager.add_undo(_resize_and_fade.bind(
 				clip, duration_right, true, v_fade_in, v_fade_out, a_fade_in, a_fade_out))
+		UndoManager.add_undo(_set_transitions.bind(
+				clip, old_transition_left, old_transition_right))
 
 		# Construct the new clip snapshot.
 		var snapshot: ClipData = request.clip.duplicate(true)
@@ -278,8 +286,11 @@ func split(requests: Array[RequestClipSplit]) -> Array[ClipData]:
 		snapshot.duration = duration_right
 		effects.video.assign(_copy_effects(request.clip.effects.video, split_offset))
 		effects.audio.assign(_copy_effects(request.clip.effects.audio, split_offset))
-		effects.transition_left = clip.effects.transition_left.deep_copy() if clip.effects.transition_left else null
-		effects.transition_right = clip.effects.transition_right.deep_copy() if clip.effects.transition_right else null
+		effects.transition_left = _create_default_transition()
+		if v_fade_out > 0 and old_transition_right:
+			effects.transition_right = old_transition_right.deep_copy()
+		else:
+			effects.transition_right = _create_default_transition()
 
 		if not clip.groups.is_empty():
 			var old_group: int = clip.groups[-1]
@@ -288,10 +299,8 @@ func split(requests: Array[RequestClipSplit]) -> Array[ClipData]:
 				group_id_map[old_group] = new_id
 				existing_group_ids.append(new_id)
 			snapshot.groups[-1] = group_id_map[old_group]
-
 		UndoManager.add_do(_restore_clip.bind(snapshot))
 		UndoManager.add_undo(_delete.bind(snapshot))
-
 		new_clips.append(snapshot)
 	UndoManager.commit_action()
 	return new_clips
@@ -879,8 +888,8 @@ func auto_cut_silence(target_clip: ClipData, local_ranges: Array[Vector2i], appl
 			snapshot.effects.audio_stream_index = clip.effects.audio_stream_index
 			snapshot.effects.video.assign(_copy_effects(clip.effects.video, offset))
 			snapshot.effects.audio.assign(_copy_effects(clip.effects.audio, offset))
-			snapshot.effects.transition_left = clip.effects.transition_left.deep_copy() if clip.effects.transition_left else null
-			snapshot.effects.transition_right = clip.effects.transition_right.deep_copy() if clip.effects.transition_right else null
+			snapshot.effects.transition_left = clip.effects.transition_left.deep_copy() if v_fade_in > 0 and clip.effects.transition_left else _create_default_transition()
+			snapshot.effects.transition_right = clip.effects.transition_right.deep_copy() if v_fade_out > 0 and clip.effects.transition_right else _create_default_transition()
 
 			if ripple:
 				var shift: int = 0
@@ -1027,20 +1036,34 @@ func _set_fade(clip: ClipData, is_visual: bool, fade: Vector2i) -> void:
 	updated.emit.call_deferred()
 
 
+func _set_transitions(clip: ClipData, transition_left: Effect, transition_right: Effect) -> void:
+	clip.effects.transition_left = transition_left
+	clip.effects.transition_right = transition_right
+	Project.unsaved_changes = true
+	EffectsHandler.effects_updated.emit()
+
+
 #--- Helpers ---
+
+func _create_default_transition() -> Effect:
+	if EffectsHandler.transition_instances.has("fade"):
+		var default_transition: Effect = EffectsHandler.transition_instances["fade"].deep_copy()
+		default_transition.set_default_keyframe()
+		return default_transition
+	return null
+
 
 func _create_default_effects(file_type: int, file_id: int = -1) -> ClipEffects:
 	var effects: ClipEffects = ClipEffects.new()
 	if file_type & Type.GROUP_VISUAL:
 		var resolution: Vector2i = Project.get_resolution()
 		var transform_effect: Effect = (load(Library.EFFECT_VISUAL_TRANSFORM) as Effect).deep_copy()
-
 		for param: EffectParam in transform_effect.params:
-			if param.id == "pivot": param.default_value = Vector2i(resolution / 2.0)
+			if param.id == "pivot":
+				param.default_value = Vector2i(resolution / 2.0)
 
 		transform_effect.set_default_keyframe()
 		effects.video.append(transform_effect)
-
 		if file_type == Type.PCK and file_id != -1:
 			var module_data: GoZenModuleScene = FileLogic.data.get(file_id)
 			var pck_effect: Effect = Effect.new()
@@ -1050,18 +1073,13 @@ func _create_default_effects(file_type: int, file_id: int = -1) -> ClipEffects:
 				pck_effect.params.append(param.duplicate(true))
 			pck_effect.set_default_keyframe()
 			effects.video.append(pck_effect)
-
 	if file_type & Type.GROUP_AUDIO:
 		var volume_effect: Effect = (load(Library.EFFECT_AUDIO_VOLUME) as Effect).deep_copy()
 		volume_effect.set_default_keyframe()
 		effects.audio.append(volume_effect)
 
-	if EffectsHandler.transition_instances.has("fade"):
-		effects.transition_left = EffectsHandler.transition_instances["fade"].deep_copy()
-		effects.transition_left.set_default_keyframe()
-		effects.transition_right = EffectsHandler.transition_instances["fade"].deep_copy()
-		effects.transition_right.set_default_keyframe()
-
+	effects.transition_left = _create_default_transition()
+	effects.transition_right = _create_default_transition()
 	return effects
 
 
