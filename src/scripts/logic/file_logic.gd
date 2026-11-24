@@ -1352,9 +1352,10 @@ func _find_subfolder_files_async(dropped_paths: Array[String], progress: Progres
 func print_memory_debug() -> void:
 	var total_video_mem: int = 0
 	var total_audio_mem: int = 0
+	var total_temporary_memory: int = 0
 	var total_video_instances: int = 0
 	var total_audio_instances: int = 0
-
+	var total_temporary_files: int = 0
 	var video_stats: Array[Dictionary] = [] # { name: String, instances: int, mem: int }
 
 	_mutex.lock()
@@ -1366,12 +1367,12 @@ func print_memory_debug() -> void:
 		var instances: int = 0
 		var memory: int = 0
 
-		# Main instance
+		# Main instance.
 		if data.has(file_id) and data[file_id] is Video:
 			instances += 1
 			memory += (data[file_id] as Video).get_memory_usage()
 
-		# Pool instances
+		# Pool instances.
 		for video: Video in video_pools[file_id]:
 			if video != null:
 				instances += 1
@@ -1383,12 +1384,12 @@ func print_memory_debug() -> void:
 			video_stats.append({ "name": file_name, "instances": instances, "mem": memory })
 
 	for file_id: int in audio_pools.keys():
-		# Main instance
+		# Main instance.
 		if data.has(file_id) and data[file_id] is AudioStreamFFmpeg:
 			total_audio_instances += 1
 			total_audio_mem += (data[file_id] as AudioStreamFFmpeg).get_memory_usage()
 
-		# Pool instances
+		# Pool instances.
 		for audio: AudioStreamFFmpeg in audio_pools[file_id]:
 			if audio != null:
 				total_audio_instances += 1
@@ -1399,8 +1400,19 @@ func print_memory_debug() -> void:
 		for stream_index: Variant in audio_wave[file_id]:
 			for lod: Variant in audio_wave[file_id][stream_index]:
 				total_wave_mem += (audio_wave[file_id][stream_index][lod] as PackedFloat32Array).size() * 4
-	_mutex.unlock()
 
+	for file_data: FileData in files.values():
+		if file_data.path.begins_with("temp://"):
+			var temporary_memory: int = 0
+			if file_data.temp_file != null:
+				temporary_memory = file_data.temp_file.get_memory_usage()
+			elif data.has(file_data.id) and data[file_data.id] is ImageTexture:
+				var image: Image = (data[file_data.id] as ImageTexture).get_image()
+				if image != null and not image.is_empty():
+					temporary_memory = image.get_data_size()
+			total_temporary_files += 1
+			total_temporary_memory += temporary_memory
+	_mutex.unlock()
 	video_stats.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.mem > b.mem)
 
 	Print.header("--==  Memory debug info  ==--")
@@ -1409,6 +1421,7 @@ func print_memory_debug() -> void:
 	Print.info("Video instances", "%d - %s" % [total_video_instances, String.humanize_size(total_video_mem)]) # NO_TRANSLATE
 	Print.info("Audio instances", "%d - %s" % [total_audio_instances, String.humanize_size(total_audio_mem)]) # NO_TRANSLATE
 	Print.info("Wave cache", String.humanize_size(total_wave_mem)) # NO_TRANSLATE
+	Print.info("Temporary files", "%d - %s" % [total_temporary_files, String.humanize_size(total_temporary_memory)]) # NO_TRANSLATE
 	Print.info("Top 5 video memory consumers") # NO_TRANSLATE
 	for i: int in mini(5, video_stats.size()):
 		var video_stat: Dictionary = video_stats[i]

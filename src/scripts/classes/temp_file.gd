@@ -20,6 +20,16 @@ func load_image_from_color() -> void:
 	image_data = ImageTexture.create_from_image(image)
 
 
+func get_memory_usage() -> int:
+	var memory_usage: int = 0
+	if image_data != null:
+		var image: Image = image_data.get_image()
+		if image != null and not image.is_empty():
+			memory_usage += image.get_data_size()
+	if text_effect != null:
+		memory_usage += var_to_bytes(text_effect.serialize()).size()
+	return memory_usage
+
 
 #--- Data handling ---
 
