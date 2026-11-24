@@ -42,6 +42,7 @@ var preview_window: Window
 
 
 func _ready() -> void:
+	mouse_filter = Control.MOUSE_FILTER_STOP
 	gui_input.connect(_on_gui_input)
 	overlay_control.gui_input.connect(_on_overlay_gui_input)
 	if EditorCore.viewport != null:
@@ -82,6 +83,18 @@ func _on_gui_input(event: InputEvent) -> void:
 
 
 func _on_overlay_gui_input(event: InputEvent) -> void:
+	if active_overlay and active_clip:
+		if EditorCore.visual_frame_nr >= active_clip.start and EditorCore.visual_frame_nr < active_clip.end:
+			var overlay_event: InputEvent = event
+			if event is InputEventMouse:
+				var translated_mouse_event: InputEventMouse = event.duplicate() as InputEventMouse
+				translated_mouse_event.position -= position
+				overlay_event = translated_mouse_event
+			active_overlay.input(overlay_event, self)
+			if overlay_event.is_canceled() or get_viewport().is_input_handled():
+				overlay_control.accept_event()
+				return
+
 	if _handle_viewport_input(event, false):
 		overlay_control.accept_event()
 

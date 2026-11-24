@@ -427,6 +427,11 @@ void Video::close() {
 	avio_ctx.reset();
 	avio_ctx_buffer = nullptr;
 
+	if (audio_stream.is_valid()) {
+		audio_stream->close();
+		audio_stream.unref();
+	}
+
 	file_buffer.clear();
 }
 
@@ -540,6 +545,7 @@ bool Video::seek_frame(int frame_nr) {
 	}
 	av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 	av_codec_ctx->skip_frame = original_skip_frame;
+	av_codec_ctx->skip_idct = original_skip_idct;
 
 	current_frame = frame_nr;
 	last_decoded_frame = current_frame;

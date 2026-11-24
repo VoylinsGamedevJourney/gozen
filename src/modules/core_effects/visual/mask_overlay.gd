@@ -38,12 +38,7 @@ func input(event: InputEvent, control: Control) -> void:
 			control.queue_redraw()
 			control.accept_event()
 		else:
-			var new_hovered: int = -1
-			for i: int in points.size():
-				var screen_pt: Vector2 = _project_to_control(points[i] * Vector2(Project.data.resolution), control)
-				if mouse_pos.distance_to(screen_pt) < 10.0:
-					new_hovered = i
-					break
+			var new_hovered: int = _get_hovered_point_index(mouse_pos, points, control)
 			if hovered_index != new_hovered:
 				hovered_index = new_hovered
 				control.queue_redraw()
@@ -52,6 +47,7 @@ func input(event: InputEvent, control: Control) -> void:
 		var mouse_event: InputEventMouseButton = event
 		var mouse_pos: Vector2 = mouse_event.position
 		if mouse_event.pressed:
+			hovered_index = _get_hovered_point_index(mouse_pos, points, control)
 			if mouse_event.button_index == MOUSE_BUTTON_LEFT:
 				if hovered_index != -1:
 					var points_keyframes: Dictionary = effect.keyframes.get("points", {})
@@ -217,6 +213,14 @@ func _project_to_control(project_position: Vector2, control: Control) -> Vector2
 func _control_to_project(control_delta: Vector2, control: Control) -> Vector2:
 	var ratio: Vector2 = Vector2(Project.data.resolution) / control.size
 	return control_delta * ratio
+
+
+func _get_hovered_point_index(mouse_pos: Vector2, points: PackedVector2Array, control: Control) -> int:
+	for index: int in points.size():
+		var screen_point: Vector2 = _project_to_control(points[index] * Vector2(Project.data.resolution), control)
+		if mouse_pos.distance_to(screen_point) < 10.0:
+			return index
+	return -1
 
 
 func _get_closest_segment_index(point: Vector2, points: PackedVector2Array, control: Control) -> int:
