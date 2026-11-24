@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://1h1361seixvh"
+path="res://.godot/imported/zoom_in.glsl-aaee11a76153fe91aa9b21e350bc0845.res"
+
+[deps]
+
+source_file="res://modules/core_effects/transitions/zoom_in.glsl"
+dest_files=["res://.godot/imported/zoom_in.glsl-aaee11a76153fe91aa9b21e350bc0845.res"]
+
+[params]
+

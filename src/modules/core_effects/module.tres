@@ -34,6 +34,7 @@
 [ext_resource type="Resource" uid="uid://boglvdxxqg3ki" path="res://modules/core_effects/transitions/dissolve.tres" id="30"]
 [ext_resource type="Script" uid="uid://dhlfblonhwake" path="res://scripts/classes/modules/gozen_module_setting.gd" id="30_g8sda"]
 [ext_resource type="Resource" uid="uid://deq3pbrigrrdj" path="res://modules/core_effects/transitions/wipe.tres" id="31"]
+[ext_resource type="Resource" uid="uid://dcakc584ke282" path="res://modules/core_effects/transitions/zoom_in.tres" id="33_mk7ka"]
 
 [sub_resource type="Resource" id="Resource_eff_1"]
 script = ExtResource("2_eff")
@@ -147,6 +148,11 @@ transition = ExtResource("30")
 script = ExtResource("3_trans")
 transition = ExtResource("31")
 
+[sub_resource type="Resource" id="Resource_m3wsd"]
+script = ExtResource("3_trans")
+transition = ExtResource("33_mk7ka")
+metadata/_custom_type_script = "uid://iwug055y5eyg"
+
 [resource]
 script = ExtResource("1_mod")
 name = "Core Effects"
@@ -154,5 +160,5 @@ description = "Default effects and transitions for GoZen."
 author = "Voylin"
 version = "1.1"
 custom_effects = Array[ExtResource("2_eff")]([SubResource("Resource_eff_1"), SubResource("Resource_eff_2"), SubResource("Resource_eff_3"), SubResource("Resource_eff_4"), SubResource("Resource_eff_5"), SubResource("Resource_eff_7"), SubResource("Resource_eff_8"), SubResource("Resource_eff_9"), SubResource("Resource_eff_10"), SubResource("Resource_eff_11"), SubResource("Resource_eff_12"), SubResource("Resource_eff_13"), SubResource("Resource_eff_14"), SubResource("Resource_eff_16"), SubResource("Resource_eff_17"), SubResource("Resource_eff_18"), SubResource("Resource_eff_22"), SubResource("Resource_eff_23"), SubResource("Resource_eff_24"), SubResource("Resource_fwn3q"), SubResource("Resource_bqj0i"), SubResource("Resource_gs2i4"), SubResource("Resource_g420h")])
-custom_transitions = Array[ExtResource("3_trans")]([SubResource("Resource_trans_1"), SubResource("Resource_trans_2"), SubResource("Resource_trans_3"), SubResource("Resource_trans_4")])
+custom_transitions = Array[ExtResource("3_trans")]([SubResource("Resource_trans_1"), SubResource("Resource_trans_2"), SubResource("Resource_trans_3"), SubResource("Resource_trans_4"), SubResource("Resource_m3wsd")])
 metadata/_custom_type_script = "uid://bupjtpen4yap5"
