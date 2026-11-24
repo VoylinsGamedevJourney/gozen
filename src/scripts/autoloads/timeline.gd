@@ -307,13 +307,17 @@ func split_clips_at(frame_pos: int = EditorCore.frame_nr) -> void:
 			draw_requested.emit()
 
 
-func trim_clips_to_start(frame_pos: int = EditorCore.frame_nr) -> void: trim_clips_at(frame_pos, false)
-func trim_clips_to_end(frame_pos: int = EditorCore.frame_nr) -> void: trim_clips_at(frame_pos, true)
-func trim_clips_at(frame_pos: int, from_end: bool) -> void:
+func trim_clips_to_start(frame_pos: int = EditorCore.frame_nr) -> void: trim_clips_at(frame_pos, false, false)
+func trim_clips_to_end(frame_pos: int = EditorCore.frame_nr) -> void: trim_clips_at(frame_pos, true, false)
+func ripple_trim_clips_to_start(frame_pos: int = EditorCore.frame_nr) -> void: trim_clips_at(frame_pos, false, true)
+func ripple_trim_clips_to_end(frame_pos: int = EditorCore.frame_nr) -> void: trim_clips_at(frame_pos, true, true)
+
+
+func trim_clips_at(frame_pos: int, from_end: bool, ripple: bool = false) -> void:
 	var requests: Array[RequestClipResize] = []
 
 	for clip: ClipData in ClipLogic.active_clips:
-		if clip.start < frame_pos and clip.end > frame_pos:
+		if !TrackLogic.tracks[clip.track].is_locked and clip.start < frame_pos and clip.end > frame_pos:
 			var request: RequestClipResize = RequestClipResize.new()
 			var amount: int = frame_pos - clip.end if from_end else frame_pos - clip.start
 			request.clip = clip
@@ -323,19 +327,20 @@ func trim_clips_at(frame_pos: int, from_end: bool) -> void:
 
 	if requests.is_empty():
 		for track: int in TrackLogic.tracks.size():
-			if TrackLogic.tracks[track].is_locked: continue
+			if !TrackLogic.tracks[track].is_locked:
+				var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_pos)
+				if clip and clip.start < frame_pos and clip.end > frame_pos:
+					var request: RequestClipResize = RequestClipResize.new()
+					var amount: int = frame_pos - clip.end if from_end else frame_pos - clip.start
 
-			var clip: ClipData = TrackLogic.get_clip_at_overlap(track, frame_pos)
-			if clip and clip.start < frame_pos and clip.end > frame_pos:
-				var request: RequestClipResize = RequestClipResize.new()
-				var amount: int = frame_pos - clip.end if from_end else frame_pos - clip.start
-
-				request.clip = clip
-				request.from_end = from_end
-				request.resize_amount = amount
-				requests.append(request)
-
-	ClipLogic.resize(requests)
+					request.clip = clip
+					request.from_end = from_end
+					request.resize_amount = amount
+					requests.append(request)
+	if ripple:
+		ClipLogic.ripple_resize(requests)
+	else:
+		ClipLogic.resize(requests)
 	draw_requested.emit()
 
 

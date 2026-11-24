@@ -48,15 +48,21 @@ func _ready() -> void:
 	register(Command.new("Cut selected clips", ClipLogic.cut_selected_clips, "ui_cut"))
 	register(Command.new("Paste clips", InputManager.clipboard_paste, "ui_paste"))
 	register(Command.new("Delete selected clips", ClipLogic.delete_selected_clips, "delete_clips"))
-	register(Command.new("Ripple delete selected clips", ClipLogic.ripple_delete_selected_clips, "ripple_delete_clips"))
-	register(Command.new("Ripple delete selected clips (all tracks)", ClipLogic.ripple_delete_selected_clips_all_tracks, "ripple_delete_clips_all_tracks"))
 	register(Command.new("Duplicate selected clips", ClipLogic.duplicate_selected_clips, "duplicate_selected_clips"))
+
 	register(Command.new("Group selected clips", ClipLogic.group_selected_clips, "group_clips"))
 	register(Command.new("Ungroup selected clips", ClipLogic.ungroup_selected_clips, "ungroup_clips"))
-	register(Command.new("Trim clips to start", Timeline.trim_clips_to_start, "trim_clips_to_start"))
-	register(Command.new("Trim clips to end", Timeline.trim_clips_to_end, "trim_clips_to_end"))
+
+	register(Command.new("Trim clips to start", Timeline.trim_clips_to_start, "trim_to_clip_start"))
+	register(Command.new("Trim clips to end", Timeline.trim_clips_to_end, "trim_to_clip_end"))
+
 	register(Command.new("Slip clips left", ClipLogic.slip_selected_clips.bind(-1), "slip_clip_left"))
 	register(Command.new("Slip clips right", ClipLogic.slip_selected_clips.bind(1), "slip_clip_right"))
+
+	register(Command.new("Ripple delete selected clips", ClipLogic.ripple_delete_selected_clips, "ripple_delete_clips"))
+	register(Command.new("Ripple delete selected clips (all tracks)", ClipLogic.ripple_delete_selected_clips_all_tracks, "ripple_delete_clips_all_tracks"))
+	register(Command.new("Ripple trim clips to start", Timeline.ripple_trim_clips_to_start, "ripple_trim_to_clip_start"))
+	register(Command.new("Ripple trim clips to end", Timeline.ripple_trim_clips_to_end, "ripple_trim_to_clip_end"))
 
 	register(Command.new("Add track", TrackLogic.add_track_to_end, ""))
 	register(Command.new("Clear selection", ClipLogic.clear_selection, ""))

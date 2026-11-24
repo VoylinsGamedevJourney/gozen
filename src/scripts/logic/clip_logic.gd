@@ -298,6 +298,9 @@ func split(requests: Array[RequestClipSplit]) -> Array[ClipData]:
 
 
 func resize(requests: Array[RequestClipResize]) -> void:
+	if requests.is_empty():
+		return
+
 	UndoManager.create_action("Resize clip_data(s)")
 	for request: RequestClipResize in requests:
 		var clip: ClipData = request.clip
@@ -307,6 +310,47 @@ func resize(requests: Array[RequestClipResize]) -> void:
 				clip, request.resize_amount, request.from_end))
 		UndoManager.add_undo(_resize_restore.bind(
 				clip, clip.start, clip.duration, clip.begin, old_v_fade, old_a_fade))
+	UndoManager.commit_action()
+
+
+func ripple_resize(requests: Array[RequestClipResize]) -> void:
+	if requests.is_empty():
+		return
+
+	UndoManager.create_action("Ripple trim clip_data(s)")
+	var leftmost_frame: int = Utils.INT_32_MAX
+	var has_start_trim: bool = false
+	for request: RequestClipResize in requests:
+		var clip: ClipData = request.clip
+		var original_start: int = clip.start
+		var original_duration: int = clip.duration
+		var original_begin: int = clip.begin
+		var original_end: int = clip.end
+		var original_visual_fade: Vector2i = clip.effects.fade_visual
+		var original_audio_fade: Vector2i = clip.effects.fade_audio
+		UndoManager.add_do(_resize.bind(
+				clip, request.resize_amount, request.from_end))
+		UndoManager.add_undo(_resize_restore.bind(
+				clip, original_start, original_duration, original_begin, original_visual_fade, original_audio_fade))
+
+		var ripple_shift_amount: int = 0
+		if request.from_end:
+			ripple_shift_amount = -request.resize_amount
+		else:
+			ripple_shift_amount = request.resize_amount
+			has_start_trim = true
+			leftmost_frame = mini(leftmost_frame, original_start)
+			UndoManager.add_do(_move.bind(clip, clip.track, original_start))
+
+		if ripple_shift_amount != 0:
+			for following_clip: ClipData in TrackLogic.get_clips_after(clip.track, original_end):
+				UndoManager.add_do(_move.bind(
+						following_clip, following_clip.track, following_clip.start - ripple_shift_amount))
+				UndoManager.add_undo(_move.bind(
+						following_clip, following_clip.track, following_clip.start))
+	if has_start_trim and !EditorCore.is_playing:
+		UndoManager.add_do(EditorCore.scrub_to_frame.bind(leftmost_frame))
+		UndoManager.add_undo(EditorCore.scrub_to_frame.bind(EditorCore.visual_frame_nr))
 	UndoManager.commit_action()
 
 

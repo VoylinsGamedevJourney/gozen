@@ -168,10 +168,18 @@ func _unhandled_input(event: InputEvent) -> void:
 			draw_clips.queue_redraw()
 		elif event.is_action_pressed("split_clips_at_mouse", false, true):
 			Timeline.split_clips_at(get_frame_from_mouse())
+		elif event.is_action_pressed("ripple_trim_to_clip_start", false, true):
+			Timeline.ripple_trim_clips_to_start()
+			accept_event()
+		elif event.is_action_pressed("ripple_trim_to_clip_end", false, true):
+			Timeline.ripple_trim_clips_to_end()
+			accept_event()
 		elif event.is_action_pressed("trim_to_clip_start", false, true):
 			Timeline.trim_clips_to_start()
+			accept_event()
 		elif event.is_action_pressed("trim_to_clip_end", false, true):
 			Timeline.trim_clips_to_end()
+			accept_event()
 		elif event.is_action_pressed("remove_empty_space_all_tracks", false, true):
 			var track_index: int = get_track_from_mouse()
 			var frame_nr: int = get_frame_from_mouse()
@@ -1225,28 +1233,54 @@ func move_playhead(frame_nr: int) -> void:
 
 
 func remove_empty_space_at(track: int, frame_nr: int) -> void:
-	if !TrackLogic.tracks[track].is_locked:
-		var clips: Array[ClipData] = TrackLogic.get_clips_after(track, frame_nr)
-		var region: Vector2i = TrackLogic.get_free_region(track, frame_nr)
-		var empty_size: int = region.y - region.x
-		var move_requests: Array[RequestClipMove] = []
-		var clips_to_move: Array[ClipData] = []
-		for clip: ClipData in clips:
-			if clip in clips_to_move:
+	if TrackLogic.tracks[track].is_locked:
+		return
+
+	var clips_after_cursor: Array[ClipData] = TrackLogic.get_clips_after(track, frame_nr)
+	if clips_after_cursor.is_empty():
+		return
+
+	var free_region: Vector2i = TrackLogic.get_free_region(track, frame_nr)
+	if free_region.x == -1 or free_region.y == Utils.INT_32_MAX:
+		return
+
+	var empty_space_size: int = free_region.y - free_region.x
+	if empty_space_size <= 0:
+		return
+
+	var clips_to_move: Array[ClipData] = []
+	for clip: ClipData in clips_after_cursor:
+		if clip in clips_to_move:
+			continue
+		clips_to_move.append(clip)
+
+		if Timeline.group_enabled:
+			for grouped_clip: ClipData in ClipLogic.get_group_clips(clip):
+				if not grouped_clip in clips_to_move:
+					clips_to_move.append(grouped_clip)
+
+	for clip: ClipData in clips_to_move:
+		if TrackLogic.tracks[clip.track].is_locked or clip.start < frame_nr:
+			return
+
+		var target_start: int = clip.start - empty_space_size
+		var target_end: int = clip.end - empty_space_size
+		if target_start < 0:
+			return
+
+		for existing_clip: ClipData in TrackLogic.track_clips[clip.track].clips:
+			if existing_clip in clips_to_move:
 				continue
-			clips_to_move.append(clip)
+			if target_start < existing_clip.end and target_end > existing_clip.start:
+				return
 
-			if Timeline.group_enabled:
-				for group_clip: ClipData in ClipLogic.get_group_clips(clip):
-					if not group_clip in clips_to_move:
-						clips_to_move.append(group_clip)
-
-		for clip: ClipData in clips_to_move:
-			var request: RequestClipMove = RequestClipMove.new()
-			request.clip = clip
-			request.offset_frame = -empty_size
-			move_requests.append(request)
-		ClipLogic.move(move_requests)
+	var move_requests: Array[RequestClipMove] = []
+	for clip: ClipData in clips_to_move:
+		var move_request: RequestClipMove = RequestClipMove.new()
+		move_request.clip = clip
+		move_request.offset_frame = -empty_space_size
+		move_requests.append(move_request)
+	ClipLogic.move(move_requests)
 
 
 func remove_empty_space_all_tracks_at(track_index: int, frame_nr: int) -> void:
