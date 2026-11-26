@@ -57,6 +57,7 @@ theme_override_constants/margin_bottom = 30
 
 [node name="Control" type="Control" parent="Margin" unique_id=142899416]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="Panel" type="PanelContainer" parent="Margin/Control" unique_id=828646470]
 clip_children = 2
