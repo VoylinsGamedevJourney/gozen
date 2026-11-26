@@ -324,6 +324,9 @@ func duplicate_text(file: FileData) -> FileData:
 
 #--- File dropping ---
 
+func dropped_single(file: String) -> void:
+	await dropped([file])
+
 ## File dropping can't be un-done with the UndoManager system!
 func dropped(dropped_file_paths: Array[String]) -> void:
 	drop_mouse_pos = get_viewport().get_mouse_position()
