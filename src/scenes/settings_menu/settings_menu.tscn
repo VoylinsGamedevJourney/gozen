@@ -19,6 +19,7 @@ settings_vbox = NodePath("Control/SettingsPanel/Margin/HBox/VBox/Scroll/Settings
 
 [node name="Control" type="Control" parent="." unique_id=2082373348]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="SettingsPanel" type="PanelContainer" parent="Control" unique_id=228170693]
 custom_minimum_size = Vector2(900, 450)
