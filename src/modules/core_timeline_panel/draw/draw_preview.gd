@@ -113,7 +113,12 @@ func _handle_draggable_file(file: FileData) -> int: ## Returns file duration.
 
 
 func _handle_clip(is_speeding: bool) -> void:
-	var clip: ClipData = Timeline.resize_target.clip
+	_draw_clip_resize_preview(Timeline.resize_target.clip, is_speeding)
+	for linked_clip: ClipData in Timeline.resize_target.linked_clips:
+		_draw_clip_resize_preview(linked_clip, is_speeding)
+
+
+func _draw_clip_resize_preview(clip: ClipData, is_speeding: bool) -> void:
 	var draw_start: float = clip.start
 	var draw_length: int = clip.duration
 	var draw_begin: int = clip.begin

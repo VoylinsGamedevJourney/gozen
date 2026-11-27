@@ -348,6 +348,7 @@ func trim_clips_at(frame_pos: int, from_end: bool, ripple: bool = false) -> void
 
 class ResizeTarget:
 	var clip: ClipData
+	var linked_clips: Array[ClipData] = []
 	var is_end: bool
 	var original_start: int = 0
 	var original_duration: int = 0

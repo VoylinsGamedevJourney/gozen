@@ -286,6 +286,16 @@ func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 			Timeline.current_state = Timeline.State.FADING
 			draw_clips.queue_redraw()
 		elif Timeline.resize_target:
+			if Timeline.group_enabled:
+				var main_clip: ClipData = Timeline.resize_target.clip
+				for grouped_clip: ClipData in ClipLogic.get_group_clips(main_clip):
+					if TrackLogic.tracks[grouped_clip.track].is_locked:
+						continue
+					var matches_edge: bool = (
+							grouped_clip.end == main_clip.end if Timeline.resize_target.is_end
+							else grouped_clip.start == main_clip.start)
+					if matches_edge:
+						Timeline.resize_target.linked_clips.append(grouped_clip)
 			Timeline.current_state = Timeline.State.SPEEDING if event.ctrl_pressed else Timeline.State.RESIZING
 			draw_clips.queue_redraw()
 		elif _last_mouse_button == MOUSE_BUTTON_LEFT and event.double_click and !pressed_clip:
@@ -753,15 +763,21 @@ func _on_group_button_toggled(toggled: bool) -> void:
 ## This function is also used to handle speeding.
 func _commit_current_resize() -> void:
 	if Timeline.resize_target.delta != 0:
-		var request: RequestClipResize = RequestClipResize.new()
-		request.clip = Timeline.resize_target.clip
-		request.resize_amount = Timeline.resize_target.delta
-		request.from_end = Timeline.resize_target.is_end
+		var requests: Array[RequestClipResize] = []
+		var target_clips: Array[ClipData] = [Timeline.resize_target.clip]
+		target_clips.append_array(Timeline.resize_target.linked_clips)
+
+		for target_clip: ClipData in target_clips:
+			var request: RequestClipResize = RequestClipResize.new()
+			request.clip = target_clip
+			request.resize_amount = Timeline.resize_target.delta
+			request.from_end = Timeline.resize_target.is_end
+			requests.append(request)
 
 		if Timeline.current_state == Timeline.State.SPEEDING:
-			ClipLogic.change_speed([request])
+			ClipLogic.change_speed(requests)
 		else:
-			ClipLogic.resize([request])
+			ClipLogic.resize(requests)
 	Timeline.resize_target = null
 	draw_clips.queue_redraw()
 
@@ -904,56 +920,65 @@ func _start_box_select(start_pos: Vector2, end_pos: Vector2) -> void:
 ## This function is also used to handle speeding.
 func _handle_resize_motion(mouse_pos: Vector2) -> void:
 	var clip: ClipData = Timeline.resize_target.clip
-	var file: FileData = FileLogic.get_data(clip.file)
-	var current_frame: int = get_frame_from_mouse(mouse_pos)
-	var is_fixed_duration: bool = file.type & (Type.AUDIO | Type.VIDEO)
-	if file.path.to_lower().get_extension() == "gif":
-		is_fixed_duration = false
+	var target_clips: Array[ClipData] = [clip]
+	target_clips.append_array(Timeline.resize_target.linked_clips)
 
-	var snap_delta: int = Timeline.find_snap_offset([current_frame], maxi(1, int(10.0 / Timeline.zoom)), [clip.id])
+	var ignore_ids: Array[int] = []
+	for target_clip: ClipData in target_clips:
+		ignore_ids.append(target_clip.id)
+
+	var current_frame: int = get_frame_from_mouse(mouse_pos)
+	var snap_delta: int = Timeline.find_snap_offset([current_frame], maxi(1, int(10.0 / Timeline.zoom)), ignore_ids)
 	current_frame += snap_delta
 
-	var min_duration: int = 1
-	if clip.type & Type.GROUP_VISUAL:
-		min_duration = maxi(min_duration, clip.effects.fade_visual.x + clip.effects.fade_visual.y)
-	if clip.type & Type.GROUP_AUDIO:
-		min_duration = maxi(min_duration, clip.effects.fade_audio.x + clip.effects.fade_audio.y)
+	var is_speeding: bool = Timeline.current_state == Timeline.State.SPEEDING
+	var desired_delta: int = (
+			current_frame - (Timeline.resize_target.original_start + Timeline.resize_target.original_duration)
+			if Timeline.resize_target.is_end
+			else current_frame - Timeline.resize_target.original_start)
 
-	if Timeline.resize_target.is_end: # Resizing end.
-		var new_duration: int = current_frame - Timeline.resize_target.original_start
-		var max_allowed_duration: int = file.duration - clip.begin
+	var min_delta: int = -Utils.INT_32_MAX
+	var max_delta: int = Utils.INT_32_MAX
 
-		if new_duration < min_duration:
-			new_duration = min_duration
-		if Timeline.current_state != Timeline.State.SPEEDING and is_fixed_duration and new_duration > max_allowed_duration:
-			new_duration = max_allowed_duration
+	for target_clip: ClipData in target_clips:
+		var target_file: FileData = FileLogic.get_data(target_clip.file)
+		var is_fixed_duration: bool = (target_file.type & (Type.AUDIO | Type.VIDEO)) != 0
+		if target_file.path.to_lower().get_extension() == "gif":
+			is_fixed_duration = false
 
-		# Collision detection.
-		var free_region: Vector2i = TrackLogic.get_free_region(
-				clip.track, Timeline.resize_target.original_start + 1, [clip.id])
+		var min_duration: int = 1
+		if target_clip.type & Type.GROUP_VISUAL:
+			min_duration = maxi(min_duration, target_clip.effects.fade_visual.x + target_clip.effects.fade_visual.y)
+		if target_clip.type & Type.GROUP_AUDIO:
+			min_duration = maxi(min_duration, target_clip.effects.fade_audio.x + target_clip.effects.fade_audio.y)
 
-		if (Timeline.resize_target.original_start + new_duration) > free_region.y:
-			new_duration = free_region.y - Timeline.resize_target.original_start
-		Timeline.resize_target.delta = new_duration - Timeline.resize_target.original_duration
-	else: # Resizing beginning.
-		var new_start: int = current_frame
-		var max_start: int = Timeline.resize_target.original_start + Timeline.resize_target.original_duration - min_duration
-		if new_start > max_start:
-			new_start = max_start
-		if Timeline.current_state != Timeline.State.SPEEDING and is_fixed_duration:
-			var min_allowed_start: int = Timeline.resize_target.original_start - clip.begin
-			if new_start < min_allowed_start:
-				new_start = min_allowed_start
+		if Timeline.resize_target.is_end: # Resizing end.
+			min_delta = maxi(min_delta, min_duration - target_clip.duration)
 
-		# Collision detection.
-		var free_region: Vector2i = TrackLogic.get_free_region(
-				clip.track,
-				Timeline.resize_target.original_start + Timeline.resize_target.original_duration - 1,
-				[clip.id])
+			if not is_speeding and is_fixed_duration:
+				var max_allowed_duration: int = floori(float(target_file.duration - target_clip.begin) / target_clip.speed)
+				max_delta = mini(max_delta, max_allowed_duration - target_clip.duration)
 
-		if new_start < free_region.x:
-			new_start = free_region.x
-		Timeline.resize_target.delta = new_start - Timeline.resize_target.original_start
+			# Collision detection.
+			var free_region: Vector2i = TrackLogic.get_free_region(
+					target_clip.track, target_clip.start, ignore_ids)
+			max_delta = mini(max_delta, free_region.y - target_clip.end)
+		else: # Resizing beginning.
+			max_delta = mini(max_delta, target_clip.duration - min_duration)
+
+			if not is_speeding and is_fixed_duration:
+				var min_allowed_delta: int = -floori(float(target_clip.begin) / target_clip.speed)
+				min_delta = maxi(min_delta, min_allowed_delta)
+
+			# Collision detection.
+			var free_region: Vector2i = TrackLogic.get_free_region(
+					target_clip.track, target_clip.end - 1, ignore_ids)
+			min_delta = maxi(min_delta, free_region.x - target_clip.start)
+
+	if min_delta <= max_delta:
+		Timeline.resize_target.delta = clampi(desired_delta, min_delta, max_delta)
+	else:
+		Timeline.resize_target.delta = 0
 	draw_clips.queue_redraw()
 
 
@@ -1124,34 +1149,42 @@ func _on_popup_action_clip_auto_cut() -> void:
 func _on_popup_action_clip_change_speed() -> void:
 	var popup: Control = PopupManager.get_popup(PopupManager.CHANGE_CLIP_SPEED)
 	(popup.get("confirmed") as Signal).connect(func(new_speed: float) -> void:
-			var new_duration: int = maxi(1, int((right_click_clip.duration * right_click_clip.speed) / new_speed))
-			var free_region: Vector2i = TrackLogic.get_free_region(
-					right_click_clip.track, right_click_clip.start + 1, [right_click_clip.id])
-			if right_click_clip.start + new_duration > free_region.y:
-				new_duration = free_region.y - right_click_clip.start
-
-			var request: RequestClipResize = RequestClipResize.new()
-			var delta: int = new_duration - right_click_clip.duration
-			request.clip = right_click_clip
-			request.resize_amount = delta
-			request.from_end = true
-			ClipLogic.change_speed([request]))
+			_apply_clip_speed_change(right_click_clip, new_speed))
 	popup.call("set_data", right_click_clip.speed)
 
 
 func _on_popup_action_clip_reset_speed() -> void:
-	var new_speed: float = 1.0
-	var new_duration: int = maxi(1, int((right_click_clip.duration * right_click_clip.speed) / new_speed))
+	_apply_clip_speed_change(right_click_clip, 1.0)
 
-	var free_region: Vector2i = TrackLogic.get_free_region(right_click_clip.track, right_click_clip.start + 1, [right_click_clip.id])
-	if right_click_clip.start + new_duration > free_region.y:
-		new_duration = free_region.y - right_click_clip.start
 
-	var request: RequestClipResize = RequestClipResize.new()
-	request.clip = right_click_clip
-	request.resize_amount = new_duration - right_click_clip.duration
-	request.from_end = true
-	ClipLogic.change_speed([request])
+func _apply_clip_speed_change(anchor_clip: ClipData, new_speed: float) -> void:
+	var target_clips: Array[ClipData] = [anchor_clip]
+	if Timeline.group_enabled:
+		for grouped_clip: ClipData in ClipLogic.get_group_clips(anchor_clip):
+			if TrackLogic.tracks[grouped_clip.track].is_locked:
+				continue
+			if grouped_clip.start == anchor_clip.start and grouped_clip.end == anchor_clip.end:
+				target_clips.append(grouped_clip)
+
+	var ignore_ids: Array[int] = []
+	for target_clip: ClipData in target_clips:
+		ignore_ids.append(target_clip.id)
+
+	var new_duration: int = maxi(1, int((anchor_clip.duration * anchor_clip.speed) / new_speed))
+	for target_clip: ClipData in target_clips:
+		var free_region: Vector2i = TrackLogic.get_free_region(
+				target_clip.track, target_clip.start, ignore_ids)
+		if target_clip.start + new_duration > free_region.y:
+			new_duration = maxi(1, free_region.y - target_clip.start)
+
+	var requests: Array[RequestClipResize] = []
+	for target_clip: ClipData in target_clips:
+		var request: RequestClipResize = RequestClipResize.new()
+		request.clip = target_clip
+		request.resize_amount = new_duration - target_clip.duration
+		request.from_end = true
+		requests.append(request)
+	ClipLogic.change_speed(requests)
 
 
 func _on_popup_action_track_add() -> void:    TrackLogic.add_track(right_click_track)
