@@ -51,9 +51,15 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _gui_input_mouse_button(event: InputEventMouseButton) -> void:
-	if !event.ctrl_pressed or !event.pressed:
+	if !event.pressed:
 		return
-	elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
+	if event.button_index == MOUSE_BUTTON_MIDDLE:
+		project_view.call("reset_zoom")
+		accept_event()
+		return
+	if event.ctrl_pressed:
+		return
+	if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 		project_view.call("zoom_view", 1.1)
 		accept_event()
 	elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:

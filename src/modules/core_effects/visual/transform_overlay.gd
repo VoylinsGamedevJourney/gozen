@@ -64,15 +64,18 @@ func _input_mouse_button(event: InputEventMouseButton, control: Control) -> void
 				drag_start_mouse = event.position
 				control.accept_event()
 		elif event.button_index == MOUSE_BUTTON_MIDDLE:
-			var pivot_param: EffectParam = _get_param("pivot")
-			if pivot_param:
-				var project_mouse: Vector2 = _control_to_project(event.position, control)
-				var new_pivot: Vector2 = project_mouse - current_pos
-				var effect_index: int = clip.effects.video.find(effect)
-				EffectsHandler.update_param(clip, effect_index, true, "pivot", Vector2i(new_pivot), false)
-				control.queue_redraw()
-				control.accept_event()
-		elif event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN] and !event.ctrl_pressed:
+			var current_view_zoom: Variant = control.get("view_zoom")
+			var is_default_zoom: bool = current_view_zoom is float and is_equal_approx(current_view_zoom as float, 1.0)
+			if event.ctrl_pressed or is_default_zoom:
+				var pivot_param: EffectParam = _get_param("pivot")
+				if pivot_param:
+					var project_mouse: Vector2 = _control_to_project(event.position, control)
+					var new_pivot: Vector2 = project_mouse - current_pos
+					var effect_index: int = clip.effects.video.find(effect)
+					EffectsHandler.update_param(clip, effect_index, true, "pivot", Vector2i(new_pivot), false)
+					control.queue_redraw()
+					control.accept_event()
+		elif event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN] and event.ctrl_pressed:
 			var scale_param: EffectParam = _get_param("scale")
 			if scale_param:
 				var current_scale: Vector2 = effect.get_value(scale_param, frame)

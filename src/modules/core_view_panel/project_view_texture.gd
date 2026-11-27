@@ -118,7 +118,7 @@ func _handle_viewport_input(event: InputEvent, from_texture: bool) -> bool:
 		elif mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_RIGHT:
 			_open_context_menu()
 			return true
-		elif mouse_event.ctrl_pressed and mouse_event.pressed:
+		elif !mouse_event.ctrl_pressed and mouse_event.pressed:
 			var overlay_mouse_pos: Vector2 = mouse_event.position + position if from_texture else mouse_event.position
 			if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
 				zoom_at(ZOOM_STEP, overlay_mouse_pos)
