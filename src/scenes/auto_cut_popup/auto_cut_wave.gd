@@ -43,10 +43,22 @@ func _gui_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion and _seeking:
 		var seek_time: float = (get_local_mouse_position().x / size.x) * preview_duration + clip_offset_sec
 		seek_requested.emit(maxf(0.0, seek_time))
+	elif event is InputEventMagnifyGesture:
+		var magnify_event: InputEventMagnifyGesture = event as InputEventMagnifyGesture
+		if !is_equal_approx(magnify_event.factor, 1.0):
+			zoom_requested.emit(clampf(preview_duration / magnify_event.factor, 1.0, 300.0))
+		accept_event()
+	elif event is InputEventPanGesture:
+		var pan_event: InputEventPanGesture = event as InputEventPanGesture
+		var pan_delta: float = pan_event.delta.y if absf(pan_event.delta.y) >= absf(pan_event.delta.x) else pan_event.delta.x
+		if !is_zero_approx(pan_delta):
+			zoom_requested.emit(clampf(preview_duration * pow(1.2, clampf(pan_delta, -3.0, 3.0)), 1.0, 300.0))
+		accept_event()
 
 
 func _draw() -> void:
-	if file_id == -1 or !FileLogic.audio_wave.has(file_id): return
+	if file_id == -1 or !FileLogic.audio_wave.has(file_id):
+		return
 
 	var wave_streams: Dictionary = FileLogic.audio_wave[file_id]
 	var wave_dict: Dictionary = {}
@@ -54,9 +66,6 @@ func _draw() -> void:
 		wave_dict = wave_streams[audio_stream_index]
 	elif audio_stream_index == -1:
 		wave_dict = wave_streams.get(-1, wave_streams.values()[0] if wave_streams.size() > 0 else {})
-
-	if wave_dict.is_empty():
-		return
 
 	var wave_data: PackedFloat32Array = wave_dict.get(1, PackedFloat32Array())
 	if wave_data.is_empty():

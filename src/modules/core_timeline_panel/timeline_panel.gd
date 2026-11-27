@@ -22,8 +22,11 @@ const ZOOM_MAX: float = 200.0
 const ZOOM_STEP: float = 1.1
 
 const SAFE_ZONE: int = 200
-# How many px does the mouse need to move to treat it as a drag?
-const DRAG_START_THRESHOLD_PX: float = 10.0
+const DRAG_START_THRESHOLD_PX: float = 10.0 ## How many px does the mouse need to move to treat it as a drag?
+
+# Trackpad stuff.
+const PAN_TRACK_HEIGHT_THRESHOLD: float = 0.5
+const PAN_ZOOM_DELTA_CLAMP: float = 3.0
 
 
 @export var mode_panel: PanelContainer
@@ -58,6 +61,8 @@ var _last_mouse_button: int = MOUSE_BUTTON_NONE
 
 var _drop_track_idx: int = -1
 var _drop_frame_nr: int = -1
+
+var _pan_track_height_accumulator: float = 0.0
 
 
 
@@ -118,10 +123,15 @@ func _sync_and_redraw() -> void:
 
 func _gui_input(event: InputEvent) -> void:
 	if Project.is_loaded:
+
 		if event is InputEventMouseButton:
 			_on_gui_input_mouse_button(event as InputEventMouseButton)
 		elif event is InputEventMouseMotion:
 			_on_gui_input_mouse_motion(event as InputEventMouseMotion)
+		elif event is InputEventMagnifyGesture:
+			_on_gui_input_magnify_gesture(event as InputEventMagnifyGesture)
+		elif event is InputEventPanGesture:
+			_on_gui_input_pan_gesture(event as InputEventPanGesture)
 		_unhandled_input(event)
 
 
@@ -206,19 +216,29 @@ func _unhandled_input(event: InputEvent) -> void:
 func _on_gui_input_mouse_button(event: InputEventMouseButton) -> void:
 	_last_mouse_button = event.button_index
 	if event.ctrl_pressed and event.shift_pressed and event.pressed:
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		if event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_LEFT]:
 			var new_height: float = Settings.get_module_setting("core_timeline_panel", "track_height", 25.0) + 2.0
 			Settings.set_module_setting(
 					"core_timeline_panel",
 					"track_height",
 					clampf(new_height, TRACK_HEIGHT_LIMIT.x, TRACK_HEIGHT_LIMIT.y))
 			return accept_event()
-		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		elif event.button_index in [MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_RIGHT]:
 			var new_height: float = Settings.get_module_setting("core_timeline_panel", "track_height", 25.0) - 2.0
 			Settings.set_module_setting(
 					"core_timeline_panel",
 					"track_height",
 					clampf(new_height, TRACK_HEIGHT_LIMIT.x, TRACK_HEIGHT_LIMIT.y))
+			return accept_event()
+
+	if OS.get_name() == "macOS" and event.shift_pressed and not event.ctrl_pressed and event.pressed:
+		if event.button_index in [MOUSE_BUTTON_WHEEL_LEFT, MOUSE_BUTTON_WHEEL_RIGHT]:
+			var scroll_step: float = scroll_timeline.scroll_vertical_custom_step
+			if scroll_step <= 0.0:
+				scroll_step = scroll_timeline.get_v_scroll_bar().page / 8.0
+			var scroll_factor: float = event.factor if event.factor > 0.0 else 1.0
+			var scroll_direction: float = -1.0 if event.button_index == MOUSE_BUTTON_WHEEL_LEFT else 1.0
+			scroll_timeline.scroll_vertical = maxi(0, scroll_timeline.scroll_vertical + roundi(scroll_direction * scroll_step * scroll_factor))
 			return accept_event()
 
 	if event.is_action_pressed("timeline_zoom_in", false, true):
@@ -403,6 +423,33 @@ func _on_gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 			mouse_default_cursor_shape = Control.CURSOR_HSIZE
 			_handle_resize_motion(event.position)
 			draw_preview.queue_redraw()
+
+
+func _on_gui_input_magnify_gesture(event: InputEventMagnifyGesture) -> void:
+	if !is_equal_approx(event.factor, 1.0):
+		zoom_at_mouse(event.factor)
+	else:
+		accept_event()
+
+
+func _on_gui_input_pan_gesture(event: InputEventPanGesture) -> void:
+	if !event.ctrl_pressed:
+		return
+
+	var pan_delta: float = event.delta.y if absf(event.delta.y) >= absf(event.delta.x) else event.delta.x
+	if event.shift_pressed:
+		_pan_track_height_accumulator -= pan_delta
+		var height_steps: int = int(_pan_track_height_accumulator / PAN_TRACK_HEIGHT_THRESHOLD)
+		if height_steps != 0:
+			_pan_track_height_accumulator -= float(height_steps) * PAN_TRACK_HEIGHT_THRESHOLD
+			var current_height: float = Settings.get_module_setting("core_timeline_panel", "track_height", 25.0)
+			var new_height: float = clampf(current_height + (float(height_steps) * 2.0), TRACK_HEIGHT_LIMIT.x, TRACK_HEIGHT_LIMIT.y)
+			Settings.set_module_setting("core_timeline_panel", "track_height", new_height)
+		accept_event()
+	elif !is_zero_approx(pan_delta):
+		zoom_at_mouse(pow(ZOOM_STEP, clampf(-pan_delta, -PAN_ZOOM_DELTA_CLAMP, PAN_ZOOM_DELTA_CLAMP)))
+	else:
+		accept_event()
 
 
 func _on_ui_cancel() -> void:

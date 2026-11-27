@@ -56,6 +56,10 @@ func _gui_input(event: InputEvent) -> void:
 		_gui_mouse_motion(event as InputEventMouseMotion)
 	elif event is InputEventMouseButton:
 		_gui_mouse_button(event as InputEventMouseButton)
+	elif event is InputEventMagnifyGesture:
+		_gui_magnify_gesture(event as InputEventMagnifyGesture)
+	elif event is InputEventPanGesture:
+		_gui_pan_gesture(event as InputEventPanGesture)
 
 
 func _gui_mouse_motion(_event: InputEventMouseMotion) -> void:
@@ -132,6 +136,20 @@ func _gui_mouse_button(event: InputEventMouseButton) -> void:
 		elif _is_scrubbing and event.button_index == MOUSE_BUTTON_LEFT:
 			_is_scrubbing = false
 			EditorCore.finish_scrub()
+
+
+func _gui_magnify_gesture(event: InputEventMagnifyGesture) -> void:
+	if !is_equal_approx(event.factor, 1.0):
+		set_zoom(zoom * event.factor, get_global_mouse_position().x)
+	accept_event()
+
+
+func _gui_pan_gesture(event: InputEventPanGesture) -> void:
+	if event.ctrl_pressed:
+		var pan_delta: float = event.delta.y if absf(event.delta.y) >= absf(event.delta.x) else event.delta.x
+		if !is_zero_approx(pan_delta):
+			set_zoom(zoom * pow(1.2, clampf(-pan_delta, -3.0, 3.0)), get_global_mouse_position().x)
+		accept_event()
 
 
 func _draw() -> void:

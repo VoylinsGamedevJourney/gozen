@@ -47,6 +47,17 @@ func _gui_input(event: InputEvent) -> void:
 	elif event is InputEventMouseMotion and _seeking:
 		var seek_time: float = (get_local_mouse_position().x / size.x) * preview_duration
 		seek_requested.emit(clampf(seek_time, 0.0, preview_duration))
+	elif event is InputEventMagnifyGesture:
+		var magnify_event: InputEventMagnifyGesture = event as InputEventMagnifyGesture
+		if !is_equal_approx(magnify_event.factor, 1.0):
+			zoom_requested.emit(clampf(preview_duration / magnify_event.factor, 1.0, 300.0))
+		accept_event()
+	elif event is InputEventPanGesture:
+		var pan_event: InputEventPanGesture = event as InputEventPanGesture
+		var pan_delta: float = pan_event.delta.y if absf(pan_event.delta.y) >= absf(pan_event.delta.x) else pan_event.delta.x
+		if !is_zero_approx(pan_delta):
+			zoom_requested.emit(clampf(preview_duration * pow(1.2, clampf(pan_delta, -3.0, 3.0)), 1.0, 300.0))
+		accept_event()
 
 
 func _draw() -> void:

@@ -21,6 +21,8 @@ const ZOOM_MIN: float = 0.1
 const ZOOM_MAX: float = 10.0
 const ZOOM_STEP: float = 1.1
 
+const PAN_GESTURE_SPEED: float = 10.0
+
 
 @onready var overlay_control: Control = get_parent()
 
@@ -134,6 +136,24 @@ func _handle_viewport_input(event: InputEvent, from_texture: bool) -> bool:
 			_is_panning = false
 			mouse_default_cursor_shape = Control.CURSOR_ARROW
 			overlay_control.mouse_default_cursor_shape = Control.CURSOR_ARROW
+	elif event is InputEventMagnifyGesture:
+		var magnify_event: InputEventMagnifyGesture = event as InputEventMagnifyGesture
+		var overlay_mouse_pos: Vector2 = magnify_event.position + position if from_texture else magnify_event.position
+		if !is_equal_approx(magnify_event.factor, 1.0):
+			zoom_at(magnify_event.factor, overlay_mouse_pos)
+		return true
+	elif event is InputEventPanGesture:
+		var pan_event: InputEventPanGesture = event as InputEventPanGesture
+		if pan_event.ctrl_pressed:
+			var pan_delta: float = pan_event.delta.y if absf(pan_event.delta.y) >= absf(pan_event.delta.x) else pan_event.delta.x
+			var overlay_mouse_pos: Vector2 = pan_event.position + position if from_texture else pan_event.position
+			if !is_zero_approx(pan_delta):
+				zoom_at(pow(ZOOM_STEP, clampf(-pan_delta, -3.0, 3.0)), overlay_mouse_pos)
+			return true
+		elif view_zoom > 1.0:
+			view_offset -= pan_event.delta * PAN_GESTURE_SPEED
+			_update_transform()
+			return true
 	return false
 
 
