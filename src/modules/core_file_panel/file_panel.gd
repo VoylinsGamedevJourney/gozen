@@ -78,18 +78,34 @@ func _input(event: InputEvent) -> void:
 	if not PopupManager._open_popups.is_empty():
 		return
 
-	if search_line_edit.has_focus() and event.is_action_pressed("ui_cancel", false, true):
-		search_line_edit.release_focus()
-		accept_event()
+	var focus_owner: Control = get_viewport().gui_get_focus_owner()
+	if focus_owner is LineEdit or focus_owner is TextEdit:
+		if focus_owner == search_line_edit and event.is_action_pressed("ui_cancel", false, true):
+			search_line_edit.release_focus()
+			get_viewport().set_input_as_handled()
 		return
 
-	if get_global_rect().has_point(get_global_mouse_position()):
+	if is_visible_in_tree() and Project.is_loaded and get_global_rect().has_point(get_global_mouse_position()):
+		var selected_items: Array[TreeItem] = _get_selected_items()
+		var is_rename_pressed: bool = (
+				event.is_action_pressed("rename_file", false, true)
+				if InputMap.has_action("rename_file")
+				else (event is InputEventKey and (event as InputEventKey).pressed and not (event as InputEventKey).echo and (event as InputEventKey).keycode == KEY_F2))
+
 		if event.is_action_pressed("ui_cancel", false, true):
 			tree.deselect_all()
-			accept_event()
-		elif not _get_selected_items().is_empty() and event.is_action_pressed("delete_file", false, true):
+			get_viewport().set_input_as_handled()
+		elif not selected_items.is_empty() and event.is_action_pressed("delete_file", false, true):
 			_delete_selected()
-			accept_event()
+			get_viewport().set_input_as_handled()
+		elif selected_items.size() == 1 and is_rename_pressed:
+			var selected_item: TreeItem = selected_items[0]
+			selected_item.select(0)
+			if str(selected_item.get_metadata(0)).is_valid_int():
+				_on_popup_action_file_rename()
+			else:
+				_on_popup_action_folder_rename()
+			get_viewport().set_input_as_handled()
 
 
 func _on_project_ready() -> void:
