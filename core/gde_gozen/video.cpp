@@ -223,12 +223,6 @@ int Video::open(const String& video_path) {
 		resolution.x /= sar;
 	}
 
-	if (av_stream->start_time != AV_NOPTS_VALUE) {
-		start_time_video = (int64_t)(av_stream->start_time * stream_time_base_video);
-	} else {
-		start_time_video = 0;
-	}
-
 	// Getting some data out of first frame.
 	av_packet = make_unique_avpacket();
 	av_frame = make_unique_avframe();
@@ -239,20 +233,7 @@ int Video::open(const String& video_path) {
 	}
 
 	// Keyframe Index Build - For hopefully faster/instant seeking.
-#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(58, 44, 100)
-	int entries_count = avformat_index_get_entries_count(av_stream);
-	if (entries_count > 0) {
-		for (int i = 0; i < entries_count; i++) {
-			const AVIndexEntry* entry = avformat_index_get_entry(av_stream, i);
-			if (entry && (entry->flags & AVINDEX_KEYFRAME)) {
-				keyframes.push_back({entry->timestamp, entry->pos});
-			}
-		}
-	}
-	if (keyframes.size() < 3) {
-		keyframes.clear();
-	}
-#endif
+	_populate_keyframes();
 
 	avcodec_flush_buffers(av_codec_ctx.get());
 	bool duration_from_bitrate = av_format_ctx->duration_estimation_method == AVFMT_DURATION_FROM_BITRATE;
@@ -321,6 +302,11 @@ int Video::open(const String& video_path) {
 	// Setting variables.
 	average_frame_duration = 10000000.0 / framerate; // eg. 1 sec / 25 fps = 400.000 ticks (40ms).
 	stream_time_base_video = av_q2d(av_stream->time_base) * 1000.0 * 10000.0; // Converting timebase to ticks.
+	if (av_stream->start_time != AV_NOPTS_VALUE) {
+		start_time_video = (int64_t)(av_stream->start_time * stream_time_base_video);
+	} else {
+		start_time_video = 0;
+	}
 
 	// Check for alpha layer.
 	const AVPixFmtDescriptor* pixel_format_descriptor = av_pix_fmt_desc_get((AVPixelFormat)av_frame->format);
@@ -444,25 +430,131 @@ bool Video::seek_frame(int frame_nr) {
 
 	int response = 0;
 	int attempts = 0;
-
 	int decode_difference = frame_nr - last_decoded_frame;
 
 	if (decode_difference == 1) {
 		current_frame = last_decoded_frame;
 		return next_frame(false);
-	} else if (decode_difference > 1 && decode_difference <= smart_seek_threshold) {
-		current_frame = last_decoded_frame;
-		bool success = true;
-		for (int i = 0; i < decode_difference - 1; i++) {
-			if (!next_frame(true)) {
-				_log_err("Smart seek failed, falling back to hard seeking");
-				success = false;
+	}
+
+	const int discard_margin = _get_discard_margin();
+	const int seek_overhead_frames = 16;
+	int keyframe_distance_to_target = frame_nr;
+	bool has_keyframe_distance = false;
+	bool should_forward_decode = decode_difference > 1 && decode_difference <= smart_seek_threshold;
+
+	if (decode_difference > 1) {
+		if (keyframes.empty()) {
+			_populate_keyframes();
+		}
+		if (!keyframes.empty()) {
+			int64_t target_timestamp = av_rescale_q(start_time_video + (int64_t)(frame_nr * average_frame_duration),
+													AVRational{1, 10000000}, av_stream->time_base);
+			auto keyframe_pos =
+				std::upper_bound(keyframes.begin(), keyframes.end(), target_timestamp,
+								 [](int64_t ts, const Keyframe& keyframe) { return ts < keyframe.pts; });
+			if (keyframe_pos != keyframes.begin()) {
+				--keyframe_pos;
+			}
+			int keyframe_frame_nr =
+				std::round(((keyframe_pos->pts * stream_time_base_video) - start_time_video) / average_frame_duration);
+			keyframe_distance_to_target = frame_nr - keyframe_frame_nr;
+			has_keyframe_distance = true;
+
+			// keyframe is too close to last_decoded_frame to justify flushing the decoder.
+			if (!should_forward_decode && keyframe_frame_nr <= last_decoded_frame + seek_overhead_frames) {
+				should_forward_decode = true;
+			}
+		}
+	}
+
+	if (should_forward_decode) {
+		UniqueAVFrame temp_frame = make_unique_avframe();
+		if (!temp_frame) {
+			return _log_err("Couldn't allocate frame for forward seek");
+		}
+
+		AVDiscard original_skip_loop_filter = av_codec_ctx->skip_loop_filter;
+		AVDiscard original_skip_frame = av_codec_ctx->skip_frame;
+		AVDiscard original_skip_idct = av_codec_ctx->skip_idct;
+		bool using_discard = decode_difference > discard_margin;
+
+		if (using_discard) {
+			av_codec_ctx->skip_loop_filter = AVDISCARD_NONREF;
+			av_codec_ctx->skip_idct = AVDISCARD_NONREF;
+			av_codec_ctx->skip_frame = AVDISCARD_NONREF;
+		}
+
+		bool frame_found = false;
+		bool reached_target = false;
+		int forward_attempts = 0;
+
+		while (true) {
+			response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, temp_frame.get(),
+										 av_packet.get());
+			if (response != 0) {
+				if (response == AVERROR(EAGAIN) || response == AVERROR(EWOULDBLOCK)) {
+					if (forward_attempts > 10) {
+						FFmpeg::print_av_error("Video: Reached max attempts during forward seek!", response);
+						break;
+					}
+					forward_attempts++;
+					continue;
+				} else if (response == AVERROR_EOF) {
+					break;
+				}
+
+				FFmpeg::print_av_error("Video: Problem happened getting frame in forward seek! ", response);
+				break;
+			}
+
+			forward_attempts = 0;
+			av_frame_unref(av_frame.get());
+			av_frame_move_ref(av_frame.get(), temp_frame.get());
+			frame_found = true;
+
+			int64_t decoded_pts =
+				av_frame->best_effort_timestamp == AV_NOPTS_VALUE ? av_frame->pts : av_frame->best_effort_timestamp;
+			int decoded_frame_nr = 0;
+			if (decoded_pts == AV_NOPTS_VALUE) {
+				decoded_frame_nr = last_decoded_frame + 1;
+			} else {
+				current_pts = decoded_pts;
+				decoded_frame_nr =
+					std::round(((current_pts * stream_time_base_video) - start_time_video) / average_frame_duration);
+			}
+			last_decoded_frame = decoded_frame_nr;
+
+			if (using_discard && decoded_frame_nr >= frame_nr - discard_margin) {
+				av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
+				av_codec_ctx->skip_frame = original_skip_frame;
+				av_codec_ctx->skip_idct = original_skip_idct;
+				using_discard = false;
+			}
+
+			if (decoded_frame_nr >= frame_nr) {
+				reached_target = true;
 				break;
 			}
 		}
 
-		if (success) {
-			return next_frame(false);
+		if (using_discard) {
+			av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
+			av_codec_ctx->skip_frame = original_skip_frame;
+			av_codec_ctx->skip_idct = original_skip_idct;
+		}
+
+		if (reached_target || (response == AVERROR_EOF && frame_found)) {
+			_copy_frame_data();
+			_add_to_cache(frame_nr);
+			current_frame = frame_nr;
+			last_decoded_frame = current_frame;
+			return true;
+		}
+		if (response == AVERROR_EOF && !frame_found && current_frame == last_decoded_frame) {
+			_copy_frame_data();
+			current_frame = frame_nr;
+			return true;
 		}
 	}
 
@@ -477,10 +569,14 @@ bool Video::seek_frame(int frame_nr) {
 	AVDiscard original_skip_loop_filter = av_codec_ctx->skip_loop_filter;
 	AVDiscard original_skip_frame = av_codec_ctx->skip_frame;
 	AVDiscard original_skip_idct = av_codec_ctx->skip_idct;
+	bool using_discard =
+		frame_nr > discard_margin && (!has_keyframe_distance || keyframe_distance_to_target > discard_margin);
 
-	av_codec_ctx->skip_loop_filter = AVDISCARD_NONREF;
-	av_codec_ctx->skip_idct = AVDISCARD_NONREF;
-	av_codec_ctx->skip_frame = AVDISCARD_NONREF;
+	if (using_discard) {
+		av_codec_ctx->skip_loop_filter = AVDISCARD_NONREF;
+		av_codec_ctx->skip_idct = AVDISCARD_NONREF;
+		av_codec_ctx->skip_frame = AVDISCARD_NONREF;
+	}
 
 	while (true) {
 		if ((response = FFmpeg::get_frame(av_format_ctx.get(), av_codec_ctx.get(), av_stream->index, temp_frame.get(),
@@ -498,6 +594,7 @@ bool Video::seek_frame(int frame_nr) {
 					av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 					av_codec_ctx->skip_frame = original_skip_frame;
 					av_codec_ctx->skip_idct = original_skip_idct;
+					using_discard = false;
 					_copy_frame_data();
 				}
 				break;
@@ -528,24 +625,30 @@ bool Video::seek_frame(int frame_nr) {
 
 		// If we are getting close to the target frame, stop skipping non-reference frames
 		// so we don't overshoot the exact target if keyframe_pos happens to be a B-frame.
-		if (decoded_frame_nr >= frame_nr - 8) {
+		if (using_discard && decoded_frame_nr >= frame_nr - discard_margin) {
 			av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 			av_codec_ctx->skip_frame = original_skip_frame;
 			av_codec_ctx->skip_idct = original_skip_idct;
+			using_discard = false;
 		}
 
 		if (decoded_frame_nr >= frame_nr) {
-			av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
-			av_codec_ctx->skip_frame = original_skip_frame;
-			av_codec_ctx->skip_idct = original_skip_idct;
+			if (using_discard) {
+				av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
+				av_codec_ctx->skip_frame = original_skip_frame;
+				av_codec_ctx->skip_idct = original_skip_idct;
+				using_discard = false;
+			}
 			_copy_frame_data();
 			_add_to_cache(frame_nr);
 			break;
 		}
 	}
-	av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
-	av_codec_ctx->skip_frame = original_skip_frame;
-	av_codec_ctx->skip_idct = original_skip_idct;
+	if (using_discard) {
+		av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
+		av_codec_ctx->skip_frame = original_skip_frame;
+		av_codec_ctx->skip_idct = original_skip_idct;
+	}
 
 	current_frame = frame_nr;
 	last_decoded_frame = current_frame;
@@ -621,6 +724,7 @@ Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
 	AVDiscard original_skip_loop_filter = av_codec_ctx->skip_loop_filter;
 	AVDiscard original_skip_frame = av_codec_ctx->skip_frame;
 	AVDiscard original_skip_idct = av_codec_ctx->skip_idct;
+	int discard_margin = _get_discard_margin();
 
 	av_codec_ctx->skip_loop_filter = AVDISCARD_NONREF;
 	av_codec_ctx->skip_idct = AVDISCARD_NONREF;
@@ -660,7 +764,7 @@ Ref<Image> Video::generate_thumbnail_at_frame(int frame_nr) {
 		int decoded_frame_nr =
 			std::round(((current_pts * stream_time_base_video) - start_time_video) / average_frame_duration);
 
-		if (decoded_frame_nr >= frame_nr - 8) {
+		if (decoded_frame_nr >= frame_nr - discard_margin) {
 			av_codec_ctx->skip_loop_filter = original_skip_loop_filter;
 			av_codec_ctx->skip_frame = original_skip_frame;
 			av_codec_ctx->skip_idct = original_skip_idct;
@@ -948,9 +1052,46 @@ int Video::_seek_frame(int frame_nr) {
 		}
 	}
 	// Fallback to standard seeking if the index lookup fails for some reason.
-	return av_seek_frame(av_format_ctx.get(), av_stream->index, target_timestamp, AVSEEK_FLAG_BACKWARD);
+	int response = av_seek_frame(av_format_ctx.get(), av_stream->index, target_timestamp, AVSEEK_FLAG_BACKWARD);
+	if (response >= 0 && keyframes.empty()) {
+		_populate_keyframes();
+	}
+	return response;
 }
 
+
+void Video::_populate_keyframes() {
+#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(58, 44, 100)
+	keyframes.clear();
+	int entries_count = avformat_index_get_entries_count(av_stream);
+	if (entries_count > 0) {
+		keyframes.reserve(entries_count);
+		for (int i = 0; i < entries_count; i++) {
+			const AVIndexEntry* entry = avformat_index_get_entry(av_stream, i);
+			if (entry && (entry->flags & AVINDEX_KEYFRAME)) {
+				keyframes.push_back({entry->timestamp, entry->pos});
+			}
+		}
+	}
+	if (keyframes.size() < 3) {
+		keyframes.clear();
+	} else if (!std::is_sorted(keyframes.begin(), keyframes.end(),
+							   [](const Keyframe& first, const Keyframe& second) { return first.pts < second.pts; })) {
+		std::sort(keyframes.begin(), keyframes.end(),
+				  [](const Keyframe& first, const Keyframe& second) { return first.pts < second.pts; });
+	}
+#endif
+}
+
+int Video::_get_discard_margin() const {
+	int effective_threads = 1;
+	if (av_codec_ctx && (av_codec_ctx->thread_type & FF_THREAD_FRAME)) {
+		effective_threads = av_codec_ctx->thread_count > 0 ? av_codec_ctx->thread_count
+														   : std::min(16, OS::get_singleton()->get_processor_count());
+	}
+	int b_frame_delay = av_codec_ctx ? av_codec_ctx->has_b_frames : 0;
+	return std::max(8, effective_threads + b_frame_delay + 4);
+}
 
 void Video::_add_to_cache(int frame_nr) {
 	if (max_cache_size <= 0) {

@@ -116,6 +116,8 @@ class Video : public Resource {
 	void _clean_frame_data();
 
 	int _seek_frame(int frame_nr);
+	void _populate_keyframes();
+	int _get_discard_margin() const;
 
 	Ref<Image> _generate_thumb_image();
 
