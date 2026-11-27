@@ -12,8 +12,7 @@ extends Resource
 @export var folder: String = "/" ## Folder inside the editor.
 @export var duration: int = -1
 
-# These variables are specific to temp files & videos.
-@export var temp_file: TempFile
+@export var text_effect: Effect = null ## For text clips only!
 
 @export var ato_active: bool = false
 @export var ato_offset: float
@@ -44,7 +43,8 @@ func serialize() -> Dictionary:
 	if !audio_streams.is_empty():
 		data["audio_streams"] = audio_streams
 
-	if temp_file: data["temp_file"] = temp_file.serialize()
+	if text_effect:
+		data["text_effect"] = text_effect.serialize()
 	return data
 
 
@@ -62,10 +62,39 @@ func deserialize(data: Dictionary) -> void:
 	ato_file = data.get("ato_file", -1)
 	audio_streams.assign(data.get("audio_streams", []) as Array[int])
 
-	if data.has("temp_file"):
-		var tempfile_value: Variant = data["temp_file"]
-		if tempfile_value is TempFile:
-			temp_file = tempfile_value
+	if data.has("text_effect"):
+		var text_effect_value: Variant = data["text_effect"]
+		if text_effect_value is Effect:
+			text_effect = text_effect_value
 		else:
-			temp_file = TempFile.new()
-			temp_file.deserialize(tempfile_value as Dictionary)
+			text_effect = (load(Library.EFFECT_TEXT) as Effect).deep_copy()
+			text_effect.deserialize(text_effect_value as Dictionary)
+
+	if data.has("temp_file") and typeof(data["temp_file"]) == TYPE_DICTIONARY:
+		_migrate_temp_file(data["temp_file"] as Dictionary)
+
+
+## TempFile was a system which had been around since alpha/beta but got
+## switched out during the last day's before v1.0 due to performance concerns.
+func _migrate_temp_file(data: Dictionary) -> void:
+	if data.has("text_effect"):
+		var temp_text_effect: Variant = data["text_effect"]
+		if temp_text_effect is Effect:
+			text_effect = temp_text_effect
+		else:
+			text_effect = (load(Library.EFFECT_TEXT) as Effect).deep_copy()
+			text_effect.deserialize(temp_text_effect as Dictionary)
+
+	if (type == Type.COLOR or path.begins_with("temp://color")) and not path.contains("#") and data.has("color"):
+		var color_value: Variant = data.get("color", Color.WHITE)
+		var legacy_color: Color = Color(color_value as String) if typeof(color_value) == TYPE_STRING else (color_value as Color)
+		path = "temp://color#" + legacy_color.to_html()
+
+	if data.has("image_png"):
+		var image_data: PackedByteArray = data["image_png"] as PackedByteArray
+		var image: Image = Image.new()
+		if image.load_png_from_buffer(image_data) == OK:
+			path = FileLogic.save_pasted_image(image)
+			if type == Type.EMPTY:
+				type = Type.IMAGE
+			modified_time = FileAccess.get_modified_time(path)

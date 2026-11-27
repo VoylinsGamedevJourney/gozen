@@ -75,6 +75,9 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if not PopupManager._open_popups.is_empty():
+		return
+
 	if search_line_edit.has_focus() and event.is_action_pressed("ui_cancel", false, true):
 		search_line_edit.release_focus()
 		accept_event()
@@ -861,8 +864,13 @@ func _update_file_tooltip(file: FileData) -> void:
 			details.append("%s: %s/s" % [tr("Bitrate"), String.humanize_size(bitrate)])
 		if not details.is_empty():
 			lines.append(" | ".join(details))
-	elif file.type == Type.COLOR and file.temp_file:
-		lines.append("%s: #%s" % [tr("Color"), file.temp_file.color.to_html().to_upper()])
+	elif file.type == Type.COLOR:
+		var color_value: Variant = FileLogic.data.get(file.id)
+		if color_value is Color:
+			lines.append("%s: #%s" % [tr("Color"), (color_value as Color).to_html().to_upper()])
+		else:
+			lines.append("%s: #%s" % [tr("Color"),
+					Color.from_string(file.path.get_slice("#", 1), Color.WHITE).to_html().to_upper()])
 
 	if file.type == Type.VIDEO and not file.proxy_path.is_empty() and FileAccess.file_exists(file.proxy_path):
 		lines.append("%s: %s" % [tr("Proxy"), tr("Active") if Settings.get_use_proxies() else tr("Generated")])

@@ -125,7 +125,10 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and not _open_popups.is_empty():
-		if _open_popups.has(PROGRESS) and _open_popups.size() == 1: return
+		if _open_popups.has(PROGRESS) and _open_popups.size() == 1:
+			return
+		if _open_popups.has(FILES_MISSING) and _open_popups[FILES_MISSING].get("_active_file_dialog") != null:
+			return
 		close_all()
 		get_viewport().set_input_as_handled()
 
@@ -136,7 +139,6 @@ func open(popup: int) -> void:
 		match popup:
 			EDITOR_SETTINGS: _open_editor_settings(_open_popups[popup] as SettingsPanel)
 			PROJECT_SETTINGS: _open_project_settings(_open_popups[popup] as SettingsPanel)
-
 		control.add_child(_open_popups[popup])
 		_check_background()
 

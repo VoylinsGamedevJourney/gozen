@@ -597,7 +597,7 @@ func _load_effects() -> void:
 	# Creating/updating new UI.
 	var clip_effects: ClipEffects = active_clip.effects
 	if section_text.visible and active_clip.type == Type.TEXT: # Set text params.
-		var text_effect: Effect = active_file.temp_file.text_effect
+		var text_effect: Effect = active_file.text_effect
 		var ui: FoldableContainer = _create_effect_ui(text_effect, true, true)
 		section_text.add_child(ui)
 
@@ -805,7 +805,7 @@ func _get_param_by_id(effect: Effect, param_id: String) -> EffectParam:
 
 
 func _on_reset_text_effect() -> void:
-	var text_effect: Effect = active_file.temp_file.text_effect
+	var text_effect: Effect = active_file.text_effect
 	var old_keyframes: Dictionary = Effect.duplicate_keyframes(text_effect.keyframes)
 
 	UndoManager.create_action("Reset text effect")
@@ -815,7 +815,7 @@ func _on_reset_text_effect() -> void:
 
 
 func _reset_text_effect() -> void:
-	var text_effect: Effect = active_file.temp_file.text_effect
+	var text_effect: Effect = active_file.text_effect
 	text_effect.keyframes.clear()
 	text_effect.set_default_keyframe()
 	Project.unsaved_changes = true
@@ -824,7 +824,7 @@ func _reset_text_effect() -> void:
 
 
 func _restore_text_effect_keyframes(old_keyframes: Dictionary) -> void:
-	var text_effect: Effect = active_file.temp_file.text_effect
+	var text_effect: Effect = active_file.text_effect
 	text_effect.keyframes = Effect.duplicate_keyframes(old_keyframes)
 	text_effect._cache_dirty = true
 	Project.unsaved_changes = true
@@ -1282,7 +1282,7 @@ func _update_ui_values() -> void:
 	clip_enable_audio_button.set_pressed_no_signal(!active_clip.effects.is_muted)
 	var frame_nr: int = clampi(EditorCore.frame_nr - active_clip.start, 0, maxi(0, active_clip.duration - 1))
 	if section_text.visible and section_text.get_child_count() > 0:
-		var text_effect: Effect = active_file.temp_file.text_effect
+		var text_effect: Effect = active_file.text_effect
 		var ui_container: FoldableContainer = section_text.get_child(0) as FoldableContainer
 		if ui_container and ui_container.get_child_count() > 0:
 			_update_ui_values_for_container(text_effect, ui_container.get_child(0) as VBoxContainer, frame_nr)
@@ -1564,7 +1564,7 @@ func _open_add_effects_popup(type: int, from_add_button: bool) -> void:
 
 func _effect_param_update_call(value: Variant, effect: Effect, is_visual: bool, param_id: String) -> void:
 	EffectsHandler.effect_selected.emit(effect)
-	if active_file and active_file.temp_file and active_file.temp_file.text_effect == effect:
+	if active_file and active_file.text_effect == effect:
 		var param_obj: EffectParam = _get_param_by_id(effect, param_id)
 		var old_value: Variant = (effect.keyframes[param_id] as Dictionary).get(0, param_obj.default_value)
 		FileLogic.update_text_param(active_file, param_id, value, old_value)

@@ -59,8 +59,16 @@ func get_project_thumb(project_path: String) -> Texture2D:
 func get_thumb(file: FileData) -> Texture2D:
 	# Check if color or image.
 	var image: Image
-	if file.path.begins_with("temp://color") or file.path.begins_with("temp://image"):
-		var temp: Variant = FileLogic.data[file.id]
+	if file.path.begins_with("temp://color"):
+		var color_value: Variant = FileLogic.data.get(file.id)
+		image = Image.create_empty(107, 60, false, Image.FORMAT_RGBA8)
+		if color_value is Color:
+			image.fill(color_value as Color)
+		else:
+			image.fill(Color.from_string(file.path.get_slice("#", 1), Color.WHITE))
+		return ImageTexture.create_from_image(image)
+	elif file.path.begins_with("temp://image"):
+		var temp: Variant = FileLogic.data.get(file.id)
 		if !temp or temp is not ImageTexture:
 			return null
 
@@ -84,7 +92,7 @@ func get_thumb(file: FileData) -> Texture2D:
 	Threader.mutex.unlock()
 
 	if !has_thumb:
-		if not thumbs_todo.has(file):
+		if FileAccess.file_exists(file.path) and not thumbs_todo.has(file):
 			thumbs_todo.append(file)
 		match file.type: # Add the correct placeholder image.
 			Type.AUDIO: return _get_default_thumb(Library.THUMB_DEFAULT_AUDIO)

@@ -190,8 +190,8 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 
 	var base_text_effect: Effect = load(Library.EFFECT_TEXT)
 	for file: FileData in files.values():
-		if file.type == Type.TEXT and file.temp_file and file.temp_file.text_effect:
-			var old_effect: Effect = file.temp_file.text_effect
+		if file.type == Type.TEXT and file.text_effect:
+			var old_effect: Effect = file.text_effect
 			var new_effect: Effect = base_text_effect.deep_copy()
 			_apply_param_exceptions(new_effect)
 
@@ -199,7 +199,7 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 			new_effect.keyframe_transitions = Effect.duplicate_keyframes(old_effect.keyframe_transitions)
 			new_effect.is_enabled = old_effect.is_enabled
 			new_effect.set_default_keyframe()
-			file.temp_file.text_effect = new_effect
+			file.text_effect = new_effect
 
 
 func _apply_param_exceptions(effect: Effect) -> void:

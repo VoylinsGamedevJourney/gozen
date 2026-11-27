@@ -15,7 +15,7 @@ script = ExtResource("1_2dd7s")
 vbox = NodePath("Panel/Margin/Panel/Margin/VBox/PanelContainer/ScrollContainer/VBox")
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=1213813620]
-custom_minimum_size = Vector2(700, 0)
+custom_minimum_size = Vector2(700, 400)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -45,6 +45,7 @@ text = "The following file(s) are missing and could not be loaded:"
 
 [node name="PanelContainer" type="PanelContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1894195548]
 layout_mode = 2
+size_flags_vertical = 3
 theme_type_variation = &"overlay_background"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Panel/Margin/Panel/Margin/VBox/PanelContainer" unique_id=739961005]

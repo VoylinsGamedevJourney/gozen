@@ -58,6 +58,11 @@ var yuv_shader: RID
 # For images.
 var base_image: RID
 
+# For color clips.
+var color_shader: RID
+var color_pipeline: RID
+var color_buffer: RID
+
 # Fading stuff.
 var fade_shader: RID
 var fade_pipeline: RID
@@ -287,6 +292,52 @@ func process_texture_frame(texture_rid: RID, effects: Array[Effect], transition_
 	_process_frame(compute_list, effects, transition_left, fade_in, transition_right, fade_out, frame_nr)
 
 
+func process_color_frame(target_color: Color, effects: Array[Effect], transition_left: Effect, fade_in: float, transition_right: Effect, fade_out: float, frame_nr: int) -> void:
+	if not initialized:
+		return
+
+	if not color_shader.is_valid():
+		var color_spirv: RDShaderSPIRV = preload("uid://dc2101230suj7").get_spirv()
+		color_shader = device.shader_create_from_spirv(color_spirv)
+		color_pipeline = device.compute_pipeline_create(color_shader)
+
+	if not color_buffer.is_valid():
+		var empty_buffer_data: PackedByteArray = PackedByteArray()
+		if empty_buffer_data.resize(16) != OK:
+			printerr("VisualCompositor: Resizing 'empty_buffer_data' failed!")
+		color_buffer = device.uniform_buffer_create(16, empty_buffer_data)
+
+	var color_buffer_data: PackedByteArray = PackedByteArray()
+	if color_buffer_data.resize(16) != OK:
+		printerr("VisualCompositor: Resizing 'color_buffer_data' failed!")
+	color_buffer_data.encode_float(0, target_color.r)
+	color_buffer_data.encode_float(4, target_color.g)
+	color_buffer_data.encode_float(8, target_color.b)
+	color_buffer_data.encode_float(12, target_color.a)
+	if device.buffer_update(color_buffer, 0, 16, color_buffer_data) != OK:
+		printerr("VisualCompositor: Updating device 'color_buffer' failed!")
+
+	var all_effects: Array[Effect] = effects.duplicate()
+	if transition_left and fade_in < 1.0: all_effects.append(transition_left)
+	if transition_right and fade_out < 1.0: all_effects.append(transition_right)
+	_update_effect_buffers(all_effects, frame_nr)
+	_update_transition_buffers(transition_left, fade_in, transition_right, fade_out)
+
+	var compute_list: int = device.compute_list_begin()
+	device.compute_list_bind_compute_pipeline(compute_list, color_pipeline)
+
+	var color_uniforms: Array[RDUniform] = [
+		_create_image_uniform(ping_texture, 0),
+		_create_buffer_uniform(color_buffer, 1)]
+	var color_set: RID = UniformSetCacheRD.get_cache(color_shader, 0, color_uniforms)
+
+	device.compute_list_bind_uniform_set(compute_list, color_set, 0)
+	device.compute_list_dispatch(compute_list, groups_x, groups_y, 1)
+	device.compute_list_add_barrier(compute_list)
+
+	_process_frame(compute_list, effects, transition_left, fade_in, transition_right, fade_out, frame_nr)
+
+
 func cleanup() -> void:
 	for rid: RID in [ping_texture, pong_texture, default_sampler]:
 		Utils.cleanup_rid(device, rid)
@@ -319,6 +370,14 @@ func cleanup() -> void:
 	fade_in_buffer = RID()
 	fade_out_buffer = RID()
 	copy_buffer = RID()
+
+	# Color cleanup.
+	for rid: RID in [color_pipeline, color_shader, color_buffer]:
+		Utils.cleanup_rid(device, rid)
+
+	color_pipeline = RID()
+	color_shader = RID()
+	color_buffer = RID()
 
 	for shader_path: String in effects_cache:
 		effects_cache[shader_path].free_rids(device)

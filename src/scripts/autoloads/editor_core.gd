@@ -451,8 +451,7 @@ func update_data(track: int) -> void:
 	var clip_frame: int = frame_nr - clip.start
 
 	if clip.type == Type.TEXT:
-		var temp_file: TempFile = raw_data
-		var text_effect: Effect = temp_file.text_effect
+		var text_effect: Effect = raw_data as Effect
 
 		var text_data: String = text_effect.get_value(text_effect.params[0], clip_frame)
 		var text_font: String = text_effect.get_value(text_effect.params[1], clip_frame)
@@ -579,6 +578,15 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 
 		RenderingServer.call_on_render_thread(compositors[track_id].process_texture_frame.bind(
 				texture_rid, effects, transition_left, fade_in, transition_right, fade_out, clip_frame))
+		view_textures[track_id].texture = compositors[track_id].display_texture
+		view_textures[track_id].queue_redraw()
+	elif clip.type == Type.COLOR and raw_data is Color:
+		var clip_color: Color = raw_data as Color
+		if update or Project.data.resolution != compositors[track_id].resolution:
+			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))
+
+		RenderingServer.call_on_render_thread(compositors[track_id].process_color_frame.bind(
+				clip_color, effects, transition_left, fade_in, transition_right, fade_out, clip_frame))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 		view_textures[track_id].queue_redraw()
 	elif raw_data is Video and clip.type == Type.VIDEO:

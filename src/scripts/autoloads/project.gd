@@ -82,6 +82,7 @@ func save(auto_saved: bool = false) -> void:
 	if data.project_path.is_empty():
 		return save_as()
 
+	FileLogic.move_cached_images()
 	data.playhead = EditorCore.frame_nr
 
 	# Capture project thumbnail.
@@ -247,10 +248,6 @@ func open(new_project_path: String) -> void:
 		if not file.path.begins_with("temp://") and not FileAccess.file_exists(file.path):
 			missing_files.append(file)
 
-	if not missing_files.is_empty():
-		var popup: Control = PopupManager.get_popup(PopupManager.FILES_MISSING)
-		popup.call("set_data", missing_files)
-
 	FileLogic._startup_loading()
 	loading_overlay.update_bar(98)
 
@@ -282,6 +279,10 @@ func open(new_project_path: String) -> void:
 	await get_tree().process_frame
 	EditorCore.set_frame(data.playhead)
 	Timeline.focus_on_playhead.call_deferred()
+
+	if not missing_files.is_empty():
+		var popup: Control = PopupManager.get_popup(PopupManager.FILES_MISSING)
+		popup.call("set_data", missing_files)
 
 
 func open_project() -> void:
@@ -434,19 +435,18 @@ func get_project_path() -> String: return data.project_path
 func get_project_name() -> String: return data.project_path.get_file().get_basename()
 func get_project_base_folder() -> String: return data.project_path.get_base_dir()
 
+
 func get_picker_path(fallback: OS.SystemDir) -> String:
 	var dir: String = get_project_base_folder()
 	if !dir.is_empty():
 		return dir
 
 	dir = OS.get_system_dir(fallback)
-
 	if dir.is_empty():
 		dir = OS.get_environment("USERPROFILE") if OS.has_feature("windows") else OS.get_environment("HOME")
 
 	if dir.is_empty():
 		printerr("Project: Failed to get any path for picker")
-
 	return dir
 
 
@@ -454,8 +454,8 @@ func set_resolution(resolution: Vector2i) -> void:
 	var old_resolution: Vector2i = data.resolution
 	resolution.x += resolution.x % 2
 	resolution.y += resolution.y % 2
-
-	if old_resolution == resolution: return
+	if old_resolution == resolution:
+		return
 
 	var ratio: Vector2 = Vector2(resolution) / Vector2(old_resolution)
 	data.resolution = resolution
@@ -471,7 +471,8 @@ func set_resolution(resolution: Vector2i) -> void:
 		elif effect.id == "vignette":
 			scale_params = ["center"]
 
-		if scale_params.is_empty(): return
+		if scale_params.is_empty():
+			return
 
 		for param_id: String in scale_params:
 			if effect.keyframes.has(param_id):
@@ -496,13 +497,12 @@ func set_resolution(resolution: Vector2i) -> void:
 							param.default_value = value as float * ratio.y
 						else:
 							param.default_value = value as float * ratio.x
-
 		effect._cache_dirty = true
 
 	if is_loaded:
 		for file: FileData in FileLogic.files.values():
-			if file.temp_file and file.temp_file.text_effect:
-				_update_effect.call(file.temp_file.text_effect, ratio)
+			if file.text_effect:
+				_update_effect.call(file.text_effect, ratio)
 
 		for clip: ClipData in ClipLogic.clips.values():
 			for effect: Effect in clip.effects.video:
@@ -532,8 +532,8 @@ func set_framerate(new_framerate: float, force: bool = false) -> void:
 
 		for file: FileData in FileLogic.files.values():
 			file.duration = maxi(1, roundi(file.duration * ratio))
-			if file.temp_file and file.temp_file.text_effect:
-				_scale_keyframes(file.temp_file.text_effect, ratio)
+			if file.text_effect:
+				_scale_keyframes(file.text_effect, ratio)
 			if file.type & (Type.AUDIO | Type.VIDEO):
 				FileLogic.audio_wave.erase(file.id)
 				Threader.add_task(FileLogic._create_wave.bind(file), FileLogic._on_wave_ready.bind(file))

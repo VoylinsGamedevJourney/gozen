@@ -589,10 +589,8 @@ func duplicate_clips(clips_to_duplicate: Array[ClipData], duplicate_files: bool 
 			if duplicate_files and clip.type == Type.TEXT:
 				var original_file: FileData = FileLogic.get_data(clip.file)
 				var new_file: FileData = original_file.duplicate(true)
-				if new_file.temp_file:
-					new_file.temp_file = original_file.temp_file.duplicate(true)
-					if new_file.temp_file.text_effect:
-						new_file.temp_file.text_effect = original_file.temp_file.text_effect.deep_copy()
+				if original_file.text_effect:
+					new_file.text_effect = original_file.text_effect.deep_copy()
 				new_file.id = get_new_id(existing_file_keys)
 				existing_file_keys.append(new_file.id)
 				new_clip.file = new_file.id

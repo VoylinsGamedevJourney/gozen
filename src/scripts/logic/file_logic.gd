@@ -76,7 +76,7 @@ func _startup_loading() -> void:
 
 func _on_project_resolution_changed() -> void:
 	for file: FileData in files.values():
-		if file.type & (Type.IMAGE | Type.COLOR):
+		if file.type == Type.IMAGE:
 			load_data(file)
 			reloaded.emit(file)
 
@@ -101,7 +101,8 @@ func add(paths: Array[String]) -> void:
 
 func add_colors(html_colors: Array[String]) -> void:
 	var paths: Array[String] = []
-	for color: String in html_colors: paths.append("temp://color#" + color)
+	for color: String in html_colors:
+		paths.append("temp://color#" + color)
 	add(paths)
 
 
@@ -131,15 +132,14 @@ func _create_file(path: String) -> FileData:
 		# This is the same function for all actual files, so we put it once here.
 		file.modified_time = FileAccess.get_modified_time(path)
 	else:
-		file.temp_file = TempFile.new()
 		var temp_nickname: String = path.trim_prefix("temp://").capitalize()
 		var time_dict: Dictionary = Time.get_datetime_dict_from_system()
 		if path == "temp://text":
 			file.type = Type.TEXT
 			file.duration = Settings.get_text_duration()
 			file.nickname = "Text: Empty text"
-			file.temp_file.text_effect = (load(Library.EFFECT_TEXT) as Effect).deep_copy()
-			file.temp_file.text_effect.set_default_keyframe()
+			file.text_effect = (load(Library.EFFECT_TEXT) as Effect).deep_copy()
+			file.text_effect.set_default_keyframe()
 		elif path.begins_with("temp://image"):
 			file.type = Type.IMAGE
 			file.duration = Settings.get_image_duration()
@@ -147,11 +147,9 @@ func _create_file(path: String) -> FileData:
 					time_dict.year, time_dict.month, time_dict.day,
 					time_dict.hour, time_dict.minute, time_dict.second]
 		elif path.begins_with("temp://color"):
-			var splits: PackedStringArray = path.split("#")
 			file.type = Type.COLOR
 			file.duration = Settings.get_color_duration()
 			file.nickname = temp_nickname.replace("#", " #")
-			file.temp_file.color = Color(splits[1])
 	return null if file.type == Type.EMPTY else file
 
 
@@ -233,29 +231,95 @@ func _change_nickname(file: FileData, new_name: String) -> void:
 
 ## Pasting from clipboard (through InputManager).
 func paste_image(image: Image) -> FileData:
+	# Pasting images has changed, before (pre 0.20-beta) we would save the
+	# image data directly to the `*.gozen` file which was bad for bigger
+	# projects which have a lot of pastes/temp images.
+	var path: String = save_pasted_image(image)
+
+	# Add file to project.
 	UndoManager.create_action("Paste Image")
 	var file: FileData = FileData.new()
 	file.id = get_new_id()
-	file.path = "temp://image#" + str(file.id)
+	file.path = path
 	file.type = Type.IMAGE
+	file.modified_time = FileAccess.get_modified_time(path)
 	file.duration = Settings.get_image_duration()
-	file.temp_file = TempFile.new()
-
-	if image.get_format() != Image.FORMAT_RGBA8:
-		image.convert(Image.FORMAT_RGBA8)
-	if image.get_size() != Project.data.resolution:
-		_scale_image_to_fit(image, Project.data.resolution)
-	file.temp_file.image_data = ImageTexture.create_from_image(image)
-
-	var time_dict: Dictionary = Time.get_datetime_dict_from_system()
-	file.nickname = "Image %04d-%02d-%02d %02d:%02d:%02d" % [
-			time_dict.year, time_dict.month, time_dict.day,
-			time_dict.hour, time_dict.minute, time_dict.second]
+	file.nickname = path.get_file()
 
 	UndoManager.add_do(_restore.bind(file))
 	UndoManager.add_undo(_delete.bind(file))
 	UndoManager.commit_action()
 	return file
+
+
+func save_pasted_image(image: Image) -> String:
+	# Quick create project, use cache folder.
+	var folder: String = Project.get_project_base_folder()
+	if folder.is_empty() or folder == "." or not DirAccess.dir_exists_absolute(folder):
+		folder = OS.get_cache_dir().path_join("gozen")
+
+	var date: String = Time.get_date_string_from_system()
+	var file_name: String
+	var saved_path: String
+	var counter: int = 0
+	folder = folder.path_join("images")
+	DirAccess.make_dir_recursive_absolute(folder)
+
+	# First check for webp, it's better than png imo. :p
+	if image.get_size().x <= 16000 and image.get_size().y <= 16000:
+		while true:
+			file_name = "image_%s_%d.webp" % [date, counter]
+			saved_path = folder.path_join(file_name)
+			if !FileAccess.file_exists(saved_path):
+				break
+			counter += 1
+		image.save_webp(saved_path, false, 0.8)
+	else:
+		while true:
+			file_name = "image_%s_%d.png" % [date, counter]
+			saved_path = folder.path_join(file_name)
+			if !FileAccess.file_exists(saved_path):
+				break
+			counter += 1
+		image.save_png(saved_path)
+	return saved_path
+
+
+func move_cached_images() -> void:
+	var path: String = Project.get_project_base_folder()
+	if path.is_empty() or path == "." or not DirAccess.dir_exists_absolute(path):
+		return # Probably a temporary project?
+
+	path = path.path_join("images")
+	var cache_path: String = OS.get_cache_dir().path_join("gozen").path_join("images")
+	for file: FileData in files.values():
+		if file.type == Type.IMAGE and file.path.begins_with(cache_path) and FileAccess.file_exists(file.path):
+			if not DirAccess.dir_exists_absolute(path): # Else there'll be an empty folder.
+				DirAccess.make_dir_recursive_absolute(path)
+			_move_cached_image(file, path)
+
+
+func _move_cached_image(file: FileData, folder: String) -> void:
+	var base_name: String = file.path.get_file().get_basename()
+	var extension: String = file.path.get_extension()
+	var target_path: String = folder.path_join(file.path.get_file())
+	var counter: int = 1
+	while FileAccess.file_exists(target_path):
+		target_path = folder.path_join("%s_%d.%s" % [base_name, counter, extension])
+		counter += 1
+
+	var image_moved: bool = DirAccess.rename_absolute(file.path, target_path) == OK
+	if not image_moved:
+		if DirAccess.copy_absolute(file.path, target_path) == OK:
+			DirAccess.remove_absolute(file.path)
+			image_moved = true
+		else:
+			printerr("FileLogic: Failed to move cached image '%s' to '%s'!" % [file.path, target_path])
+
+	if image_moved:
+		file.path = target_path
+		file.modified_time = FileAccess.get_modified_time(target_path)
+		path_updated.emit(file)
 
 
 func apply_replace_audio(file: FileData, audio_file: FileData, offset: float) -> void:
@@ -306,12 +370,9 @@ func _apply_replace_audio(file: FileData, active: bool, audio_file_id: int, offs
 
 func duplicate_text(file: FileData) -> FileData:
 	var new_file: FileData = file.duplicate(true)
-	if new_file.temp_file:
-		new_file.temp_file = file.temp_file.duplicate(true)
-		if new_file.temp_file.text_effect:
-			new_file.temp_file.text_effect = file.temp_file.text_effect.deep_copy()
-			new_file.temp_file.text_effect.keyframes = file.temp_file.text_effect.keyframes.duplicate(true)
-
+	if file.text_effect:
+		new_file.text_effect = file.text_effect.deep_copy()
+		new_file.text_effect.keyframes = file.text_effect.keyframes.duplicate(true)
 	new_file.id = get_new_id()
 	new_file.nickname = file.nickname + " (copy)"
 
@@ -445,28 +506,18 @@ func load_data(file: FileData) -> void:
 			NotificationManager.warning(tr("File missing or moved: ") + file.path.get_file())
 		data[file.id] = null
 		return
-
-	if file.path.begins_with("temp://"):
-		if !file.temp_file:
-			file.temp_file = TempFile.new()
-		var temp_file: TempFile = file.temp_file
-
-		if file.path == "temp://text":
-			if temp_file.text_effect.keyframes.is_empty():
-				temp_file.text_effect.set_default_keyframe()
-			data[file.id] = temp_file
-		elif file.path.begins_with("temp://image"):
-			if temp_file.image_data != null:
-				var image: Image = temp_file.image_data.get_image()
-				if image.get_size() != Project.data.resolution:
-					_scale_image_to_fit(image, Project.data.resolution)
-					temp_file.image_data = ImageTexture.create_from_image(image)
-				data[file.id] = temp_file.image_data
-			else:
-				data[file.id] = null
-		elif file.path.begins_with("temp://color"):
-			temp_file.load_image_from_color()
-			data[file.id] = temp_file.image_data
+	elif file.path.begins_with("temp://"):
+		if file.path.begins_with("temp://color"):
+			var color_hex: String = file.path.get_slice("#", 1) if file.path.contains("#") else "ffffffff"
+			data[file.id] = Color.from_string(color_hex, Color.WHITE)
+		elif file.path == "temp://text":
+			if !file.text_effect:
+				file.text_effect = (load(Library.EFFECT_TEXT) as Effect).deep_copy()
+			if file.text_effect.keyframes.is_empty():
+				file.text_effect.set_default_keyframe()
+			data[file.id] = file.text_effect
+		else:
+			data[file.id] = null
 		return
 
 	match file.type:
@@ -960,7 +1011,10 @@ func get_audio_stream(file: FileData, instance_index: int, stream_index: int = -
 ## Save the image (from temp_file) and replace the path in the file data to point to the new image file.
 func save_image_to_file(file: FileData, path: String) -> void:
 	const ERROR_MESSAGE: String = "FileLogic: Couldn't save image to %s!\n"
-	var image: Image = file.temp_file.image_data.get_image()
+	var image_texture: Variant = data.get(file.id)
+	if image_texture is not ImageTexture:
+		return printerr("FileLogic: No image data found for file '%s'!" % file.id)
+	var image: Image = (image_texture as ImageTexture).get_image()
 
 	match path.get_extension().to_lower():
 		"png":
@@ -973,7 +1027,7 @@ func save_image_to_file(file: FileData, path: String) -> void:
 			if image.save_jpg(path, 1.0):
 				return printerr(ERROR_MESSAGE % "jpg", get_stack())
 	file.path = path
-	file.temp_file = null
+	file.modified_time = FileAccess.get_modified_time(path)
 	load_data(file)
 	Project.unsaved_changes = true
 	path_updated.emit(file)
@@ -1008,7 +1062,8 @@ func _check_external_modifications() -> void:
 			continue
 
 		var current_mod_time: int = FileAccess.get_modified_time(file.path)
-		if current_mod_time != file.modified_time:
+		var is_restored_missing: bool = data.get(file.id) == null and not (file.type == Type.PCK and OS.get_cmdline_args().has("--safe-mode"))
+		if current_mod_time != file.modified_time or is_restored_missing:
 			var extension: String = file.path.get_extension().to_lower()
 			var is_audio: bool = extension in ProjectSettings.get_setting("extensions/audio")
 			if is_audio or extension in ProjectSettings.get_setting("extensions/video"):
@@ -1019,7 +1074,7 @@ func _check_external_modifications() -> void:
 			file.modified_time = current_mod_time
 			modified_files.append(file)
 
-	if not missing_files.is_empty():
+	if not missing_files.is_empty() and not PopupManager._open_popups.has(PopupManager.FILES_MISSING):
 		var missing_file_data: Array[FileData] = []
 		for file_id: int in missing_files:
 			missing_file_data.append(files[file_id])
@@ -1136,7 +1191,7 @@ func update_text_param(file: FileData, param_id: String, new_value: Variant, old
 
 
 func _set_text_param(file: FileData, param_id: String, value: Variant) -> void:
-	var text_effect: Effect = file.temp_file.text_effect
+	var text_effect: Effect = file.text_effect
 	if not text_effect.keyframes.has(param_id):
 		var typed_dict: Dictionary = {}
 		text_effect.keyframes[param_id] = typed_dict
@@ -1355,10 +1410,8 @@ func _find_subfolder_files_async(dropped_paths: Array[String], progress: Progres
 func print_memory_debug() -> void:
 	var total_video_mem: int = 0
 	var total_audio_mem: int = 0
-	var total_temporary_memory: int = 0
 	var total_video_instances: int = 0
 	var total_audio_instances: int = 0
-	var total_temporary_files: int = 0
 	var video_stats: Array[Dictionary] = [] # { name: String, instances: int, mem: int }
 
 	_mutex.lock()
@@ -1404,17 +1457,6 @@ func print_memory_debug() -> void:
 			for lod: Variant in audio_wave[file_id][stream_index]:
 				total_wave_mem += (audio_wave[file_id][stream_index][lod] as PackedFloat32Array).size() * 4
 
-	for file_data: FileData in files.values():
-		if file_data.path.begins_with("temp://"):
-			var temporary_memory: int = 0
-			if file_data.temp_file != null:
-				temporary_memory = file_data.temp_file.get_memory_usage()
-			elif data.has(file_data.id) and data[file_data.id] is ImageTexture:
-				var image: Image = (data[file_data.id] as ImageTexture).get_image()
-				if image != null and not image.is_empty():
-					temporary_memory = image.get_data_size()
-			total_temporary_files += 1
-			total_temporary_memory += temporary_memory
 	_mutex.unlock()
 	video_stats.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.mem > b.mem)
 
@@ -1424,7 +1466,6 @@ func print_memory_debug() -> void:
 	Print.info("Video instances", "%d - %s" % [total_video_instances, String.humanize_size(total_video_mem)]) # NO_TRANSLATE
 	Print.info("Audio instances", "%d - %s" % [total_audio_instances, String.humanize_size(total_audio_mem)]) # NO_TRANSLATE
 	Print.info("Wave cache", String.humanize_size(total_wave_mem)) # NO_TRANSLATE
-	Print.info("Temporary files", "%d - %s" % [total_temporary_files, String.humanize_size(total_temporary_memory)]) # NO_TRANSLATE
 	Print.info("Top 5 video memory consumers") # NO_TRANSLATE
 	for i: int in mini(5, video_stats.size()):
 		var video_stat: Dictionary = video_stats[i]

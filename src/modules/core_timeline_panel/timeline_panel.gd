@@ -126,6 +126,9 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if !PopupManager._open_popups.is_empty():
+		return
+
 	var focus: Control = get_window().gui_get_focus_owner()
 	if !is_visible_in_tree() or !Project.is_loaded or focus is LineEdit or focus is TextEdit:
 		return
