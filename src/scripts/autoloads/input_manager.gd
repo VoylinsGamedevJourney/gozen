@@ -35,6 +35,9 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("open_project", false, true):
 		Project.open_project()
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("import_files", false, true):
+		FileLogic.open_import_dialog()
+		get_viewport().set_input_as_handled()
 
 	if event.is_action_pressed("breakpoint", true):
 		breakpoint

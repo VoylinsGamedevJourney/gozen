@@ -497,6 +497,19 @@ func _set_nickname(file: FileData, nickname: String) -> void:
 	nickname_changed.emit(file)
 
 
+#--- File import dialog ---
+
+func open_import_dialog() -> void:
+	var dialog: FileDialog = PopupManager.create_file_dialog(
+			tr("Add files ..."), FileDialog.FILE_MODE_OPEN_ANY)
+	dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
+	add_child(dialog)
+	dialog.dir_selected.connect(dropped_single)
+	dialog.file_selected.connect(dropped_single)
+	dialog.files_selected.connect(dropped)
+	dialog.popup_centered()
+
+
 #--- Data loading ---
 
 ## (Re)load the data of a file.

@@ -375,14 +375,7 @@ func _on_edit_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0: UndoManager.undo()
 		1: UndoManager.redo()
-		2: # Add files.
-			var dialog: FileDialog = PopupManager.create_file_dialog(
-					tr("Add files ..."), FileDialog.FILE_MODE_OPEN_ANY)
-			dialog.current_dir = Project.get_picker_path(OS.SYSTEM_DIR_MOVIES)
-			add_child(dialog)
-			dialog.dir_selected.connect(FileLogic.dropped)
-			dialog.files_selected.connect(FileLogic.dropped)
-			dialog.popup_centered()
+		2: FileLogic.open_import_dialog()
 		3: FileLogic.add(["temp://text"])
 		4: PopupManager.open(PopupManager.COLOR_PICKER)
 

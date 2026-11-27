@@ -26,6 +26,8 @@ func _ready() -> void:
 	register(Command.new("Open project", Project.open_project, "open_project"))
 	register(Command.new("Archive project", Project.archive_as, ""))
 
+	register(Command.new("Import files", FileLogic.open_import_dialog, "import_files"))
+
 	register(Command.new("Add text file", FileLogic.add.bind(["temp://text"]), ""))
 	register(Command.new("Add color file", PopupManager.open.bind(PopupManager.COLOR_PICKER), ""))
 
