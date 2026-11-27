@@ -41,6 +41,8 @@ var _region_rects: Dictionary[RenderRegion, Rect2] = {}
 var _region_hover: RenderRegion = RenderRegion.NONE
 var _region_drag_mode: RenderRegion = RenderRegion.NONE
 var _region_drag_offset: float = 0.0
+var _region_drag_duration: int = 0
+var _region_bar_dragged: bool = false
 
 
 
@@ -91,7 +93,11 @@ func _gui_input_mouse_button_left(event: InputEventMouseButton) -> void:
 			queue_redraw()
 		elif _region_hover == RenderRegion.BAR:
 			_region_drag_mode = RenderRegion.BAR
+			_region_drag_offset = (Project.data.render_region.x * Timeline.zoom) - event.position.x
+			_region_drag_duration = Project.data.render_region.y - Project.data.render_region.x
+			_region_bar_dragged = false
 			scrubbing = false
+			queue_redraw()
 		else:
 			scrubbing = true
 			if EditorCore.is_playing and Settings.get_module_setting("core_timeline_panel", "pause_after_drag", false):
@@ -100,9 +106,10 @@ func _gui_input_mouse_button_left(event: InputEventMouseButton) -> void:
 		accept_event()
 	else: # Mouse released.
 		if _region_drag_mode == RenderRegion.BAR:
-			if event.position.distance_to(_drag_start_pos) <= MARKER_DRAG_THRESHOLD:
+			if not _region_bar_dragged and event.position.distance_to(_drag_start_pos) <= MARKER_DRAG_THRESHOLD:
 				Project.set_render_toggle(!Project.data.use_render_region)
 			_region_drag_mode = RenderRegion.NONE
+			_region_bar_dragged = false
 			_update_hover_state(event.position)
 			_update_tooltip()
 			queue_redraw()
@@ -166,9 +173,23 @@ func _gui_input_mouse_motion(event: InputEventMouseMotion) -> void:
 			_update_hover_state(event.position)
 			queue_redraw()
 	elif _region_drag_mode == RenderRegion.BAR:
-		if not (event.button_mask & MOUSE_BUTTON_MASK_LEFT):
+		if event.button_mask & MOUSE_BUTTON_MASK_LEFT:
+			if not _region_bar_dragged and event.position.distance_to(_drag_start_pos) > MARKER_DRAG_THRESHOLD:
+				_region_bar_dragged = true
+				mouse_default_cursor_shape = Control.CURSOR_DRAG
+
+			if _region_bar_dragged:
+				var new_start: int = _get_frame_on_mouse(event.position.x + _region_drag_offset)
+				var new_end: int = new_start + _region_drag_duration
+				var snap_delta: int = Timeline.find_snap_offset([new_start, new_end], maxi(1, int(10.0 / Timeline.zoom)))
+				new_start = maxi(0, new_start + snap_delta)
+				Project.set_render_region(Vector2i(new_start, new_start + _region_drag_duration))
+				_update_tooltip()
+		else:
 			_region_drag_mode = RenderRegion.NONE
+			_region_bar_dragged = false
 			_update_hover_state(event.position)
+			queue_redraw()
 	elif MarkerLogic.dragged_marker:
 		queue_redraw()
 	elif scrubbing:
@@ -285,7 +306,7 @@ func _draw() -> void:
 	var region_end: float = Project.data.render_region.y * Timeline.zoom
 	var base_render_color: Color = get_theme_color("render_region", "TimeStamps")
 	var bar_alpha: float = 0.7 if Project.data.use_render_region else 0.3
-	if _region_hover == RenderRegion.BAR:
+	if _region_hover == RenderRegion.BAR or _region_drag_mode == RenderRegion.BAR:
 		bar_alpha = minf(1.0, bar_alpha + 0.2)
 
 	var render_color: Color = base_render_color
@@ -356,9 +377,9 @@ func _update_tooltip() -> void:
 		var out_frame: int = Project.data.render_region.y
 		var out_time: String = Format.time_str_from_frame(out_frame, Project.data.framerate, false)
 		full_tooltip = tr("Render region end") + ": %s (Frame: %d)\n" % [out_time, out_frame] + tr("Drag to adjust")
-	elif _region_hover == RenderRegion.BAR:
-		var status: String = tr("Active") if Project.data.use_render_region else tr("Inactive")
-		var action: String = tr("Click to deactivate") if Project.data.use_render_region else tr("Click to activate")
+	elif _region_drag_mode == RenderRegion.BAR or _region_hover == RenderRegion.BAR:
+		var status: String = tr("Active") if Project.data.use_render_region else tr("In-active")
+		var action: String = tr("Click to deactivate, drag to move") if Project.data.use_render_region else tr("Click to activate, drag to move")
 		full_tooltip = "%s\n(Frame: %d)\n%s (%s) - %s" % [time_str, frame_nr, tr("Render region"), status, action]
 
 	if tooltip_text != full_tooltip:
