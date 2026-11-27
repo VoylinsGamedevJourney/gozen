@@ -66,8 +66,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 8
 theme_type_variation = &"main_button"
-text = "Save project
-"
+text = "Save project"
 
 [connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/CloseButton" to="." method="_on_cancel_button_pressed"]
 [connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/DontSaveButton" to="." method="_on_dont_save_button_pressed"]

@@ -26,37 +26,41 @@ msgstr ""
 msgid "Go to next chapter marker."
 msgstr ""
 
-#: modules/core_view_panel/view_panel.gd:84
+#: modules/core_view_panel/view_panel.tscn
+msgid ""
+"Preview zoom.\n"
+"Double click to reset to 100%."
+msgstr ""
+
+#: modules/core_view_panel/view_panel.gd:79
 msgid "Frame"
 msgstr ""
 
-#: modules/core_view_panel/project_view_texture.gd:135
+#: modules/core_view_panel/project_view_texture.gd:270
 msgid "Save screenshot ..."
 msgstr ""
 
-#: modules/core_view_panel/project_view_texture.gd:136
+#: modules/core_view_panel/project_view_texture.gd:271
 msgid "Save screenshot to project ..."
 msgstr ""
 
-#: modules/core_view_panel/project_view_texture.gd:138
+#: modules/core_view_panel/project_view_texture.gd:273
 msgid "Show safe areas"
 msgstr ""
 
-#: modules/core_view_panel/project_view_texture.gd:143
-msgid "Close full screen preview"
+#: modules/core_view_panel/project_view_texture.gd:277
+msgid "Reset zoom"
 msgstr ""
 
-#: modules/core_view_panel/project_view_texture.gd:145
-msgid "Open full screen preview"
+#: modules/core_view_panel/project_view_texture.gd:279
+msgid "Reset playback speed"
 msgstr ""
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "Render settings"
-msgstr "編輯器設定"
+msgstr "渲染設定"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "Render profile"
 msgstr "渲染設定檔"
 
@@ -65,14 +69,12 @@ msgid "Save current presets as a custom render profile."
 msgstr ""
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "Export path"
-msgstr "路徑"
+msgstr "導出路徑"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "Render video settings"
-msgstr "編輯器設定"
+msgstr "渲染影片設定"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Video codec"
@@ -136,24 +138,23 @@ msgstr ""
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "B frames"
-msgstr ""
+msgstr "B幀"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "Render audio settings"
-msgstr "編輯器設定"
+msgstr "渲染音訊設定"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Audio codec"
-msgstr ""
+msgstr "音訊編解碼器"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Audio channels"
-msgstr ""
+msgstr "音訊頻道"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Multi-threading"
-msgstr ""
+msgstr "多執行緒"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
 msgid "Threads"
@@ -164,242 +165,402 @@ msgid "The amount of threads you want to use for exporting your video."
 msgstr ""
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
+#: modules/core_timeline_panel/time_stamps.gd:362
 msgid "Render region"
-msgstr "渲染"
+msgstr "渲染區域"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#, fuzzy
 msgid "Start render"
 msgstr "開始渲染"
 
 #: modules/core_render_options_panel/render_options_panel.gd:89
-#, fuzzy
 msgid "Custom render profiles"
-msgstr "渲染設定檔"
+msgstr "自訂渲染設定檔"
 
-#: modules/core_render_options_panel/render_options_panel.gd:215
+#: modules/core_render_options_panel/render_options_panel.gd:217
 msgid "Stereo"
 msgstr ""
 
-#: modules/core_render_options_panel/render_options_panel.gd:216
+#: modules/core_render_options_panel/render_options_panel.gd:218
 msgid "Mono"
 msgstr ""
 
-#: modules/core_render_options_panel/render_options_panel.gd:306
+#: modules/core_render_options_panel/render_options_panel.gd:308
 msgid "Select export path"
 msgstr ""
 
-#: modules/core_render_options_panel/render_options_panel.gd:510
+#: modules/core_render_options_panel/render_options_panel.gd:518
 msgid "Draft"
-msgstr ""
+msgstr "草稿"
 
 #: modules/core_file_panel/file_panel.tscn
 msgid "Search files ..."
 msgstr ""
 
-#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:342
+#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:367
 msgid "Add files"
-msgstr ""
+msgstr "新增檔案"
 
-#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:343
+#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:368
 msgid "Add text"
-msgstr ""
+msgstr "新增文字"
 
-#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:344
+#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:369
 msgid "Add color"
-msgstr ""
+msgstr "新增顏色"
 
-#: modules/core_file_panel/file_panel.gd:114
-#: modules/core_file_panel/file_panel.gd:182 scenes/editor/editor.gd:355
+#: modules/core_file_panel/file_panel.gd:125
+#: modules/core_file_panel/file_panel.gd:202 scenes/editor/editor.gd:380
 msgid "Add files ..."
-msgstr ""
+msgstr "新增檔案 ..."
 
-#: modules/core_file_panel/file_panel.gd:137
+#: modules/core_file_panel/file_panel.gd:145
+#, fuzzy
+msgid "Delete (%d)"
+msgstr "刪除資料夾"
+
+#: modules/core_file_panel/file_panel.gd:146
+#: modules/core_file_panel/file_panel.gd:186
+msgid "Folder options"
+msgstr "資料夾選項"
+
+#: modules/core_file_panel/file_panel.gd:147
+#: modules/core_file_panel/file_panel.gd:190
+#: modules/core_file_panel/file_panel.gd:208
+#: scenes/file_popups/create_folder_popup/create_folder.tscn
+msgid "Create folder"
+msgstr "建立資料夾"
+
+#: modules/core_file_panel/file_panel.gd:157
 msgid "Rename"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:139
-#: modules/core_file_panel/file_panel.gd:256
-#: scenes/file_popups/missing_files_popup/missing_files.gd:30
+#: modules/core_file_panel/file_panel.gd:159
+#: modules/core_file_panel/file_panel.gd:276
+#: scenes/file_popups/missing_files_popup/missing_files.gd:37
 #, fuzzy
 msgid "Relink file ..."
 msgstr "將檔案重新命名為..."
 
-#: modules/core_file_panel/file_panel.gd:140
+#: modules/core_file_panel/file_panel.gd:160
 msgid "Reload"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:141 scenes/editor/editor.gd:533
+#: modules/core_file_panel/file_panel.gd:161 scenes/editor/editor.gd:564
 msgid "Delete"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:145
+#: modules/core_file_panel/file_panel.gd:165
 msgid "Image options"
-msgstr ""
+msgstr "圖片選項"
 
-#: modules/core_file_panel/file_panel.gd:146
+#: modules/core_file_panel/file_panel.gd:166
 msgid "Save image as ..."
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:148
-#: modules/core_timeline_panel/timeline_panel.gd:951
+#: modules/core_file_panel/file_panel.gd:168
+#: modules/core_timeline_panel/timeline_panel.gd:982
 msgid "Video options"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:152
+#: modules/core_file_panel/file_panel.gd:172
 msgid "Create proxy"
-msgstr ""
+msgstr "創建代理影片檔"
 
-#: modules/core_file_panel/file_panel.gd:154
+#: modules/core_file_panel/file_panel.gd:174
 msgid "Re-create proxy"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:155
+#: modules/core_file_panel/file_panel.gd:175
 msgid "Remove proxy"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:157
+#: modules/core_file_panel/file_panel.gd:177
 msgid "Replace audio"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:158
+#: modules/core_file_panel/file_panel.gd:178
 msgid "Extract audio to file ..."
-msgstr ""
+msgstr "提取音訊到檔案..."
 
-#: modules/core_file_panel/file_panel.gd:160
+#: modules/core_file_panel/file_panel.gd:180
 msgid "Text options"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:161
+#: modules/core_file_panel/file_panel.gd:181
 msgid "Duplicate"
-msgstr ""
+msgstr "建立副本"
 
-#: modules/core_file_panel/file_panel.gd:163
+#: modules/core_file_panel/file_panel.gd:183
 msgid "Extra"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:164
+#: modules/core_file_panel/file_panel.gd:184
 msgid "File Info"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:166
-#, fuzzy
-msgid "Folder options"
-msgstr "速度"
-
-#: modules/core_file_panel/file_panel.gd:168
-#: scenes/startup_screen/startup_screen.gd:253
+#: modules/core_file_panel/file_panel.gd:188
+#: scenes/startup_screen/startup_screen.gd:252
 msgid "Open in file manager"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:169
+#: modules/core_file_panel/file_panel.gd:189
 msgid "Copy file path"
-msgstr ""
+msgstr "複製檔案路徑"
 
-#: modules/core_file_panel/file_panel.gd:170
-#: modules/core_file_panel/file_panel.gd:188
-#: scenes/file_popups/create_folder_popup/create_folder.tscn
-msgid "Create folder"
-msgstr ""
-
-#: modules/core_file_panel/file_panel.gd:191
+#: modules/core_file_panel/file_panel.gd:211
 #: scenes/file_popups/rename_folder_popup/rename_folder.tscn
 msgid "Rename folder"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:192
+#: modules/core_file_panel/file_panel.gd:212
 msgid "Delete folder"
-msgstr ""
+msgstr "刪除資料夾"
 
-#: modules/core_file_panel/file_panel.gd:270
-#, fuzzy
+#: modules/core_file_panel/file_panel.gd:290
 msgid "Save image to file"
 msgstr "儲存圖片到檔案"
 
-#: modules/core_file_panel/file_panel.gd:283
+#: modules/core_file_panel/file_panel.gd:303
 msgid "Save video audio to WAV"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:418
-msgid "(Loading thumbnail...)"
+#: modules/core_file_panel/file_panel.gd:813
+#: scenes/file_popups/file_info_popup/file_info.gd:91
+#: scenes/file_popups/file_info_popup/file_info.gd:106
+#: scenes/file_popups/file_info_popup/file_info.gd:122
+#: scenes/file_popups/file_info_popup/file_info.gd:132
+msgid "Unknown"
 msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:815
+#: scenes/file_popups/file_info_popup/file_info.tscn
+#: scenes/file_popups/file_info_popup/file_info.gd:50
+#: scenes/settings_menu/settings_menu.gd:543
+msgid "Video"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:816
+#: scenes/file_popups/file_info_popup/file_info.tscn
+#: scenes/file_popups/file_info_popup/file_info.gd:51
+msgid "Audio"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:817
+#: scenes/file_popups/file_info_popup/file_info.gd:52
+msgid "Image"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:818
+#: modules/core_effects_panel/effects_panel.tscn
+#: scenes/file_popups/file_info_popup/file_info.gd:53
+msgid "Text"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:819
+#: modules/core_file_panel/file_panel.gd:870
+#: modules/core_file_panel/file_panel.gd:872
+#: scenes/file_popups/file_info_popup/file_info.gd:54
+msgid "Color"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:820
+#: scenes/file_popups/file_info_popup/file_info.gd:55
+msgid "PCK"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:825
+#: modules/core_file_panel/file_panel.gd:827
+#: scenes/file_popups/file_info_popup/file_info.tscn
+#: scenes/marker_popup/marker_popup.tscn
+msgid "Type"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:825
+#, fuzzy
+msgid "Missing"
+msgstr "新增顏色檔案"
+
+#: modules/core_file_panel/file_panel.gd:831
+#: scenes/file_popups/file_info_popup/file_info.tscn
+msgid "Duration"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:831
+#, fuzzy
+msgid "frames"
+msgstr "B幀"
+
+#: modules/core_file_panel/file_panel.gd:849
+#: scenes/file_popups/file_info_popup/file_info.tscn
+#: scenes/startup_screen/startup_screen.tscn
+#, fuzzy
+msgid "Resolution"
+msgstr "解析度"
+
+#: modules/core_file_panel/file_panel.gd:853
+#: modules/core_file_panel/file_panel.gd:862
+#: scenes/file_popups/file_info_popup/file_info.tscn
+msgid "Codec"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:854
+#, fuzzy
+msgid "Audio streams"
+msgstr "音訊波形"
+
+#: modules/core_file_panel/file_panel.gd:864
+#: scenes/file_popups/file_info_popup/file_info.tscn
+msgid "Bitrate"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:876
+msgid "Proxy"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:876
+#: modules/core_timeline_panel/time_stamps.gd:360
+msgid "Active"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:876
+msgid "Generated"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:879
+msgid "Replaced audio"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:885
+#: scenes/file_popups/file_info_popup/file_info.tscn
+msgid "Size"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:886
+#: scenes/file_popups/file_info_popup/file_info.tscn
+#: scenes/startup_screen/startup_screen.tscn
+msgid "Path"
+msgstr ""
+
+#: modules/core_file_panel/file_panel.gd:889
+msgid "(Loading thumbnail...)"
+msgstr "（正在加載縮圖…）"
 
 #: modules/core_markers_panel/markers_panel.tscn
 #: scenes/settings_menu/settings_menu.gd:192
-#: scenes/settings_menu/settings_menu.gd:413
+#: scenes/settings_menu/settings_menu.gd:419
 msgid "Markers"
-msgstr ""
+msgstr "標記"
 
-#: modules/core_timeline_panel/timeline_panel.gd:296
-#: modules/core_timeline_panel/timeline_panel.gd:301
+#: modules/core_timeline_panel/timeline_panel.gd:316
+#: modules/core_timeline_panel/timeline_panel.gd:326
 msgid "Track options"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:300
+#: modules/core_timeline_panel/timeline_panel.gd:320
 msgid "Remove empty space"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:305
-msgid "Add track"
+#: modules/core_timeline_panel/timeline_panel.gd:322
+msgid "Remove empty space (all tracks)"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:307
+#: modules/core_timeline_panel/timeline_panel.gd:330
+msgid "Add track"
+msgstr "新增軌道"
+
+#: modules/core_timeline_panel/timeline_panel.gd:332
 msgid "Remove track"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:311
+#: modules/core_timeline_panel/timeline_panel.gd:336
 msgid "Hide track"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:314
+#: modules/core_timeline_panel/timeline_panel.gd:339
 #: modules/core_timeline_panel/track_controls.gd:85
 msgid "Mute track"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:318
+#: modules/core_timeline_panel/timeline_panel.gd:343
 msgid "Lock track"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:924
+#: modules/core_timeline_panel/timeline_panel.gd:949
 msgid "Delete clip"
+msgstr "刪除片段"
+
+#: modules/core_timeline_panel/timeline_panel.gd:952
+#, fuzzy
+msgid "Ripple delete clip"
+msgstr "刪除片段"
+
+#: modules/core_timeline_panel/timeline_panel.gd:955
+msgid "Ripple delete clip (all tracks)"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:927
+#: modules/core_timeline_panel/timeline_panel.gd:958
 msgid "Split clip on mouse"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:930
+#: modules/core_timeline_panel/timeline_panel.gd:961
 msgid "Split clip on playhead"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:935
+#: modules/core_timeline_panel/timeline_panel.gd:966
 msgid "Hide clip"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:938
+#: modules/core_timeline_panel/timeline_panel.gd:969
 msgid "Mute clip"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:942
+#: modules/core_timeline_panel/timeline_panel.gd:973
 #: scenes/change_speed_popup/change_speed.tscn
 msgid "Change speed"
-msgstr ""
+msgstr "改變速度"
 
-#: modules/core_timeline_panel/timeline_panel.gd:944
+#: modules/core_timeline_panel/timeline_panel.gd:975
 msgid "Reset speed"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:954
+#: modules/core_timeline_panel/timeline_panel.gd:985
 msgid "Clip replace audio"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:956
+#: modules/core_timeline_panel/timeline_panel.gd:987
 msgid "Auto-cut silence"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:968
+#: modules/core_timeline_panel/timeline_panel.gd:999
 msgid "Select Audio Track"
+msgstr ""
+
+#: modules/core_timeline_panel/time_stamps.gd:354
+#, fuzzy
+msgid "Render region start"
+msgstr "渲染區域"
+
+#: modules/core_timeline_panel/time_stamps.gd:354
+#: modules/core_timeline_panel/time_stamps.gd:358
+msgid "Drag to adjust"
+msgstr ""
+
+#: modules/core_timeline_panel/time_stamps.gd:358
+#, fuzzy
+msgid "Render region end"
+msgstr "渲染區域"
+
+#: modules/core_timeline_panel/time_stamps.gd:360
+msgid "Inactive"
+msgstr ""
+
+#: modules/core_timeline_panel/time_stamps.gd:361
+msgid "Click to deactivate"
+msgstr ""
+
+#: modules/core_timeline_panel/time_stamps.gd:361
+msgid "Click to activate"
 msgstr ""
 
 #: modules/core_timeline_panel/timeline.tscn
@@ -481,9 +642,8 @@ msgstr ""
 
 #: modules/core_effects_panel/effects_panel.gd:1005
 #: modules/core_effects_panel/effects_panel.gd:1736
-#, fuzzy
 msgid "Default"
-msgstr "預設值"
+msgstr "預設"
 
 #: modules/core_effects_panel/effects_panel.gd:1020
 msgid "Text ..."
@@ -491,24 +651,25 @@ msgstr ""
 
 #: modules/core_effects_panel/effects_panel.gd:1042
 msgid "Left"
-msgstr ""
+msgstr "左"
 
 #: modules/core_effects_panel/effects_panel.gd:1043
 #: modules/core_effects_panel/effects_panel.gd:1047
 msgid "Center"
-msgstr ""
+msgstr "中心"
 
 #: modules/core_effects_panel/effects_panel.gd:1044
 msgid "Right"
-msgstr ""
+msgstr "右"
 
 #: modules/core_effects_panel/effects_panel.gd:1046
+#, fuzzy
 msgid "Top"
-msgstr ""
+msgstr "上"
 
 #: modules/core_effects_panel/effects_panel.gd:1048
 msgid "Bottom"
-msgstr ""
+msgstr "底部"
 
 #: modules/core_effects_panel/effects_panel.gd:1050
 msgid "Mix (Normal)"
@@ -516,7 +677,7 @@ msgstr ""
 
 #: modules/core_effects_panel/effects_panel.gd:1051
 msgid "Add"
-msgstr ""
+msgstr "新增"
 
 #: modules/core_effects_panel/effects_panel.gd:1052
 msgid "Subtract"
@@ -572,7 +733,7 @@ msgstr ""
 
 #: modules/core_effects_panel/effects_panel.gd:1541
 msgid "Add effects."
-msgstr ""
+msgstr "新增軌道。"
 
 #: modules/core_effects_panel/effects_panel.gd:1676
 msgid "Presets"
@@ -584,7 +745,7 @@ msgstr ""
 
 #: modules/core_effects_panel/effects_panel.gd:1707
 msgid "Delete effect"
-msgstr ""
+msgstr "刪除效果"
 
 #: modules/core_effects_panel/effects_panel.gd:1720
 msgid "Save as preset..."
@@ -597,11 +758,6 @@ msgstr ""
 
 #: modules/core_effects_panel/effects_panel.gd:1794
 msgid "Preset name"
-msgstr ""
-
-#: modules/core_effects_panel/effects_panel.tscn
-#: scenes/file_popups/file_info_popup/file_info.gd:53
-msgid "Text"
 msgstr ""
 
 #: modules/core_effects_panel/effects_panel.tscn
@@ -618,19 +774,19 @@ msgstr ""
 
 #: modules/core_effects_panel/effects_panel.tscn
 msgid "Audio effects"
-msgstr ""
+msgstr "音訊效果"
 
 #: scenes/file_popups/create_folder_popup/create_folder.tscn
-#, fuzzy
 msgid "Folder name:"
-msgstr "速度"
+msgstr "資料夾名稱："
 
 #: scenes/file_popups/create_folder_popup/create_folder.tscn
 #: scenes/file_popups/missing_files_popup/missing_files.tscn
 #: scenes/file_popups/updated_files_popup/updated_files.tscn
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
 #: scenes/editor/new_workspace_popup/new_workspace_popup.tscn
-#: scenes/welcome/welcome.tscn scenes/module_manager/module_manager.tscn
+#: scenes/welcome/welcome.tscn scenes/modules_popup/modules_popup.tscn
+#: scenes/jump_to_time_popup/jump_to_time.tscn
 #: scenes/jump_to_frame_popup/jump_to_frame.tscn
 #: scenes/change_speed_popup/change_speed.tscn
 #: scenes/duplication_error_popup/duplication_error.tscn
@@ -647,24 +803,25 @@ msgstr ""
 
 #: scenes/file_popups/overwrite_file/overwrite_file.tscn
 msgid "Overwrite file?"
-msgstr ""
+msgstr "覆蓋檔案？"
 
 #: scenes/file_popups/overwrite_file/overwrite_file.tscn
 msgid ""
 "A file already exists at the chosen export path. Do you want to overwrite it?"
-msgstr ""
+msgstr "所選導出路徑下已存在檔案。是否要覆蓋它？"
 
 #: scenes/file_popups/overwrite_file/overwrite_file.tscn
 #: scenes/file_popups/rename_folder_popup/rename_folder.tscn
 #: scenes/file_popups/rename_file_popup/rename_file.tscn
 #: scenes/editor/delete_workspace_popup/delete_workspace_popup.tscn
+#: scenes/editor/save_on_exit_popup/save_on_exit_popup.tscn
 #: scenes/color_popup/color_popup.tscn
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
 #: scenes/marker_popup/marker_popup.tscn
-#: scenes/auto_cut_popup/auto_cut_popup.tscn scripts/autoloads/project.gd:370
+#: scenes/auto_cut_popup/auto_cut_popup.tscn
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: scenes/file_popups/overwrite_file/overwrite_file.tscn
 msgid "Overwrite file"
@@ -686,66 +843,33 @@ msgid ""
 "right-click those missing files in the file panel to relink."
 msgstr ""
 
-#: scenes/file_popups/missing_files_popup/missing_files.gd:23
+#: scenes/file_popups/missing_files_popup/missing_files.gd:27
 #, fuzzy
 msgid "Re-link file"
 msgstr "將檔案重新命名為..."
 
 #: scenes/file_popups/rename_folder_popup/rename_folder.tscn
 #: scenes/file_popups/rename_file_popup/rename_file.tscn
+#: scenes/jump_to_time_popup/jump_to_time.tscn
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
+#: scenes/jump_to_frame_popup/jump_to_frame.tscn
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Confirm"
-msgstr ""
+msgstr "確認"
 
 #: scenes/file_popups/updated_files_popup/updated_files.tscn
 msgid "The following files were modified externally and have been reloaded:"
 msgstr ""
 
 #: scenes/file_popups/rename_file_popup/rename_file.tscn
-#, fuzzy
 msgid "Rename file"
 msgstr "將檔案重新命名為..."
-
-#: scenes/file_popups/file_info_popup/file_info.tscn
-#: scenes/startup_screen/startup_screen.tscn
-msgid "Path"
-msgstr ""
-
-#: scenes/file_popups/file_info_popup/file_info.tscn
-#: scenes/marker_popup/marker_popup.tscn
-msgid "Type"
-msgstr ""
-
-#: scenes/file_popups/file_info_popup/file_info.tscn
-msgid "Size"
-msgstr ""
-
-#: scenes/file_popups/file_info_popup/file_info.tscn
-#: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
-msgid "Resolution"
-msgstr "解析度"
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
 msgid "Framerate"
 msgstr "幀率"
-
-#: scenes/file_popups/file_info_popup/file_info.tscn
-msgid "Duration"
-msgstr ""
-
-#: scenes/file_popups/file_info_popup/file_info.tscn
-#: scenes/file_popups/file_info_popup/file_info.gd:50
-#: scenes/settings_menu/settings_menu.gd:537
-msgid "Video"
-msgstr ""
-
-#: scenes/file_popups/file_info_popup/file_info.tscn
-msgid "Codec"
-msgstr ""
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Color space"
@@ -760,20 +884,11 @@ msgid "Aspect ratio"
 msgstr ""
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
-msgid "Bitrate"
-msgstr ""
-
-#: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "B-frames"
 msgstr ""
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Scanning"
-msgstr ""
-
-#: scenes/file_popups/file_info_popup/file_info.tscn
-#: scenes/file_popups/file_info_popup/file_info.gd:51
-msgid "Audio"
 msgstr ""
 
 #: scenes/file_popups/file_info_popup/file_info.tscn
@@ -789,29 +904,10 @@ msgstr ""
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scenes/about_gozen_popup/about_gozen.tscn
 msgid "Close popup"
-msgstr ""
-
-#: scenes/file_popups/file_info_popup/file_info.gd:52
-msgid "Image"
-msgstr ""
-
-#: scenes/file_popups/file_info_popup/file_info.gd:54
-msgid "Color"
-msgstr ""
-
-#: scenes/file_popups/file_info_popup/file_info.gd:55
-msgid "PCK"
-msgstr ""
+msgstr "關閉彈窗"
 
 #: scenes/file_popups/file_info_popup/file_info.gd:61
 msgid "In memory"
-msgstr ""
-
-#: scenes/file_popups/file_info_popup/file_info.gd:91
-#: scenes/file_popups/file_info_popup/file_info.gd:106
-#: scenes/file_popups/file_info_popup/file_info.gd:122
-#: scenes/file_popups/file_info_popup/file_info.gd:132
-msgid "Unknown"
 msgstr ""
 
 #: scenes/file_popups/files_shortened_popup/files_shortened.tscn
@@ -835,136 +931,151 @@ msgstr ""
 
 #: scenes/editor/delete_workspace_popup/delete_workspace_popup.tscn
 msgid "Delete workspace"
-msgstr ""
+msgstr "刪除工作區"
 
 #: scenes/editor/delete_workspace_popup/delete_workspace_popup.tscn
 msgid "Are you sure you want to delete the workspace '%s'?"
+msgstr "您確定要刪除工作區「%s」嗎？"
+
+#: scenes/editor/save_on_exit_popup/save_on_exit_popup.tscn
+msgid "Unsaved changes"
 msgstr ""
 
-#: scenes/editor/editor.gd:256 scenes/startup_screen/startup_screen.tscn
-#: scripts/autoloads/project.gd:52
-#, fuzzy
-msgid "New project"
-msgstr "新增專案"
+#: scenes/editor/save_on_exit_popup/save_on_exit_popup.tscn
+msgid ""
+"You have unsaved changes in your current project. Save before proceeding?"
+msgstr ""
 
-#: scenes/editor/editor.gd:258
+#: scenes/editor/save_on_exit_popup/save_on_exit_popup.tscn
+msgid "Don't save"
+msgstr "不要儲存"
+
+#: scenes/editor/save_on_exit_popup/save_on_exit_popup.tscn
+#: scenes/editor/editor.gd:283
 msgid "Save project"
 msgstr ""
 
-#: scenes/editor/editor.gd:259 scripts/autoloads/project.gd:124
+#: scenes/editor/save_on_exit_popup/save_on_exit_popup.gd:32
+#: scenes/editor/editor.gd:284 scripts/autoloads/project.gd:124
 msgid "Save project as ..."
 msgstr ""
 
-#: scenes/editor/editor.gd:261
+#: scenes/editor/save_on_exit_popup/save_on_exit_popup.gd:34
+#: scenes/startup_screen/startup_screen.gd:372
+#: scenes/startup_screen/startup_screen.gd:450 scripts/autoloads/project.gd:126
+msgid "GoZen project file"
+msgstr "GoZen專案檔案"
+
+#: scenes/editor/editor.gd:281 scenes/startup_screen/startup_screen.tscn
+#: scripts/autoloads/project.gd:52
+msgid "New project"
+msgstr "創建新專案"
+
+#: scenes/editor/editor.gd:286
 #, fuzzy
 msgid "Archive project ..."
 msgstr "新增專案"
 
-#: scenes/editor/editor.gd:263 scenes/startup_screen/startup_screen.tscn
-#: scenes/startup_screen/startup_screen.gd:371 scripts/autoloads/project.gd:290
-#, fuzzy
+#: scenes/editor/editor.gd:288 scenes/startup_screen/startup_screen.tscn
+#: scenes/startup_screen/startup_screen.gd:370 scripts/autoloads/project.gd:290
 msgid "Open project"
 msgstr "開啟專案"
 
-#: scenes/editor/editor.gd:268 scenes/startup_screen/startup_screen.tscn
-#, fuzzy
+#: scenes/editor/editor.gd:293 scenes/startup_screen/startup_screen.tscn
 msgid "Recent projects"
 msgstr "近期專案"
 
-#: scenes/editor/editor.gd:272
+#: scenes/editor/editor.gd:297
 msgid "Splash screen"
 msgstr ""
 
-#: scenes/editor/editor.gd:273
+#: scenes/editor/editor.gd:298
 msgid "Welcome screen"
 msgstr ""
 
-#: scenes/editor/editor.gd:275 scenes/settings_menu/settings_menu.gd:114
-#, fuzzy
+#: scenes/editor/editor.gd:300 scenes/settings_menu/settings_menu.gd:114
 msgid "Project settings"
 msgstr "專案設定"
 
-#: scenes/editor/editor.gd:276
+#: scenes/editor/editor.gd:301
 msgid "Quit"
 msgstr ""
 
-#: scenes/editor/editor.gd:338
+#: scenes/editor/editor.gd:363
 msgid "Undo"
 msgstr ""
 
-#: scenes/editor/editor.gd:339
+#: scenes/editor/editor.gd:364
 msgid "Redo"
 msgstr ""
 
-#: scenes/editor/editor.gd:373
+#: scenes/editor/editor.gd:398
 #: scenes/editor/new_workspace_popup/new_workspace_popup.tscn
 msgid "Save workspace"
 msgstr ""
 
-#: scenes/editor/editor.gd:374
+#: scenes/editor/editor.gd:399
 #: scenes/editor/new_workspace_popup/new_workspace_popup.tscn
 msgid "New workspace"
 msgstr ""
 
-#: scenes/editor/editor.gd:376 scenes/editor/editor.gd:394
+#: scenes/editor/editor.gd:401 scenes/editor/editor.gd:419
 msgid "Show panel titles"
 msgstr ""
 
-#: scenes/editor/editor.gd:377
+#: scenes/editor/editor.gd:402
 msgid "Panels"
 msgstr ""
 
-#: scenes/editor/editor.gd:392
+#: scenes/editor/editor.gd:417
 msgid "Hide panel titles"
 msgstr ""
 
-#: scenes/editor/editor.gd:426 scenes/startup_screen/startup_screen.tscn
-#, fuzzy
+#: scenes/editor/editor.gd:453 scenes/startup_screen/startup_screen.tscn
 msgid "Editor settings"
 msgstr "編輯器設定"
 
-#: scenes/editor/editor.gd:428
+#: scenes/editor/editor.gd:455
 msgid "Module manager"
 msgstr ""
 
-#: scenes/editor/editor.gd:430
+#: scenes/editor/editor.gd:457
 msgid "Command bar"
-msgstr ""
+msgstr "指令欄"
 
-#: scenes/editor/editor.gd:451
+#: scenes/editor/editor.gd:482
 msgid "Report bug"
 msgstr ""
 
-#: scenes/editor/editor.gd:452 scenes/welcome/welcome.tscn
+#: scenes/editor/editor.gd:483 scenes/welcome/welcome.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
-msgstr ""
+msgstr "手冊"
 
-#: scenes/editor/editor.gd:453 scenes/startup_screen/startup_screen.tscn
-#, fuzzy
+#: scenes/editor/editor.gd:484 scenes/startup_screen/startup_screen.tscn
 msgid "Tutorials"
-msgstr "教學課程"
+msgstr "教學"
 
-#: scenes/editor/editor.gd:454 scenes/welcome/welcome.tscn
+#: scenes/editor/editor.gd:485 scenes/welcome/welcome.tscn
 #: scenes/about_gozen_popup/about_gozen.tscn
 msgid "Discord"
-msgstr ""
+msgstr "Discord"
 
-#: scenes/editor/editor.gd:456 scenes/welcome/welcome.tscn
+#: scenes/editor/editor.gd:487 scenes/welcome/welcome.tscn
 #: scenes/about_gozen_popup/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr ""
 
-#: scenes/editor/editor.gd:457 scenes/about_gozen_popup/about_gozen.tscn
+#: scenes/editor/editor.gd:488 scenes/about_gozen_popup/about_gozen.tscn
 msgid "About GoZen"
-msgstr ""
+msgstr "關於 GoZen"
 
-#: scenes/editor/editor.gd:527
+#: scenes/editor/editor.gd:558
 msgid "Move Left"
 msgstr ""
 
-#: scenes/editor/editor.gd:530
+#: scenes/editor/editor.gd:561
 msgid "Move Right"
 msgstr ""
 
@@ -989,18 +1100,17 @@ msgstr "編輯器設定"
 msgid "Effects"
 msgstr ""
 
-#: scenes/welcome/welcome.tscn scripts/autoloads/render_manager.gd:210
-#: scripts/autoloads/render_manager.gd:217
-#, fuzzy
+#: scenes/welcome/welcome.tscn scripts/autoloads/render_manager.gd:208
+#: scripts/autoloads/render_manager.gd:215
 msgid "Rendering"
-msgstr "渲染"
+msgstr "正在渲染"
 
 #: scenes/welcome/welcome.tscn
 msgid "Modules"
 msgstr ""
 
-#: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:415
-#: scenes/settings_menu/settings_menu.gd:416
+#: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:421
+#: scenes/settings_menu/settings_menu.gd:422
 msgid "Extras"
 msgstr ""
 
@@ -1026,7 +1136,7 @@ msgstr ""
 
 #: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:212
 msgid "Language"
-msgstr ""
+msgstr "語言"
 
 #: scenes/welcome/welcome.tscn
 msgid "Theme"
@@ -1162,7 +1272,7 @@ msgstr ""
 
 #: scenes/welcome/welcome.tscn
 msgid "Delete:"
-msgstr ""
+msgstr "刪除"
 
 #: scenes/welcome/welcome.tscn
 msgid "Cut at cursor:"
@@ -1226,9 +1336,9 @@ msgid ""
 "are for visual fades."
 msgstr ""
 
-#: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:401
+#: scenes/welcome/welcome.tscn scenes/settings_menu/settings_menu.gd:407
 msgid "Keyframes"
-msgstr ""
+msgstr "關鍵影格"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
@@ -1368,9 +1478,8 @@ msgid ""
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Auto save:"
-msgstr "儲存"
+msgstr "自動儲存："
 
 #: scenes/welcome/welcome.tscn
 msgid "Empty space click action:"
@@ -1390,14 +1499,12 @@ msgid ""
 msgstr ""
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Resolution:"
-msgstr "解析度"
+msgstr "解析度："
 
 #: scenes/welcome/welcome.tscn
-#, fuzzy
 msgid "Framerate:"
-msgstr "幀率"
+msgstr "幀率："
 
 #: scenes/welcome/welcome.gd:56
 msgid "Full version only!"
@@ -1411,7 +1518,7 @@ msgstr ""
 msgid "Always split Audio to a new track"
 msgstr ""
 
-#: scenes/welcome/welcome.gd:189 scenes/settings_menu/settings_menu.gd:907
+#: scenes/welcome/welcome.gd:189 scenes/settings_menu/settings_menu.gd:913
 msgid "Press any key..."
 msgstr ""
 
@@ -1429,7 +1536,7 @@ msgstr ""
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Add effect"
-msgstr ""
+msgstr "新增效果"
 
 #: scenes/add_effects_popup/add_effects_popup.tscn
 msgid "Enter effect name ..."
@@ -1441,9 +1548,24 @@ msgid "Add color file"
 msgstr "新增顏色檔案"
 
 #: scenes/color_popup/color_popup.tscn
-#, fuzzy
 msgid "Create new color file"
 msgstr "建立新顏色檔案"
+
+#: scenes/modules_popup/modules_popup.tscn
+msgid "Module Manager"
+msgstr ""
+
+#: scenes/modules_popup/modules_popup.tscn
+msgid "Install Module"
+msgstr ""
+
+#: scenes/jump_to_time_popup/jump_to_time.tscn
+msgid "Jump to time stamp"
+msgstr ""
+
+#: scenes/jump_to_time_popup/jump_to_time.tscn
+msgid "Time stamp:"
+msgstr ""
 
 #: scenes/replace_audio_popup/replace_audio_popup.gd:113
 msgid "None"
@@ -1455,18 +1577,16 @@ msgstr ""
 
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
-#, fuzzy
 msgid "Waveform modifier"
-msgstr "音訊波形樣式"
-
-#: scenes/replace_audio_popup/replace_audio_popup.tscn
-msgid "Audio offset"
 msgstr ""
 
 #: scenes/replace_audio_popup/replace_audio_popup.tscn
-#, fuzzy
+msgid "Audio offset"
+msgstr "音訊偏移"
+
+#: scenes/replace_audio_popup/replace_audio_popup.tscn
 msgid "Auto align"
-msgstr "儲存"
+msgstr "自動對齊"
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
 msgid "Update existing clips?"
@@ -1474,25 +1594,17 @@ msgstr ""
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
 msgid ""
-"This file is currently used by '%d' clip(s).\\nDo you want to apply the "
-"audio replacement to all existing clips?"
+"This file is currently used by '%d' clip(s).\n"
+"Do you want to apply the audio replacement to all existing clips?"
 msgstr ""
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
 msgid "Apply to file only"
-msgstr ""
+msgstr "只套用到檔案"
 
 #: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
 msgid "Apply to all"
-msgstr ""
-
-#: scenes/module_manager/module_manager.tscn
-msgid "Module Manager"
-msgstr ""
-
-#: scenes/module_manager/module_manager.tscn
-msgid "Install Module"
-msgstr ""
+msgstr "套用到全部"
 
 #: scenes/jump_to_frame_popup/jump_to_frame.tscn
 msgid "Jump to frame"
@@ -1503,23 +1615,22 @@ msgstr ""
 msgid "Frame nr:"
 msgstr "幀率"
 
-#: scenes/jump_to_frame_popup/jump_to_frame.tscn
-#: scenes/change_speed_popup/change_speed.tscn
-msgid "Apply"
-msgstr ""
-
 #: scenes/change_speed_popup/change_speed.tscn
 msgid "Speed:"
 msgstr ""
 
+#: scenes/change_speed_popup/change_speed.tscn
+msgid "Apply"
+msgstr ""
+
 #: scenes/duplication_error_popup/duplication_error.tscn
 msgid "Duplication failed"
-msgstr ""
+msgstr "建立副本失敗"
 
 #: scenes/duplication_error_popup/duplication_error.tscn
 msgid ""
 "Could not duplicate %d clip(s) because there was not enough empty space."
-msgstr ""
+msgstr "沒有足夠的空間，無法為 %d 個片段建立副本。"
 
 #: scenes/progress_overlay/progress_overlay.gd:74
 #: scenes/progress_overlay/progress_overlay.gd:77
@@ -1528,18 +1639,16 @@ msgstr ""
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:224
-#, fuzzy
 msgid "Loading project"
 msgstr "正在載入專案"
 
 #: scenes/progress_overlay/progress_overlay.tscn
 #: scripts/autoloads/project.gd:225
 msgid "Initializing ..."
-msgstr ""
+msgstr "正在初始化..."
 
 #: scenes/about_gozen_popup/about_gozen.tscn
-#: scenes/startup_screen/startup_screen.gd:292
-#, fuzzy
+#: scenes/startup_screen/startup_screen.gd:291
 msgid "Version"
 msgstr "版本"
 
@@ -1549,23 +1658,21 @@ msgstr ""
 
 #: scenes/about_gozen_popup/about_gozen.tscn
 msgid "YouTube"
-msgstr ""
+msgstr "YouTube"
 
 #: scenes/about_gozen_popup/about_gozen.gd:28
 msgid "License"
-msgstr ""
+msgstr "許可證"
 
 #: scenes/settings_menu/settings_menu.gd:47
 #: scenes/settings_menu/settings_menu.tscn
-#, fuzzy
 msgid "Search settings ..."
-msgstr "編輯器設定"
+msgstr "搜尋設定..."
 
 #: scenes/settings_menu/settings_menu.gd:51
 #: scenes/settings_menu/settings_menu.tscn
-#, fuzzy
 msgid "Close settings"
-msgstr "儲存設定"
+msgstr "關閉設定"
 
 #: scenes/settings_menu/settings_menu.gd:112
 msgid "Editor"
@@ -1581,26 +1688,26 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:190
 msgid "Marker one"
-msgstr ""
+msgstr "標記 1"
 
 #: scenes/settings_menu/settings_menu.gd:190
 msgid "Marker two"
-msgstr ""
+msgstr "標記 2"
 
 #: scenes/settings_menu/settings_menu.gd:190
 msgid "Marker three"
-msgstr ""
+msgstr "標記 3"
 
 #: scenes/settings_menu/settings_menu.gd:191
 msgid "Marker four"
-msgstr ""
+msgstr "標記 4"
 
 #: scenes/settings_menu/settings_menu.gd:191
 msgid "Marker five"
-msgstr ""
+msgstr "標記 5"
 
 #: scenes/settings_menu/settings_menu.gd:202
-#: scenes/settings_menu/settings_menu.gd:424
+#: scenes/settings_menu/settings_menu.gd:430
 msgid "Shortcuts"
 msgstr ""
 
@@ -1609,13 +1716,12 @@ msgid "Display"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:219
-#, fuzzy
 msgid "Display scale"
-msgstr "語言"
+msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:230
 msgid "Editor theme"
-msgstr ""
+msgstr "編輯器主題"
 
 #: scenes/settings_menu/settings_menu.gd:240
 msgid "Show menu bar"
@@ -1627,10 +1733,9 @@ msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:250
 msgid "Audio waveforms"
-msgstr ""
+msgstr "音訊波形"
 
 #: scenes/settings_menu/settings_menu.gd:251
-#, fuzzy
 msgid "Waveform style"
 msgstr "音訊波形樣式"
 
@@ -1645,8 +1750,9 @@ msgid ""
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:266
+#, fuzzy
 msgid "Dialogs"
-msgstr ""
+msgstr "對話框"
 
 #: scenes/settings_menu/settings_menu.gd:267
 msgid "Panel tabs position"
@@ -1692,181 +1798,184 @@ msgid "Use proxies"
 msgstr ""
 
 #: scenes/settings_menu/settings_menu.gd:311
+#, fuzzy
+msgid "Automatically generate proxies"
+msgstr "自訂渲染設定檔"
+
+#: scenes/settings_menu/settings_menu.gd:316
+msgid ""
+"Automatically generate proxy files for all video's when they are loaded."
+msgstr ""
+
+#: scenes/settings_menu/settings_menu.gd:317
 msgid "Proxies save path"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:316
+#: scenes/settings_menu/settings_menu.gd:322
 msgid ""
 "Changing this setting should be done with a path which points to an already "
 "existing folder. All previously made proxy clips will need to be generated "
 "again and deleted manually from the previous folder."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:320
+#: scenes/settings_menu/settings_menu.gd:326
 msgid "Cache Management"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:321
+#: scenes/settings_menu/settings_menu.gd:327
 #, fuzzy
 msgid "Waveforms"
 msgstr "音訊波形樣式"
 
-#: scenes/settings_menu/settings_menu.gd:323
+#: scenes/settings_menu/settings_menu.gd:329
 msgid "File thumbnails"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:325
+#: scenes/settings_menu/settings_menu.gd:331
 #, fuzzy
 msgid "Project thumbnails"
 msgstr "專案設定"
 
-#: scenes/settings_menu/settings_menu.gd:327
+#: scenes/settings_menu/settings_menu.gd:333
 msgid "Proxies"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:332
-#: scenes/settings_menu/settings_menu.gd:553
-#: scenes/settings_menu/settings_menu.gd:554
-#, fuzzy
+#: scenes/settings_menu/settings_menu.gd:338
+#: scenes/settings_menu/settings_menu.gd:559
+#: scenes/settings_menu/settings_menu.gd:560
 msgid "Appearance"
 msgstr "外觀"
 
-#: scenes/settings_menu/settings_menu.gd:334
-#, fuzzy
+#: scenes/settings_menu/settings_menu.gd:340
 msgid "Defaults"
 msgstr "預設值"
 
-#: scenes/settings_menu/settings_menu.gd:335
+#: scenes/settings_menu/settings_menu.gd:341
 msgid "Paths"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:336
+#: scenes/settings_menu/settings_menu.gd:342
 #, fuzzy
 msgid "Default project path"
 msgstr "預設圖片持續時間"
 
-#: scenes/settings_menu/settings_menu.gd:341
+#: scenes/settings_menu/settings_menu.gd:347
 msgid "The default directory where new projects are created."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:342
+#: scenes/settings_menu/settings_menu.gd:348
 msgid "Default durations"
-msgstr ""
+msgstr "預設時長"
 
-#: scenes/settings_menu/settings_menu.gd:343
+#: scenes/settings_menu/settings_menu.gd:349
 #, fuzzy
 msgid "Default image duration"
-msgstr "預設圖片持續時間"
+msgstr "預設圖片時長"
 
-#: scenes/settings_menu/settings_menu.gd:350
-#: scenes/settings_menu/settings_menu.gd:358
-#: scenes/settings_menu/settings_menu.gd:366
+#: scenes/settings_menu/settings_menu.gd:356
+#: scenes/settings_menu/settings_menu.gd:364
+#: scenes/settings_menu/settings_menu.gd:372
 msgid "Duration in frames per second."
-msgstr ""
+msgstr "持續時間 (幀/秒)"
 
-#: scenes/settings_menu/settings_menu.gd:351
+#: scenes/settings_menu/settings_menu.gd:357
 msgid "Default color duration"
-msgstr ""
+msgstr "預設顏色持續時間"
 
-#: scenes/settings_menu/settings_menu.gd:359
+#: scenes/settings_menu/settings_menu.gd:365
 #, fuzzy
 msgid "Default text duration"
-msgstr "預設圖片持續時間"
+msgstr "預設文字時長"
 
-#: scenes/settings_menu/settings_menu.gd:367
-#: scenes/settings_menu/settings_menu.gd:539
-#, fuzzy
+#: scenes/settings_menu/settings_menu.gd:373
+#: scenes/settings_menu/settings_menu.gd:545
 msgid "Project resolution"
-msgstr "解析度"
-
-#: scenes/settings_menu/settings_menu.gd:372
-#: scenes/settings_menu/settings_menu.gd:544
-#, fuzzy
-msgid "Project frame-rate"
-msgstr "幀率"
+msgstr "專案解析度"
 
 #: scenes/settings_menu/settings_menu.gd:378
+#: scenes/settings_menu/settings_menu.gd:550
+msgid "Project frame-rate"
+msgstr "專案幀率"
+
+#: scenes/settings_menu/settings_menu.gd:384
 msgid "Quick create project options"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:379
+#: scenes/settings_menu/settings_menu.gd:385
 #, fuzzy
 msgid "Horizontal resolution"
 msgstr "解析度"
 
-#: scenes/settings_menu/settings_menu.gd:384
+#: scenes/settings_menu/settings_menu.gd:390
 #, fuzzy
 msgid "Horizontal framerate"
 msgstr "幀率"
 
-#: scenes/settings_menu/settings_menu.gd:390
+#: scenes/settings_menu/settings_menu.gd:396
 #, fuzzy
 msgid "Vertical resolution"
 msgstr "解析度"
 
-#: scenes/settings_menu/settings_menu.gd:395
+#: scenes/settings_menu/settings_menu.gd:401
 #, fuzzy
 msgid "Vertical framerate"
 msgstr "幀率"
 
-#: scenes/settings_menu/settings_menu.gd:402
+#: scenes/settings_menu/settings_menu.gd:408
 msgid "Default keyframe type"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:411
+#: scenes/settings_menu/settings_menu.gd:417
 msgid "Performance"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:417
+#: scenes/settings_menu/settings_menu.gd:423
 #, fuzzy
 msgid "Auto save"
 msgstr "儲存"
 
-#: scenes/settings_menu/settings_menu.gd:425
+#: scenes/settings_menu/settings_menu.gd:431
 msgid "Cache"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:538
-#, fuzzy
+#: scenes/settings_menu/settings_menu.gd:544
 msgid "Video settings"
-msgstr "編輯器設定"
+msgstr "影片設定"
 
-#: scenes/settings_menu/settings_menu.gd:551
-#, fuzzy
+#: scenes/settings_menu/settings_menu.gd:557
 msgid "Project framerate (fps)."
-msgstr "幀率"
+msgstr "專案幀率 (每秒影格數)"
 
-#: scenes/settings_menu/settings_menu.gd:555
+#: scenes/settings_menu/settings_menu.gd:561
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Background color"
 msgstr "背景顏色"
 
-#: scenes/settings_menu/settings_menu.gd:560
+#: scenes/settings_menu/settings_menu.gd:566
 msgid "The background color when no clips are displayed."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:587
+#: scenes/settings_menu/settings_menu.gd:593
 msgid "Reset to default"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:830
+#: scenes/settings_menu/settings_menu.gd:836
 msgid "Clear"
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:879
+#: scenes/settings_menu/settings_menu.gd:885
 msgid "Waveforms cache cleared."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:884
+#: scenes/settings_menu/settings_menu.gd:890
 msgid "File thumbnails cache cleared."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:889
+#: scenes/settings_menu/settings_menu.gd:895
 msgid "Project thumbnails cache cleared."
 msgstr ""
 
-#: scenes/settings_menu/settings_menu.gd:894
+#: scenes/settings_menu/settings_menu.gd:900
 msgid "Proxies cleared."
 msgstr ""
 
@@ -1875,7 +1984,6 @@ msgid "Error whilst rendering video"
 msgstr ""
 
 #: scenes/render_popups/render_finished_popup/render_finished.tscn
-#, fuzzy
 msgid "Render finished"
 msgstr "渲染完成"
 
@@ -1908,11 +2016,11 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "GoZen"
-msgstr ""
+msgstr "GoZen"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Version: "
-msgstr ""
+msgstr "版本: "
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "The creator of the startup picture you're seeing right now."
@@ -1935,7 +2043,6 @@ msgid "Name (Z...A)"
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Getting started"
 msgstr "入門指南"
 
@@ -1953,7 +2060,6 @@ msgid "Go to the menu to set the settings of your new project."
 msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
-#, fuzzy
 msgid "Create new project"
 msgstr "建立新專案"
 
@@ -1996,7 +2102,7 @@ msgstr ""
 #: scenes/startup_screen/startup_screen.tscn
 #, fuzzy
 msgid "Track amount"
-msgstr "預設軌道數量"
+msgstr "軌道數量"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Amount of tracks in the timeline."
@@ -2004,34 +2110,29 @@ msgstr ""
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Advanced options"
-msgstr ""
+msgstr "進階選項"
 
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Return"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:76
+#: scenes/startup_screen/startup_screen.gd:75
 msgid "Image by"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:254
+#: scenes/startup_screen/startup_screen.gd:253
 msgid "Remove from list"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:319
+#: scenes/startup_screen/startup_screen.gd:318
 msgid "User presets"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:373
-#: scenes/startup_screen/startup_screen.gd:451 scripts/autoloads/project.gd:126
-msgid "GoZen project file"
-msgstr ""
-
-#: scenes/startup_screen/startup_screen.gd:449
+#: scenes/startup_screen/startup_screen.gd:448
 msgid "Select project save path"
 msgstr ""
 
-#: scenes/startup_screen/startup_screen.gd:550
+#: scenes/startup_screen/startup_screen.gd:549
 msgid "Select folder to scan"
 msgstr ""
 
@@ -2049,11 +2150,11 @@ msgstr ""
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Marker"
-msgstr ""
+msgstr "標記"
 
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Delete the selected marker."
-msgstr ""
+msgstr "刪除選取的標記。"
 
 #: scenes/auto_cut_popup/auto_cut_popup.tscn
 msgid "Auto-Cut Silence"
@@ -2084,15 +2185,14 @@ msgid "Confirm Auto-Cut"
 msgstr ""
 
 #: scripts/autoloads/project.gd:53
-#, fuzzy
 msgid "Initialize new project ..."
-msgstr "新增專案"
+msgstr "正在初始化新專案..."
 
 #: scripts/autoloads/project.gd:61
 msgid "Setting up playback ..."
 msgstr ""
 
-#: scripts/autoloads/project.gd:65 scripts/autoloads/project.gd:271
+#: scripts/autoloads/project.gd:65 scripts/autoloads/project.gd:267
 msgid "Finalizing ..."
 msgstr ""
 
@@ -2119,83 +2219,64 @@ msgstr ""
 
 #: scripts/autoloads/project.gd:244
 msgid "Loading project files ..."
-msgstr ""
+msgstr "正在載入專案文件..."
 
 #: scripts/autoloads/project.gd:291
 msgid "GoZen project files"
-msgstr ""
+msgstr "GoZen專案檔案"
 
-#: scripts/autoloads/project.gd:369
-msgid "Don't save"
-msgstr ""
-
-#: scripts/autoloads/project.gd:374
-msgid "Unsaved changes"
-msgstr ""
-
-#: scripts/autoloads/project.gd:375
-msgid ""
-"You have unsaved changes in your current project. Save before proceeding?"
-msgstr ""
-
-#: scripts/autoloads/project.gd:376
-msgid "Save"
-msgstr ""
-
-#: scripts/autoloads/render_manager.gd:224
-#, fuzzy
+#: scripts/autoloads/render_manager.gd:222
 msgid "Cancel rendering"
 msgstr "取消渲染"
 
-#: scripts/autoloads/render_manager.gd:255
+#: scripts/autoloads/render_manager.gd:249
 msgid "Error opening file"
 msgstr ""
 
-#: scripts/autoloads/render_manager.gd:256
+#: scripts/autoloads/render_manager.gd:250
 msgid "Error whilst sending audio"
 msgstr ""
 
-#: scripts/autoloads/render_manager.gd:261
+#: scripts/autoloads/render_manager.gd:255
 msgid "Setting up ..."
 msgstr ""
 
-#: scripts/autoloads/render_manager.gd:262
-#: scripts/autoloads/render_manager.gd:263
+#: scripts/autoloads/render_manager.gd:256
+#: scripts/autoloads/render_manager.gd:257
 msgid "Compiling audio ..."
-msgstr ""
+msgstr "正在編譯音訊..."
 
-#: scripts/autoloads/render_manager.gd:264
-#: scripts/autoloads/render_manager.gd:265
+#: scripts/autoloads/render_manager.gd:258
+#: scripts/autoloads/render_manager.gd:259
 msgid "Sending data ..."
 msgstr ""
 
-#: scripts/autoloads/render_manager.gd:266
+#: scripts/autoloads/render_manager.gd:260
 msgid "Sending final frame ..."
 msgstr ""
 
-#: scripts/logic/file_logic.gd:336
-#, fuzzy
+#: scripts/logic/file_logic.gd:400
 msgid "Files dropped"
-msgstr "已加入檔案"
+msgstr ""
 
-#: scripts/logic/file_logic.gd:337
+#: scripts/logic/file_logic.gd:401
 #, fuzzy
 msgid "Scanning files ..."
 msgstr "將檔案重新命名為..."
 
-#: scripts/logic/file_logic.gd:392
+#: scripts/logic/file_logic.gd:456
 #, fuzzy
 msgid "Processing file: "
 msgstr "新增顏色檔案"
 
-#: scripts/logic/file_logic.gd:395
+#: scripts/logic/file_logic.gd:459
 msgid "Files loading ..."
-msgstr ""
+msgstr "正在加載文件..."
 
-#: scripts/logic/file_logic.gd:442
+#: scripts/logic/file_logic.gd:506
 msgid "File missing or moved: "
 msgstr ""
 
-#: scripts/logic/file_logic.gd:1339
+#: scripts/logic/file_logic.gd:1403
 msgid "Scanning folder: "
 msgstr ""

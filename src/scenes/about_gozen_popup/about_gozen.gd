@@ -19,7 +19,7 @@ const BASE: String = "[url=URL]URL"
 func _ready() -> void:
 	line_edit_version.text = ProjectSettings.get_setting(PROJECT_SETTING_VERSION)
 	if OS.is_debug_build():
-		line_edit_version.text += "-debug"
+		line_edit_version.text += "-debug" # NO_TRANSLATE
 
 	label_website.text = BASE.replace("URL", ProjectSettings.get_setting("urls/site") as String)
 	label_source_code.text = BASE.replace("URL", ProjectSettings.get_setting("urls/source_code") as String)

@@ -47,6 +47,7 @@ layout_mode = 2
 text = "Time stamp:"
 
 [node name="TimeLineEdit" type="LineEdit" parent="Panel/Margin/Panel/Margin/VBox/HBox" unique_id=794515092]
+auto_translate_mode = 2
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 placeholder_text = "00:00:00.00"
