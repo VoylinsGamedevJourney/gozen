@@ -84,8 +84,8 @@ script = ExtResource("1_ny2jm")
 id = "rotation"
 nickname = "Rotation"
 default_value = 0.0
-min_value = -360.0
-max_value = 360.0
+min_value = null
+max_value = null
 step = 1.0
 metadata/_custom_type_script = "uid://c68tgvx8rgvd4"
 

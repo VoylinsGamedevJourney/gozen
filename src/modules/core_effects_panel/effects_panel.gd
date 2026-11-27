@@ -1102,8 +1102,18 @@ func create_param_control(param: EffectParam, update_call: Callable, effect_ui: 
 				slider.min_value = param.min_value if param.min_value != null else 0.0
 				slider.max_value = param.max_value if param.max_value != null else 100.0
 				slider.step = spinbox.step
+				slider.scrollable = false
 				slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+
+				slider.gui_input.connect(func(event: InputEvent) -> void:
+						if event is InputEventMouseButton:
+							var mouse_event: InputEventMouseButton = event
+							if mouse_event.button_index not in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
+								return
+							if mouse_event.pressed:
+								slider.value += slider.step if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP else -slider.step
+							slider.accept_event())
 
 				var slider_range: float = slider.max_value - slider.min_value
 				if slider.step > 0.0 and (slider_range / slider.step) <= 20.0:
