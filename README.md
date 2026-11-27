@@ -38,6 +38,11 @@ GoZen is available on following platforms:
 - [Steam](https://store.steampowered.com/app/4070440/GoZen/);
 - [Aur](https://aur.archlinux.org/packages/gozen);
 
+### Lite/demo version on Itch.io + Steam
+If you just need a simple video editor experience and don't want to go through the trouble of compiling everything yourself, you can head over to [Itch.io](https://voylin.itch.io/gozen) and [Steam](https://store.steampowered.com/app/4070440/GoZen/) to download the Lite/Demo version.
+
+The biggest difference is that you can't expand the editor with modules, no proxy support, and no project archiving (feature to automatically zip projects after you're done with them). You'll still have access to use PCK files which are Godot scene's that you can drag into your projects together with all the other necessary tools to comfortably edit videos with.
+
 ### Building from source
 Before you start building from source you'll need to ensure you have following dependencies installed on your system (names can vary depending on the distro you're using):
 - **Compiler:** `gcc`/`clang` and `g++`/`clang++`;
