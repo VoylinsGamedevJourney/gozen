@@ -124,7 +124,9 @@ func _strict_input_check(event: InputEvent) -> bool:
 	elif event.is_action_pressed("go_to_last_frame", true, true):
 		EditorCore.frame_nr = Project.data.timeline_end
 		Timeline.focus_on_playhead()
-
+	elif event.is_action_pressed("toggle_fullscreen", false, true):
+		PopupManager.open(PopupManager.FULLSCREEN_PREVIEW)
+		return true
 	return false
 
 

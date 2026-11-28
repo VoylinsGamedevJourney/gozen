@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://dop4nk01jpy6o"]
+
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_ntltp"]
+[ext_resource type="Script" uid="uid://cyume8ex1yn52" path="res://scenes/fullscreen_preview_popup/fullscreen_preview_popup.gd" id="2_rfff4"]
+
+[node name="FullscreenPreviewPopup" type="PanelContainer" unique_id=1783266660 node_paths=PackedStringArray("aspect_container", "video_view_rect")]
+material = ExtResource("1_ntltp")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("2_rfff4")
+aspect_container = NodePath("Margin/Panel/Margin/VBox/MarkerPanel/Margin/VBox/AspectRatioContainer")
+video_view_rect = NodePath("Margin/Panel/Margin/VBox/MarkerPanel/Margin/VBox/AspectRatioContainer/ProjectView")
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=2062012239]
+layout_mode = 2
+theme_override_constants/margin_left = 64
+theme_override_constants/margin_top = 64
+theme_override_constants/margin_right = 64
+theme_override_constants/margin_bottom = 64
+
+[node name="Panel" type="PanelContainer" parent="Margin" unique_id=534759731]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Margin/Panel" unique_id=971078827]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Margin/Panel/Margin" unique_id=1627860491]
+layout_mode = 2
+
+[node name="MarkerPanel" type="PanelContainer" parent="Margin/Panel/Margin/VBox" unique_id=276719360]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Margin" type="MarginContainer" parent="Margin/Panel/Margin/VBox/MarkerPanel" unique_id=1917826217]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Margin/Panel/Margin/VBox/MarkerPanel/Margin" unique_id=66387807]
+layout_mode = 2
+tooltip_text = "Press F11 to toggle fullscreen preview off."
+
+[node name="TitleLabel" type="Label" parent="Margin/Panel/Margin/VBox/MarkerPanel/Margin/VBox" unique_id=2002969846]
+layout_mode = 2
+tooltip_text = "Press F11 to toggle fullscreen preview off."
+theme_type_variation = &"title_label"
+text = "Fullscreen preview"
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Margin/Panel/Margin/VBox/MarkerPanel/Margin/VBox" unique_id=1245374992]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProjectView" type="TextureRect" parent="Margin/Panel/Margin/VBox/MarkerPanel/Margin/VBox/AspectRatioContainer" unique_id=176797877]
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5

@@ -53,7 +53,12 @@ enum {
 	COMMAND_BAR,
 	COLOR_PICKER,
 	SAVE_ON_EXIT,
-	}
+	FULLSCREEN_PREVIEW,
+}
+
+
+var control: Control = Control.new()
+
 
 var _open_popups: Dictionary [int, Control] = {}
 var _popup_uids: Dictionary [int, String] = {
@@ -108,9 +113,8 @@ var _popup_uids: Dictionary [int, String] = {
 	COMMAND_BAR: "uid://rj2h8g761jr1",
 	COLOR_PICKER: "uid://brbxvynl0y3ha",
 	SAVE_ON_EXIT: "uid://rlb3fkoeyc6s",
-	}
-
-var control: Control = Control.new()
+	FULLSCREEN_PREVIEW: "uid://dop4nk01jpy6o",
+}
 
 
 

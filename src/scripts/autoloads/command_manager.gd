@@ -75,6 +75,8 @@ func _ready() -> void:
 	register(Command.new("Open marker popup", PopupManager.open.bind(PopupManager.MARKER), "open_marker_popup"))
 	register(Command.new("About GoZen", PopupManager.open.bind(PopupManager.CREDITS), "help"))
 
+	register(Command.new("Toggle fullscreen preview", PopupManager.open.bind(PopupManager.FULLSCREEN_PREVIEW), "toggle_fullscreen"))
+
 	Settings.on_localization_updated.connect(_localize_commands)
 
 
