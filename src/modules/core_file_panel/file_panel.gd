@@ -825,7 +825,7 @@ func _update_file_tooltip(file: FileData) -> void:
 		Type.IMAGE: type_name = tr("Image")
 		Type.TEXT: type_name = tr("Text")
 		Type.COLOR: type_name = tr("Color")
-		Type.PCK: type_name = tr("PCK")
+		Type.SCENE: type_name = tr("Scene")
 
 	var is_temp: bool = file.path.begins_with("temp://")
 	var is_missing: bool = not is_temp and not FileAccess.file_exists(file.path)

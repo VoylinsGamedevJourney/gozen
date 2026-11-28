@@ -18,7 +18,7 @@
 [ext_resource type="StyleBox" uid="uid://b4hr3qnksucav" path="res://theming/timeline_box_audio_normal.tres" id="16_na4r8"]
 [ext_resource type="StyleBox" uid="uid://df0jxk11tracv" path="res://theming/timeline_box_color_normal.tres" id="17_tiqc3"]
 [ext_resource type="StyleBox" uid="uid://dlxa6tecfxvwa" path="res://theming/timeline_box_image_normal.tres" id="18_7mdm2"]
-[ext_resource type="StyleBox" uid="uid://d4imyv73ke52c" path="res://theming/timeline_box_pck_normal.tres" id="19_y7s35"]
+[ext_resource type="StyleBox" uid="uid://d4imyv73ke52c" path="res://theming/timeline_box_scene_normal.tres" id="19_y7s35"]
 [ext_resource type="StyleBox" uid="uid://c8iincian78e3" path="res://theming/timeline_box_text_normal.tres" id="20_mihfh"]
 [ext_resource type="StyleBox" uid="uid://dvjs7m2ktd528" path="res://theming/timeline_box_video_normal.tres" id="21_vnt2v"]
 [ext_resource type="Texture2D" uid="uid://dc4wlfsk1n7wy" path="res://assets/icons/about.tres" id="22_a1n7k"]
@@ -29,7 +29,7 @@
 [ext_resource type="Texture2D" uid="uid://dv8hc4nyek87r" path="res://assets/icons/brick.tres" id="24_mihfh"]
 [ext_resource type="Texture2D" uid="uid://nw3kmh6k8ub2" path="res://assets/icons/reset_speed.tres" id="24_y3kag"]
 [ext_resource type="Texture2D" uid="uid://d2hc6v7aectob" path="res://assets/icons/transition.tres" id="25_85pg6"]
-[ext_resource type="Texture2D" uid="uid://04q7h7aeq1el" path="res://assets/icons/files/thumb_pck.tres" id="25_vnt2v"]
+[ext_resource type="Texture2D" uid="uid://04q7h7aeq1el" path="res://assets/icons/files/thumb_scene.tres" id="25_vnt2v"]
 [ext_resource type="Texture2D" uid="uid://dsf2wu3sxy7m3" path="res://assets/icons/files/thumb_text.tres" id="26_2fqae"]
 [ext_resource type="Texture2D" uid="uid://dvxeg217tn27c" path="res://assets/effects_preview.webp" id="26_kxmut"]
 [ext_resource type="Texture2D" uid="uid://ndhtkbq6ld0p" path="res://assets/icons/effects_keyframe_empty.tres" id="29_hq0ow"]
@@ -66,7 +66,7 @@ button_flow_source_code = NodePath("Margin/Control/PanelContainer/Margin/HBox/Ta
 button_flow_support_kofi = NodePath("")
 option_button_default_keyframe_type = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsScroll/EffectsVBox/DefaultHBox/DefaultKeyframeTypeOptionButton")
 button_steam_workshop = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer2/VBoxContainer/SteamWorkshopButton")
-button_gozen_module_repo = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer/PCKModuleRepoButton")
+button_gozen_module_repo = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer/SceneModuleRepoButton")
 option_button_default_profile = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/GridContainer/DefaultRenderProfileOptionButton")
 region_in_line_edit = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/GridContainer2/RegionInLineEdit")
 region_out_line_edit = NodePath("Margin/Control/PanelContainer/Margin/HBox/TabContainer/RenderingVBox/GridContainer2/RegionOutLineEdit")
@@ -515,16 +515,16 @@ layout_mode = 2
 text = "Image Clip Example"
 horizontal_alignment = 1
 
-[node name="PCK" type="PanelContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer" unique_id=1747808641]
+[node name="Scene" type="PanelContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer" unique_id=1747808641]
 custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(10, 0)
 theme_override_styles/panel = ExtResource("19_y7s35")
 
-[node name="Label4" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer/PCK" unique_id=1862661187]
+[node name="Label4" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer/Scene" unique_id=1862661187]
 layout_mode = 2
-text = "PCK Clip Example"
+text = "Scene Clip Example"
 horizontal_alignment = 1
 
 [node name="Text" type="PanelContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/BasicsVBox/TimelineDataHBox/VBoxContainer" unique_id=1382489400]
@@ -966,7 +966,7 @@ layout_mode = 2
 [node name="TextColorLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsScroll/EffectsVBox" unique_id=753205693]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-text = "We have video, pck, audio, and image files. Those are the files we can drag and drop into the editor. As for text and colors, those are also files but have to be created inside of the editor by pressing the file icon in the top right corner of the file panel."
+text = "We have video, scene, audio, and image files. Those are the files we can drag and drop into the editor. As for text and colors, those are also files but have to be created inside of the editor by pressing the file icon in the top right corner of the file panel."
 autowrap_mode = 3
 
 [node name="HFlowContainer" type="HFlowContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/EffectsScroll/EffectsVBox" unique_id=794470298]
@@ -1196,18 +1196,18 @@ text = "Steam workshop"
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 
-[node name="PCKTitleHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=1955122199]
+[node name="SceneTitleHBox" type="HBoxContainer" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=1955122199]
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/PCKTitleHBox" unique_id=222386272]
+[node name="TextureRect" type="TextureRect" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/SceneTitleHBox" unique_id=222386272]
 layout_mode = 2
 texture = ExtResource("25_vnt2v")
 expand_mode = 3
 
-[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/PCKTitleHBox" unique_id=1521712422]
+[node name="TitleLabel" type="Label" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/SceneTitleHBox" unique_id=1521712422]
 layout_mode = 2
 theme_type_variation = &"title_label"
-text = "Custom PCK files"
+text = "Custom Scene files"
 
 [node name="HSeparator2" type="HSeparator" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=1644803294]
 layout_mode = 2
@@ -1220,14 +1220,14 @@ theme_override_constants/separation = 30
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Modules change the editor and add functionality to the editor, but there's another type of modules refered to as pck files. These are Godot scenes which can be used directly in the timeline for visuals. For the creation of these files a bit of development is needed inside of custom Godot project."
+text = "Modules (*.gzmodule) change the editor and add functionality to the editor, while GoZen Scenes (*.gzscene) are Godot scenes which can be used directly in the timeline as visual clips/files. For creating these files, a bit of development is needed inside a custom Godot project."
 autowrap_mode = 3
 
-[node name="PCKModuleRepoButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer" unique_id=1088044426]
+[node name="SceneModuleRepoButton" type="Button" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox/HBoxContainer" unique_id=1088044426]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 size_flags_vertical = 4
-text = "PCK Module Project"
+text = "Scene/module template"
 
 [node name="Spacer2" type="Control" parent="Margin/Control/PanelContainer/Margin/HBox/TabContainer/ModulesVBox" unique_id=369501588]
 custom_minimum_size = Vector2(0, 30)

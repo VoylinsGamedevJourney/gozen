@@ -34,27 +34,27 @@ msgstr ""
 "Zoom de l'aperçu.\n"
 "Double-cliquez pour réinitialiser à 100 %."
 
-#: modules/core_view_panel/view_panel.gd:79
+#: modules/core_view_panel/view_panel.gd:103
 msgid "Frame"
 msgstr "Image"
 
-#: modules/core_view_panel/project_view_texture.gd:270
+#: modules/core_view_panel/project_view_texture.gd:290
 msgid "Save screenshot ..."
 msgstr "Enregistrer la capture d'écran..."
 
-#: modules/core_view_panel/project_view_texture.gd:271
+#: modules/core_view_panel/project_view_texture.gd:291
 msgid "Save screenshot to project ..."
 msgstr "Enregistrer la capture dans le projet..."
 
-#: modules/core_view_panel/project_view_texture.gd:273
+#: modules/core_view_panel/project_view_texture.gd:293
 msgid "Show safe areas"
 msgstr "Afficher les zones de sécurité"
 
-#: modules/core_view_panel/project_view_texture.gd:277
+#: modules/core_view_panel/project_view_texture.gd:297
 msgid "Reset zoom"
 msgstr "Réinitialiser le zoom"
 
-#: modules/core_view_panel/project_view_texture.gd:279
+#: modules/core_view_panel/project_view_texture.gd:299
 msgid "Reset playback speed"
 msgstr "Réinitialiser la vitesse de lecture"
 
@@ -188,7 +188,7 @@ msgstr ""
 "Le nombre de threads que vous souhaitez utiliser pour exporter votre vidéo."
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#: modules/core_timeline_panel/time_stamps.gd:362
+#: modules/core_timeline_panel/time_stamps.gd:383
 msgid "Render region"
 msgstr "Région de rendu"
 
@@ -212,141 +212,182 @@ msgstr "Mono"
 msgid "Select export path"
 msgstr "Sélectionner le chemin d'exportation"
 
-#: modules/core_render_options_panel/render_options_panel.gd:518
+#: modules/core_render_options_panel/render_options_panel.gd:542
 msgid "Draft"
 msgstr "Brouillon"
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.gd:52
+#, fuzzy
+msgid "Select profile icon ..."
+msgstr "Rechercher des fichiers..."
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.gd:54
+#, fuzzy
+msgid "Image files"
+msgstr "Options d'image"
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.tscn
+#, fuzzy
+msgid "Save custom render profile?"
+msgstr "Profils de rendu personnalisés"
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.tscn
+msgid "Icon:"
+msgstr ""
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.tscn
+msgid "Name:"
+msgstr ""
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.tscn
+#: scenes/file_popups/overwrite_file/overwrite_file.tscn
+#: scenes/file_popups/rename_folder_popup/rename_folder.tscn
+#: scenes/file_popups/rename_file_popup/rename_file.tscn
+#: scenes/editor/delete_workspace_popup/delete_workspace_popup.tscn
+#: scenes/editor/save_on_exit_popup/save_on_exit_popup.tscn
+#: scenes/color_popup/color_popup.tscn
+#: scenes/replace_audio_popup/replace_audio_popup.tscn
+#: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
+#: scenes/marker_popup/marker_popup.tscn
+#: scenes/auto_cut_popup/auto_cut_popup.tscn
+msgid "Cancel"
+msgstr "Annuler"
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.tscn
+#, fuzzy
+msgid "Save render profile"
+msgstr "Profil de rendu"
 
 #: modules/core_file_panel/file_panel.tscn
 msgid "Search files ..."
 msgstr "Rechercher des fichiers..."
 
-#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:367
+#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:369
 msgid "Add files"
 msgstr "Ajouter des fichiers"
 
-#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:368
+#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:370
 msgid "Add text"
 msgstr "Ajouter du texte"
 
-#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:369
+#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:371
 msgid "Add color"
 msgstr "Ajouter une couleur"
 
-#: modules/core_file_panel/file_panel.gd:125
-#: modules/core_file_panel/file_panel.gd:202 scenes/editor/editor.gd:380
-msgid "Add files ..."
-msgstr "Ajouter des fichiers..."
-
-#: modules/core_file_panel/file_panel.gd:145
+#: modules/core_file_panel/file_panel.gd:153
 msgid "Delete (%d)"
 msgstr "Supprimer (%d)"
 
-#: modules/core_file_panel/file_panel.gd:146
-#: modules/core_file_panel/file_panel.gd:186
+#: modules/core_file_panel/file_panel.gd:154
+#: modules/core_file_panel/file_panel.gd:194
 msgid "Folder options"
 msgstr "Options du dossier"
 
-#: modules/core_file_panel/file_panel.gd:147
-#: modules/core_file_panel/file_panel.gd:190
-#: modules/core_file_panel/file_panel.gd:208
+#: modules/core_file_panel/file_panel.gd:155
+#: modules/core_file_panel/file_panel.gd:198
+#: modules/core_file_panel/file_panel.gd:216
 #: scenes/file_popups/create_folder_popup/create_folder.tscn
 msgid "Create folder"
 msgstr "Créer un dossier"
 
-#: modules/core_file_panel/file_panel.gd:157
+#: modules/core_file_panel/file_panel.gd:165
 msgid "Rename"
 msgstr "Renommer"
 
-#: modules/core_file_panel/file_panel.gd:159
-#: modules/core_file_panel/file_panel.gd:276
+#: modules/core_file_panel/file_panel.gd:167
+#: modules/core_file_panel/file_panel.gd:284
 #: scenes/file_popups/missing_files_popup/missing_files.gd:37
 msgid "Relink file ..."
 msgstr "Relier le fichier..."
 
-#: modules/core_file_panel/file_panel.gd:160
+#: modules/core_file_panel/file_panel.gd:168
 msgid "Reload"
 msgstr "Recharger"
 
-#: modules/core_file_panel/file_panel.gd:161 scenes/editor/editor.gd:564
+#: modules/core_file_panel/file_panel.gd:169 scenes/editor/editor.gd:560
 msgid "Delete"
 msgstr "Supprimer"
 
-#: modules/core_file_panel/file_panel.gd:165
+#: modules/core_file_panel/file_panel.gd:173
 msgid "Image options"
 msgstr "Options d'image"
 
-#: modules/core_file_panel/file_panel.gd:166
+#: modules/core_file_panel/file_panel.gd:174
 msgid "Save image as ..."
 msgstr "Enregistrer l'image sous..."
 
-#: modules/core_file_panel/file_panel.gd:168
-#: modules/core_timeline_panel/timeline_panel.gd:982
+#: modules/core_file_panel/file_panel.gd:176
+#: modules/core_timeline_panel/timeline_panel.gd:1054
 msgid "Video options"
 msgstr "Options vidéo"
 
-#: modules/core_file_panel/file_panel.gd:172
+#: modules/core_file_panel/file_panel.gd:180
 msgid "Create proxy"
 msgstr "Créer un proxy"
 
-#: modules/core_file_panel/file_panel.gd:174
+#: modules/core_file_panel/file_panel.gd:182
 msgid "Re-create proxy"
 msgstr "Recréer le proxy"
 
-#: modules/core_file_panel/file_panel.gd:175
+#: modules/core_file_panel/file_panel.gd:183
 msgid "Remove proxy"
 msgstr "Supprimer le proxy"
 
-#: modules/core_file_panel/file_panel.gd:177
+#: modules/core_file_panel/file_panel.gd:185
 msgid "Replace audio"
 msgstr "Remplacer l'audio"
 
-#: modules/core_file_panel/file_panel.gd:178
+#: modules/core_file_panel/file_panel.gd:186
 msgid "Extract audio to file ..."
 msgstr "Extraire l'audio vers un fichier..."
 
-#: modules/core_file_panel/file_panel.gd:180
+#: modules/core_file_panel/file_panel.gd:188
 msgid "Text options"
 msgstr "Options de texte"
 
-#: modules/core_file_panel/file_panel.gd:181
+#: modules/core_file_panel/file_panel.gd:189
 msgid "Duplicate"
 msgstr "Dupliquer"
 
-#: modules/core_file_panel/file_panel.gd:183
+#: modules/core_file_panel/file_panel.gd:191
 msgid "Extra"
 msgstr "Extras"
 
-#: modules/core_file_panel/file_panel.gd:184
+#: modules/core_file_panel/file_panel.gd:192
 msgid "File Info"
 msgstr "Infos sur le fichier"
 
-#: modules/core_file_panel/file_panel.gd:188
+#: modules/core_file_panel/file_panel.gd:196
 #: scenes/startup_screen/startup_screen.gd:252
 msgid "Open in file manager"
 msgstr "Ouvrir dans le gestionnaire de fichiers"
 
-#: modules/core_file_panel/file_panel.gd:189
+#: modules/core_file_panel/file_panel.gd:197
 msgid "Copy file path"
 msgstr "Copier le chemin du fichier"
 
-#: modules/core_file_panel/file_panel.gd:211
+#: modules/core_file_panel/file_panel.gd:210 scripts/logic/file_logic.gd:504
+msgid "Add files ..."
+msgstr "Ajouter des fichiers..."
+
+#: modules/core_file_panel/file_panel.gd:219
 #: scenes/file_popups/rename_folder_popup/rename_folder.tscn
 msgid "Rename folder"
 msgstr "Renommer le dossier"
 
-#: modules/core_file_panel/file_panel.gd:212
+#: modules/core_file_panel/file_panel.gd:220
 msgid "Delete folder"
 msgstr "Supprimer le dossier"
 
-#: modules/core_file_panel/file_panel.gd:290
+#: modules/core_file_panel/file_panel.gd:298
 msgid "Save image to file"
 msgstr "Enregistrer l'image"
 
-#: modules/core_file_panel/file_panel.gd:303
+#: modules/core_file_panel/file_panel.gd:311
 msgid "Save video audio to WAV"
 msgstr "Enregistrer l'audio de la vidéo en WAV"
 
-#: modules/core_file_panel/file_panel.gd:813
+#: modules/core_file_panel/file_panel.gd:821
 #: scenes/file_popups/file_info_popup/file_info.gd:91
 #: scenes/file_popups/file_info_popup/file_info.gd:106
 #: scenes/file_popups/file_info_popup/file_info.gd:122
@@ -354,112 +395,113 @@ msgstr "Enregistrer l'audio de la vidéo en WAV"
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: modules/core_file_panel/file_panel.gd:815
+#: modules/core_file_panel/file_panel.gd:823
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/file_popups/file_info_popup/file_info.gd:50
 #: scenes/settings_menu/settings_menu.gd:543
 msgid "Video"
 msgstr "Vidéo"
 
-#: modules/core_file_panel/file_panel.gd:816
+#: modules/core_file_panel/file_panel.gd:824
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/file_popups/file_info_popup/file_info.gd:51
 msgid "Audio"
 msgstr "Audio"
 
-#: modules/core_file_panel/file_panel.gd:817
+#: modules/core_file_panel/file_panel.gd:825
 #: scenes/file_popups/file_info_popup/file_info.gd:52
 msgid "Image"
 msgstr "Image"
 
-#: modules/core_file_panel/file_panel.gd:818
+#: modules/core_file_panel/file_panel.gd:826
 #: modules/core_effects_panel/effects_panel.tscn
 #: scenes/file_popups/file_info_popup/file_info.gd:53
 msgid "Text"
 msgstr "Texte"
 
-#: modules/core_file_panel/file_panel.gd:819
-#: modules/core_file_panel/file_panel.gd:870
-#: modules/core_file_panel/file_panel.gd:872
+#: modules/core_file_panel/file_panel.gd:827
+#: modules/core_file_panel/file_panel.gd:878
+#: modules/core_file_panel/file_panel.gd:880
 #: scenes/file_popups/file_info_popup/file_info.gd:54
 msgid "Color"
 msgstr "Couleur"
 
-#: modules/core_file_panel/file_panel.gd:820
+#: modules/core_file_panel/file_panel.gd:828
+#: modules/core_effects_panel/effects_panel.tscn
 #: scenes/file_popups/file_info_popup/file_info.gd:55
-msgid "PCK"
-msgstr "PCK"
+msgid "Scene"
+msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:825
-#: modules/core_file_panel/file_panel.gd:827
+#: modules/core_file_panel/file_panel.gd:833
+#: modules/core_file_panel/file_panel.gd:835
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Type"
 msgstr "Type"
 
-#: modules/core_file_panel/file_panel.gd:825
+#: modules/core_file_panel/file_panel.gd:833
 msgid "Missing"
 msgstr "Manquant"
 
-#: modules/core_file_panel/file_panel.gd:831
+#: modules/core_file_panel/file_panel.gd:839
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Duration"
 msgstr "Durée"
 
-#: modules/core_file_panel/file_panel.gd:831
+#: modules/core_file_panel/file_panel.gd:839
 msgid "frames"
 msgstr "images"
 
-#: modules/core_file_panel/file_panel.gd:849
+#: modules/core_file_panel/file_panel.gd:857
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Resolution"
 msgstr "Résolution"
 
-#: modules/core_file_panel/file_panel.gd:853
-#: modules/core_file_panel/file_panel.gd:862
+#: modules/core_file_panel/file_panel.gd:861
+#: modules/core_file_panel/file_panel.gd:870
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Codec"
 msgstr "Codec"
 
-#: modules/core_file_panel/file_panel.gd:854
+#: modules/core_file_panel/file_panel.gd:862
 msgid "Audio streams"
 msgstr "Flux audio"
 
-#: modules/core_file_panel/file_panel.gd:864
+#: modules/core_file_panel/file_panel.gd:872
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Bitrate"
 msgstr "Débit binaire"
 
-#: modules/core_file_panel/file_panel.gd:876
+#: modules/core_file_panel/file_panel.gd:884
 msgid "Proxy"
 msgstr "Proxy"
 
-#: modules/core_file_panel/file_panel.gd:876
-#: modules/core_timeline_panel/time_stamps.gd:360
+#: modules/core_file_panel/file_panel.gd:884
+#: modules/core_timeline_panel/time_stamps.gd:381
 msgid "Active"
 msgstr "Actif"
 
-#: modules/core_file_panel/file_panel.gd:876
+#: modules/core_file_panel/file_panel.gd:884
 msgid "Generated"
 msgstr "Généré"
 
-#: modules/core_file_panel/file_panel.gd:879
+#: modules/core_file_panel/file_panel.gd:887
 msgid "Replaced audio"
 msgstr "Audio remplacé"
 
-#: modules/core_file_panel/file_panel.gd:885
+#: modules/core_file_panel/file_panel.gd:893
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Size"
 msgstr "Taille"
 
-#: modules/core_file_panel/file_panel.gd:886
+#: modules/core_file_panel/file_panel.gd:894
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Path"
 msgstr "Chemin"
 
-#: modules/core_file_panel/file_panel.gd:889
+#: modules/core_file_panel/file_panel.gd:897
 msgid "(Loading thumbnail...)"
 msgstr "(Chargement de la miniature...)"
 
@@ -469,112 +511,115 @@ msgstr "(Chargement de la miniature...)"
 msgid "Markers"
 msgstr "Marqueurs"
 
-#: modules/core_timeline_panel/timeline_panel.gd:316
-#: modules/core_timeline_panel/timeline_panel.gd:326
+#: modules/core_timeline_panel/timeline_panel.gd:346
+#: modules/core_timeline_panel/timeline_panel.gd:356
 msgid "Track options"
 msgstr "Options de la piste"
 
-#: modules/core_timeline_panel/timeline_panel.gd:320
+#: modules/core_timeline_panel/timeline_panel.gd:350
 msgid "Remove empty space"
 msgstr "Supprimer l'espace vide"
 
-#: modules/core_timeline_panel/timeline_panel.gd:322
+#: modules/core_timeline_panel/timeline_panel.gd:352
 msgid "Remove empty space (all tracks)"
 msgstr "Supprimer l'espace vide (toutes les pistes)"
 
-#: modules/core_timeline_panel/timeline_panel.gd:330
+#: modules/core_timeline_panel/timeline_panel.gd:360
 msgid "Add track"
 msgstr "Ajouter une piste"
 
-#: modules/core_timeline_panel/timeline_panel.gd:332
+#: modules/core_timeline_panel/timeline_panel.gd:362
 msgid "Remove track"
 msgstr "Supprimer la piste"
 
-#: modules/core_timeline_panel/timeline_panel.gd:336
+#: modules/core_timeline_panel/timeline_panel.gd:366
 msgid "Hide track"
 msgstr "Masquer la piste"
 
-#: modules/core_timeline_panel/timeline_panel.gd:339
+#: modules/core_timeline_panel/timeline_panel.gd:369
 #: modules/core_timeline_panel/track_controls.gd:85
 msgid "Mute track"
 msgstr "Rendre la piste muette"
 
-#: modules/core_timeline_panel/timeline_panel.gd:343
+#: modules/core_timeline_panel/timeline_panel.gd:373
 msgid "Lock track"
 msgstr "Verrouiller la piste"
 
-#: modules/core_timeline_panel/timeline_panel.gd:949
+#: modules/core_timeline_panel/timeline_panel.gd:1021
 msgid "Delete clip"
 msgstr "Supprimer le clip"
 
-#: modules/core_timeline_panel/timeline_panel.gd:952
+#: modules/core_timeline_panel/timeline_panel.gd:1024
 msgid "Ripple delete clip"
 msgstr "Supprimer le clip avec décalage"
 
-#: modules/core_timeline_panel/timeline_panel.gd:955
+#: modules/core_timeline_panel/timeline_panel.gd:1027
 msgid "Ripple delete clip (all tracks)"
 msgstr "Supprimer le clip avec décalage (toutes les pistes)"
 
-#: modules/core_timeline_panel/timeline_panel.gd:958
+#: modules/core_timeline_panel/timeline_panel.gd:1030
 msgid "Split clip on mouse"
 msgstr "Diviser le clip au curseur de la souris"
 
-#: modules/core_timeline_panel/timeline_panel.gd:961
+#: modules/core_timeline_panel/timeline_panel.gd:1033
 msgid "Split clip on playhead"
 msgstr "Diviser le clip à la tête de lecture"
 
-#: modules/core_timeline_panel/timeline_panel.gd:966
+#: modules/core_timeline_panel/timeline_panel.gd:1038
 msgid "Hide clip"
 msgstr "Masquer le clip"
 
-#: modules/core_timeline_panel/timeline_panel.gd:969
+#: modules/core_timeline_panel/timeline_panel.gd:1041
 msgid "Mute clip"
 msgstr "Couper le son du clip"
 
-#: modules/core_timeline_panel/timeline_panel.gd:973
+#: modules/core_timeline_panel/timeline_panel.gd:1045
 #: scenes/change_speed_popup/change_speed.tscn
 msgid "Change speed"
 msgstr "Modifier la vitesse"
 
-#: modules/core_timeline_panel/timeline_panel.gd:975
+#: modules/core_timeline_panel/timeline_panel.gd:1047
 msgid "Reset speed"
 msgstr "Réinitialiser la vitesse"
 
-#: modules/core_timeline_panel/timeline_panel.gd:985
+#: modules/core_timeline_panel/timeline_panel.gd:1057
 msgid "Clip replace audio"
 msgstr "Remplacer l'audio du clip"
 
-#: modules/core_timeline_panel/timeline_panel.gd:987
+#: modules/core_timeline_panel/timeline_panel.gd:1059
 msgid "Auto-cut silence"
 msgstr "Couper automatiquement les silences"
 
-#: modules/core_timeline_panel/timeline_panel.gd:999
+#: modules/core_timeline_panel/timeline_panel.gd:1071
 msgid "Select Audio Track"
 msgstr "Sélectionner la piste audio"
 
-#: modules/core_timeline_panel/time_stamps.gd:354
+#: modules/core_timeline_panel/time_stamps.gd:375
 msgid "Render region start"
 msgstr "Début de la région de rendu"
 
-#: modules/core_timeline_panel/time_stamps.gd:354
-#: modules/core_timeline_panel/time_stamps.gd:358
+#: modules/core_timeline_panel/time_stamps.gd:375
+#: modules/core_timeline_panel/time_stamps.gd:379
 msgid "Drag to adjust"
 msgstr "Glisser pour ajuster"
 
-#: modules/core_timeline_panel/time_stamps.gd:358
+#: modules/core_timeline_panel/time_stamps.gd:379
 msgid "Render region end"
 msgstr "Fin de la région de rendu"
 
-#: modules/core_timeline_panel/time_stamps.gd:360
-msgid "Inactive"
+#: modules/core_timeline_panel/time_stamps.gd:381
+#, fuzzy
+msgid "In-active"
 msgstr "Inactif"
 
-#: modules/core_timeline_panel/time_stamps.gd:361
-msgid "Click to deactivate"
+#: modules/core_timeline_panel/time_stamps.gd:382
+#, fuzzy
+msgid "Click to deactivate, drag to move"
 msgstr "Cliquer pour désactiver"
 
-#: modules/core_timeline_panel/time_stamps.gd:361
-msgid "Click to activate"
+#: modules/core_timeline_panel/time_stamps.gd:382
+#, fuzzy
+msgid "Click to activate, drag to move"
 msgstr "Cliquer pour activer"
 
 #: modules/core_timeline_panel/timeline.tscn
@@ -659,7 +704,7 @@ msgid "Next keyframe."
 msgstr "Image clé suivante."
 
 #: modules/core_effects_panel/effects_panel.gd:1005
-#: modules/core_effects_panel/effects_panel.gd:1736
+#: modules/core_effects_panel/effects_panel.gd:1746
 msgid "Default"
 msgstr "Par défaut"
 
@@ -744,42 +789,38 @@ msgstr "Extra gras"
 msgid "Black"
 msgstr "Noir"
 
-#: modules/core_effects_panel/effects_panel.gd:1226
+#: modules/core_effects_panel/effects_panel.gd:1236
 msgid "Link X and Y."
 msgstr "Lier X et Y."
 
-#: modules/core_effects_panel/effects_panel.gd:1541
+#: modules/core_effects_panel/effects_panel.gd:1551
 msgid "Add effects."
 msgstr "Ajouter des effets."
 
-#: modules/core_effects_panel/effects_panel.gd:1676
+#: modules/core_effects_panel/effects_panel.gd:1686
 msgid "Presets"
 msgstr "Préréglages"
 
-#: modules/core_effects_panel/effects_panel.gd:1695
+#: modules/core_effects_panel/effects_panel.gd:1705
 msgid "Reset effect"
 msgstr "Réinitialiser l'effet"
 
-#: modules/core_effects_panel/effects_panel.gd:1707
+#: modules/core_effects_panel/effects_panel.gd:1717
 msgid "Delete effect"
 msgstr "Supprimer l'effet"
 
-#: modules/core_effects_panel/effects_panel.gd:1720
+#: modules/core_effects_panel/effects_panel.gd:1730
 msgid "Save as preset..."
 msgstr "Enregistrer comme préréglage..."
 
-#: modules/core_effects_panel/effects_panel.gd:1793
+#: modules/core_effects_panel/effects_panel.gd:1803
 #: scenes/startup_screen/save_profile_preset/save_profile_preset.tscn
 msgid "Save preset"
 msgstr "Enregistrer le préréglage"
 
-#: modules/core_effects_panel/effects_panel.gd:1794
+#: modules/core_effects_panel/effects_panel.gd:1804
 msgid "Preset name"
 msgstr "Nom du préréglage"
-
-#: modules/core_effects_panel/effects_panel.tscn
-msgid "Module"
-msgstr "Module"
 
 #: modules/core_effects_panel/effects_panel.tscn scenes/welcome/welcome.tscn
 msgid "Transitions"
@@ -828,19 +869,6 @@ msgid ""
 msgstr ""
 "Un fichier existe déjà au chemin d'exportation choisi. Voulez-vous "
 "l'écraser ?"
-
-#: scenes/file_popups/overwrite_file/overwrite_file.tscn
-#: scenes/file_popups/rename_folder_popup/rename_folder.tscn
-#: scenes/file_popups/rename_file_popup/rename_file.tscn
-#: scenes/editor/delete_workspace_popup/delete_workspace_popup.tscn
-#: scenes/editor/save_on_exit_popup/save_on_exit_popup.tscn
-#: scenes/color_popup/color_popup.tscn
-#: scenes/replace_audio_popup/replace_audio_popup.tscn
-#: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
-#: scenes/marker_popup/marker_popup.tscn
-#: scenes/auto_cut_popup/auto_cut_popup.tscn
-msgid "Cancel"
-msgstr "Annuler"
 
 #: scenes/file_popups/overwrite_file/overwrite_file.tscn
 msgid "Overwrite file"
@@ -997,109 +1025,115 @@ msgid "New project"
 msgstr "Nouveau projet"
 
 #: scenes/editor/editor.gd:286
-msgid "Archive project ..."
+#, fuzzy
+msgid "Pack project ..."
 msgstr "Archiver le projet..."
 
-#: scenes/editor/editor.gd:288 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:289 scenes/startup_screen/startup_screen.tscn
 #: scenes/startup_screen/startup_screen.gd:370 scripts/autoloads/project.gd:290
 msgid "Open project"
 msgstr "Ouvrir le projet"
 
-#: scenes/editor/editor.gd:293 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:294 scenes/startup_screen/startup_screen.tscn
 msgid "Recent projects"
 msgstr "Projets récents"
 
-#: scenes/editor/editor.gd:297
-msgid "Splash screen"
-msgstr "Écran de démarrage"
-
 #: scenes/editor/editor.gd:298
+#, fuzzy
+msgid "Project manager"
+msgstr "Gestionnaire de modules"
+
+#: scenes/editor/editor.gd:299
 msgid "Welcome screen"
 msgstr "Écran d'accueil"
 
-#: scenes/editor/editor.gd:300 scenes/settings_menu/settings_menu.gd:114
+#: scenes/editor/editor.gd:301 scenes/settings_menu/settings_menu.gd:114
 msgid "Project settings"
 msgstr "Paramètres du projet"
 
-#: scenes/editor/editor.gd:301
+#: scenes/editor/editor.gd:302
 msgid "Quit"
 msgstr "Quitter"
 
-#: scenes/editor/editor.gd:363
+#: scenes/editor/editor.gd:364
 msgid "Undo"
 msgstr "Annuler"
 
-#: scenes/editor/editor.gd:364
+#: scenes/editor/editor.gd:365
 msgid "Redo"
 msgstr "Rétablir"
 
-#: scenes/editor/editor.gd:398
+#: scenes/editor/editor.gd:366
+msgid "History"
+msgstr ""
+
+#: scenes/editor/editor.gd:394
 #: scenes/editor/new_workspace_popup/new_workspace_popup.tscn
 msgid "Save workspace"
 msgstr "Enregistrer l'espace de travail"
 
-#: scenes/editor/editor.gd:399
+#: scenes/editor/editor.gd:395
 #: scenes/editor/new_workspace_popup/new_workspace_popup.tscn
 msgid "New workspace"
 msgstr "Nouvel espace de travail"
 
-#: scenes/editor/editor.gd:401 scenes/editor/editor.gd:419
+#: scenes/editor/editor.gd:397 scenes/editor/editor.gd:415
 msgid "Show panel titles"
 msgstr "Afficher les titres des panneaux"
 
-#: scenes/editor/editor.gd:402
+#: scenes/editor/editor.gd:398
 msgid "Panels"
 msgstr "Panneaux"
 
-#: scenes/editor/editor.gd:417
+#: scenes/editor/editor.gd:413
 msgid "Hide panel titles"
 msgstr "Masquer les titres des panneaux"
 
-#: scenes/editor/editor.gd:453 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:449 scenes/startup_screen/startup_screen.tscn
 msgid "Editor settings"
 msgstr "Paramètres de l'éditeur"
 
-#: scenes/editor/editor.gd:455
+#: scenes/editor/editor.gd:451
 msgid "Module manager"
 msgstr "Gestionnaire de modules"
 
-#: scenes/editor/editor.gd:457
+#: scenes/editor/editor.gd:453
 msgid "Command bar"
 msgstr "Barre de commandes"
 
-#: scenes/editor/editor.gd:482
+#: scenes/editor/editor.gd:478
 msgid "Report bug"
 msgstr "Signaler un bug"
 
-#: scenes/editor/editor.gd:483 scenes/welcome/welcome.tscn
+#: scenes/editor/editor.gd:479 scenes/welcome/welcome.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
 msgstr "Manuel"
 
-#: scenes/editor/editor.gd:484 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:480 scenes/startup_screen/startup_screen.tscn
 msgid "Tutorials"
 msgstr "Tutoriels"
 
-#: scenes/editor/editor.gd:485 scenes/welcome/welcome.tscn
+#: scenes/editor/editor.gd:481 scenes/welcome/welcome.tscn
 #: scenes/about_gozen_popup/about_gozen.tscn
 msgid "Discord"
 msgstr "Discord"
 
-#: scenes/editor/editor.gd:487 scenes/welcome/welcome.tscn
+#: scenes/editor/editor.gd:483 scenes/welcome/welcome.tscn
 #: scenes/about_gozen_popup/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr "Site web"
 
-#: scenes/editor/editor.gd:488 scenes/about_gozen_popup/about_gozen.tscn
+#: scenes/editor/editor.gd:484 scenes/about_gozen_popup/about_gozen.tscn
 msgid "About GoZen"
 msgstr "À propos de GoZen"
 
-#: scenes/editor/editor.gd:558
+#: scenes/editor/editor.gd:554
 msgid "Move Left"
 msgstr "Déplacer vers la gauche"
 
-#: scenes/editor/editor.gd:561
+#: scenes/editor/editor.gd:557
 msgid "Move Right"
 msgstr "Déplacer vers la droite"
 
@@ -1242,8 +1276,9 @@ msgid "Image Clip Example"
 msgstr "Exemple de clip d'image"
 
 #: scenes/welcome/welcome.tscn
-msgid "PCK Clip Example"
-msgstr "Exemple de clip PCK"
+#, fuzzy
+msgid "Scene Clip Example"
+msgstr "Exemple de clip de texte"
 
 #: scenes/welcome/welcome.tscn
 msgid "Text Clip Example"
@@ -1429,11 +1464,12 @@ msgid "Text & Colors"
 msgstr "Texte et couleurs"
 
 #: scenes/welcome/welcome.tscn
+#, fuzzy
 msgid ""
-"We have video, pck, audio, and image files. Those are the files we can drag "
-"and drop into the editor. As for text and colors, those are also files but "
-"have to be created inside of the editor by pressing the file icon in the top "
-"right corner of the file panel."
+"We have video, scene, audio, and image files. Those are the files we can "
+"drag and drop into the editor. As for text and colors, those are also files "
+"but have to be created inside of the editor by pressing the file icon in the "
+"top right corner of the file panel."
 msgstr ""
 "Nous gérons les fichiers vidéo, pck, audio et image. Ce sont les fichiers "
 "que vous pouvez glisser-déposer dans l'éditeur. Pour le texte et les "
@@ -1530,15 +1566,17 @@ msgid "Steam workshop"
 msgstr "Steam Workshop"
 
 #: scenes/welcome/welcome.tscn
-msgid "Custom PCK files"
-msgstr "Fichiers PCK personnalisés"
+#, fuzzy
+msgid "Custom Scene files"
+msgstr "Profils de rendu personnalisés"
 
 #: scenes/welcome/welcome.tscn
+#, fuzzy
 msgid ""
-"Modules change the editor and add functionality to the editor, but there's "
-"another type of modules refered to as pck files. These are Godot scenes "
-"which can be used directly in the timeline for visuals. For the creation of "
-"these files a bit of development is needed inside of custom Godot project."
+"Modules (*.gzmodule) change the editor and add functionality to the editor, "
+"while GoZen Scenes (*.gzscene) are Godot scenes which can be used directly "
+"in the timeline as visual clips/files. For creating these files, a bit of "
+"development is needed inside a custom Godot project."
 msgstr ""
 "Les modules modifient l'éditeur et lui ajoutent des fonctionnalités, mais il "
 "existe un autre type de module appelé fichiers pck. Il s'agit de scènes "
@@ -1547,8 +1585,8 @@ msgstr ""
 "développement au sein d'un projet Godot personnalisé."
 
 #: scenes/welcome/welcome.tscn
-msgid "PCK Module Project"
-msgstr "Projet de module PCK"
+msgid "Scene/module template"
+msgstr ""
 
 #: scenes/welcome/welcome.tscn
 msgid "Workspaces"
@@ -1658,13 +1696,14 @@ msgstr "Ajouter un fichier de couleur"
 msgid "Create new color file"
 msgstr "Créer un fichier de couleur"
 
-#: scenes/modules_popup/modules_popup.tscn
-msgid "Module Manager"
-msgstr "Gestionnaire de modules"
-
+#: scenes/modules_popup/modules_popup.gd:96
 #: scenes/modules_popup/modules_popup.tscn
 msgid "Install Module"
 msgstr "Installer le module"
+
+#: scenes/modules_popup/modules_popup.tscn
+msgid "Module Manager"
+msgstr "Gestionnaire de modules"
 
 #: scenes/jump_to_time_popup/jump_to_time.tscn
 msgid "Jump to time stamp"
@@ -2385,10 +2424,25 @@ msgstr "Traitement du fichier: "
 msgid "Files loading ..."
 msgstr "Chargement des fichiers..."
 
-#: scripts/logic/file_logic.gd:506
+#: scripts/logic/file_logic.gd:519
 msgid "File missing or moved: "
 msgstr "Fichier manquant ou déplacé: "
 
-#: scripts/logic/file_logic.gd:1403
+#: scripts/logic/file_logic.gd:1432
 msgid "Scanning folder: "
 msgstr "Analyse du dossier: "
+
+#~ msgid "Module"
+#~ msgstr "Module"
+
+#~ msgid "Splash screen"
+#~ msgstr "Écran de démarrage"
+
+#~ msgid "PCK Clip Example"
+#~ msgstr "Exemple de clip PCK"
+
+#~ msgid "Custom PCK files"
+#~ msgstr "Fichiers PCK personnalisés"
+
+#~ msgid "PCK Module Project"
+#~ msgstr "Projet de module PCK"

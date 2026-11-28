@@ -25,8 +25,8 @@ const MAX_CONCURRENT_VIDEO_LOADS: int = 4
 var files: Dictionary[int, FileData]
 
 # Runtime file data.
-var data: Dictionary[int, Variant] = {} ## Can be Video, AudioStreamFFmpeg, Texture2D, Color, or PCK.
-var pck_instances: Dictionary[int, Node] = {} ## { file: PKC instance }
+var data: Dictionary[int, Variant] = {} ## Can be Video, AudioStreamFFmpeg, Texture2D, Color, or Scene.
+var scene_instances: Dictionary[int, Node] = {} ## { file: Scene instance }
 var audio_wave: Dictionary[int, Dictionary] = {} ## { file: { 1: wave_1, 5: wave_4, 16: wave_16 }} - Different detail levels.
 var video_pools: Dictionary[int, Array] = {} ## { file: [Video] }
 var audio_pools: Dictionary[int, Array] = {} ## { file: [AudioStreamFFmpeg] }
@@ -122,8 +122,8 @@ func _create_file(path: String) -> FileData:
 	elif extension in ProjectSettings.get_setting("extensions/video"):
 		file.type = Type.VIDEO # We check later if the video is audio only.
 		file.duration = floori(Video.get_duration(path) * Project.data.framerate)
-	elif extension in ProjectSettings.get_setting("extensions/pck"):
-		file.type = Type.PCK
+	elif extension in ProjectSettings.get_setting("extensions/scene"):
+		file.type = Type.SCENE
 		file.duration = 300 # Temporary default.
 	elif !path.contains("temp://"):
 		printerr("FileLogic: Invalid file:", path)
@@ -551,12 +551,17 @@ func load_data(file: FileData) -> void:
 			_process_video_load_queue()
 		Type.AUDIO:
 			Threader.add_task(_load_audio.bind(file), audio_loaded.emit.bind(file))
-		Type.PCK:
+		Type.SCENE:
 			if OS.get_cmdline_args().has("--safe-mode"):
 				data[file.id] = null
 				return
+
+			var existing_dirs: Array[String] = []
+			if DirAccess.dir_exists_absolute(ModuleManager.PATH_MODULES_LOCAL):
+				existing_dirs.assign(DirAccess.get_directories_at(ModuleManager.PATH_MODULES_LOCAL))
+
 			if !ProjectSettings.load_resource_pack(file.path):
-				printerr("FileData: Something went wrong loading pck data from '%s'!" % file.path)
+				printerr("FileLogic: Something went wrong loading scene data from '%s'!" % file.path)
 				data[file.id] = null
 				return
 
@@ -564,7 +569,17 @@ func load_data(file: FileData) -> void:
 			if module_name.begins_with(str(file.id) + "_"):
 				module_name = module_name.trim_prefix(str(file.id) + "_")
 
-			var module_path: String = "res://modules/" + module_name + "/module.tres"
+			var module_path: String = ModuleManager.PATH_MODULES_LOCAL.path_join(module_name).path_join("module.tres")
+
+			if !ResourceLoader.exists(module_path) and DirAccess.dir_exists_absolute(ModuleManager.PATH_MODULES_LOCAL):
+				for module_dir: String in DirAccess.get_directories_at(ModuleManager.PATH_MODULES_LOCAL):
+					if module_dir.begins_with("."):
+						continue
+					if module_dir not in existing_dirs:
+						var candidate_path: String = ModuleManager.PATH_MODULES_LOCAL.path_join(module_dir).path_join("module.tres")
+						if ResourceLoader.exists(candidate_path):
+							module_path = candidate_path
+							break
 
 			if !ResourceLoader.exists(module_path):
 				for loaded_mod: GoZenModule in ModuleManager.loaded_gozen_modules:
@@ -573,20 +588,20 @@ func load_data(file: FileData) -> void:
 						break
 
 			if !ResourceLoader.exists(module_path):
-				printerr("FileLogic: PCK is missing the required `module.tres` for module '%s'!" % module_name)
+				printerr("FileLogic: Scene is missing the required `module.tres` for '%s'!" % module_name)
 				data[file.id] = null
 				return
 
 			ModuleManager.register_module_uids(module_path.get_base_dir())
 			var module_data: GoZenModule = load(module_path)
 			if !module_data or module_data.custom_scenes.is_empty():
-				printerr("FileLogic: Failed to load `module.tres` or it isn't a GoZenModule with clips!")
+				printerr("FileLogic: Failed to load `module.tres` or it isn't a GoZenModule with scenes!")
 				data[file.id] = null
 				return
 
-			var clip_data: GoZenModuleScene = module_data.custom_scenes[0]
-			data[file.id] = clip_data
-			file.duration = clip_data.default_duration
+			var scene_data: GoZenModuleScene = module_data.custom_scenes[0]
+			data[file.id] = scene_data
+			file.duration = scene_data.default_duration
 
 
 func _load_video(file: FileData) -> void:
@@ -905,6 +920,9 @@ func generate_audio_thumb(file: FileData) -> Image:
 func reload(file: FileData) -> void:
 	if not files.has(file.id): return
 	load_data(file)
+	if file.type == Type.SCENE:
+		EffectsHandler.sync_project_effects(ClipLogic.clips, files)
+		EffectsHandler.effects_updated.emit()
 	reloaded.emit(file)
 
 
@@ -1076,7 +1094,7 @@ func _check_external_modifications() -> void:
 			continue
 
 		var current_mod_time: int = FileAccess.get_modified_time(file.path)
-		var is_restored_missing: bool = data.get(file.id) == null and not (file.type == Type.PCK and OS.get_cmdline_args().has("--safe-mode"))
+		var is_restored_missing: bool = data.get(file.id) == null and not (file.type == Type.SCENE and OS.get_cmdline_args().has("--safe-mode"))
 		if current_mod_time != file.modified_time or is_restored_missing:
 			var extension: String = file.path.get_extension().to_lower()
 			var is_audio: bool = extension in ProjectSettings.get_setting("extensions/audio")
@@ -1100,9 +1118,17 @@ func _check_external_modifications() -> void:
 
 	if not modified_files.is_empty():
 		var file_names: PackedStringArray = []
+		var has_modified_scene: bool = false
 		for file: FileData in modified_files:
 			file_names.append(file.nickname)
 			load_data(file)
+			if file.type == Type.SCENE:
+				has_modified_scene = true
+		if has_modified_scene:
+			EffectsHandler.sync_project_effects(ClipLogic.clips, files)
+			EffectsHandler.effects_updated.emit()
+
+		for file: FileData in modified_files:
 			reloaded.emit(file)
 
 		if not shortened_files.is_empty():
@@ -1296,6 +1322,9 @@ func _relink_file(file: FileData, new_path: String, new_nickname: String) -> voi
 		file.duration = Settings.get_image_duration()
 
 	load_data(file)
+	if file.type == Type.SCENE:
+		EffectsHandler.sync_project_effects(ClipLogic.clips, files)
+		EffectsHandler.effects_updated.emit()
 	reloaded.emit(file)
 	nickname_changed.emit(file)
 	path_updated.emit(file)
@@ -1369,7 +1398,7 @@ func check(file_path: String) -> bool:
 		ext in ProjectSettings.get_setting("extensions/image") or
 		ext in ProjectSettings.get_setting("extensions/audio") or
 		ext in ProjectSettings.get_setting("extensions/video") or
-		ext in ProjectSettings.get_setting("extensions/pck"))
+		ext in ProjectSettings.get_setting("extensions/scene"))
 
 
 func _find_subfolder_files_async(dropped_paths: Array[String], progress: ProgressOverlay) -> Dictionary:
@@ -1379,13 +1408,13 @@ func _find_subfolder_files_async(dropped_paths: Array[String], progress: Progres
 	var exts_img: PackedStringArray = ProjectSettings.get_setting("extensions/image")
 	var exts_aud: PackedStringArray = ProjectSettings.get_setting("extensions/audio")
 	var exts_vid: PackedStringArray = ProjectSettings.get_setting("extensions/video")
-	var exts_pck: PackedStringArray = ProjectSettings.get_setting("extensions/pck")
+	var exts_scn: PackedStringArray = ProjectSettings.get_setting("extensions/scene")
 
 	for path: String in dropped_paths:
 		path = path.replace("\\", "/")
 		if FileAccess.file_exists(path):
 			var ext: String = path.get_extension().to_lower()
-			if ext in exts_img or ext in exts_aud or ext in exts_vid or ext in exts_pck:
+			if ext in exts_img or ext in exts_aud or ext in exts_vid or ext in exts_scn:
 				result[path] = "/"
 		elif DirAccess.dir_exists_absolute(path):
 			var folder_name: String = path.trim_suffix("/").get_file()
@@ -1402,7 +1431,7 @@ func _find_subfolder_files_async(dropped_paths: Array[String], progress: Progres
 			var dir_files: PackedStringArray = DirAccess.get_files_at(dir_path)
 			for file_name: String in dir_files:
 				var ext: String = file_name.get_extension().to_lower()
-				if ext in exts_img or ext in exts_aud or ext in exts_vid or ext in exts_pck:
+				if ext in exts_img or ext in exts_aud or ext in exts_vid or ext in exts_scn:
 					var full_path: String = dir_path.path_join(file_name)
 					result[full_path] = virtual_path
 

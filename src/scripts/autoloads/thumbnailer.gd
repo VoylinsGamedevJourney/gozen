@@ -97,7 +97,7 @@ func get_thumb(file: FileData) -> Texture2D:
 		match file.type: # Add the correct placeholder image.
 			Type.AUDIO: return _get_default_thumb(Library.THUMB_DEFAULT_AUDIO)
 			Type.TEXT: return _get_default_thumb(Library.THUMB_DEFAULT_TEXT)
-			Type.PCK: return _get_default_thumb(Library.THUMB_DEFAULT_PCK)
+			Type.SCENE: return _get_default_thumb(Library.THUMB_DEFAULT_SCENE)
 			_: return _get_default_thumb(Library.THUMB_DEFAULT_VIDEO) # Video.
 
 	# Return the saved thumbnail.
@@ -154,7 +154,7 @@ func _get_video_thumb(file: FileData) -> Image:
 
 ## This function is for generating thumbnails, should only be called from the
 ## _process function and in a thread through Threader.
-## NOTE: PCK files only use a placeholder for now!
+## NOTE: Scene files only use a placeholder for now!
 func _generate_thumb(file: FileData, try: int = 0) -> void:
 	var image: Image
 
@@ -162,7 +162,7 @@ func _generate_thumb(file: FileData, try: int = 0) -> void:
 		Type.IMAGE: image = Image.load_from_file(file.path)
 		Type.AUDIO: image = FileLogic.generate_audio_thumb(file)
 		Type.VIDEO: image = _get_video_thumb(file)
-		Type.PCK: image = _get_default_thumb(Library.THUMB_DEFAULT_PCK).get_image()
+		Type.SCENE: image = _get_default_thumb(Library.THUMB_DEFAULT_SCENE).get_image()
 
 	if !image:
 		if try < 2:

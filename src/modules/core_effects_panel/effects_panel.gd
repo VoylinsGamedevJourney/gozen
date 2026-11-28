@@ -255,7 +255,7 @@ func _on_clip_pressed(clip: ClipData) -> void:
 	active_file = FileLogic.get_data(active_clip.file)
 
 	section_text.visible = active_clip.type == Type.TEXT
-	section_module.visible = active_clip.type == Type.PCK
+	section_module.visible = active_clip.type == Type.SCENE
 	section_visuals.visible = active_clip.type & Type.GROUP_VISUAL
 	section_audio.visible = active_clip.type & Type.GROUP_AUDIO
 
@@ -272,7 +272,7 @@ func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
 	var location: Control
 	if is_visual:
 		var target_effect: Effect = clip.effects.video[index]
-		if target_effect.id == "pck_effect_params":
+		if target_effect.id == "scene_effect_params":
 			effect = _create_effect_ui(target_effect, is_visual, true)
 			location = section_module
 		else:
@@ -281,7 +281,7 @@ func _on_effect_added(clip: ClipData, index: int, is_visual: bool) -> void:
 
 		var target_ui_index: int = 0
 		for i: int in range(0, index):
-			if (clip.effects.video[i].id == "pck_effect_params") == (target_effect.id == "pck_effect_params"):
+			if (clip.effects.video[i].id == "scene_effect_params") == (target_effect.id == "scene_effect_params"):
 				target_ui_index += 1
 		location.add_child(effect)
 		location.move_child(effect, target_ui_index)
@@ -603,7 +603,7 @@ func _load_effects() -> void:
 
 	for index: int in clip_effects.video.size(): # Add visual effects.
 		var effect: Effect = clip_effects.video[index]
-		if effect.id == "pck_effect_params":
+		if effect.id == "scene_effect_params":
 			section_module.add_child(_create_effect_ui(effect, true, true))
 		else:
 			vbox_visuals.add_child(_create_effect_ui(effect, true))
@@ -685,8 +685,8 @@ func _create_effect_ui(effect: Effect, is_visual: bool, is_file_effect: bool = f
 		button_reset.tooltip_text = tr("Reset to default.")
 		if effect.id == "text":
 			button_reset.pressed.connect(_on_reset_text_effect)
-		elif effect.id == "pck_effect_params":
-			button_reset.pressed.connect(_on_reset_pck_effect)
+		elif effect.id == "scene_effect_params":
+			button_reset.pressed.connect(_on_reset_scene_effect)
 
 		container.add_title_bar_control(button_keyframe_all)
 		container.add_title_bar_control(button_reset)
@@ -832,15 +832,15 @@ func _restore_text_effect_keyframes(old_keyframes: Dictionary) -> void:
 	EffectsHandler.effects_updated.emit()
 
 
-func _on_reset_pck_effect() -> void:
+func _on_reset_scene_effect() -> void:
 	if active_clip:
-		var pck_effect: Effect = null
+		var scene_effect: Effect = null
 		for i: int in active_clip.effects.video.size():
-			if active_clip.effects.video[i].id == "pck_effect_params":
-				pck_effect = active_clip.effects.video[i]
+			if active_clip.effects.video[i].id == "scene_effect_params":
+				scene_effect = active_clip.effects.video[i]
 				break
-		if pck_effect:
-			_on_reset_effect(pck_effect, true)
+		if scene_effect:
+			_on_reset_effect(scene_effect, true)
 
 
 func _on_keyframe_all_pressed(effect: Effect, is_visual: bool) -> void:
@@ -1432,13 +1432,13 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 	var section: Control
 	var child_offset: int = 0
 	if effects == active_clip.effects.video:
-		if effect.id == "pck_effect_params":
+		if effect.id == "scene_effect_params":
 			section = section_module
 			child_offset = -index
 		else:
 			section = section_visuals
 			for i: int in range(0, index):
-				if effects[i].id == "pck_effect_params":
+				if effects[i].id == "scene_effect_params":
 					child_offset -= 1
 	else:
 		section = section_audio
@@ -1446,7 +1446,7 @@ func _update_ui_values_effect(effects: Array, index: int, frame_nr: int) -> void
 			child_offset = 2
 
 	var effect_container: FoldableContainer
-	if effect.id == "pck_effect_params":
+	if effect.id == "scene_effect_params":
 		if section.get_child_count() > index + child_offset:
 			effect_container = section.get_child(index + child_offset)
 	else:

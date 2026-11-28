@@ -156,7 +156,7 @@ func _migrate_v1_to_v2() -> void:
 		2: Type.VIDEO,
 		3: Type.TEXT,
 		4: Type.COLOR,
-		5: Type.PCK,
+		5: Type.SCENE,
 	}
 
 	for file_id: int in files:

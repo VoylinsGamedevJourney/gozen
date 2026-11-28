@@ -1062,15 +1062,16 @@ func _create_default_effects(file_type: int, file_id: int = -1) -> ClipEffects:
 
 		transform_effect.set_default_keyframe()
 		effects.video.append(transform_effect)
-		if file_type == Type.PCK and file_id != -1:
-			var module_data: GoZenModuleScene = FileLogic.data.get(file_id)
-			var pck_effect: Effect = Effect.new()
-			pck_effect.id = "pck_effect_params"
-			pck_effect.nickname = "Module Parameters"
-			for param: EffectParam in module_data.params:
-				pck_effect.params.append(param.duplicate(true))
-			pck_effect.set_default_keyframe()
-			effects.video.append(pck_effect)
+		if file_type == Type.SCENE and file_id != -1:
+			var scene_module_data: GoZenModuleScene = FileLogic.data.get(file_id)
+			var scene_effect: Effect = Effect.new()
+			scene_effect.id = "scene_effect_params"
+			scene_effect.nickname = "Scene Parameters"
+			if scene_module_data:
+				for param: EffectParam in scene_module_data.params:
+					scene_effect.params.append(param.duplicate(true))
+			scene_effect.set_default_keyframe()
+			effects.video.append(scene_effect)
 	if file_type & Type.GROUP_AUDIO:
 		var volume_effect: Effect = (load(Library.EFFECT_AUDIO_VOLUME) as Effect).deep_copy()
 		volume_effect.set_default_keyframe()

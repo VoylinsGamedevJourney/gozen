@@ -37,28 +37,28 @@ msgid ""
 "Double click to reset to 100%."
 msgstr ""
 
-#: modules/core_view_panel/view_panel.gd:79
+#: modules/core_view_panel/view_panel.gd:103
 msgid "Frame"
 msgstr "帧"
 
-#: modules/core_view_panel/project_view_texture.gd:270
+#: modules/core_view_panel/project_view_texture.gd:290
 msgid "Save screenshot ..."
 msgstr "保存截图..."
 
-#: modules/core_view_panel/project_view_texture.gd:271
+#: modules/core_view_panel/project_view_texture.gd:291
 msgid "Save screenshot to project ..."
 msgstr "保存截图到工程..."
 
-#: modules/core_view_panel/project_view_texture.gd:273
+#: modules/core_view_panel/project_view_texture.gd:293
 msgid "Show safe areas"
 msgstr "显示安全框"
 
-#: modules/core_view_panel/project_view_texture.gd:277
+#: modules/core_view_panel/project_view_texture.gd:297
 #, fuzzy
 msgid "Reset zoom"
 msgstr "重置"
 
-#: modules/core_view_panel/project_view_texture.gd:279
+#: modules/core_view_panel/project_view_texture.gd:299
 #, fuzzy
 msgid "Reset playback speed"
 msgstr "重置速度"
@@ -185,7 +185,7 @@ msgid "The amount of threads you want to use for exporting your video."
 msgstr "导出视频所使用的线程数量"
 
 #: modules/core_render_options_panel/render_options_panel.tscn
-#: modules/core_timeline_panel/time_stamps.gd:362
+#: modules/core_timeline_panel/time_stamps.gd:383
 msgid "Render region"
 msgstr "渲染区域"
 
@@ -209,142 +209,183 @@ msgstr "单声道"
 msgid "Select export path"
 msgstr "选择导出路径"
 
-#: modules/core_render_options_panel/render_options_panel.gd:518
+#: modules/core_render_options_panel/render_options_panel.gd:542
 msgid "Draft"
 msgstr "草稿模式"
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.gd:52
+#, fuzzy
+msgid "Select profile icon ..."
+msgstr "搜索文件..."
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.gd:54
+#, fuzzy
+msgid "Image files"
+msgstr "图像选项"
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.tscn
+#, fuzzy
+msgid "Save custom render profile?"
+msgstr "自定义渲染配置"
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.tscn
+msgid "Icon:"
+msgstr ""
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.tscn
+msgid "Name:"
+msgstr ""
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.tscn
+#: scenes/file_popups/overwrite_file/overwrite_file.tscn
+#: scenes/file_popups/rename_folder_popup/rename_folder.tscn
+#: scenes/file_popups/rename_file_popup/rename_file.tscn
+#: scenes/editor/delete_workspace_popup/delete_workspace_popup.tscn
+#: scenes/editor/save_on_exit_popup/save_on_exit_popup.tscn
+#: scenes/color_popup/color_popup.tscn
+#: scenes/replace_audio_popup/replace_audio_popup.tscn
+#: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
+#: scenes/marker_popup/marker_popup.tscn
+#: scenes/auto_cut_popup/auto_cut_popup.tscn
+msgid "Cancel"
+msgstr "取消"
+
+#: modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.tscn
+#, fuzzy
+msgid "Save render profile"
+msgstr "渲染配置"
 
 #: modules/core_file_panel/file_panel.tscn
 msgid "Search files ..."
 msgstr "搜索文件..."
 
-#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:367
+#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:369
 msgid "Add files"
 msgstr "添加文件"
 
-#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:368
+#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:370
 msgid "Add text"
 msgstr "添加文本"
 
-#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:369
+#: modules/core_file_panel/file_panel.tscn scenes/editor/editor.gd:371
 msgid "Add color"
 msgstr "添加颜色"
 
-#: modules/core_file_panel/file_panel.gd:125
-#: modules/core_file_panel/file_panel.gd:202 scenes/editor/editor.gd:380
-msgid "Add files ..."
-msgstr "添加文件..."
-
-#: modules/core_file_panel/file_panel.gd:145
+#: modules/core_file_panel/file_panel.gd:153
 #, fuzzy
 msgid "Delete (%d)"
 msgstr "删除"
 
-#: modules/core_file_panel/file_panel.gd:146
-#: modules/core_file_panel/file_panel.gd:186
+#: modules/core_file_panel/file_panel.gd:154
+#: modules/core_file_panel/file_panel.gd:194
 msgid "Folder options"
 msgstr "文件夹选项"
 
-#: modules/core_file_panel/file_panel.gd:147
-#: modules/core_file_panel/file_panel.gd:190
-#: modules/core_file_panel/file_panel.gd:208
+#: modules/core_file_panel/file_panel.gd:155
+#: modules/core_file_panel/file_panel.gd:198
+#: modules/core_file_panel/file_panel.gd:216
 #: scenes/file_popups/create_folder_popup/create_folder.tscn
 msgid "Create folder"
 msgstr "创建文件夹"
 
-#: modules/core_file_panel/file_panel.gd:157
+#: modules/core_file_panel/file_panel.gd:165
 msgid "Rename"
 msgstr "重命名"
 
-#: modules/core_file_panel/file_panel.gd:159
-#: modules/core_file_panel/file_panel.gd:276
+#: modules/core_file_panel/file_panel.gd:167
+#: modules/core_file_panel/file_panel.gd:284
 #: scenes/file_popups/missing_files_popup/missing_files.gd:37
 msgid "Relink file ..."
 msgstr "重新链接文件..."
 
-#: modules/core_file_panel/file_panel.gd:160
+#: modules/core_file_panel/file_panel.gd:168
 msgid "Reload"
 msgstr "重新加载"
 
-#: modules/core_file_panel/file_panel.gd:161 scenes/editor/editor.gd:564
+#: modules/core_file_panel/file_panel.gd:169 scenes/editor/editor.gd:560
 msgid "Delete"
 msgstr "删除"
 
-#: modules/core_file_panel/file_panel.gd:165
+#: modules/core_file_panel/file_panel.gd:173
 msgid "Image options"
 msgstr "图像选项"
 
-#: modules/core_file_panel/file_panel.gd:166
+#: modules/core_file_panel/file_panel.gd:174
 msgid "Save image as ..."
 msgstr "保存图像为..."
 
-#: modules/core_file_panel/file_panel.gd:168
-#: modules/core_timeline_panel/timeline_panel.gd:982
+#: modules/core_file_panel/file_panel.gd:176
+#: modules/core_timeline_panel/timeline_panel.gd:1054
 msgid "Video options"
 msgstr "视频选项"
 
-#: modules/core_file_panel/file_panel.gd:172
+#: modules/core_file_panel/file_panel.gd:180
 msgid "Create proxy"
 msgstr "创建代理片段"
 
-#: modules/core_file_panel/file_panel.gd:174
+#: modules/core_file_panel/file_panel.gd:182
 msgid "Re-create proxy"
 msgstr "重建代理片段"
 
-#: modules/core_file_panel/file_panel.gd:175
+#: modules/core_file_panel/file_panel.gd:183
 msgid "Remove proxy"
 msgstr "删除代理片段"
 
-#: modules/core_file_panel/file_panel.gd:177
+#: modules/core_file_panel/file_panel.gd:185
 msgid "Replace audio"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:178
+#: modules/core_file_panel/file_panel.gd:186
 msgid "Extract audio to file ..."
 msgstr "提取音频到文件..."
 
-#: modules/core_file_panel/file_panel.gd:180
+#: modules/core_file_panel/file_panel.gd:188
 msgid "Text options"
 msgstr "文本选项"
 
-#: modules/core_file_panel/file_panel.gd:181
+#: modules/core_file_panel/file_panel.gd:189
 msgid "Duplicate"
 msgstr "创建副本"
 
-#: modules/core_file_panel/file_panel.gd:183
+#: modules/core_file_panel/file_panel.gd:191
 msgid "Extra"
 msgstr "额外"
 
-#: modules/core_file_panel/file_panel.gd:184
+#: modules/core_file_panel/file_panel.gd:192
 msgid "File Info"
 msgstr "文件信息"
 
-#: modules/core_file_panel/file_panel.gd:188
+#: modules/core_file_panel/file_panel.gd:196
 #: scenes/startup_screen/startup_screen.gd:252
 msgid "Open in file manager"
 msgstr "在文件管理器中打开"
 
-#: modules/core_file_panel/file_panel.gd:189
+#: modules/core_file_panel/file_panel.gd:197
 msgid "Copy file path"
 msgstr "复制文件路径"
 
-#: modules/core_file_panel/file_panel.gd:211
+#: modules/core_file_panel/file_panel.gd:210 scripts/logic/file_logic.gd:504
+msgid "Add files ..."
+msgstr "添加文件..."
+
+#: modules/core_file_panel/file_panel.gd:219
 #: scenes/file_popups/rename_folder_popup/rename_folder.tscn
 msgid "Rename folder"
 msgstr "重命名"
 
-#: modules/core_file_panel/file_panel.gd:212
+#: modules/core_file_panel/file_panel.gd:220
 msgid "Delete folder"
 msgstr "删除"
 
-#: modules/core_file_panel/file_panel.gd:290
+#: modules/core_file_panel/file_panel.gd:298
 msgid "Save image to file"
 msgstr "保存图像到文件"
 
-#: modules/core_file_panel/file_panel.gd:303
+#: modules/core_file_panel/file_panel.gd:311
 msgid "Save video audio to WAV"
 msgstr "将视频音频保存为 WAV"
 
-#: modules/core_file_panel/file_panel.gd:813
+#: modules/core_file_panel/file_panel.gd:821
 #: scenes/file_popups/file_info_popup/file_info.gd:91
 #: scenes/file_popups/file_info_popup/file_info.gd:106
 #: scenes/file_popups/file_info_popup/file_info.gd:122
@@ -352,117 +393,118 @@ msgstr "将视频音频保存为 WAV"
 msgid "Unknown"
 msgstr "未知"
 
-#: modules/core_file_panel/file_panel.gd:815
+#: modules/core_file_panel/file_panel.gd:823
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/file_popups/file_info_popup/file_info.gd:50
 #: scenes/settings_menu/settings_menu.gd:543
 msgid "Video"
 msgstr "视频"
 
-#: modules/core_file_panel/file_panel.gd:816
+#: modules/core_file_panel/file_panel.gd:824
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/file_popups/file_info_popup/file_info.gd:51
 msgid "Audio"
 msgstr "音频"
 
-#: modules/core_file_panel/file_panel.gd:817
+#: modules/core_file_panel/file_panel.gd:825
 #: scenes/file_popups/file_info_popup/file_info.gd:52
 msgid "Image"
 msgstr "图像"
 
-#: modules/core_file_panel/file_panel.gd:818
+#: modules/core_file_panel/file_panel.gd:826
 #: modules/core_effects_panel/effects_panel.tscn
 #: scenes/file_popups/file_info_popup/file_info.gd:53
 msgid "Text"
 msgstr "文本"
 
-#: modules/core_file_panel/file_panel.gd:819
-#: modules/core_file_panel/file_panel.gd:870
-#: modules/core_file_panel/file_panel.gd:872
+#: modules/core_file_panel/file_panel.gd:827
+#: modules/core_file_panel/file_panel.gd:878
+#: modules/core_file_panel/file_panel.gd:880
 #: scenes/file_popups/file_info_popup/file_info.gd:54
 msgid "Color"
 msgstr "颜色"
 
-#: modules/core_file_panel/file_panel.gd:820
+#: modules/core_file_panel/file_panel.gd:828
+#: modules/core_effects_panel/effects_panel.tscn
 #: scenes/file_popups/file_info_popup/file_info.gd:55
-msgid "PCK"
+msgid "Scene"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:825
-#: modules/core_file_panel/file_panel.gd:827
+#: modules/core_file_panel/file_panel.gd:833
+#: modules/core_file_panel/file_panel.gd:835
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/marker_popup/marker_popup.tscn
 msgid "Type"
 msgstr "类别"
 
-#: modules/core_file_panel/file_panel.gd:825
+#: modules/core_file_panel/file_panel.gd:833
 #, fuzzy
 msgid "Missing"
 msgstr "缺失文件"
 
-#: modules/core_file_panel/file_panel.gd:831
+#: modules/core_file_panel/file_panel.gd:839
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Duration"
 msgstr "时长"
 
-#: modules/core_file_panel/file_panel.gd:831
+#: modules/core_file_panel/file_panel.gd:839
 #, fuzzy
 msgid "frames"
 msgstr "关键帧"
 
-#: modules/core_file_panel/file_panel.gd:849
+#: modules/core_file_panel/file_panel.gd:857
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Resolution"
 msgstr "分辨率"
 
-#: modules/core_file_panel/file_panel.gd:853
-#: modules/core_file_panel/file_panel.gd:862
+#: modules/core_file_panel/file_panel.gd:861
+#: modules/core_file_panel/file_panel.gd:870
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Codec"
 msgstr "编码器"
 
-#: modules/core_file_panel/file_panel.gd:854
+#: modules/core_file_panel/file_panel.gd:862
 #, fuzzy
 msgid "Audio streams"
 msgstr "音轨"
 
-#: modules/core_file_panel/file_panel.gd:864
+#: modules/core_file_panel/file_panel.gd:872
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Bitrate"
 msgstr "总比特率"
 
-#: modules/core_file_panel/file_panel.gd:876
+#: modules/core_file_panel/file_panel.gd:884
 #, fuzzy
 msgid "Proxy"
 msgstr "代理片段"
 
-#: modules/core_file_panel/file_panel.gd:876
-#: modules/core_timeline_panel/time_stamps.gd:360
+#: modules/core_file_panel/file_panel.gd:884
+#: modules/core_timeline_panel/time_stamps.gd:381
 msgid "Active"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:876
+#: modules/core_file_panel/file_panel.gd:884
 msgid "Generated"
 msgstr ""
 
-#: modules/core_file_panel/file_panel.gd:879
+#: modules/core_file_panel/file_panel.gd:887
 #, fuzzy
 msgid "Replaced audio"
 msgstr "音频替换"
 
-#: modules/core_file_panel/file_panel.gd:885
+#: modules/core_file_panel/file_panel.gd:893
 #: scenes/file_popups/file_info_popup/file_info.tscn
 msgid "Size"
 msgstr "大小"
 
-#: modules/core_file_panel/file_panel.gd:886
+#: modules/core_file_panel/file_panel.gd:894
 #: scenes/file_popups/file_info_popup/file_info.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Path"
 msgstr "路径"
 
-#: modules/core_file_panel/file_panel.gd:889
+#: modules/core_file_panel/file_panel.gd:897
 msgid "(Loading thumbnail...)"
 msgstr "（加载缩略图中...）"
 
@@ -472,117 +514,117 @@ msgstr "（加载缩略图中...）"
 msgid "Markers"
 msgstr "标记"
 
-#: modules/core_timeline_panel/timeline_panel.gd:316
-#: modules/core_timeline_panel/timeline_panel.gd:326
+#: modules/core_timeline_panel/timeline_panel.gd:346
+#: modules/core_timeline_panel/timeline_panel.gd:356
 msgid "Track options"
 msgstr "轨道选项"
 
-#: modules/core_timeline_panel/timeline_panel.gd:320
+#: modules/core_timeline_panel/timeline_panel.gd:350
 msgid "Remove empty space"
 msgstr "移除空白区域"
 
-#: modules/core_timeline_panel/timeline_panel.gd:322
+#: modules/core_timeline_panel/timeline_panel.gd:352
 #, fuzzy
 msgid "Remove empty space (all tracks)"
 msgstr "移除空白区域"
 
-#: modules/core_timeline_panel/timeline_panel.gd:330
+#: modules/core_timeline_panel/timeline_panel.gd:360
 msgid "Add track"
 msgstr "添加轨道"
 
-#: modules/core_timeline_panel/timeline_panel.gd:332
+#: modules/core_timeline_panel/timeline_panel.gd:362
 msgid "Remove track"
 msgstr "删除轨道"
 
-#: modules/core_timeline_panel/timeline_panel.gd:336
+#: modules/core_timeline_panel/timeline_panel.gd:366
 msgid "Hide track"
 msgstr "隐藏轨道"
 
-#: modules/core_timeline_panel/timeline_panel.gd:339
+#: modules/core_timeline_panel/timeline_panel.gd:369
 #: modules/core_timeline_panel/track_controls.gd:85
 msgid "Mute track"
 msgstr "静音"
 
-#: modules/core_timeline_panel/timeline_panel.gd:343
+#: modules/core_timeline_panel/timeline_panel.gd:373
 msgid "Lock track"
 msgstr "锁定轨道"
 
-#: modules/core_timeline_panel/timeline_panel.gd:949
+#: modules/core_timeline_panel/timeline_panel.gd:1021
 msgid "Delete clip"
 msgstr "删除片段"
 
-#: modules/core_timeline_panel/timeline_panel.gd:952
+#: modules/core_timeline_panel/timeline_panel.gd:1024
 #, fuzzy
 msgid "Ripple delete clip"
 msgstr "波纹删除："
 
-#: modules/core_timeline_panel/timeline_panel.gd:955
+#: modules/core_timeline_panel/timeline_panel.gd:1027
 msgid "Ripple delete clip (all tracks)"
 msgstr ""
 
-#: modules/core_timeline_panel/timeline_panel.gd:958
+#: modules/core_timeline_panel/timeline_panel.gd:1030
 #, fuzzy
 msgid "Split clip on mouse"
 msgstr "分割片段"
 
-#: modules/core_timeline_panel/timeline_panel.gd:961
+#: modules/core_timeline_panel/timeline_panel.gd:1033
 msgid "Split clip on playhead"
 msgstr "在播放头处分割片段"
 
-#: modules/core_timeline_panel/timeline_panel.gd:966
+#: modules/core_timeline_panel/timeline_panel.gd:1038
 msgid "Hide clip"
 msgstr "隐藏片段"
 
-#: modules/core_timeline_panel/timeline_panel.gd:969
+#: modules/core_timeline_panel/timeline_panel.gd:1041
 msgid "Mute clip"
 msgstr "静音片段"
 
-#: modules/core_timeline_panel/timeline_panel.gd:973
+#: modules/core_timeline_panel/timeline_panel.gd:1045
 #: scenes/change_speed_popup/change_speed.tscn
 msgid "Change speed"
 msgstr "变速"
 
-#: modules/core_timeline_panel/timeline_panel.gd:975
+#: modules/core_timeline_panel/timeline_panel.gd:1047
 msgid "Reset speed"
 msgstr "重置速度"
 
-#: modules/core_timeline_panel/timeline_panel.gd:985
+#: modules/core_timeline_panel/timeline_panel.gd:1057
 msgid "Clip replace audio"
 msgstr "片段音频替换"
 
-#: modules/core_timeline_panel/timeline_panel.gd:987
+#: modules/core_timeline_panel/timeline_panel.gd:1059
 msgid "Auto-cut silence"
 msgstr "自动裁剪无声部分"
 
-#: modules/core_timeline_panel/timeline_panel.gd:999
+#: modules/core_timeline_panel/timeline_panel.gd:1071
 msgid "Select Audio Track"
 msgstr "选择音频轨道"
 
-#: modules/core_timeline_panel/time_stamps.gd:354
+#: modules/core_timeline_panel/time_stamps.gd:375
 #, fuzzy
 msgid "Render region start"
 msgstr "渲染区域"
 
-#: modules/core_timeline_panel/time_stamps.gd:354
-#: modules/core_timeline_panel/time_stamps.gd:358
+#: modules/core_timeline_panel/time_stamps.gd:375
+#: modules/core_timeline_panel/time_stamps.gd:379
 msgid "Drag to adjust"
 msgstr ""
 
-#: modules/core_timeline_panel/time_stamps.gd:358
+#: modules/core_timeline_panel/time_stamps.gd:379
 #, fuzzy
 msgid "Render region end"
 msgstr "渲染区域"
 
-#: modules/core_timeline_panel/time_stamps.gd:360
-msgid "Inactive"
+#: modules/core_timeline_panel/time_stamps.gd:381
+msgid "In-active"
 msgstr ""
 
-#: modules/core_timeline_panel/time_stamps.gd:361
-msgid "Click to deactivate"
+#: modules/core_timeline_panel/time_stamps.gd:382
+msgid "Click to deactivate, drag to move"
 msgstr ""
 
-#: modules/core_timeline_panel/time_stamps.gd:361
-msgid "Click to activate"
+#: modules/core_timeline_panel/time_stamps.gd:382
+msgid "Click to activate, drag to move"
 msgstr ""
 
 #: modules/core_timeline_panel/timeline.tscn
@@ -662,7 +704,7 @@ msgid "Next keyframe."
 msgstr "下一个关键帧。"
 
 #: modules/core_effects_panel/effects_panel.gd:1005
-#: modules/core_effects_panel/effects_panel.gd:1736
+#: modules/core_effects_panel/effects_panel.gd:1746
 msgid "Default"
 msgstr "默认"
 
@@ -752,42 +794,38 @@ msgstr "特粗"
 msgid "Black"
 msgstr "黑体"
 
-#: modules/core_effects_panel/effects_panel.gd:1226
+#: modules/core_effects_panel/effects_panel.gd:1236
 msgid "Link X and Y."
 msgstr "关联 X 轴和 Y 轴。"
 
-#: modules/core_effects_panel/effects_panel.gd:1541
+#: modules/core_effects_panel/effects_panel.gd:1551
 msgid "Add effects."
 msgstr "添加效果。"
 
-#: modules/core_effects_panel/effects_panel.gd:1676
+#: modules/core_effects_panel/effects_panel.gd:1686
 msgid "Presets"
 msgstr "预设"
 
-#: modules/core_effects_panel/effects_panel.gd:1695
+#: modules/core_effects_panel/effects_panel.gd:1705
 msgid "Reset effect"
 msgstr "重置效果"
 
-#: modules/core_effects_panel/effects_panel.gd:1707
+#: modules/core_effects_panel/effects_panel.gd:1717
 msgid "Delete effect"
 msgstr "删除"
 
-#: modules/core_effects_panel/effects_panel.gd:1720
+#: modules/core_effects_panel/effects_panel.gd:1730
 msgid "Save as preset..."
 msgstr "保存为预设..."
 
-#: modules/core_effects_panel/effects_panel.gd:1793
+#: modules/core_effects_panel/effects_panel.gd:1803
 #: scenes/startup_screen/save_profile_preset/save_profile_preset.tscn
 msgid "Save preset"
 msgstr "保存预设"
 
-#: modules/core_effects_panel/effects_panel.gd:1794
+#: modules/core_effects_panel/effects_panel.gd:1804
 msgid "Preset name"
 msgstr "预设名称"
-
-#: modules/core_effects_panel/effects_panel.tscn
-msgid "Module"
-msgstr "模块"
 
 #: modules/core_effects_panel/effects_panel.tscn scenes/welcome/welcome.tscn
 msgid "Transitions"
@@ -834,19 +872,6 @@ msgstr "覆盖文件？"
 msgid ""
 "A file already exists at the chosen export path. Do you want to overwrite it?"
 msgstr "要导出的路径文件已存在，是否覆盖？"
-
-#: scenes/file_popups/overwrite_file/overwrite_file.tscn
-#: scenes/file_popups/rename_folder_popup/rename_folder.tscn
-#: scenes/file_popups/rename_file_popup/rename_file.tscn
-#: scenes/editor/delete_workspace_popup/delete_workspace_popup.tscn
-#: scenes/editor/save_on_exit_popup/save_on_exit_popup.tscn
-#: scenes/color_popup/color_popup.tscn
-#: scenes/replace_audio_popup/replace_audio_popup.tscn
-#: scenes/replace_audio_popup/update_audio_files_popup/update_audio_files_popup.tscn
-#: scenes/marker_popup/marker_popup.tscn
-#: scenes/auto_cut_popup/auto_cut_popup.tscn
-msgid "Cancel"
-msgstr "取消"
 
 #: scenes/file_popups/overwrite_file/overwrite_file.tscn
 msgid "Overwrite file"
@@ -997,109 +1022,115 @@ msgid "New project"
 msgstr "新工程"
 
 #: scenes/editor/editor.gd:286
-msgid "Archive project ..."
+#, fuzzy
+msgid "Pack project ..."
 msgstr "将工程归档..."
 
-#: scenes/editor/editor.gd:288 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:289 scenes/startup_screen/startup_screen.tscn
 #: scenes/startup_screen/startup_screen.gd:370 scripts/autoloads/project.gd:290
 msgid "Open project"
 msgstr "打开工程"
 
-#: scenes/editor/editor.gd:293 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:294 scenes/startup_screen/startup_screen.tscn
 msgid "Recent projects"
 msgstr "近期工程"
 
-#: scenes/editor/editor.gd:297
-msgid "Splash screen"
-msgstr ""
-
 #: scenes/editor/editor.gd:298
+#, fuzzy
+msgid "Project manager"
+msgstr "模块管理器"
+
+#: scenes/editor/editor.gd:299
 msgid "Welcome screen"
 msgstr "欢迎页"
 
-#: scenes/editor/editor.gd:300 scenes/settings_menu/settings_menu.gd:114
+#: scenes/editor/editor.gd:301 scenes/settings_menu/settings_menu.gd:114
 msgid "Project settings"
 msgstr "工程设置"
 
-#: scenes/editor/editor.gd:301
+#: scenes/editor/editor.gd:302
 msgid "Quit"
 msgstr "退出"
 
-#: scenes/editor/editor.gd:363
+#: scenes/editor/editor.gd:364
 msgid "Undo"
 msgstr "撤消"
 
-#: scenes/editor/editor.gd:364
+#: scenes/editor/editor.gd:365
 msgid "Redo"
 msgstr "恢复"
 
-#: scenes/editor/editor.gd:398
+#: scenes/editor/editor.gd:366
+msgid "History"
+msgstr ""
+
+#: scenes/editor/editor.gd:394
 #: scenes/editor/new_workspace_popup/new_workspace_popup.tscn
 msgid "Save workspace"
 msgstr "保存工作区"
 
-#: scenes/editor/editor.gd:399
+#: scenes/editor/editor.gd:395
 #: scenes/editor/new_workspace_popup/new_workspace_popup.tscn
 msgid "New workspace"
 msgstr "新建工作区"
 
-#: scenes/editor/editor.gd:401 scenes/editor/editor.gd:419
+#: scenes/editor/editor.gd:397 scenes/editor/editor.gd:415
 msgid "Show panel titles"
 msgstr "显示面板标题"
 
-#: scenes/editor/editor.gd:402
+#: scenes/editor/editor.gd:398
 msgid "Panels"
 msgstr "面板"
 
-#: scenes/editor/editor.gd:417
+#: scenes/editor/editor.gd:413
 msgid "Hide panel titles"
 msgstr "隐藏面板标题"
 
-#: scenes/editor/editor.gd:453 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:449 scenes/startup_screen/startup_screen.tscn
 msgid "Editor settings"
 msgstr "编辑器设置"
 
-#: scenes/editor/editor.gd:455
+#: scenes/editor/editor.gd:451
 msgid "Module manager"
 msgstr "模块管理器"
 
-#: scenes/editor/editor.gd:457
+#: scenes/editor/editor.gd:453
 msgid "Command bar"
 msgstr "命令行"
 
-#: scenes/editor/editor.gd:482
+#: scenes/editor/editor.gd:478
 msgid "Report bug"
 msgstr "报告 Bug"
 
-#: scenes/editor/editor.gd:483 scenes/welcome/welcome.tscn
+#: scenes/editor/editor.gd:479 scenes/welcome/welcome.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Manual"
 msgstr "手册"
 
-#: scenes/editor/editor.gd:484 scenes/startup_screen/startup_screen.tscn
+#: scenes/editor/editor.gd:480 scenes/startup_screen/startup_screen.tscn
 msgid "Tutorials"
 msgstr "教程"
 
-#: scenes/editor/editor.gd:485 scenes/welcome/welcome.tscn
+#: scenes/editor/editor.gd:481 scenes/welcome/welcome.tscn
 #: scenes/about_gozen_popup/about_gozen.tscn
 msgid "Discord"
 msgstr "Discord"
 
-#: scenes/editor/editor.gd:487 scenes/welcome/welcome.tscn
+#: scenes/editor/editor.gd:483 scenes/welcome/welcome.tscn
 #: scenes/about_gozen_popup/about_gozen.tscn
 #: scenes/startup_screen/startup_screen.tscn
 msgid "Website"
 msgstr "官网"
 
-#: scenes/editor/editor.gd:488 scenes/about_gozen_popup/about_gozen.tscn
+#: scenes/editor/editor.gd:484 scenes/about_gozen_popup/about_gozen.tscn
 msgid "About GoZen"
 msgstr "关于 GoZen"
 
-#: scenes/editor/editor.gd:558
+#: scenes/editor/editor.gd:554
 msgid "Move Left"
 msgstr "左移"
 
-#: scenes/editor/editor.gd:561
+#: scenes/editor/editor.gd:557
 msgid "Move Right"
 msgstr "右移"
 
@@ -1234,8 +1265,8 @@ msgid "Image Clip Example"
 msgstr "图像片段示例"
 
 #: scenes/welcome/welcome.tscn
-msgid "PCK Clip Example"
-msgstr "PCK 片段示例"
+msgid "Scene Clip Example"
+msgstr "Scene 片段示例"
 
 #: scenes/welcome/welcome.tscn
 msgid "Text Clip Example"
@@ -1409,14 +1440,14 @@ msgstr "文本与颜色选项"
 
 #: scenes/welcome/welcome.tscn
 msgid ""
-"We have video, pck, audio, and image files. Those are the files we can drag "
-"and drop into the editor. As for text and colors, those are also files but "
-"have to be created inside of the editor by pressing the file icon in the top "
-"right corner of the file panel."
+"We have video, scene, audio, and image files. Those are the files we can "
+"drag and drop into the editor. As for text and colors, those are also files "
+"but have to be created inside of the editor by pressing the file icon in the "
+"top right corner of the file panel."
 msgstr ""
-"我们支持视频、pck、音频和图像文件，这些文件都可以拖放进编辑器中。至于文本和颜"
-"色，它们虽然也算文件，但必须在编辑器内部创建——点击文件面板右上角的文件图标即"
-"可。"
+"我们支持视频、scene、音频和图像文件，这些文件都可以拖放进编辑器中。至于文本和"
+"颜色，它们虽然也算文件，但必须在编辑器内部创建——点击文件面板右上角的文件图标"
+"即可。"
 
 #: scenes/welcome/welcome.tscn
 msgid "Rendering your videos"
@@ -1498,23 +1529,26 @@ msgid "Steam workshop"
 msgstr "Steam 创意工坊"
 
 #: scenes/welcome/welcome.tscn
-msgid "Custom PCK files"
-msgstr "自定义 PCK 文件"
+#, fuzzy
+msgid "Custom Scene files"
+msgstr "自定义 scene 文件"
 
 #: scenes/welcome/welcome.tscn
+#, fuzzy
 msgid ""
-"Modules change the editor and add functionality to the editor, but there's "
-"another type of modules refered to as pck files. These are Godot scenes "
-"which can be used directly in the timeline for visuals. For the creation of "
-"these files a bit of development is needed inside of custom Godot project."
+"Modules (*.gzmodule) change the editor and add functionality to the editor, "
+"while GoZen Scenes (*.gzscene) are Godot scenes which can be used directly "
+"in the timeline as visual clips/files. For creating these files, a bit of "
+"development is needed inside a custom Godot project."
 msgstr ""
-"模块可以改变编辑器并为其添加功能，但还有另一类模块，被称为 pck 文件。它们是 "
-"Godot 场景，可以直接在时间轴中用作视觉素材。创建这类文件需要在自定义 Godot 项"
-"目中进行一些开发工作。"
+"模块可以改变编辑器并为其添加功能，但还有另一类模块，被称为 scene 文件。它们"
+"是 Godot 场景，可以直接在时间轴中用作视觉素材。创建这类文件需要在自定义 "
+"Godot 项目中进行一些开发工作。"
 
 #: scenes/welcome/welcome.tscn
-msgid "PCK Module Project"
-msgstr "PCK 模块项目"
+#, fuzzy
+msgid "Scene/module template"
+msgstr "Scene 模块项目"
 
 #: scenes/welcome/welcome.tscn
 msgid "Workspaces"
@@ -1616,13 +1650,14 @@ msgstr "添加颜色文件"
 msgid "Create new color file"
 msgstr "创建新颜色文件"
 
-#: scenes/modules_popup/modules_popup.tscn
-msgid "Module Manager"
-msgstr "模块管理器"
-
+#: scenes/modules_popup/modules_popup.gd:96
 #: scenes/modules_popup/modules_popup.tscn
 msgid "Install Module"
 msgstr "安装模块"
+
+#: scenes/modules_popup/modules_popup.tscn
+msgid "Module Manager"
+msgstr "模块管理器"
 
 #: scenes/jump_to_time_popup/jump_to_time.tscn
 #, fuzzy
@@ -2333,10 +2368,13 @@ msgstr "添加文件"
 msgid "Files loading ..."
 msgstr "文件加载中..."
 
-#: scripts/logic/file_logic.gd:506
+#: scripts/logic/file_logic.gd:519
 msgid "File missing or moved: "
 msgstr "文件丢失或被移动："
 
-#: scripts/logic/file_logic.gd:1403
+#: scripts/logic/file_logic.gd:1432
 msgid "Scanning folder: "
 msgstr "扫描文件夹："
+
+#~ msgid "Module"
+#~ msgstr "模块"

@@ -91,10 +91,10 @@ func _deserialize_video(data: Dictionary, file_id: int = -1) -> void:
 		var effect_id: String = (effect_value as Dictionary).get("id", "")
 		var effect: Effect = null
 
-		if effect_id == "pck_effect_params" and file_id != -1:
+		if effect_id == "scene_effect_params" and file_id != -1:
 			effect = Effect.new()
-			effect.id = "pck_effect_params"
-			effect.nickname = "Module Parameters"
+			effect.id = "scene_effect_params"
+			effect.nickname = "Scene Parameters"
 
 			var module_data: GoZenModuleScene = FileLogic.data.get(file_id)
 			if module_data:

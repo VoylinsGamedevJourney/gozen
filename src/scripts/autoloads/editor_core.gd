@@ -199,7 +199,7 @@ func _rebuild_structure() -> void:
 		viewport.move_child(texture_rect, 1)
 		view_textures[index] = texture_rect
 
-		# Text + PCK stuff.
+		# Text + Scene stuff.
 		var track_viewport: SubViewport = SubViewport.new()
 		var settings: LabelSettings = LabelSettings.new()
 		var text_label: Label = Label.new()
@@ -469,7 +469,7 @@ func update_data(track: int) -> void:
 		var text_label_settings: LabelSettings = text_label.label_settings
 
 		if text_viewport.get_child_count() > 1:
-			(text_viewport.get_child(1) as Control).visible = false # Hide the PCK.
+			(text_viewport.get_child(1) as Control).visible = false # Hide the Scene.
 		(text_viewport.get_child(0) as Control).visible = true # Showing the label.
 
 		text_label.text = text_data
@@ -487,47 +487,47 @@ func update_data(track: int) -> void:
 		text_label.label_settings = text_label_settings
 
 		text_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
-	elif clip.type == Type.PCK:
+	elif clip.type == Type.SCENE:
 		var module: GoZenModuleScene = raw_data
-		var pck_viewport: SubViewport = track_viewports[track]
+		var scene_viewport: SubViewport = track_viewports[track]
 
-		(pck_viewport.get_child(0) as Control).visible = false # Hiding the label.
+		(scene_viewport.get_child(0) as Control).visible = false # Hiding the label.
 
 		# Re-instantiate if clip has changed.
-		if pck_viewport.has_meta("file_id") and pck_viewport.get_meta("file_id") != clip.file:
-			while pck_viewport.get_child_count() > 1:
-				var pck_child: Node = pck_viewport.get_child(1)
-				pck_child.call("cleanup")
-				pck_viewport.remove_child(pck_child)
-				pck_child.queue_free()
-			pck_viewport.remove_meta("file_id")
+		if scene_viewport.has_meta("file_id") and scene_viewport.get_meta("file_id") != clip.file:
+			while scene_viewport.get_child_count() > 1:
+				var scene_child: Node = scene_viewport.get_child(1)
+				scene_child.call("cleanup")
+				scene_viewport.remove_child(scene_child)
+				scene_child.queue_free()
+			scene_viewport.remove_meta("file_id")
 
-		if pck_viewport.get_child_count() > 1:
-			(pck_viewport.get_child(1) as Control).visible = true
+		if scene_viewport.get_child_count() > 1:
+			(scene_viewport.get_child(1) as Control).visible = true
 
 		# First time scene loading.
-		if pck_viewport.get_child_count() == 1 and not pck_viewport.has_meta("file_id"):
+		if scene_viewport.get_child_count() == 1 and not scene_viewport.has_meta("file_id"):
 			if module.scene:
 				var instance: Node = module.scene.instantiate()
-				pck_viewport.add_child(instance)
+				scene_viewport.add_child(instance)
 				if instance.has_method("setup"):
 					instance.call("setup", Project.data.framerate, Project.data.resolution)
-			pck_viewport.set_meta("file_id", clip.file)
+			scene_viewport.set_meta("file_id", clip.file)
 
 		# Updating the frame/scene/instance.
-		if pck_viewport.get_child_count() > 1:
-			var instance: Node = pck_viewport.get_child(1) # First child is label
-			var pck_effect_params: Dictionary = {}
+		if scene_viewport.get_child_count() > 1:
+			var instance: Node = scene_viewport.get_child(1) # First child is label
+			var scene_effect_params: Dictionary = {}
 
 			# Gathering the current values for the params.
 			for effect: Effect in clip.effects.video:
-				if effect.id == "pck_effect_params":
+				if effect.id == "scene_effect_params":
 					for param: EffectParam in effect.params:
-						pck_effect_params[param.id] = effect.get_value(param, clip_frame)
+						scene_effect_params[param.id] = effect.get_value(param, clip_frame)
 					break
 
-			instance.call("update_frame", clip_frame, clip.duration, pck_effect_params)
-			pck_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+			instance.call("update_frame", clip_frame, clip.duration, scene_effect_params)
+			scene_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 
 
 func update_views() -> void:
@@ -571,7 +571,7 @@ func update_view(track_id: int, update: bool, instance_index: int) -> void:
 				texture_rid, effects, transition_left, fade_in, transition_right, fade_out, clip_frame))
 		view_textures[track_id].texture = compositors[track_id].display_texture
 		view_textures[track_id].queue_redraw()
-	elif clip.type == Type.PCK:
+	elif clip.type == Type.SCENE:
 		var texture_rid: RID = track_viewports[track_id].get_texture().get_rid()
 		if update or Project.data.resolution != compositors[track_id].resolution:
 			RenderingServer.call_on_render_thread(compositors[track_id].initialize_texture.bind(Project.data.resolution))

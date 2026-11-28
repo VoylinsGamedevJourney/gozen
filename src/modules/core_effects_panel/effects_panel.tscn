@@ -83,7 +83,7 @@ title = "Text"
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
 theme_override_styles/panel = SubResource("StyleBoxFlat_vdjnm")
-title = "Module"
+title = "Scene"
 
 [node name="TransitionsContainer" type="FoldableContainer" parent="Margin/MainScroll/Panel/Margin/VBox" unique_id=1507050130]
 layout_mode = 2

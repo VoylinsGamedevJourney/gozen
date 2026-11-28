@@ -50,8 +50,11 @@ func _draw() -> void:
 				Type.VIDEO: type_str = "Video"
 				Type.COLOR: type_str = "Color"
 				Type.TEXT:  type_str = "Text"
-				Type.PCK:   type_str = "Pck"
-			var style_name: String = "Clip" + type_str + ("Focus" if box_type == 1 else "Normal")
+				Type.SCENE:   type_str = "Scene"
+			var state_suffix: String = "Focus" if box_type == 1 else "Normal"
+			var style_name: String = "Clip" + type_str + state_suffix
+			if not has_theme_stylebox(style_name, "Timeline") and clip.type == Type.SCENE:
+				style_name = "ClipScene" + state_suffix
 			if has_theme_stylebox(style_name, "Timeline"):
 				var style: StyleBox = get_theme_stylebox(style_name, "Timeline")
 				draw_style_box(style, final_rect)
@@ -59,7 +62,6 @@ func _draw() -> void:
 		# - Audio waves (Part of clip blocks)
 		var wave_file_id: int = clip.file
 		var wave_offset_sec: float = 0.0
-
 		if clip.effects.ato_active and clip.effects.ato_file != -1:
 			wave_file_id = clip.effects.ato_file
 			wave_offset_sec = clip.effects.ato_offset

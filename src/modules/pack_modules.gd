@@ -29,11 +29,27 @@ func _pack_module(module_path: String, module_name: String) -> void:
 	if files.is_empty():
 		return
 
-	var pck_path: String = PATH_EXPORT.path_join(module_name + ".pck")
+	var extension: String = ".gzmodule"
+	var module_tres_path: String = module_path.path_join("module.tres")
+	if ResourceLoader.exists(module_tres_path):
+		var module_res: Resource = load(module_tres_path)
+		if module_res is GoZenModule:
+			var gozen_module: GoZenModule = module_res as GoZenModule
+			var has_scenes: bool = not gozen_module.custom_scenes.is_empty()
+			var has_editor_extensions: bool = (
+					!gozen_module.custom_panels.is_empty() or
+					!gozen_module.custom_effects.is_empty() or
+					!gozen_module.custom_transitions.is_empty() or
+					!gozen_module.custom_themes.is_empty() or
+					!gozen_module.settings.is_empty())
+			if has_scenes and not has_editor_extensions:
+				extension = ".gzscene"
+
+	var package_path: String = PATH_EXPORT.path_join(module_name + extension)
 	var packer: PCKPacker = PCKPacker.new()
-	var err: Error = packer.pck_start(pck_path)
+	var err: Error = packer.pck_start(package_path)
 	if err != OK:
-		printerr("Couldn't start PCK for module '%s'!\n\tError code: %s" % [module_name, err])
+		printerr("Couldn't start package for module '%s'!\n\tError code: %s" % [module_name, err])
 		return
 
 	var files_to_pack: Array[String] = []

@@ -133,12 +133,12 @@ func sync_project_effects(clips: Dictionary, files: Dictionary) -> void:
 	for clip: ClipData in clips.values():
 		for i: int in clip.effects.video.size():
 			var old_effect: Effect = clip.effects.video[i]
-			if old_effect.id == "pck_effect_params":
+			if old_effect.id == "scene_effect_params":
 				var module_data: GoZenModuleScene = FileLogic.data.get(clip.file)
 				var new_effect: Effect = Effect.new()
 
-				new_effect.id = "pck_effect_params"
-				new_effect.nickname = "Module Parameters"
+				new_effect.id = "scene_effect_params"
+				new_effect.nickname = "Scene Parameters"
 				if module_data:
 					for param: EffectParam in module_data.params:
 						new_effect.params.append(param.duplicate(true))

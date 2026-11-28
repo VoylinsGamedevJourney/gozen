@@ -283,7 +283,8 @@ func _create_project_popup_menu() -> void:
 	menu.add_icon_item(load(Library.ICON_SAVE) as Icon, "Save project", 1)
 	menu.add_icon_item(load(Library.ICON_SAVE) as Icon, "Save project as ...", 2)
 	if not OS.has_feature("lite"):
-		menu.add_icon_item(load(Library.ICON_FILE_VIDEO) as Icon, "Archive project ...", 3)
+		menu.add_icon_item(load(Library.ICON_FILE_VIDEO) as Icon, "Pack project ...", 3)
+		menu.set_item_tooltip(3, "Create a zip file with the *.gozen project file and all files used in the project.")
 	menu.add_separator()
 	menu.add_icon_item(load(Library.ICON_OPEN) as Icon, "Open project", 4)
 
@@ -294,7 +295,7 @@ func _create_project_popup_menu() -> void:
 	menu.set_item_icon(menu.get_item_index(5), load(Library.ICON_OPEN) as Icon)
 
 	menu.add_separator()
-	menu.add_icon_item(load(Library.ICON_HORIZONTAL) as Icon, "Splash screen", 6)
+	menu.add_icon_item(load(Library.ICON_HORIZONTAL) as Icon, "Project manager", 6)
 	menu.add_icon_item(load(Library.ICON_WELCOME) as Icon, "Welcome screen", 9)
 	menu.add_separator()
 	menu.add_icon_item(load(Library.ICON_PROJECT_SETTINGS) as Icon, "Project settings", 7)
@@ -362,11 +363,12 @@ func _create_edit_popup_menu() -> void:
 
 	menu.add_icon_item(load(Library.ICON_UNDO) as Icon, tr("Undo"), 0)
 	menu.add_icon_item(load(Library.ICON_REDO) as Icon, tr("Redo"), 1)
+	menu.add_icon_item(load(Library.ICON_REFRESH) as Icon, tr("History"), 2)
 
 	menu.add_separator()
-	menu.add_icon_item(load(Library.ICON_FILE_ADD) as Texture2D, tr("Add files"), 2)
-	menu.add_icon_item(load(Library.ICON_FILE_TEXT) as Texture2D, tr("Add text"), 3)
-	menu.add_icon_item(load(Library.ICON_FILE_COLOR) as Texture2D, tr("Add color"), 4)
+	menu.add_icon_item(load(Library.ICON_FILE_ADD) as Texture2D, tr("Add files"), 3)
+	menu.add_icon_item(load(Library.ICON_FILE_TEXT) as Texture2D, tr("Add text"), 4)
+	menu.add_icon_item(load(Library.ICON_FILE_COLOR) as Texture2D, tr("Add color"), 5)
 
 	menu.id_pressed.connect(_on_edit_popup_menu_id_pressed)
 
@@ -375,9 +377,10 @@ func _on_edit_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0: UndoManager.undo()
 		1: UndoManager.redo()
-		2: FileLogic.open_import_dialog()
-		3: FileLogic.add(["temp://text"])
-		4: PopupManager.open(PopupManager.COLOR_PICKER)
+		2: UndoManager.open_history()
+		3: FileLogic.open_import_dialog()
+		4: FileLogic.add(["temp://text"])
+		5: PopupManager.open(PopupManager.COLOR_PICKER)
 
 
 func _create_view_popup_menu() -> void:

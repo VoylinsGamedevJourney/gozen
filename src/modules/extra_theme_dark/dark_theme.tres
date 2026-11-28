@@ -6,8 +6,8 @@
 [ext_resource type="StyleBox" uid="uid://df0jxk11tracv" path="res://theming/timeline_box_color_normal.tres" id="TimelineBoxColorNormal"]
 [ext_resource type="StyleBox" uid="uid://bwnfn42mtulgg" path="res://theming/timeline_box_image_focus.tres" id="TimelineBoxImageFocus"]
 [ext_resource type="StyleBox" uid="uid://dlxa6tecfxvwa" path="res://theming/timeline_box_image_normal.tres" id="TimelineBoxImageNormal"]
-[ext_resource type="StyleBox" uid="uid://cbbl73i1eow1v" path="res://theming/timeline_box_pck_focus.tres" id="TimelineBoxPckFocus"]
-[ext_resource type="StyleBox" uid="uid://d4imyv73ke52c" path="res://theming/timeline_box_pck_normal.tres" id="TimelineBoxPckNormal"]
+[ext_resource type="StyleBox" uid="uid://cbbl73i1eow1v" path="res://theming/timeline_box_scene_focus.tres" id="TimelineBoxSceneFocus"]
+[ext_resource type="StyleBox" uid="uid://d4imyv73ke52c" path="res://theming/timeline_box_scene_normal.tres" id="TimelineBoxSceneNormal"]
 [ext_resource type="StyleBox" uid="uid://dx2v44643hfvy" path="res://theming/timeline_box_preview.tres" id="TimelineBoxPreview"]
 [ext_resource type="StyleBox" uid="uid://vtif6uw34cqe" path="res://theming/timeline_box_text_focus.tres" id="TimelineBoxTextFocus"]
 [ext_resource type="StyleBox" uid="uid://c8iincian78e3" path="res://theming/timeline_box_text_normal.tres" id="TimelineBoxTextNormal"]
@@ -404,8 +404,8 @@ Timeline/styles/ClipColorFocus = ExtResource("TimelineBoxColorFocus")
 Timeline/styles/ClipColorNormal = ExtResource("TimelineBoxColorNormal")
 Timeline/styles/ClipImageFocus = ExtResource("TimelineBoxImageFocus")
 Timeline/styles/ClipImageNormal = ExtResource("TimelineBoxImageNormal")
-Timeline/styles/ClipPckFocus = ExtResource("TimelineBoxPckFocus")
-Timeline/styles/ClipPckNormal = ExtResource("TimelineBoxPckNormal")
+Timeline/styles/ClipSceneFocus = ExtResource("TimelineBoxSceneFocus")
+Timeline/styles/ClipSceneNormal = ExtResource("TimelineBoxSceneNormal")
 Timeline/styles/ClipPreview = ExtResource("TimelineBoxPreview")
 Timeline/styles/ClipTextFocus = ExtResource("TimelineBoxTextFocus")
 Timeline/styles/ClipTextNormal = ExtResource("TimelineBoxTextNormal")

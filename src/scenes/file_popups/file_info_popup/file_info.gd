@@ -52,7 +52,7 @@ func load_data(file_id: int) -> void:
 		Type.IMAGE: label_type.text = "Image"
 		Type.TEXT: label_type.text = "Text"
 		Type.COLOR: label_type.text = "Color"
-		Type.PCK: label_type.text = "PCK"
+		Type.SCENE: label_type.text = "Scene"
 
 	if not file.path.begins_with("temp://"):
 		label_size.text = String.humanize_size(

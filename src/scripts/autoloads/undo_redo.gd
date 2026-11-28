@@ -25,3 +25,10 @@ func add_undo(method: Callable) -> void: _data.add_undo_method(method)
 func commit_action(execute: bool = true) -> void: _data.commit_action(execute)
 
 func clear_history() -> void: _data.clear_history()
+
+
+#--- History stuff ---
+
+func open_history() -> void:
+	# TODO: Create a popup to show and select the history. (Should have a button to clear the history as well)
+	pass

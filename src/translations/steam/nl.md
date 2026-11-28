@@ -14,7 +14,7 @@ Een minimalistische, moderne, open-source, en modulaire video-editor voor beginn
 [*][p][b]GPU-versnelde effecten[/b]: Hogere prestaties doordat alle effecten rechtstreeks op de GPU worden verwerkt;[/p][/*]
 [*][p][b]Aanpasbare werkruimtes[/b]: Jij bepaalt hoe je editor eruitziet;[/p][/*]
 [*][p][b]Audio-sync:[/b] Ingebouwde ondersteuning om externe microfoonaudio eenvoudig met je video te synchroniseren;[/p][/*]
-[*][p][b]Uitbreidbaarheid met Godot-modules:[/b] Importeer aangepaste Godot-scènes (.pck) rechtstreeks in je tijdlijn om procedurele graphics, titels en animaties te maken.[/p][/*]
+[*][p][b]Uitbreidbaarheid met Godot-modules:[/b] Importeer aangepaste Godot-scènes (.gzscene) rechtstreeks in je tijdlijn om procedurele graphics, titels en animaties te maken.[/p][/*]
 [/list]
 [h2][b]De Steam-editie[/b][/h2]
 [p]GoZen is een open-source project dat door een onafhankelijke ontwikkelaar wordt gemaakt. De Steam-editie is de beste manier om de verdere ontwikkeling te ondersteunen. Met de Steam-editie krijg je:[/p]

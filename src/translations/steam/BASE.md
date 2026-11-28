@@ -14,7 +14,7 @@ A minimalist, modern, open-source, customizable, and modular video editor for be
 [*][p][b]GPU-Accelerated Effects[/b]: Higher performance as all effects are handled on the GPU directly;[/p][/*]
 [*][p][b]Customizable Workspaces[/b]: Your editor, you decide how it looks;[/p][/*]
 [*][p][b]Audio Sync:[/b] Built-in support for easily syncing external microphone audio with your video's;[/p][/*]
-[*][p][b]Godot Module Extensibility:[/b] Import custom Godot scenes (.pck) directly into your timeline to create custom procedural graphics, titles, and animations.[/p][/*]
+[*][p][b]Godot Module Extensibility:[/b] Import custom Godot scenes (.gzscene) directly into your timeline to create custom procedural graphics, titles, and animations.[/p][/*]
 [/list]
 [h2][b]The Steam Edition[/b][/h2]
 [p]GoZen is an open-source project created by an independent developer. The Steam Edition is the best way to support ongoing development. With the Steam edition you get:[/p]

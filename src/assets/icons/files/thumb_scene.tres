@@ -14,5 +14,5 @@ data = {
 [resource]
 image = SubResource("Image_k7htn")
 script = ExtResource("1_seg10")
-base_svg_path = "res://assets/icons/files/thumb_pck.svg"
+base_svg_path = "res://assets/icons/files/thumb_scene.svg"
 metadata/_custom_type_script = "uid://c3xb5cvay2wbf"
