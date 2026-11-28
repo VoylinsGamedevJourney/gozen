@@ -577,6 +577,7 @@ func load_data(file: FileData) -> void:
 				data[file.id] = null
 				return
 
+			ModuleManager.register_module_uids(module_path.get_base_dir())
 			var module_data: GoZenModule = load(module_path)
 			if !module_data or module_data.custom_scenes.is_empty():
 				printerr("FileLogic: Failed to load `module.tres` or it isn't a GoZenModule with clips!")

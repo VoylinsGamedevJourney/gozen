@@ -36,12 +36,24 @@ func _pack_module(module_path: String, module_name: String) -> void:
 		printerr("Couldn't start PCK for module '%s'!\n\tError code: %s" % [module_name, err])
 		return
 
+	var files_to_pack: Array[String] = []
+	var seen_files: Dictionary[String, bool] = {}
 	for file_path: String in files:
-		if FileAccess.file_exists(file_path):
-			err = packer.add_file(file_path, file_path)
-			if err != OK:
-				printerr("Could not add '%s' to PCK for module '%s'!\n\tError code: %s" % [
-						file_path, module_name, err])
+		if FileAccess.file_exists(file_path) and not seen_files.has(file_path):
+			seen_files[file_path] = true
+			files_to_pack.append(file_path)
+
+		if file_path.ends_with(".import"):
+			for imported_path: String in _get_imported_files(file_path):
+				if FileAccess.file_exists(imported_path) and not seen_files.has(imported_path):
+					seen_files[imported_path] = true
+					files_to_pack.append(imported_path)
+
+	for file_path: String in files_to_pack:
+		err = packer.add_file(file_path, file_path)
+		if err != OK:
+			printerr("Could not add '%s' to PCK for module '%s'!\n\tError code: %s" % [
+					file_path, module_name, err])
 
 	err = packer.flush(true)
 	if err != OK:
@@ -63,6 +75,35 @@ func _collect_files(current_path: String, files: Array[String]) -> void:
 			var full_path: String = current_path.path_join(entry)
 			if dir.current_is_dir():
 				_collect_files(full_path, files)
-			files.append(full_path)
+			else:
+				files.append(full_path)
 		entry = dir.get_next()
 	dir.list_dir_end()
+
+
+func _get_imported_files(import_file_path: String) -> Array[String]:
+	var imported_files: Array[String] = []
+	var config: ConfigFile = ConfigFile.new()
+	if config.load(import_file_path) != OK:
+		printerr("PackModules: Couldn't load import file '%s'!" % import_file_path)
+		return imported_files
+
+	if config.has_section_key("deps", "dest_files"):
+		var raw_dest_files: Variant = config.get_value("deps", "dest_files", [])
+		if raw_dest_files is PackedStringArray:
+			for dest_path: String in (raw_dest_files as PackedStringArray):
+				if not dest_path.is_empty() and dest_path not in imported_files:
+					imported_files.append(dest_path)
+		elif raw_dest_files is Array:
+			for dest_path: Variant in (raw_dest_files as Array):
+				var path_str: String = str(dest_path)
+				if not path_str.is_empty() and path_str not in imported_files:
+					imported_files.append(path_str)
+
+	if config.has_section("remap"):
+		for key: String in config.get_section_keys("remap"):
+			if key == "path" or key.begins_with("path."):
+				var remap_path: String = str(config.get_value("remap", key, ""))
+				if not remap_path.is_empty() and remap_path not in imported_files:
+					imported_files.append(remap_path)
+	return imported_files

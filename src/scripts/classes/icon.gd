@@ -50,12 +50,16 @@ func _update_texture() -> void:
 		file = FileAccess.open(base_svg_path.trim_suffix(".remap"), FileAccess.READ)
 	else:
 		file = FileAccess.open(svg_path.trim_suffix(".remap"), FileAccess.READ)
+
+	if file == null:
+		return push_error("Icon: Couldn't open svg at '%s'!" % base_svg_path)
 	svg_text = file.get_as_text()
 	file.close()
 
 	if Settings and Settings.has_method("get_theme") and !Engine.is_editor_hint(): # Due to loading stuff on startup.
-		if Settings.get_theme().has_color("color", "icons"):
-			target_color = Settings.get_theme().get_color("color", "icons")
+		var current_theme: Theme = Settings.get_theme()
+		if current_theme and current_theme.has_color("color", "icons"):
+			target_color = current_theme.get_color("color", "icons")
 
 	if !is_static and BASE_SVG_COLOR != target_color:
 		svg_text = svg_text.replace(BASE_SVG_COLOR.to_html(false), target_color.to_html(false))

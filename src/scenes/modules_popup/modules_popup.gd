@@ -99,9 +99,11 @@ func _on_install_pressed() -> void:
 
 
 func _on_file_selected(path: String) -> void:
-	ModuleManager.install_module(path)
-	_populate_tree()
-	NotificationManager.info("Module installed. A restart might be required to apply all extensions.")
+	if ModuleManager.install_module(path):
+		_populate_tree()
+		NotificationManager.info("Module installed. A restart might be required to apply all extensions.")
+	else:
+		NotificationManager.error("Failed to install module. Check logs for details.")
 
 
 func _on_close_pressed() -> void:
