@@ -94,8 +94,8 @@ func _ready() -> void:
 			file_name = file_name.trim_suffix(".remap")
 			if !file_name.ends_with(".tres") and !file_name.ends_with(".res"): continue
 
-			var path: String = get_user_profiles_path() + file_name
-			var profile: RenderProfile = load(path)
+			var path: String = get_user_profiles_path().path_join(file_name)
+			var profile: RenderProfile = load(path) as RenderProfile
 			if profile:
 				add_profile(profile, path)
 	elif DirAccess.make_dir_recursive_absolute(get_user_profiles_path()):
@@ -123,7 +123,7 @@ func _ready() -> void:
 
 
 func get_user_profiles_path() -> String:
-	return Utils.get_config_dir() + "profiles/render/"
+	return Utils.get_config_dir().path_join("profiles").path_join("render")
 
 
 func _on_project_ready() -> void:
@@ -242,18 +242,18 @@ func _delete_custom_profile(index: int) -> void:
 
 
 func add_profile(profile: RenderProfile, save_path: String = "") -> void:
-	var id: int = option_button_render_profiles.item_count
 	var tooltip: String = "Profile: %s" % profile.profile_name
-	option_button_render_profiles.add_item(profile.profile_name, id)
+	option_button_render_profiles.add_item(profile.profile_name)
+	var item_index: int = option_button_render_profiles.item_count - 1
 
 	if !save_path.is_empty(): # Custom
 		tooltip += "\n\nShift click to delete."
-		option_button_render_profiles.set_item_metadata(id, save_path)
+		option_button_render_profiles.set_item_metadata(item_index, save_path)
 	else:
-		option_button_render_profiles.set_item_metadata(id, profile.resource_path)
+		option_button_render_profiles.set_item_metadata(item_index, profile.resource_path)
 
-	option_button_render_profiles.set_item_tooltip(id, tooltip)
-	option_button_render_profiles.set_item_icon(id, profile.icon)
+	option_button_render_profiles.set_item_tooltip(item_index, tooltip)
+	option_button_render_profiles.set_item_icon(item_index, profile.icon)
 
 
 func load_profile(profile: RenderProfile) -> void:
@@ -454,25 +454,34 @@ func _on_render_settings_changed() -> void:
 
 
 func _on_save_custom_profile_button_pressed() -> void:
-	var packed_scene: PackedScene = load("uid://cxfdfmbkkwt51")
-	var dialog: ConfirmationDialog = packed_scene.instantiate()
-	dialog.call("_connect_save_profile", _save_custom_profile)
-	add_child(dialog)
-	dialog.popup_centered()
+	var popup: Control = PopupManager.get_popup(PopupManager.RENDER_PROFILE_SAVE_CUSTOM)
+	popup.call("set_data", _save_custom_profile)
 
 
 func _save_custom_profile(profile_name: String, icon_path: String) -> void:
-	var new_profile: RenderProfile = RenderProfile.new()
-	var icon: Image
-	if icon_path.begins_with("uid://") or icon_path.begins_with("res://"):
-		var icon_texture: Texture2D = load(icon_path)
-		icon = icon_texture.get_image()
-	else: # It's an actual file.
-		icon = Image.load_from_file(icon_path)
-	icon.resize(32, 32, Image.INTERPOLATE_CUBIC)
+	var clean_name: String = profile_name.strip_edges()
+	if clean_name.is_empty():
+		clean_name = "Custom"
 
-	new_profile.profile_name = profile_name
-	new_profile.icon = ImageTexture.create_from_image(icon)
+	var new_profile: RenderProfile = RenderProfile.new()
+	var icon: Image = null
+	if not icon_path.is_empty():
+		if icon_path.begins_with("uid://") or icon_path.begins_with("res://"):
+			var icon_texture: Texture2D = load(icon_path) as Texture2D
+			if icon_texture:
+				icon = icon_texture.get_image()
+		else: # It's an actual file.
+			icon = Image.load_from_file(icon_path)
+	if icon == null or icon.is_empty():
+		var default_texture: Texture2D = load(Library.ICON_CUSTOM_RENDER_PROFILE) as Texture2D
+		if default_texture:
+			icon = default_texture.get_image()
+	if icon and not icon.is_empty():
+		icon = icon.duplicate() as Image
+		icon.resize(32, 32, Image.INTERPOLATE_CUBIC)
+		new_profile.icon = ImageTexture.create_from_image(icon)
+
+	new_profile.profile_name = clean_name
 	new_profile.video_codec = video_codec_option_button.get_selected_id() as Encoder.VideoCodec
 	new_profile.audio_codec = audio_codec_option_button.get_selected_id() as Encoder.AudioCodec
 	new_profile.audio_channels = audio_channels_option_button.get_selected_id() as RenderProfile.AudioChannels
@@ -486,15 +495,28 @@ func _save_custom_profile(profile_name: String, icon_path: String) -> void:
 			printerr("RenderScreen: Couldn't create directory at '%s'!" % get_user_profiles_path())
 
 	# Fix filename to not cause issues.
-	var save_name: String = profile_name.to_lower().validate_filename()
+	var save_name: String = clean_name.to_lower().validate_filename()
+	if save_name.is_empty():
+		save_name = "custom"
 	var save_path: String = get_user_profiles_path().path_join(save_name + ".tres")
 	var err: int = ResourceSaver.save(new_profile, save_path)
 	if err != OK:
 		return printerr("RenderScreen: Failed to save custom profile to '%s' - %s" % [save_path, err])
-	add_profile(new_profile, save_path)
 
-	var id: int = option_button_render_profiles.item_count - 1
-	option_button_render_profiles.selected = id
+	var existing_index: int = -1
+	for i: int in option_button_render_profiles.item_count:
+		if option_button_render_profiles.get_item_metadata(i) == save_path:
+			existing_index = i
+			break
+
+	if existing_index != -1:
+		option_button_render_profiles.set_item_text(existing_index, new_profile.profile_name)
+		option_button_render_profiles.set_item_tooltip(existing_index, "Profile: %s\n\nShift click to delete." % new_profile.profile_name)
+		option_button_render_profiles.set_item_icon(existing_index, new_profile.icon)
+		option_button_render_profiles.select(existing_index)
+	else:
+		add_profile(new_profile, save_path)
+		option_button_render_profiles.select(option_button_render_profiles.item_count - 1)
 	button_save_render_profile.visible = false
 
 
@@ -509,7 +531,9 @@ func _on_render_profile_option_button_item_selected(index: int) -> void:
 		else:
 			_on_render_settings_changed()
 	else:
-		var render_profile: RenderProfile = load(option_button_render_profiles.get_item_metadata(index) as String)
+		var profile_path: String = option_button_render_profiles.get_item_metadata(index) as String
+		var render_profile: RenderProfile = ResourceLoader.load(
+				profile_path, "", ResourceLoader.CACHE_MODE_REPLACE) as RenderProfile
 		load_profile(render_profile)
 
 

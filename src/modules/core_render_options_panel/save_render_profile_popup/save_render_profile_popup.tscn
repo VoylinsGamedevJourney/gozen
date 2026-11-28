@@ -1,0 +1,105 @@
+[gd_scene format=3 uid="uid://c2u0u18njo46g"]
+
+[ext_resource type="Material" uid="uid://c6u824txgwrdc" path="res://shaders/background_shader.tres" id="1_sh0fn"]
+[ext_resource type="Script" uid="uid://cwwha61wucyrl" path="res://modules/core_render_options_panel/save_render_profile_popup/save_render_profile_popup.gd" id="2_7y20n"]
+[ext_resource type="Texture2D" uid="uid://dyhdfp543l3fa" path="res://assets/icons/refresh.tres" id="3_a0k45"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ix4f4"]
+
+[node name="SaveRenderProfile" type="PanelContainer" unique_id=830041705 node_paths=PackedStringArray("name_line_edit", "icon_preview_button", "reset_icon_button")]
+material = ExtResource("1_sh0fn")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"overlay_background"
+script = ExtResource("2_7y20n")
+name_line_edit = NodePath("Panel/Margin/Panel/Margin/VBox/Grid/LineEdit")
+icon_preview_button = NodePath("Panel/Margin/Panel/Margin/VBox/Grid/HBoxContainer/IconTextureRect")
+reset_icon_button = NodePath("Panel/Margin/Panel/Margin/VBox/Grid/HBoxContainer/IconResetButton")
+metadata/_edit_lock_ = true
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1213813620]
+custom_minimum_size = Vector2(900, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"box"
+
+[node name="Margin" type="MarginContainer" parent="Panel" unique_id=229609296]
+layout_mode = 2
+
+[node name="Panel" type="PanelContainer" parent="Panel/Margin" unique_id=399454871]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel/Margin/Panel" unique_id=251620140]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin/Panel/Margin" unique_id=306206666]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox" unique_id=944685048]
+layout_mode = 2
+theme_type_variation = &"title_label"
+text = "Save custom render profile?"
+
+[node name="Grid" type="GridContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1522788761]
+layout_mode = 2
+columns = 2
+
+[node name="IconLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox/Grid" unique_id=741530919]
+layout_mode = 2
+text = "Icon:"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox/Grid" unique_id=984385483]
+layout_mode = 2
+
+[node name="IconTextureRect" type="TextureButton" parent="Panel/Margin/Panel/Margin/VBox/Grid/HBoxContainer" unique_id=1431645381]
+custom_minimum_size = Vector2(60, 40)
+layout_mode = 2
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="IconResetButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/Grid/HBoxContainer" unique_id=46791891]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ix4f4")
+icon = ExtResource("3_a0k45")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="NameLabel" type="Label" parent="Panel/Margin/Panel/Margin/VBox/Grid" unique_id=168028310]
+layout_mode = 2
+text = "Name:"
+
+[node name="LineEdit" type="LineEdit" parent="Panel/Margin/Panel/Margin/VBox/Grid" unique_id=228692647]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Custom render profile"
+select_all_on_focus = true
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="Panel/Margin/Panel/Margin/VBox" unique_id=1214426114]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonsHBox" unique_id=499159915]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+text = "Cancel"
+
+[node name="SaveRenderProfileButton" type="Button" parent="Panel/Margin/Panel/Margin/VBox/ButtonsHBox" unique_id=2147131319]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_type_variation = &"main_button"
+text = "Save render profile"
+
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/Grid/HBoxContainer/IconTextureRect" to="." method="_on_select_icon_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/Grid/HBoxContainer/IconResetButton" to="." method="_on_reset_icon_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/CloseButton" to="." method="_on_cancel_button_pressed"]
+[connection signal="pressed" from="Panel/Margin/Panel/Margin/VBox/ButtonsHBox/SaveRenderProfileButton" to="." method="_on_save_render_profile_button_pressed"]

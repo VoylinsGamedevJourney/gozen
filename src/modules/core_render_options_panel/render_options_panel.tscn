@@ -82,9 +82,8 @@ expand_icon = true
 allow_reselect = true
 
 [node name="SaveProfileButton" type="TextureButton" parent="Margin/Panel/Margin/ScrollContainer/VBox/TopSettingsHBox/RenderProfilesHBox" unique_id=542742442]
-custom_minimum_size = Vector2(30, 30)
+custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
-size_flags_vertical = 4
 tooltip_text = "Save current presets as a custom render profile."
 texture_normal = ExtResource("2_ix4f4")
 ignore_texture_size = true

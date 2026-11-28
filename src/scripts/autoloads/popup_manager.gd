@@ -21,6 +21,7 @@ enum {
 	CREATE_FOLDER,
 
 	# Render stuff.
+	RENDER_PROFILE_SAVE_CUSTOM, ## WARN: Technically this is part of a module so shouldn't be here ...
 	RENDER_FINISHED,
 	RENDER_FAILED,
 
@@ -75,6 +76,7 @@ var _popup_uids: Dictionary [int, String] = {
 	FOLDER_RENAME: "uid://6f381g3j2gdd",
 
 	# Render stuff.
+	RENDER_PROFILE_SAVE_CUSTOM: "uid://c2u0u18njo46g",
 	RENDER_FINISHED: "uid://b2p7khnqofboy",
 	RENDER_FAILED: "uid://b46mlum2m65tv",
 
@@ -125,9 +127,13 @@ func _ready() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel") and not _open_popups.is_empty():
+		# There are exceptions. :p
+		# TODO: Find a better way of handling exceptions.
 		if _open_popups.has(PROGRESS) and _open_popups.size() == 1:
 			return
 		if _open_popups.has(FILES_MISSING) and _open_popups[FILES_MISSING].get("_active_file_dialog") != null:
+			return
+		if _open_popups.has(RENDER_PROFILE_SAVE_CUSTOM) and _open_popups[RENDER_PROFILE_SAVE_CUSTOM].get("_active_file_dialog") != null:
 			return
 		close_all()
 		get_viewport().set_input_as_handled()
